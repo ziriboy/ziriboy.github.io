@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>공공자전거 이용현황 지도</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Apple SD Gothic Neo','Noto Sans KR',sans-serif; background:#f0f4f8; color:#1a2a3a; height:100vh; display:flex; flex-direction:column; }
+
+#header {
+  background: linear-gradient(135deg, #1e3a5f, #2c5282);
+  padding: 12px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid #b0c8e0; flex-shrink:0;
+  color: white;
+}
+#header h1 { font-size:16px; font-weight:700; color:#a8d8f0; }
+#header .subtitle { font-size:11px; color:#7aaac8; margin-top:2px; }
+
+/* 지역 탭 */
+#region-tabs {
+  background: #e0eaf5;
+  display: flex;
+  border-bottom: 2px solid #b0c8e0;
+  flex-shrink: 0;
+}
+.region-tab {
+  padding: 10px 28px;
+  font-size: 14px; font-weight: 600;
+  cursor: pointer;
+  border: none; background: transparent;
+  color: #5577aa;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
+  display: flex; align-items: center; gap: 8px;
+}
+.region-tab:hover { background: #d0e0f0; }
+.region-tab.active {
+  color: #1e3a5f;
+  border-bottom: 3px solid #2c7ab5;
+  background: white;
+}
+.region-tab .badge {
+  background: #c8ddf0; color: #2a5080;
+  font-size: 11px; padding: 1px 7px; border-radius: 10px;
+}
+.region-tab.active .badge { background: #2c7ab5; color: white; }
+
+#controls {
+  background: white;
+  padding: 9px 20px;
+  display: flex; gap:16px; align-items:center;
+  border-bottom: 1px solid #d0dde8;
+  flex-shrink:0; flex-wrap:wrap;
+}
+.ctrl-group { display:flex; align-items:center; gap:8px; }
+.ctrl-label { font-size:12px; color:#5577aa; white-space:nowrap; }
+.toggle-btn {
+  padding:4px 12px; border:1px solid #b0c8e0; border-radius:20px;
+  font-size:12px; cursor:pointer; transition:all 0.2s;
+  background:transparent; color:#5577aa;
+}
+.toggle-btn.active { background:#2c7ab5; border-color:#2c7ab5; color:white; }
+
+#stats-bar { display:flex; gap:20px; margin-left:auto; }
+.stat { text-align:center; }
+.stat .val { font-size:14px; font-weight:700; color:#2c7ab5; }
+.stat .lbl { font-size:11px; color:#7799bb; }
+
+#map-container { flex:1; position:relative; }
+#map { width:100%; height:100%; }
+
+#legend {
+  position:absolute; bottom:24px; right:16px;
+  background:rgba(255,255,255,0.95);
+  border:1px solid #a0c0e0; border-radius:10px;
+  padding:12px 16px; z-index:1000; min-width:160px;
+}
+#legend h4 { font-size:11px; color:#7799bb; margin-bottom:8px; text-transform:uppercase; letter-spacing:0.5px; }
+.legend-item { display:flex; align-items:center; gap:8px; margin:5px 0; font-size:12px; color:#334; }
+.legend-dot { border-radius:50%; flex-shrink:0; }
+.legend-line { height:3px; width:24px; border-radius:2px; flex-shrink:0; }
+
+#tooltip {
+  position:absolute; background:rgba(245,250,255,0.97);
+  border:1px solid #90b8d8; border-radius:8px;
+  padding:10px 14px; font-size:13px; z-index:2000;
+  pointer-events:none; display:none; max-width:220px;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.12);
+}
+#tooltip .tt-name { font-weight:700; color:#1e3a5f; margin-bottom:6px; font-size:14px; }
+#tooltip .tt-row { display:flex; justify-content:space-between; gap:16px; margin:3px 0; color:#556677; font-size:12px; }
+#tooltip .tt-val { color:#1a2a3a; font-weight:600; }
+</style>
+</head>
+<body>
+
+<div id="header">
+  <div>
+    <h1>🚲 공공자전거 이용현황 지도</h1>
+    <div class="subtitle">정거장별 대여·반납 현황 및 이동 경로(OD) 시각화</div>
+  </div>
+  <div id="stats-bar">
+    <div class="stat"><div class="val" id="stat-total">-</div><div class="lbl">총 이용 건수</div></div>
+    <div class="stat"><div class="val" id="stat-stations">-</div><div class="lbl">정거장 수</div></div>
+    <div class="stat"><div class="val" id="stat-od">-</div><div class="lbl">표시 경로</div></div>
+  </div>
+</div>
+
+<div id="region-tabs">
+  <button class="region-tab active" onclick="switchRegion('gwangju')" id="tab-gwangju">
+    🚲 광주 타랑께 <span class="badge">53개소</span>
+  </button>
+  <button class="region-tab" onclick="switchRegion('yeosu')" id="tab-yeosu">
+    🚲 여수 여수랑 <span class="badge">46개소</span>
+  </button>
+</div>
+
+<div id="controls">
+  <div class="ctrl-group">
+    <span class="ctrl-label">레이어</span>
+    <button class="toggle-btn active" id="btn-bubble" onclick="toggleLayer('bubble')">● 이용량 버블</button>
+    <button class="toggle-btn active" id="btn-od" onclick="toggleLayer('od')">↔ OD 경로</button>
+  </div>
+  <div class="ctrl-group">
+    <span class="ctrl-label">OD 상위</span>
+    <input type="range" id="od-slider" min="5" max="60" value="30" step="5"
+           oninput="updateOD(this.value)" style="width:90px; accent-color:#2c7ab5;">
+    <span id="od-val" style="font-size:12px; color:#2c7ab5; min-width:24px;">30</span>
+  </div>
+  <div class="ctrl-group">
+    <span class="ctrl-label">버블 기준</span>
+    <button class="toggle-btn active" id="btn-total" onclick="setBubbleMode('total')">전체</button>
+    <button class="toggle-btn" id="btn-depart" onclick="setBubbleMode('depart')">대여</button>
+    <button class="toggle-btn" id="btn-arrive" onclick="setBubbleMode('arrive')">반납</button>
+  </div>
+</div>
+
+<div id="map-container">
+  <div id="map"></div>
+  <div id="legend">
+    <h4>범례</h4>
+    <div class="legend-item"><div class="legend-dot" style="width:20px;height:20px;background:rgba(44,122,181,0.5);border:2px solid #2c7ab5;"></div> 이용량 많음</div>
+    <div class="legend-item"><div class="legend-dot" style="width:10px;height:10px;background:rgba(44,122,181,0.25);border:2px solid #2c7ab5;"></div> 이용량 적음</div>
+    <div class="legend-item"><div class="legend-line" style="background:rgba(220,100,50,0.9);"></div> OD 경로 (많음)</div>
+    <div class="legend-item"><div class="legend-line" style="background:rgba(220,100,50,0.3);"></div> OD 경로 (적음)</div>
+  </div>
+  <div id="tooltip"></div>
+</div>
+
+<script>
+const REGIONS = {
+  gwangju: {
+    label: '광주 타랑께',
+    center: [35.157, 126.855], zoom: 13,
+    totalTrips: 44638,
+    stations: [{"name": "유스퀘어 건너편", "lat": 35.1619339, "lng": 126.8785095, "depart": 899, "arrive": 906, "total": 1805}, {"name": "자생한방병원", "lat": 35.15086365, "lng": 126.8551636, "depart": 93, "arrive": 143, "total": 236}, {"name": "금호대우아파트 앞", "lat": 35.15710068, "lng": 126.8472824, "depart": 1490, "arrive": 1313, "total": 2803}, {"name": "롯데마트 앞", "lat": 35.15189743, "lng": 126.8520889, "depart": 1284, "arrive": 1307, "total": 2591}, {"name": "우체국 건너편", "lat": 35.16022491, "lng": 126.855545, "depart": 1268, "arrive": 1206, "total": 2474}, {"name": "교보문고 앞", "lat": 35.15224457, "lng": 126.8487015, "depart": 1683, "arrive": 1749, "total": 3432}, {"name": "한국은행 앞", "lat": 35.15771484, "lng": 126.8486862, "depart": 474, "arrive": 493, "total": 967}, {"name": "한국투자증권 앞", "lat": 35.15362167, "lng": 126.8480225, "depart": 945, "arrive": 1058, "total": 2003}, {"name": "해오리어린이공원 입구", "lat": 35.14621735, "lng": 126.8431854, "depart": 639, "arrive": 511, "total": 1150}, {"name": "아웃백스테이크 앞", "lat": 35.15190506, "lng": 126.8497849, "depart": 1033, "arrive": 1069, "total": 2102}, {"name": "유안타증권 앞", "lat": 35.15096664, "lng": 126.8487015, "depart": 122, "arrive": 158, "total": 280}, {"name": "치평초교 앞", "lat": 35.14813995, "lng": 126.8442841, "depart": 1097, "arrive": 1114, "total": 2211}, {"name": "상무역 5번 출구 앞", "lat": 35.14776611, "lng": 126.8487549, "depart": 2380, "arrive": 2499, "total": 4879}, {"name": "동천마을 2단지 앞", "lat": 35.16814423, "lng": 126.8581467, "depart": 827, "arrive": 788, "total": 1615}, {"name": "시청 앞", "lat": 35.15899658, "lng": 126.8520737, "depart": 2262, "arrive": 2233, "total": 4495}, {"name": "쉐보레 앞", "lat": 35.15263367, "lng": 126.8546753, "depart": 1199, "arrive": 1219, "total": 2418}, {"name": "광주사회복지회관", "lat": 35.16674805, "lng": 126.8860626, "depart": 1528, "arrive": 1568, "total": 3096}, {"name": "동천 우미린 앞", "lat": 35.16989136, "lng": 126.8698807, "depart": 1049, "arrive": 1023, "total": 2072}, {"name": "치평동주민센터", "lat": 35.15014267, "lng": 126.8432083, "depart": 1866, "arrive": 1749, "total": 3615}, {"name": "518자유공원 앞", "lat": 35.14818192, "lng": 126.8410721, "depart": 321, "arrive": 375, "total": 696}, {"name": "상무시민공원4", "lat": 35.1518631, "lng": 126.8390884, "depart": 1605, "arrive": 1581, "total": 3186}, {"name": "상무시민공원1", "lat": 35.15542603, "lng": 126.8428345, "depart": 6527, "arrive": 6506, "total": 13033}, {"name": "버들마을 1", "lat": 35.16254425, "lng": 126.8628388, "depart": 814, "arrive": 655, "total": 1469}, {"name": "동천 호반베르디움 앞", "lat": 35.17016602, "lng": 126.8668137, "depart": 657, "arrive": 854, "total": 1511}, {"name": "동천마을 3단지 앞", "lat": 35.17016602, "lng": 126.8625488, "depart": 1624, "arrive": 1603, "total": 3227}, {"name": "KBS 앞", "lat": 35.15750885, "lng": 126.8552094, "depart": 848, "arrive": 740, "total": 1588}, {"name": "강나루 공원 건너편", "lat": 35.16925049, "lng": 126.8731232, "depart": 610, "arrive": 632, "total": 1242}, {"name": "동남아파트 앞", "lat": 35.16746902, "lng": 126.8606186, "depart": 930, "arrive": 1150, "total": 2080}, {"name": "상무 호반리젠시빌 앞", "lat": 35.16425323, "lng": 126.8590775, "depart": 485, "arrive": 513, "total": 998}, {"name": "광천 e-편한 세상 앞", "lat": 35.16573334, "lng": 126.8785095, "depart": 428, "arrive": 344, "total": 772}, {"name": "대자중학교 앞", "lat": 35.16831207, "lng": 126.867012, "depart": 582, "arrive": 511, "total": 1093}, {"name": "일가정양립지원본부", "lat": 35.15187073, "lng": 126.842804, "depart": 55, "arrive": 63, "total": 118}, {"name": "계수초교 앞", "lat": 35.15536499, "lng": 126.8454437, "depart": 1533, "arrive": 1436, "total": 2969}, {"name": "의회동 앞", "lat": 35.15900803, "lng": 126.8486786, "depart": 1751, "arrive": 1743, "total": 3494}, {"name": "유덕 어린이 공원", "lat": 35.16446304, "lng": 126.8617706, "depart": 630, "arrive": 634, "total": 1264}, {"name": "금호쌍용아파트 앞", "lat": 35.15064621, "lng": 126.8473282, "depart": 120, "arrive": 120, "total": 240}, {"name": "마륵역 앞", "lat": 35.14323807, "lng": 126.8410111, "depart": 544, "arrive": 576, "total": 1120}, {"name": "동천 유적 근린 공원", "lat": 35.16822433, "lng": 126.8701782, "depart": 8, "arrive": 14, "total": 22}, {"name": "현대해상 앞", "lat": 35.15503693, "lng": 126.8521118, "depart": 1521, "arrive": 1441, "total": 2962}, {"name": "코앤영의원 앞", "lat": 35.1487999, "lng": 126.8516846, "depart": 126, "arrive": 168, "total": 294}, {"name": "센트럴시티 앞", "lat": 35.15541458, "lng": 126.8511047, "depart": 399, "arrive": 400, "total": 799}, {"name": "세정아울렛 앞", "lat": 35.14694977, "lng": 126.8482895, "depart": 28, "arrive": 39, "total": 67}, {"name": "동천마을 6단지 앞", "lat": 35.17064285, "lng": 126.8702622, "depart": 1, "arrive": 1, "total": 2}, {"name": "한국주택금융공사 앞", "lat": 35.15664291, "lng": 126.8548508, "depart": 5, "arrive": 13, "total": 18}, {"name": "나라키움청사 앞", "lat": 35.16960144, "lng": 126.8635483, "depart": 15, "arrive": 19, "total": 34}, {"name": "상무시민공원3", "lat": 35.15378952, "lng": 126.8390656, "depart": 64, "arrive": 82, "total": 146}, {"name": "화추 어린이공원", "lat": 35.17105103, "lng": 126.8639374, "depart": 6, "arrive": 5, "total": 11}, {"name": "버들마을 2", "lat": 35.16168976, "lng": 126.8625946, "depart": 4, "arrive": 6, "total": 10}, {"name": "먹자골목 앞", "lat": 35.15895462, "lng": 126.8469238, "depart": 8, "arrive": 12, "total": 20}, {"name": "리콘", "lat": 37.47390366, "lng": 126.885582, "depart": 5, "arrive": 5, "total": 10}, {"name": "라붐웨딩", "lat": 35.14819717, "lng": 126.8386078, "depart": 240, "arrive": 274, "total": 514}, {"name": "상무시민공원2", "lat": 35.15477753, "lng": 126.8428421, "depart": 6, "arrive": 16, "total": 22}, {"name": "광천 모아엘가 앞", "lat": 35.16685867, "lng": 126.8675842, "depart": 0, "arrive": 1, "total": 1}],
+    od: [{"from": "상무시민공원1", "to": "현대해상 앞", "count": 229}, {"from": "상무역 5번 출구 앞", "to": "교보문고 앞", "count": 193}, {"from": "현대해상 앞", "to": "상무시민공원1", "count": 190}, {"from": "교보문고 앞", "to": "한국투자증권 앞", "count": 184}, {"from": "금호대우아파트 앞", "to": "교보문고 앞", "count": 165}, {"from": "상무역 5번 출구 앞", "to": "계수초교 앞", "count": 163}, {"from": "교보문고 앞", "to": "상무역 5번 출구 앞", "count": 163}, {"from": "금호대우아파트 앞", "to": "한국투자증권 앞", "count": 148}, {"from": "한국투자증권 앞", "to": "교보문고 앞", "count": 147}, {"from": "상무시민공원4", "to": "상무시민공원1", "count": 147}, {"from": "시청 앞", "to": "의회동 앞", "count": 142}, {"from": "계수초교 앞", "to": "상무시민공원1", "count": 142}, {"from": "교보문고 앞", "to": "아웃백스테이크 앞", "count": 141}, {"from": "상무시민공원1", "to": "상무시민공원4", "count": 136}, {"from": "현대해상 앞", "to": "상무역 5번 출구 앞", "count": 136}, {"from": "치평동주민센터", "to": "상무시민공원1", "count": 136}, {"from": "버들마을 1", "to": "유스퀘어 건너편", "count": 135}, {"from": "치평동주민센터", "to": "치평초교 앞", "count": 129}, {"from": "계수초교 앞", "to": "상무역 5번 출구 앞", "count": 125}, {"from": "상무시민공원1", "to": "계수초교 앞", "count": 123}, {"from": "현대해상 앞", "to": "롯데마트 앞", "count": 122}, {"from": "상무시민공원1", "to": "치평동주민센터", "count": 121}, {"from": "치평동주민센터", "to": "상무시민공원4", "count": 118}, {"from": "아웃백스테이크 앞", "to": "교보문고 앞", "count": 109}, {"from": "치평초교 앞", "to": "치평동주민센터", "count": 107}, {"from": "아웃백스테이크 앞", "to": "상무역 5번 출구 앞", "count": 107}, {"from": "롯데마트 앞", "to": "현대해상 앞", "count": 102}, {"from": "금호대우아파트 앞", "to": "한국은행 앞", "count": 100}, {"from": "롯데마트 앞", "to": "시청 앞", "count": 99}, {"from": "치평동주민센터", "to": "상무역 5번 출구 앞", "count": 93}, {"from": "대자중학교 앞", "to": "시청 앞", "count": 93}, {"from": "상무시민공원1", "to": "교보문고 앞", "count": 92}, {"from": "우체국 건너편", "to": "의회동 앞", "count": 91}, {"from": "계수초교 앞", "to": "교보문고 앞", "count": 91}, {"from": "상무역 5번 출구 앞", "to": "치평동주민센터", "count": 90}, {"from": "계수초교 앞", "to": "아웃백스테이크 앞", "count": 90}, {"from": "우체국 건너편", "to": "시청 앞", "count": 90}, {"from": "교보문고 앞", "to": "상무시민공원1", "count": 89}, {"from": "한국투자증권 앞", "to": "상무역 5번 출구 앞", "count": 89}, {"from": "의회동 앞", "to": "상무역 5번 출구 앞", "count": 89}, {"from": "동천마을 3단지 앞", "to": "동천 호반베르디움 앞", "count": 88}, {"from": "교보문고 앞", "to": "금호대우아파트 앞", "count": 88}, {"from": "유스퀘어 건너편", "to": "버들마을 1", "count": 86}, {"from": "의회동 앞", "to": "우체국 건너편", "count": 85}, {"from": "치평동주민센터", "to": "계수초교 앞", "count": 84}, {"from": "동천마을 3단지 앞", "to": "유덕 어린이 공원", "count": 84}, {"from": "의회동 앞", "to": "시청 앞", "count": 84}, {"from": "동천마을 3단지 앞", "to": "동남아파트 앞", "count": 82}, {"from": "우체국 건너편", "to": "쉐보레 앞", "count": 81}, {"from": "상무시민공원4", "to": "치평동주민센터", "count": 81}, {"from": "계수초교 앞", "to": "치평동주민센터", "count": 80}, {"from": "상무역 5번 출구 앞", "to": "아웃백스테이크 앞", "count": 80}, {"from": "광주사회복지회관", "to": "동남아파트 앞", "count": 78}, {"from": "유스퀘어 건너편", "to": "동천마을 3단지 앞", "count": 77}, {"from": "한국투자증권 앞", "to": "금호대우아파트 앞", "count": 76}, {"from": "치평동주민센터", "to": "교보문고 앞", "count": 74}, {"from": "한국은행 앞", "to": "금호대우아파트 앞", "count": 73}, {"from": "동천마을 2단지 앞", "to": "동남아파트 앞", "count": 73}, {"from": "동천마을 2단지 앞", "to": "동천마을 3단지 앞", "count": 73}, {"from": "우체국 건너편", "to": "롯데마트 앞", "count": 72}]
+  },
+  yeosu: {
+    label: '여수 여수랑',
+    center: [34.755, 127.700], zoom: 12,
+    totalTrips: 43531,
+    stations: [{"name": "여수역", "lat": 34.7397, "lng": 127.7341, "depart": 1846, "arrive": 1766, "total": 3612}, {"name": "이순신광장", "lat": 34.7425, "lng": 127.7375, "depart": 2755, "arrive": 3001, "total": 5756}, {"name": "여수연안여객선터미널", "lat": 34.7437, "lng": 127.7366, "depart": 825, "arrive": 926, "total": 1751}, {"name": "오동도", "lat": 34.7452, "lng": 127.7633, "depart": 3078, "arrive": 2259, "total": 5337}, {"name": "여수엑스포 홍보관", "lat": 34.751, "lng": 127.7419, "depart": 3868, "arrive": 4384, "total": 8252}, {"name": "엑스포로터리", "lat": 34.7497, "lng": 127.7388, "depart": 622, "arrive": 565, "total": 1187}, {"name": "해양공원 공연장", "lat": 34.7478, "lng": 127.7401, "depart": 2201, "arrive": 2422, "total": 4623}, {"name": "여수시민회관", "lat": 34.747, "lng": 127.733, "depart": 367, "arrive": 499, "total": 866}, {"name": "여수수협앞", "lat": 34.7445, "lng": 127.735, "depart": 894, "arrive": 984, "total": 1878}, {"name": "여수해양경찰서앞", "lat": 34.743, "lng": 127.738, "depart": 833, "arrive": 797, "total": 1630}, {"name": "진남체육공원", "lat": 34.7447, "lng": 127.7261, "depart": 260, "arrive": 195, "total": 455}, {"name": "망마경기장", "lat": 34.753, "lng": 127.7291, "depart": 132, "arrive": 159, "total": 291}, {"name": "성산공원", "lat": 34.7487, "lng": 127.7198, "depart": 506, "arrive": 458, "total": 964}, {"name": "여서동 문화의 거리", "lat": 34.749, "lng": 127.7215, "depart": 648, "arrive": 388, "total": 1036}, {"name": "여서문화거리", "lat": 34.7488, "lng": 127.721, "depart": 755, "arrive": 530, "total": 1285}, {"name": "둔덕동 주민센터", "lat": 34.7412, "lng": 127.7122, "depart": 415, "arrive": 482, "total": 897}, {"name": "둔덕삼거리", "lat": 34.74, "lng": 127.7108, "depart": 540, "arrive": 125, "total": 665}, {"name": "미평공원", "lat": 34.7558, "lng": 127.7123, "depart": 4391, "arrive": 4279, "total": 8670}, {"name": "삼일중학교", "lat": 34.7565, "lng": 127.7175, "depart": 503, "arrive": 321, "total": 824}, {"name": "신동아 파밀리에 삼거리", "lat": 34.758, "lng": 127.715, "depart": 672, "arrive": 568, "total": 1240}, {"name": "구봉중입구", "lat": 34.734, "lng": 127.717, "depart": 626, "arrive": 630, "total": 1256}, {"name": "내동마을입구", "lat": 34.731, "lng": 127.714, "depart": 2031, "arrive": 2265, "total": 4296}, {"name": "가곡마을입구", "lat": 34.728, "lng": 127.709, "depart": 2073, "arrive": 1896, "total": 3969}, {"name": "만흥공원", "lat": 34.762, "lng": 127.705, "depart": 1331, "arrive": 1678, "total": 3009}, {"name": "신월동", "lat": 34.765, "lng": 127.707, "depart": 624, "arrive": 645, "total": 1269}, {"name": "쌍봉동 주민센터", "lat": 34.752, "lng": 127.695, "depart": 218, "arrive": 221, "total": 439}, {"name": "장성삼거리입구 공원", "lat": 34.76, "lng": 127.698, "depart": 529, "arrive": 608, "total": 1137}, {"name": "양지바름공원", "lat": 34.756, "lng": 127.692, "depart": 577, "arrive": 567, "total": 1144}, {"name": "두드림", "lat": 34.748, "lng": 127.687, "depart": 4, "arrive": 3, "total": 7}, {"name": "선소입구공원", "lat": 34.746, "lng": 127.705, "depart": 584, "arrive": 719, "total": 1303}, {"name": "부영1단지 사거리", "lat": 34.765, "lng": 127.682, "depart": 891, "arrive": 922, "total": 1813}, {"name": "웅천 부영1차", "lat": 34.742, "lng": 127.671, "depart": 356, "arrive": 424, "total": 780}, {"name": "웅천 부영2차", "lat": 34.743, "lng": 127.67, "depart": 406, "arrive": 296, "total": 702}, {"name": "웅천청소년공원", "lat": 34.74, "lng": 127.668, "depart": 1223, "arrive": 1615, "total": 2838}, {"name": "여천역", "lat": 34.7924, "lng": 127.6613, "depart": 286, "arrive": 168, "total": 454}, {"name": "여수시청", "lat": 34.7607, "lng": 127.6622, "depart": 428, "arrive": 642, "total": 1070}, {"name": "여천동 주민센터 앞", "lat": 34.774, "lng": 127.662, "depart": 1358, "arrive": 1358, "total": 2716}, {"name": "전남대정문", "lat": 34.77, "lng": 127.656, "depart": 370, "arrive": 114, "total": 484}, {"name": "거북선공원(흥국체육관)", "lat": 34.766, "lng": 127.659, "depart": 532, "arrive": 652, "total": 1184}, {"name": "소호요트경기장", "lat": 34.735, "lng": 127.702, "depart": 723, "arrive": 662, "total": 1385}, {"name": "소호회센터", "lat": 34.736, "lng": 127.703, "depart": 604, "arrive": 608, "total": 1212}, {"name": "돌산공원", "lat": 34.7294, "lng": 127.736, "depart": 353, "arrive": 431, "total": 784}, {"name": "돌산 노블호텔", "lat": 34.724, "lng": 127.731, "depart": 333, "arrive": 241, "total": 574}, {"name": "돌산 진모축구장", "lat": 34.715, "lng": 127.728, "depart": 166, "arrive": 201, "total": 367}, {"name": "돌산KT 우두분기국", "lat": 34.72, "lng": 127.73, "depart": 128, "arrive": 143, "total": 271}, {"name": "여수랑 운영센터", "lat": 34.75, "lng": 127.73, "depart": 53, "arrive": 43, "total": 96}],
+    od: [{"from": "오동도", "to": "여수엑스포 홍보관", "count": 1697}, {"from": "여수엑스포 홍보관", "to": "오동도", "count": 895}, {"from": "미평공원", "to": "내동마을입구", "count": 720}, {"from": "내동마을입구", "to": "미평공원", "count": 436}, {"from": "만흥공원", "to": "미평공원", "count": 423}, {"from": "여수엑스포 홍보관", "to": "이순신광장", "count": 421}, {"from": "내동마을입구", "to": "만흥공원", "count": 413}, {"from": "이순신광장", "to": "해양공원 공연장", "count": 408}, {"from": "미평공원", "to": "만흥공원", "count": 405}, {"from": "해양공원 공연장", "to": "이순신광장", "count": 351}, {"from": "가곡마을입구", "to": "여천동 주민센터 앞", "count": 320}, {"from": "여수엑스포 홍보관", "to": "여수역", "count": 319}, {"from": "가곡마을입구", "to": "미평공원", "count": 305}, {"from": "이순신광장", "to": "여수엑스포 홍보관", "count": 305}, {"from": "여수역", "to": "여수엑스포 홍보관", "count": 299}, {"from": "여천동 주민센터 앞", "to": "가곡마을입구", "count": 290}, {"from": "만흥공원", "to": "내동마을입구", "count": 255}, {"from": "미평공원", "to": "가곡마을입구", "count": 249}, {"from": "여수엑스포 홍보관", "to": "해양공원 공연장", "count": 243}, {"from": "여수역", "to": "이순신광장", "count": 221}, {"from": "해양공원 공연장", "to": "여수엑스포 홍보관", "count": 208}, {"from": "둔덕삼거리", "to": "미평공원", "count": 203}, {"from": "신동아 파밀리에 삼거리", "to": "부영1단지 사거리", "count": 194}, {"from": "오동도", "to": "이순신광장", "count": 187}, {"from": "이순신광장", "to": "여수역", "count": 172}, {"from": "이순신광장", "to": "오동도", "count": 157}, {"from": "오동도", "to": "여수역", "count": 150}, {"from": "부영1단지 사거리", "to": "웅천청소년공원", "count": 138}, {"from": "소호회센터", "to": "선소입구공원", "count": 137}, {"from": "해양공원 공연장", "to": "오동도", "count": 137}, {"from": "여수엑스포 홍보관", "to": "여수연안여객선터미널", "count": 127}, {"from": "여수역", "to": "오동도", "count": 121}, {"from": "선소입구공원", "to": "웅천청소년공원", "count": 120}, {"from": "여수연안여객선터미널", "to": "이순신광장", "count": 118}, {"from": "여수연안여객선터미널", "to": "해양공원 공연장", "count": 118}, {"from": "해양공원 공연장", "to": "여수역", "count": 117}, {"from": "오동도", "to": "해양공원 공연장", "count": 116}, {"from": "가곡마을입구", "to": "만흥공원", "count": 116}, {"from": "여수시민회관", "to": "미평공원", "count": 110}, {"from": "여수역", "to": "해양공원 공연장", "count": 108}, {"from": "가곡마을입구", "to": "내동마을입구", "count": 107}, {"from": "여서동 문화의 거리", "to": "여서문화거리", "count": 103}, {"from": "양지바름공원", "to": "여천동 주민센터 앞", "count": 102}, {"from": "이순신광장", "to": "여수연안여객선터미널", "count": 101}, {"from": "웅천 부영2차", "to": "웅천청소년공원", "count": 99}, {"from": "삼일중학교", "to": "여수시청", "count": 99}, {"from": "여천동 주민센터 앞", "to": "양지바름공원", "count": 98}, {"from": "미평공원", "to": "여천동 주민센터 앞", "count": 98}, {"from": "부영1단지 사거리", "to": "여수시청", "count": 97}, {"from": "둔덕삼거리", "to": "둔덕동 주민센터", "count": 94}, {"from": "장성삼거리입구 공원", "to": "여수시청", "count": 92}, {"from": "이순신광장", "to": "여수수협앞", "count": 91}, {"from": "부영1단지 사거리", "to": "소호회센터", "count": 90}, {"from": "엑스포로터리", "to": "여수엑스포 홍보관", "count": 90}, {"from": "웅천청소년공원", "to": "선소입구공원", "count": 89}, {"from": "웅천청소년공원", "to": "부영1단지 사거리", "count": 89}, {"from": "여수시청", "to": "장성삼거리입구 공원", "count": 89}, {"from": "여서동 문화의 거리", "to": "여수해양경찰서앞", "count": 89}, {"from": "여서문화거리", "to": "미평공원", "count": 85}, {"from": "여수역", "to": "엑스포로터리", "count": 85}]
+  }
+};
+
+const map = L.map('map', {zoomControl:true}).setView([35.157, 126.855], 13);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+  attribution:'© CartoDB © OpenStreetMap', maxZoom:18
+}).addTo(map);
+
+const bubbleLayer = L.layerGroup().addTo(map);
+const odLayer = L.layerGroup().addTo(map);
+
+let currentRegion = 'gwangju';
+let bubbleMode = 'total';
+let showBubble = true;
+let showOD = true;
+let odCount = 30;
+
+function getMax(stations, mode) {
+  return Math.max(...stations.map(s => s[mode]));
+}
+
+function drawBubbles() {
+  bubbleLayer.clearLayers();
+  if (!showBubble) return;
+  const data = REGIONS[currentRegion];
+  const maxVal = getMax(data.stations, bubbleMode);
+  const sorted = [...data.stations].sort((a,b) => a[bubbleMode]-b[bubbleMode]);
+  sorted.forEach(s => {
+    const val = s[bubbleMode];
+    const r = 5 + (val/maxVal)*32;
+    const circle = L.circleMarker([s.lat, s.lng], {
+      radius: r,
+      fillColor: '#2c7ab5',
+      fillOpacity: 0.2 + (val/maxVal)*0.55,
+      color: '#2c7ab5',
+      weight: 1.5, opacity: 0.7
+    }).addTo(bubbleLayer);
+    circle.on('mouseover', () => {
+      document.getElementById('tooltip').innerHTML = `
+        <div class="tt-name">${s.name}</div>
+        <div class="tt-row"><span>전체 이용</span><span class="tt-val">${s.total.toLocaleString()}건</span></div>
+        <div class="tt-row"><span>대여</span><span class="tt-val">${s.depart.toLocaleString()}건</span></div>
+        <div class="tt-row"><span>반납</span><span class="tt-val">${s.arrive.toLocaleString()}건</span></div>
+      `;
+      document.getElementById('tooltip').style.display = 'block';
+    });
+    circle.on('mousemove', e => {
+      const rect = map.getContainer().getBoundingClientRect();
+      const tt = document.getElementById('tooltip');
+      tt.style.left = (e.originalEvent.clientX - rect.left + 14) + 'px';
+      tt.style.top  = (e.originalEvent.clientY - rect.top  - 10) + 'px';
+    });
+    circle.on('mouseout', () => { document.getElementById('tooltip').style.display='none'; });
+  });
+}
+
+function drawOD() {
+  odLayer.clearLayers();
+  if (!showOD) return;
+  const stMap = {};
+  REGIONS[currentRegion].stations.forEach(s => stMap[s.name] = s);
+  const subset = REGIONS[currentRegion].od.slice(0, odCount);
+  const maxC = subset[0]?.count || 1;
+  subset.forEach(od => {
+    const from = stMap[od.from], to = stMap[od.to];
+    if (!from || !to) return;
+    const t = od.count / maxC;
+    const line = L.polyline([[from.lat,from.lng],[to.lat,to.lng]], {
+      color: `rgb(220,${Math.round(80+t*60)},50)`,
+      weight: 1 + t*5, opacity: 0.15 + t*0.65
+    }).addTo(odLayer);
+    line.on('mouseover', () => {
+      document.getElementById('tooltip').innerHTML = `
+        <div class="tt-name">이동 경로</div>
+        <div class="tt-row"><span>출발</span><span class="tt-val">${od.from}</span></div>
+        <div class="tt-row"><span>도착</span><span class="tt-val">${od.to}</span></div>
+        <div class="tt-row"><span>이용 횟수</span><span class="tt-val">${od.count.toLocaleString()}건</span></div>
+      `;
+      document.getElementById('tooltip').style.display = 'block';
+    });
+    line.on('mousemove', e => {
+      const rect = map.getContainer().getBoundingClientRect();
+      const tt = document.getElementById('tooltip');
+      tt.style.left = (e.originalEvent.clientX - rect.left + 14) + 'px';
+      tt.style.top  = (e.originalEvent.clientY - rect.top  - 10) + 'px';
+    });
+    line.on('mouseout', () => { document.getElementById('tooltip').style.display='none'; });
+  });
+}
+
+function updateStats() {
+  const d = REGIONS[currentRegion];
+  document.getElementById('stat-total').textContent = d.totalTrips.toLocaleString();
+  document.getElementById('stat-stations').textContent = d.stations.length;
+  document.getElementById('stat-od').textContent = odCount;
+}
+
+function render() {
+  drawBubbles();
+  drawOD();
+  updateStats();
+}
+
+function switchRegion(key) {
+  currentRegion = key;
+  Object.keys(REGIONS).forEach(k => {
+    document.getElementById('tab-'+k).classList.toggle('active', k===key);
+  });
+  const r = REGIONS[key];
+  map.flyTo(r.center, r.zoom, {duration: 1.2});
+  render();
+}
+
+function toggleLayer(type) {
+  if (type==='bubble') {
+    showBubble = !showBubble;
+    document.getElementById('btn-bubble').classList.toggle('active', showBubble);
+  } else {
+    showOD = !showOD;
+    document.getElementById('btn-od').classList.toggle('active', showOD);
+  }
+  render();
+}
+
+function setBubbleMode(mode) {
+  bubbleMode = mode;
+  ['total','depart','arrive'].forEach(m =>
+    document.getElementById('btn-'+m).classList.toggle('active', m===mode));
+  drawBubbles();
+}
+
+function updateOD(val) {
+  odCount = parseInt(val);
+  document.getElementById('od-val').textContent = val;
+  document.getElementById('stat-od').textContent = val;
+  drawOD();
+}
+
+render();
+</script>
+</body>
+</html>
