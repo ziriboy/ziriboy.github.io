@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>중동 지도 퀴즈</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=Playfair+Display:wght@600;700&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  background:#0e1e30;
+  font-family:'Noto Serif KR',serif;
+  color:#e0d4c0;
+  display:flex;flex-direction:column;height:100vh;overflow:hidden;
+}
+
+/* ── HEADER ── */
+#hdr{
+  background:rgba(0,0,0,0.45);
+  padding:8px 16px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  flex-shrink:0;
+}
+#hdr h1{
+  font-family:'Playfair Display',serif;
+  font-size:1.05rem;color:#f0c84a;letter-spacing:.04em;
+}
+#score-panel{display:flex;gap:18px;font-size:.78rem;}
+.sc-item{color:#88a8c8;}
+.sc-item b{color:#f0e090;}
+
+/* ── MODE TABS ── */
+#tabs{
+  display:flex;gap:6px;padding:7px 14px 5px;
+  background:rgba(0,0,0,0.2);flex-shrink:0;
+}
+.tab{
+  flex:1;padding:5px 8px;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:5px;color:#a0b8c8;
+  font-size:.75rem;cursor:pointer;
+  font-family:'Noto Serif KR',serif;
+  transition:all .2s;text-align:center;
+}
+.tab.active{
+  background:rgba(240,200,70,.14);
+  border-color:rgba(240,200,70,.4);
+  color:#f0d060;font-weight:600;
+}
+.tab:hover:not(.active){background:rgba(255,255,255,.08);}
+
+/* ── QUESTION BAR ── */
+#qbar{
+  margin:6px 14px 4px;
+  padding:9px 16px;
+  background:rgba(240,200,70,.07);
+  border:1px solid rgba(240,200,70,.2);
+  border-radius:7px;
+  text-align:center;flex-shrink:0;
+}
+#qbar .qlabel{color:#7a9ab8;font-size:.72rem;margin-bottom:2px;}
+#qbar .qtarget{font-size:1.25rem;font-weight:700;color:#f5d050;line-height:1.3;}
+#qbar .qen{color:#7090a8;font-size:.78rem;margin-top:1px;}
+#qbar .qhint{color:#80a870;font-size:.72rem;margin-top:3px;min-height:16px;}
+
+/* ── PROGRESS ── */
+#prog{height:3px;background:#0a131e;flex-shrink:0;}
+#prog-fill{height:100%;background:linear-gradient(90deg,#e0a020,#e06020);width:0%;transition:width .35s;}
+
+/* ── MAP ── */
+#map-wrap{flex:1;position:relative;overflow:hidden;}
+svg{width:100%;height:100%;}
+
+/* country path styles */
+.land-bg{fill:#7a6850;stroke:#5a4830;stroke-width:.4;pointer-events:none;}
+.country{
+  fill:#c2a070;stroke:#7a5a38;stroke-width:.6;
+  cursor:pointer;transition:fill .12s;
+}
+.country:hover{fill:#d8bc88;}
+.country.state-correct{fill:#4a9a52;stroke:#2d7534;stroke-width:1;}
+.country.state-wrong{fill:#b84040;stroke:#8a2020;stroke-width:1;}
+.country.state-reveal{fill:#70a870;stroke:#3a7a3a;stroke-width:1;}
+
+/* water labels */
+.wlabel{
+  font-size:11px;fill:#8ac8f0;font-style:italic;
+  text-anchor:middle;dominant-baseline:middle;pointer-events:none;
+  font-family:'Noto Serif KR',serif;
+}
+.wlabel.strait{fill:#f0dc70;font-size:9px;}
+.wlabel.hidden{display:none;}
+
+/* water click zone */
+.wzone{fill:transparent;cursor:pointer;}
+.wzone:hover + .wlabel{fill:#c0e8ff;}
+.wzone.state-correct~.wlabel{fill:#50e870 !important;}
+.wzone.state-wrong~.wlabel{fill:#f05050 !important;}
+
+/* ── FEEDBACK TOAST ── */
+#toast{
+  position:absolute;bottom:22px;left:50%;transform:translateX(-50%);
+  padding:8px 22px;border-radius:20px;
+  font-size:.88rem;font-weight:600;
+  opacity:0;transition:opacity .25s;
+  pointer-events:none;white-space:nowrap;
+  box-shadow:0 3px 12px rgba(0,0,0,.5);
+}
+#toast.show{opacity:1;}
+#toast.ok{background:#2a7a30;color:#c0ffc4;}
+#toast.no{background:#8a2020;color:#ffc4c4;}
+#toast.hint{background:#1a4a7a;color:#c4d8ff;}
+
+/* ── AXIS OVERLAY ── */
+.axis-marker circle{transition:r .2s;}
+.axis-marker:hover circle{r:9;}
+.axis-label{
+  font-size:10px;fill:#ffffff;
+  text-anchor:middle;dominant-baseline:middle;
+  pointer-events:none;font-weight:600;
+}
+.axis-tooltip{
+  font-size:9.5px;fill:#ffe090;
+  text-anchor:middle;font-style:italic;pointer-events:none;
+}
+
+/* ── RESULT SCREEN ── */
+#result{
+  display:none;position:absolute;
+  inset:0;background:rgba(8,16,28,.96);
+  flex-direction:column;align-items:center;justify-content:center;
+  z-index:200;gap:10px;
+}
+#result h2{font-family:'Playfair Display',serif;font-size:1.8rem;color:#f0d050;}
+#result .rscore{font-size:2.8rem;font-weight:700;color:#ffe060;line-height:1;}
+#result .rmsg{color:#90b8d8;font-size:.95rem;margin-top:4px;}
+#result .rbtn{
+  margin-top:18px;padding:10px 26px;
+  background:#e0b030;color:#1a1a1a;
+  border:none;border-radius:7px;
+  font-size:.92rem;cursor:pointer;
+  font-family:'Noto Serif KR',serif;font-weight:700;
+}
+#result .rbtn:hover{background:#f0c840;}
+#result .retry-row{display:flex;gap:10px;}
+
+/* ── INFO MODE OVERLAY ── */
+#info-panel{
+  position:absolute;top:10px;right:10px;
+  background:rgba(10,20,35,.88);
+  border:1px solid rgba(240,200,70,.25);
+  border-radius:8px;padding:10px 14px;
+  font-size:.75rem;max-width:200px;
+  display:none;
+}
+#info-panel h3{color:#f0d060;font-size:.82rem;margin-bottom:6px;}
+.legend-item{display:flex;align-items:center;gap:6px;margin-bottom:4px;}
+.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+</style>
+</head>
+<body>
+
+<div id="hdr">
+  <h1>🗺 중동 지도 퀴즈</h1>
+  <div id="score-panel">
+    <div class="sc-item">✓ <b id="sc-ok">0</b></div>
+    <div class="sc-item">✗ <b id="sc-no">0</b></div>
+    <div class="sc-item">남은 <b id="sc-rem">0</b></div>
+  </div>
+</div>
+
+<div id="tabs">
+  <div class="tab active" onclick="startMode('countries')">🏳️ 국가 찾기</div>
+  <div class="tab" onclick="startMode('water')">🌊 바다·해협 찾기</div>
+  <div class="tab" onclick="startMode('all')">📋 전체 퀴즈</div>
+  <div class="tab" onclick="startMode('axis')">⚔️ 저항의 축 살펴보기</div>
+</div>
+
+<div id="qbar">
+  <div class="qlabel" id="q-label">퀴즈 모드를 선택하세요</div>
+  <div class="qtarget" id="q-target">—</div>
+  <div class="qen" id="q-en"></div>
+  <div class="qhint" id="q-hint"></div>
+</div>
+
+<div id="prog"><div id="prog-fill"></div></div>
+
+<div id="map-wrap">
+  <svg id="svg-map"></svg>
+  <div id="toast"></div>
+  <div id="info-panel">
+    <h3>⚔️ 저항의 축 (Axis of Resistance)</h3>
+    <div class="legend-item"><div class="legend-dot" style="background:#e05050"></div><span>하마스 — 가자지구</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:#e08020"></div><span>헤즈볼라 — 레바논 남부</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:#c0c020"></div><span>후티 — 예멘</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:#9040e0"></div><span>이라크 민병대 — 이라크</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:#4090e0"></div><span>이란 — 배후 지원</span></div>
+    <div style="margin-top:8px;color:#8098b0;line-height:1.5;">
+      이란은 이들을 지원해 이스라엘을 간접적으로 압박하는 <em>대리전</em> 전략을 구사합니다.
+    </div>
+  </div>
+  <div id="result">
+    <h2>퀴즈 완료! 🎉</h2>
+    <div class="rscore" id="r-score"></div>
+    <div class="rmsg" id="r-msg"></div>
+    <div class="retry-row">
+      <button class="rbtn" onclick="startMode(currentMode)">다시 풀기</button>
+      <button class="rbtn" style="background:#3a6a9a;color:#e0f0ff;" onclick="startMode('all')">전체 퀴즈 도전</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────
+//  DATA
+// ─────────────────────────────────────────
+const COUNTRIES = [
+  {id:'376', name:'이스라엘',     en:'Israel',         hint:'지중해 동쪽 해안의 작은 국가'},
+  {id:'364', name:'이란',         en:'Iran',            hint:'페르시아만 북쪽의 대국, 이슬람 공화국'},
+  {id:'368', name:'이라크',       en:'Iraq',            hint:'메소포타미아(티그리스·유프라테스강)'},
+  {id:'760', name:'시리아',       en:'Syria',           hint:'이스라엘과 이라크 사이'},
+  {id:'422', name:'레바논',       en:'Lebanon',         hint:'지중해 동쪽, 이스라엘 북쪽'},
+  {id:'400', name:'요르단',       en:'Jordan',          hint:'이스라엘 동쪽, 내륙 국가'},
+  {id:'682', name:'사우디아라비아', en:'Saudi Arabia',  hint:'아라비아반도 대부분을 차지'},
+  {id:'634', name:'카타르',       en:'Qatar',           hint:'아라비아반도 동쪽의 작은 반도 국가'},
+  {id:'414', name:'쿠웨이트',     en:'Kuwait',          hint:'페르시아만 북서쪽 끝'},
+  {id:'784', name:'아랍에미리트(UAE)', en:'UAE',        hint:'페르시아만 남동쪽 해안'},
+  {id:'512', name:'오만',         en:'Oman',            hint:'아라비아반도 동남쪽, 아라비아해 접함'},
+  {id:'887', name:'예멘',         en:'Yemen',           hint:'아라비아반도 남쪽 끝'},
+];
+
+const WATER = [
+  {wid:'mediterranean', name:'지중해',         en:'Mediterranean Sea',   center:[22,36],   rpx:80},
+  {wid:'red-sea',       name:'홍해',           en:'Red Sea',             center:[36.5,21], rpx:40},
+  {wid:'persian-gulf',  name:'페르시아만',     en:'Persian Gulf',        center:[51,27],   rpx:40},
+  {wid:'arabian-sea',   name:'아라비아해',     en:'Arabian Sea',         center:[63,18],   rpx:75},
+  {wid:'hormuz',        name:'호르무즈 해협',  en:'Strait of Hormuz',    center:[56.5,26.3],rpx:32},
+  {wid:'bab',           name:'바브엘만데브 해협', en:'Bab el-Mandeb',    center:[43.6,12.8],rpx:30},
+];
+
+const AXIS = [
+  {name:'하마스',       sub:'가자지구',      coord:[34.4,31.5],   color:'#e05050', flag:'🔴'},
+  {name:'헤즈볼라',     sub:'레바논 남부',   coord:[35.5,33.4],   color:'#e08020', flag:'🟠'},
+  {name:'후티',         sub:'예멘',          coord:[44,15.5],     color:'#c0c020', flag:'🟡'},
+  {name:'이라크 민병대', sub:'이라크',       coord:[44,33],       color:'#9040e0', flag:'🟣'},
+  {name:'이란',         sub:'배후 지원국',   coord:[54,33],       color:'#4090e0', flag:'🔵'},
+];
+
+const QUIZ_IDS = new Set(COUNTRIES.map(c=>c.id));
+
+// ─────────────────────────────────────────
+//  STATE
+// ─────────────────────────────────────────
+let mode = null, queue = [], current = null;
+let okCount = 0, noCount = 0, total = 0;
+let waiting = false;
+let currentMode = 'countries';
+
+let projection, pathGen;
+let countryEls = {};  // id → d3 selection
+let waterEls  = {};   // wid → {zone, label}
+let axisGroup = null;
+let labelsVisible = true;
+
+// ─────────────────────────────────────────
+//  D3 / MAP INIT
+// ─────────────────────────────────────────
+const svgEl = d3.select('#svg-map');
+const wrap  = document.getElementById('map-wrap');
+
+function buildMap(world){
+  const W = wrap.clientWidth, H = wrap.clientHeight;
+  
+  projection = d3.geoMercator()
+    .center([48, 27])
+    .scale(Math.min(W, H) * 1.55)
+    .translate([W/2, H/2]);
+  pathGen = d3.geoPath().projection(projection);
+
+  svgEl.attr('viewBox',`0 0 ${W} ${H}`);
+
+  // Ocean
+  svgEl.append('rect').attr('width',W).attr('height',H).attr('fill','#1e4d7b');
+
+  const all = topojson.feature(world, world.objects.countries);
+
+  // Background land (non-quiz countries)
+  svgEl.append('g').selectAll('path')
+    .data(all.features.filter(f=>!QUIZ_IDS.has(String(f.id))))
+    .join('path').attr('class','land-bg').attr('d',pathGen);
+
+  // Quiz countries
+  const qg = svgEl.append('g');
+  all.features.filter(f=>QUIZ_IDS.has(String(f.id))).forEach(f=>{
+    const id = String(f.id);
+    const el = qg.append('path')
+      .datum(f).attr('class','country').attr('d',pathGen)
+      .attr('data-id',id)
+      .on('click',()=>onCountryClick(id))
+      .on('mouseenter', function(){
+        if(mode==='axis') return;
+        d3.select(this).raise();
+      });
+    countryEls[id] = el;
+  });
+
+  // Water bodies
+  const wg = svgEl.append('g');
+  WATER.forEach(wb=>{
+    const [cx,cy] = projection(wb.center);
+    const g = wg.append('g').attr('data-wid', wb.wid);
+
+    const zone = g.append('circle')
+      .attr('cx',cx).attr('cy',cy).attr('r',wb.rpx)
+      .attr('class','wzone')
+      .on('click',()=>onWaterClick(wb.wid));
+
+    const lbl = g.append('text')
+      .attr('x',cx).attr('y',cy)
+      .attr('class','wlabel'+(wb.wid.includes('hormuz')||wb.wid.includes('bab')?' strait':''))
+      .text(wb.name);
+
+    waterEls[wb.wid] = {zone, label:lbl};
+  });
+
+  // Axis group (hidden by default)
+  axisGroup = svgEl.append('g').attr('id','axis-layer').style('display','none');
+
+  AXIS.forEach(a=>{
+    const [ax,ay] = projection(a.coord);
+    const g = axisGroup.append('g').attr('class','axis-marker');
+    g.append('circle').attr('cx',ax).attr('cy',ay).attr('r',7)
+      .attr('fill',a.color).attr('fill-opacity',.85)
+      .attr('stroke','white').attr('stroke-width',1.2);
+    // Pulsing ring
+    g.append('circle').attr('cx',ax).attr('cy',ay).attr('r',12)
+      .attr('fill','none').attr('stroke',a.color).attr('stroke-width',1)
+      .attr('stroke-opacity',.5);
+    g.append('text').attr('x',ax).attr('y',ay-14)
+      .attr('class','axis-label').attr('font-size','9px')
+      .attr('fill',a.color).attr('text-anchor','middle')
+      .text(a.name);
+    g.append('text').attr('x',ax).attr('y',ay-5)
+      .attr('class','axis-tooltip').attr('fill','#ffe090')
+      .attr('text-anchor','middle').attr('font-size','8px')
+      .text(a.sub);
+  });
+}
+
+d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json')
+  .then(buildMap)
+  .catch(()=>{
+    document.getElementById('q-target').textContent='지도 로딩 실패 — 네트워크를 확인하세요.';
+  });
+
+// ─────────────────────────────────────────
+//  QUIZ LOGIC
+// ─────────────────────────────────────────
+function startMode(m){
+  currentMode = m;
+  mode = m;
+  okCount = 0; noCount = 0; waiting = false;
+  resetMapColors();
+  document.getElementById('result').style.display='none';
+  document.getElementById('info-panel').style.display='none';
+
+  // Tab UI
+  document.querySelectorAll('.tab').forEach((t,i)=>{
+    const modes=['countries','water','all','axis'];
+    t.classList.toggle('active', modes[i]===m);
+  });
+
+  if(m==='axis'){
+    // Info/explore mode
+    axisGroup && axisGroup.style('display',null);
+    setWaterLabelVisibility(true);
+    document.getElementById('q-label').textContent='탐구 모드';
+    document.getElementById('q-target').textContent='저항의 축';
+    document.getElementById('q-en').textContent='Axis of Resistance';
+    document.getElementById('q-hint').textContent='지도에서 각 세력의 위치를 확인하세요';
+    document.getElementById('info-panel').style.display='block';
+    document.getElementById('prog-fill').style.width='0%';
+    updateScoreUI();
+    return;
+  }
+
+  axisGroup && axisGroup.style('display','none');
+
+  if(m==='countries')     queue=shuffle([...COUNTRIES]);
+  else if(m==='water')    queue=shuffle([...WATER]);
+  else                    queue=shuffle([...COUNTRIES,...WATER]);
+
+  total = queue.length;
+  updateScoreUI();
+  nextQ();
+}
+
+function nextQ(){
+  if(!queue.length){ showResult(); return; }
+  waiting = false;
+  current = queue.shift();
+  updateScoreUI();
+  hideToast();
+  updateProgress();
+
+  const isWater = !!current.wid;
+  document.getElementById('q-label').textContent = isWater ? '🌊 이 바다/해협의 위치를 클릭하세요' : '🏳️ 이 국가를 지도에서 클릭하세요';
+  document.getElementById('q-target').textContent = current.name;
+  document.getElementById('q-en').textContent = current.en||'';
+  document.getElementById('q-hint').textContent = '';
+
+  // Show/hide water labels
+  setWaterLabelVisibility(!isWater);
+}
+
+function onCountryClick(id){
+  if(waiting || mode==='axis') return;
+  if(!current || current.wid){
+    // Water question — wrong type
+    toast('🌊 바다나 해협 위치를 클릭하세요','hint'); return;
+  }
+  if(current.id !== id){
+    countryEls[id]?.classed('state-wrong',true);
+    setTimeout(()=>{ countryEls[String(current.id)]?.classed('state-reveal',true); },350);
+    toast(`✗ 오답  —  정답: ${current.name}`,'no');
+    noCount++; waiting=true; updateScoreUI();
+    setTimeout(()=>{ resetWrongEl(id); nextQ(); }, 1900);
+  } else {
+    countryEls[id]?.classed('state-correct',true);
+    toast(`✓ 정답!  ${current.name}`,'ok');
+    okCount++; waiting=true; updateScoreUI();
+    setTimeout(nextQ, 1400);
+  }
+}
+
+function onWaterClick(wid){
+  if(waiting || mode==='axis') return;
+  if(!current || current.id){
+    toast('🏳️ 국가 영역을 클릭하세요','hint'); return;
+  }
+  const zone = waterEls[wid]?.zone;
+  const label= waterEls[wid]?.label;
+  if(current.wid === wid){
+    zone?.classed('state-correct',true);
+    label?.classed('hidden',false).attr('fill','#50e870');
+    toast(`✓ 정답!  ${current.name}`,'ok');
+    okCount++; waiting=true; updateScoreUI();
+    setTimeout(()=>{ resetWaterEl(wid); nextQ(); }, 1400);
+  } else {
+    zone?.classed('state-wrong',true);
+    label?.classed('hidden',false).attr('fill','#f05050');
+    // Reveal correct
+    const cz = waterEls[current.wid];
+    setTimeout(()=>{
+      cz?.zone.classed('state-correct',true);
+      cz?.label.classed('hidden',false).attr('fill','#50e870');
+    }, 350);
+    toast(`✗ 오답  —  정답: ${current.name}`,'no');
+    noCount++; waiting=true; updateScoreUI();
+    setTimeout(()=>{
+      resetWaterEl(wid); resetWaterEl(current.wid); nextQ();
+    }, 1900);
+  }
+}
+
+// ─────────────────────────────────────────
+//  UI HELPERS
+// ─────────────────────────────────────────
+function toast(msg, type){
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'show '+type;
+}
+function hideToast(){
+  document.getElementById('toast').className='';
+}
+
+function resetMapColors(){
+  Object.values(countryEls).forEach(e=>
+    e.classed('state-correct',false).classed('state-wrong',false).classed('state-reveal',false)
+  );
+  Object.keys(waterEls).forEach(resetWaterEl);
+  setWaterLabelVisibility(true);
+}
+
+function resetWrongEl(id){
+  countryEls[id]?.classed('state-wrong',false);
+}
+
+function resetWaterEl(wid){
+  waterEls[wid]?.zone.classed('state-correct',false).classed('state-wrong',false);
+  waterEls[wid]?.label.attr('fill', wid.includes('hormuz')||wid.includes('bab') ? '#f0dc70' : '#8ac8f0');
+}
+
+function setWaterLabelVisibility(vis){
+  Object.values(waterEls).forEach(({label})=>{
+    label.classed('hidden',!vis);
+  });
+  labelsVisible = vis;
+}
+
+function updateScoreUI(){
+  document.getElementById('sc-ok').textContent  = okCount;
+  document.getElementById('sc-no').textContent  = noCount;
+  document.getElementById('sc-rem').textContent = queue.length;
+}
+
+function updateProgress(){
+  const done = total - queue.length;
+  document.getElementById('prog-fill').style.width = (total>0 ? done/total*100 : 0)+'%';
+}
+
+function showResult(){
+  updateProgress();
+  const pct = Math.round(okCount/total*100);
+  const msgs = ['다시 한 번 살펴보고 도전해보세요 🗺','절반 이상 맞혔어요. 조금 더 연습!','잘 했어요! 거의 다 왔어요 👍','훌륭합니다! 중동 지리 전문가 🌟'];
+  const idx = pct>=90?3:pct>=70?2:pct>=50?1:0;
+  document.getElementById('r-score').textContent = `${okCount} / ${total}  (${pct}%)`;
+  document.getElementById('r-msg').textContent = msgs[idx];
+  const rs = document.getElementById('result');
+  rs.style.display = 'flex';
+}
+
+function shuffle(a){
+  for(let i=a.length-1;i>0;i--){
+    const j=0|Math.random()*(i+1);[a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+// ─────────────────────────────────────────
+//  KEYBOARD HINT
+// ─────────────────────────────────────────
+document.addEventListener('keydown', e=>{
+  if(e.key==='h'||e.key==='H'){
+    if(current && !current.wid && current.hint){
+      document.getElementById('q-hint').textContent='💡 '+current.hint;
+    }
+  }
+});
+</script>
+
+<!-- Keyboard hint note -->
+<div style="position:fixed;bottom:6px;right:10px;font-size:.65rem;color:#405870;pointer-events:none;">
+  H키: 힌트 보기
+</div>
+
+</body>
+</html>
