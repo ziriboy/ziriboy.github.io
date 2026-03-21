@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>양곡관리법 역할극 — 한국지리 탐구</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green:#4a7c3f; --green-light:#e8f0e5;
+    --amber:#c17f24; --amber-light:#fdf3e0;
+    --text:#1a1a1a; --bg:#fafaf7;
+    --card-bg:#fff; --border:#e0ddd5;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+
+  /* ── 헤더 ── */
+  .hero{background:linear-gradient(135deg,#2d5a1b,#4a7c3f,#6aa355);padding:52px 24px 44px;text-align:center;position:relative;overflow:hidden;}
+  .hero::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(-45deg,rgba(255,255,255,0.03) 0,rgba(255,255,255,0.03) 1px,transparent 1px,transparent 20px);}
+  .hero-badge{display:inline-block;background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.9);font-size:11px;font-weight:700;letter-spacing:2px;padding:5px 14px;border-radius:20px;margin-bottom:16px;border:1px solid rgba(255,255,255,0.2);}
+  .hero h1{font-size:clamp(22px,5vw,30px);font-weight:900;color:#fff;line-height:1.3;margin-bottom:10px;}
+  .hero-sub{font-size:14px;color:rgba(255,255,255,0.75);}
+  .hero-meta{display:flex;justify-content:center;gap:16px;margin-top:20px;flex-wrap:wrap;}
+  .hero-meta span{background:rgba(255,255,255,0.12);color:rgba(255,255,255,0.9);font-size:12px;font-weight:600;padding:6px 14px;border-radius:20px;border:1px solid rgba(255,255,255,0.15);}
+
+  /* ── 인쇄 버튼 ── */
+  .print-bar{background:#fff;border-bottom:1px solid var(--border);padding:12px 20px;display:flex;justify-content:flex-end;gap:10px;align-items:center;}
+  .print-hint{font-size:12px;color:#999;}
+  .btn-print{display:inline-flex;align-items:center;gap:6px;background:var(--green);color:#fff;border:none;border-radius:8px;padding:8px 18px;font-size:13px;font-weight:700;font-family:'Noto Sans KR',sans-serif;cursor:pointer;}
+  .btn-print:hover{background:#3a6a2f;}
+
+  /* ── 본문 ── */
+  .container{max-width:860px;margin:0 auto;padding:0 20px 60px;}
+  .section{margin-top:44px;}
+  .section-label{display:flex;align-items:center;gap:10px;font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--green);text-transform:uppercase;margin-bottom:12px;}
+  .section-label::after{content:'';flex:1;height:1px;background:var(--green-light);}
+  .section h2{font-size:20px;font-weight:800;margin-bottom:16px;}
+
+  .explainer{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:24px 28px;}
+  .explainer p{font-size:13.5px;color:#444;margin-bottom:12px;word-break:keep-all;}
+  .explainer p:last-child{margin-bottom:0;}
+
+  .pros-cons{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px;}
+  .pros{background:#e8f5e3;border-radius:12px;padding:16px 18px;}
+  .cons{background:#fdecea;border-radius:12px;padding:16px 18px;}
+  .pros h4{color:#2d7a1a;font-size:13px;font-weight:700;margin-bottom:8px;}
+  .cons h4{color:#b03020;font-size:13px;font-weight:700;margin-bottom:8px;}
+  .pros li,.cons li{font-size:12.5px;color:#444;margin-left:14px;margin-bottom:4px;word-break:keep-all;}
+
+  .teacher-note{background:#fffbf0;border:1px solid #f0d980;border-left:4px solid #f0c020;border-radius:0 10px 10px 0;padding:16px 20px;margin-top:16px;font-size:13px;color:#555;word-break:keep-all;}
+  .teacher-note strong{color:#8a6010;}
+
+  .steps{margin-top:20px;}
+  .step{display:flex;gap:14px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--border);}
+  .step:last-child{border-bottom:none;}
+  .step-num{min-width:28px;height:28px;background:var(--green);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:2px;}
+  .step-text{font-size:13.5px;color:#444;word-break:keep-all;}
+  .step-time{display:inline-block;background:var(--amber-light);color:var(--amber);font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;margin-left:6px;}
+
+  /* ── 아코디언 역할 카드 ── */
+  .accordion-grid{display:flex;flex-direction:column;gap:10px;margin-top:16px;}
+
+  .acc-item{border-radius:14px;overflow:hidden;border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,0.05);}
+
+  .acc-header{
+    display:flex;align-items:center;gap:14px;
+    padding:14px 18px;cursor:pointer;
+    transition:background 0.15s;
+    user-select:none;
+  }
+  .acc-header:hover{filter:brightness(0.97);}
+
+  .acc-emoji{font-size:28px;flex-shrink:0;}
+  .acc-title-wrap{flex:1;}
+  .acc-role{font-size:15px;font-weight:900;line-height:1.3;}
+  .acc-slogan-preview{font-size:11.5px;font-weight:600;opacity:0.85;margin-top:2px;}
+  .acc-arrow{font-size:14px;color:rgba(255,255,255,0.7);transition:transform 0.25s;flex-shrink:0;}
+  .acc-item.open .acc-arrow{transform:rotate(180deg);}
+
+  .acc-body{
+    max-height:0;overflow:hidden;
+    background:var(--card-bg);
+    transition:max-height 0.35s ease;
+  }
+  .acc-item.open .acc-body{max-height:600px;}
+
+  .acc-inner{padding:18px 20px 14px;}
+  .acc-text{font-size:13px;line-height:1.85;color:#444;word-break:keep-all;margin-bottom:14px;}
+
+  .acc-slogan{
+    display:inline-flex;align-items:center;gap:6px;
+    padding:8px 14px;border-radius:8px;
+    font-size:12px;font-weight:700;margin-bottom:10px;
+  }
+  .acc-slogan::before{content:'📢';font-size:13px;}
+
+  .acc-worry{
+    padding:10px 14px;border-radius:8px;
+    background:#f8f8f8;border-left:3px solid #ddd;
+    font-size:11.5px;color:#888;font-style:italic;
+    word-break:keep-all;line-height:1.6;
+  }
+  .acc-worry::before{content:'💭 ';font-style:normal;}
+
+  /* 카드 색상 */
+  .c1 .acc-header{background:linear-gradient(135deg,#5a8a3a,#8cc43a);color:#fff;}
+  .c1 .acc-slogan{background:#f0f7e8;color:#3a6a1a;}
+  .c2 .acc-header{background:linear-gradient(135deg,#c06020,#e89040);color:#fff;}
+  .c2 .acc-slogan{background:#fdf0e0;color:#904010;}
+  .c3 .acc-header{background:linear-gradient(135deg,#3a6aaa,#5a9ada);color:#fff;}
+  .c3 .acc-slogan{background:#e8f0fc;color:#2a4a8a;}
+  .c4 .acc-header{background:linear-gradient(135deg,#7a3a9a,#aa60ca);color:#fff;}
+  .c4 .acc-slogan{background:#f5eafa;color:#5a2a7a;}
+  .c5 .acc-header{background:linear-gradient(135deg,#b03030,#d05050);color:#fff;}
+  .c5 .acc-slogan{background:#fce8e8;color:#801818;}
+  .c6 .acc-header{background:linear-gradient(135deg,#2a7a6a,#3aaa90);color:#fff;}
+  .c6 .acc-slogan{background:#e5f5f2;color:#1a5a4a;}
+  .c7 .acc-header{background:linear-gradient(135deg,#8a6a20,#c09a40);color:#fff;}
+  .c7 .acc-slogan{background:#faf3e0;color:#6a4a10;}
+  .c8 .acc-header{background:linear-gradient(135deg,#2a8a7a,#40bfaa);color:#fff;}
+  .c8 .acc-slogan{background:#e0f7f4;color:#1a6a5a;}
+
+  /* ── 배경 데이터 ── */
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-top:12px;}
+  th{background:var(--green);color:#fff;padding:10px 14px;text-align:left;font-size:12px;font-weight:700;}
+  td{padding:10px 14px;border-bottom:1px solid var(--border);color:#444;word-break:keep-all;}
+  tr:last-child td{border-bottom:none;}
+  tr:nth-child(even) td{background:#f8f8f5;}
+  .dl{font-weight:600;color:#333;width:42%;}
+
+  /* ════════════════════════════════
+     인쇄 전용 역할카드 (화면에선 숨김)
+  ════════════════════════════════ */
+  .print-cards{display:none;}
+
+  @media print {
+    /* 화면 콘텐츠 숨기기 */
+    .hero,.print-bar,.container{display:none!important;}
+
+    /* 인쇄 전용 카드 표시 */
+    .print-cards{
+      display:grid!important;
+      grid-template-columns:repeat(2,1fr);
+      gap:12px;
+      padding:10px;
+    }
+
+    .pc{
+      border-radius:12px;overflow:hidden;
+      border:1.5px solid #ddd;
+      break-inside:avoid;
+      page-break-inside:avoid;
+    }
+    .pch{
+      height:72px;display:flex;align-items:flex-end;
+      padding:0 14px 10px;position:relative;
+    }
+    .pch::before{
+      content:'';position:absolute;inset:0;
+      background:repeating-linear-gradient(45deg,rgba(255,255,255,0.15) 0,rgba(255,255,255,0.15) 1px,transparent 1px,transparent 10px);
+    }
+    .pch-emoji{position:absolute;right:12px;top:8px;font-size:30px;}
+    .pch-title{font-size:13px;font-weight:900;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.2);z-index:1;line-height:1.3;}
+    .pcb{padding:12px 14px 8px;}
+    .pct{font-size:11px;line-height:1.75;color:#444;word-break:keep-all;}
+    .pcs{margin:8px 14px 8px;padding:7px 11px;border-radius:7px;font-size:11px;font-weight:700;display:flex;align-items:center;gap:5px;}
+    .pcs::before{content:'📢';font-size:11px;}
+    .pcw{margin:0 14px 10px;padding:7px 10px;border-radius:7px;background:#f8f8f8;border-left:3px solid #ddd;font-size:10px;color:#888;font-style:italic;word-break:keep-all;line-height:1.6;}
+    .pcw::before{content:'💭 ';font-style:normal;}
+
+    /* 색상 유지 */
+    *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
+
+    .p1 .pch{background:linear-gradient(135deg,#5a8a3a,#8cc43a);} .p1 .pcs{background:#f0f7e8;color:#3a6a1a;}
+    .p2 .pch{background:linear-gradient(135deg,#c06020,#e89040);} .p2 .pcs{background:#fdf0e0;color:#904010;}
+    .p3 .pch{background:linear-gradient(135deg,#3a6aaa,#5a9ada);} .p3 .pcs{background:#e8f0fc;color:#2a4a8a;}
+    .p4 .pch{background:linear-gradient(135deg,#7a3a9a,#aa60ca);} .p4 .pcs{background:#f5eafa;color:#5a2a7a;}
+    .p5 .pch{background:linear-gradient(135deg,#b03030,#d05050);} .p5 .pcs{background:#fce8e8;color:#801818;}
+    .p6 .pch{background:linear-gradient(135deg,#2a7a6a,#3aaa90);} .p6 .pcs{background:#e5f5f2;color:#1a5a4a;}
+    .p7 .pch{background:linear-gradient(135deg,#8a6a20,#c09a40);} .p7 .pcs{background:#faf3e0;color:#6a4a10;}
+    .p8 .pch{background:linear-gradient(135deg,#2a8a7a,#40bfaa);} .p8 .pcs{background:#e0f7f4;color:#1a6a5a;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ 화면용 ═══ -->
+<div class="hero">
+  <div class="hero-badge">한국지리 탐구 · 학생 활동</div>
+  <h1>양곡관리법<br>찬성인가, 반대인가?</h1>
+  <p class="hero-sub">역할극으로 이해하는 한국 농업과 농촌의 현실</p>
+  <div class="hero-meta">
+    <span>⏱ 30분</span><span>👥 모둠 활동 (8인)</span><span>🎭 역할극</span>
+  </div>
+</div>
+
+<div class="print-bar">
+  <span class="print-hint">역할카드만 인쇄됩니다</span>
+  <button class="btn-print" onclick="window.print()">🖨️ 역할카드 인쇄 / PDF</button>
+</div>
+
+<div class="container">
+
+  <div class="section">
+    <div class="section-label">배경 읽기</div>
+    <h2>양곡관리법을 알아봅시다</h2>
+    <div class="explainer">
+      <p>양곡은 쌀·보리·콩·옥수수·감자·고구마 등 양식으로 쓰이는 곡식이다. 양곡관리법은 쌀 공급이 부족하면 수입으로, 넘치면 정부가 매입해 가격을 안정시키는 정책을 법으로 규정한 것이다.</p>
+      <p>1인당 쌀 소비량이 1985년 128kg에서 2020년 57.7kg으로 절반 이하가 됐다. 생산량도 줄었지만 소비 감소 속도가 훨씬 빨라 쌀은 만성적 공급 과잉 상태다. 정부는 매년 약 1조 원을 들여 잉여 쌀을 수매해왔다. 이 정책을 법으로 규정하려는 것이 양곡관리법이다.</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>✅ 찬성 논거</h4><ul>
+          <li>최소한의 식량 생산 기반 유지</li>
+          <li>기후·지정학적 위기 대비</li>
+          <li>농가 소득 안정 및 농촌 유지</li>
+          <li>쌀은 식량안보 자산</li>
+        </ul></div>
+        <div class="cons"><h4>❌ 반대 논거</h4><ul>
+          <li>매년 1조 원 세금 — 재고만 쌓임</li>
+          <li>구조 개혁 지연</li>
+          <li>인구 감소로 잉여량 계속 증가</li>
+          <li>청년 농업 진입 오히려 어렵게 만듦</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">활동 진행</div>
+    <h2>역할극 진행 방법</h2>
+    <div class="teacher-note"><strong>Teacher's Note</strong> — 이 역할극의 핵심은 상대편을 논리로 이기는 것이 아니라, 한국 농업과 농촌이 당면한 문제를 다양한 입장에서 이해하고 대안을 모색하는 것이다. 양곡관리법 이슈를 넘어 시장 개방·식량안보·고령화·기술 혁신까지 폭넓게 다뤄질 수 있도록 한다.</div>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-text">위의 배경 내용을 함께 읽고, 찬반 의견을 먼저 밝힌다.</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-text">8명으로 모둠을 구성한다.</div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-text">무작위로 역할카드를 나눠 갖고 자신의 역할을 파악한다. <span class="step-time">3분</span></div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-text">아래 배경 데이터를 참고해 자신의 역할에 맞는 근거와 주장을 정리한다. <span class="step-time">5분</span></div></div>
+      <div class="step"><div class="step-num">5</div><div class="step-text">순서대로 양곡관리법에 대한 입장을 발표한다. <span class="step-time">10분</span></div></div>
+      <div class="step"><div class="step-num">6</div><div class="step-text">역할극 후 다시 찬반 의견을 밝힌다. 의견이 바뀌었는가? 무엇이 나를 바꿨는가? <span class="step-time">5분</span></div></div>
+    </div>
+  </div>
+
+  <!-- ── 아코디언 역할 카드 ── -->
+  <div class="section">
+    <div class="section-label">역할 카드</div>
+    <h2>나의 역할은? <span style="font-size:13px;font-weight:400;color:#888;">— 카드를 클릭해 내용을 확인하세요</span></h2>
+    <div class="accordion-grid">
+
+      <div class="acc-item c1" onclick="toggle(this)">
+        <div class="acc-header">
+          <span class="acc-emoji">👨‍🌾</span>
+          <div class="acc-title-wrap">
+            <div class="acc-role">쌀 생산 농부 <span style="font-weight:500;font-size:12px;">70대 남</span></div>
+            <div class="acc-slogan-preview">농자천하지대본!</div>
+          </div>
+          <span class="acc-arrow">▼</span>
+        </div>
+        <div class="acc-body"><div class="acc-inner">
+          <p class="acc-text">평생 벼농사만 지어왔다. 기계화된 벼농사가 제일 쉽다. 70살이 넘은 나이에 새로운 작물에 도전할 용기도, 지식도 없다. 자식들은 전부 도시에 살고 있는데 내가 죽고 나면 이 땅에서 농사는 누가 짓지? 반도체 산업을 위해서는 300조를 투자한다면서 쌀을 위해 매년 1조씩 부담하는 게 그렇게 아까운가?</p>
+          <div class="acc-slogan">농자천하지대본!</div>
+          <div class="acc-worry">벼농사를 계속 짓는 게 현실적이지만, 이대로 가면 우리 농업이 유지될 수 있을지 걱정된다.</div>
+        </div></div>
+      </div>
+
+      <div class="acc-item c2" onclick="toggle(this)">
+        <div class="acc-header">
+          <span class="acc-emoji">✊</span>
+          <div class="acc-title-wrap">
+            <div class="acc-role">농민단체 대표</div>
+            <div class="acc-slogan-preview">농민은 그동안 피해만 받아왔다!</div>
+          </div>
+          <span class="acc-arrow">▼</span>
+        </div>
+        <div class="acc-body"><div class="acc-inner">
+          <p class="acc-text">농산물 시장을 개방하면서 제조업 상품을 많이 수출하게 됐지만, 그것은 농업을 파괴하면서 얻은 대가다. 반대 측에서는 농촌에는 노인과 외국인 노동자들뿐이라고 하겠지만, 양곡관리법에는 이만큼의 농촌이라도 남겨둬야 한다는 전략적 판단이 담겨 있다.</p>
+          <div class="acc-slogan">농민은 그동안 피해만 받아왔다!</div>
+          <div class="acc-worry">농업을 보호해야 한다고 생각하지만, 지금 방식이 정말 지속 가능한지는 고민이 된다.</div>
+        </div></div>
+      </div>
+
+      <div class="acc-item c3" onclick="toggle(this)">
+        <div class="acc-header">
+          <span class="acc-emoji">💼</span>
+          <div class="acc-title-wrap">
+            <div class="acc-role">대기업 회사원</div>
+            <div class="acc-slogan-preview">차라리 대기업이 농사를 짓게 하자!</div>
+          </div>
+          <span class="acc-arrow">▼</span>
+        </div>
+        <div class="acc-body"><div class="acc-inner">
+          <p class="acc-text">농업 분야를 보면 예나 지금이나 소규모 농장이고 변한 게 없다. 이제 농업은 70세 이상 노인과 외국인 노동자가 없으면 굴러가지 않는다. 식량주권이 중요하다는 건 알지만 우리나라 쌀은 미국 캘리포니아 쌀에 비해 5배나 비싸다. 언제까지 관세로 쌀값을 방어할 수 있을까?</p>
+          <div class="acc-slogan">차라리 대기업이 농사를 짓게 하자!</div>
+          <div class="acc-worry">농업도 변화가 필요하다고 생각하지만, 시장에 맡겼을 때 농촌이 무너질 수도 있다는 점이 걱정된다.</div>
+        </div></div>
+      </div>
+
+      <div class="acc-item c4" onclick="toggle(this)">
+        <div class="acc-header">
+          <span class="acc-emoji">🔬</span>
+          <div class="acc-title-wrap">
+            <div class="acc-role">농촌경제연구소 연구원</div>
+            <div class="acc-slogan-preview">석유도 100% 수입하잖아!</div>
+          </div>
+          <span class="acc-arrow">▼</span>
+        </div>
+        <div class="acc-body"><div class="acc-inner">
+          <p class="acc-text">식량안보를 이야기할 때 식량자급률보다 GFSI(글로벌 식량안보 지수)가 국제적으로 더 많이 활용된다. 식량자급률 1위는 아르헨티나, 꼴찌는 노르웨이다. 반면 GFSI에서 노르웨이는 세계 3위다. 우리나라가 모델로 삼아야 할 나라는 아르헨티나일까, 노르웨이일까?</p>
+          <div class="acc-slogan">석유도 100% 수입하잖아!</div>
+          <div class="acc-worry">식량안보는 중요하지만, 어느 정도까지 국내 생산을 유지해야 하는지 기준을 정하기는 쉽지 않다.</div>
+        </div></div>
+      </div>
+
+      <div class="acc-item c5" onclick="toggle(this)">
+        <div class="acc-header">
+          <span class="acc-emoji">🗳️</span>
+          <div class="acc-title-wrap">
+            <div class="acc-role">농촌지역 정치인</div>
+            <div class="acc-slogan-preview">식량주권을 지키자!</div>
+          </div>
+          <span class="acc-arrow">▼</span>
+        </div>
+        <div class="acc-body"><div class="acc-inner">
+          <p class="acc-text">쌀 주산지인 농촌을 지역구로 두고 있다. 양곡관리법이 완벽한 정책이 아니라는 것은 나도 안다. 그러나 이 법안이 없으면 우리 지역 농민들에게는 아무런 안전장치가 없다. 농촌이 무너지면 지역 경제도 함께 무너진다. 식량은 단순한 상품이 아니다.</p>
+          <div class="acc-slogan">식량주권을 지키자!</div>
+          <div class="acc-worry">농민을 보호해야 한다고 생각하지만, 이 정책이 장기적으로 농업을 더 약하게 만들 수 있다는 점도 고민된다.</div>
+        </div></div>
+      </div>
+
+      <div class="acc-item c6" onclick="toggle(this)">
+        <div class="acc-header">
+          <span class="acc-emoji">🏙️</span>
+          <div class="acc-title-wrap">
+            <div class="acc-role">도시지역 정치인</div>
+            <div class="acc-slogan-preview">세금으로 비싼 쌀을 구매하고 있다!</div>
+          </div>
+          <span class="acc-arrow">▼</span>
+        </div>
+        <div class="acc-body"><div class="acc-inner">
+          <p class="acc-text">내 지역구는 도시다. 양곡관리법은 지금의 농촌 문제를 해결하는 데 도움이 되지 못한다. 소비량이 생산량보다 훨씬 빠르게 줄고 있어 쌀 재고는 항상 생겨날 수밖에 없는데, 그것을 정부가 의무적으로 매입한다면 과연 농부들이 벼농사를 포기할까?</p>
+          <div class="acc-slogan">세금으로 비싼 쌀을 구매하고 있다!</div>
+          <div class="acc-worry">세금 부담은 줄여야 하지만, 농업이 완전히 무너졌을 때의 위험도 무시할 수 없다.</div>
+        </div></div>
+      </div>
+
+      <div class="acc-item c7" onclick="toggle(this)">
+        <div class="acc-header">
+          <span class="acc-emoji">🚀</span>
+          <div class="acc-title-wrap">
+            <div class="acc-role">농업 스타트업 CEO</div>
+            <div class="acc-slogan-preview">기술로 농업의 미래를 밝히다!</div>
+          </div>
+          <span class="acc-arrow">▼</span>
+        </div>
+        <div class="acc-body"><div class="acc-inner">
+          <p class="acc-text">스마트팜, AI, 농업용 로봇을 개발하는 스타트업을 운영한다. 솔직히 말하면 양곡관리법에 반대한다. 정부가 매년 1조 원을 들여 남아도는 쌀을 사들이는 동안, 농업의 미래를 바꿀 기술 개발에는 투자가 거의 없다. 같은 돈을 스마트팜과 자동화 기술에 투자하면 고령화 문제도 생산성 문제도 함께 해결할 수 있다.</p>
+          <div class="acc-slogan">기술로 농업의 미래를 밝히다!</div>
+          <div class="acc-worry">기술이 해결책이라고 믿지만, 모든 농가가 이 변화를 따라올 수 있을지는 확신하기 어렵다.</div>
+        </div></div>
+      </div>
+
+      <div class="acc-item c8" onclick="toggle(this)">
+        <div class="acc-header">
+          <span class="acc-emoji">🌱</span>
+          <div class="acc-title-wrap">
+            <div class="acc-role">청년 귀농인</div>
+            <div class="acc-slogan-preview">농업의 미래는 청년이 만든다!</div>
+          </div>
+          <span class="acc-arrow">▼</span>
+        </div>
+        <div class="acc-body"><div class="acc-inner">
+          <p class="acc-text">도시에서 직장을 다니다 농촌으로 내려왔다. 양곡관리법이 농민을 보호한다고 하지만, 수혜자는 대부분 이미 논을 가진 고령 농가다. 농업을 살리고 싶다면 기존 구조를 지키는 것이 아니라 새로운 사람이 들어올 수 있게 해야 한다.</p>
+          <div class="acc-slogan">농업의 미래는 청년이 만든다!</div>
+          <div class="acc-worry">새로운 농업을 만들고 싶지만, 기존 농가를 보호하는 구조 속에서 내가 자리 잡을 수 있을지 고민된다.</div>
+        </div></div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">배경 데이터</div>
+    <h2>역할극 전 확인하기</h2>
+    <table>
+      <tr><th>항목</th><th>데이터</th></tr>
+      <tr><td class="dl">1인당 쌀 소비량</td><td>128kg(1985) → 57.7kg(2020)</td></tr>
+      <tr><td class="dl">1인당 육류 소비량</td><td>5.3kg(1970) → 54kg(2020)</td></tr>
+      <tr><td class="dl">식량자급률</td><td>약 44% (2021)</td></tr>
+      <tr><td class="dl">곡물자급률</td><td>약 21% (쌀 92% / 옥수수 4% 미만 / 밀 1% 미만)</td></tr>
+      <tr><td class="dl">농가당 평균 경지면적</td><td>1.6ha (미국 180ha, 호주 800ha 이상)</td></tr>
+      <tr><td class="dl">논농사 기계화율</td><td>98.6% / 밭농업 61.9%</td></tr>
+      <tr><td class="dl">농림어업 취업자 비중</td><td>1970년 50% → 2020년 5.4%</td></tr>
+      <tr><td class="dl">쌀 수매 예산</td><td>매년 약 1조 원</td></tr>
+      <tr><td class="dl">GFSI 한국 순위</td><td>38위 (2022년) — 식품 안전 강점, 식량안보 정책 약점</td></tr>
+    </table>
+  </div>
+
+</div>
+
+<!-- ═══ 인쇄 전용 역할카드 ═══ -->
+<div class="print-cards">
+  <div class="pc p1"><div class="pch"><div class="pch-title">쌀 생산 농부<br><span style="font-weight:500;font-size:10px;">70대 남</span></div><span class="pch-emoji">👨‍🌾</span></div><div class="pcb"><p class="pct">평생 벼농사만 지어왔다. 기계화된 벼농사가 제일 쉽다. 70살이 넘은 나이에 새로운 작물에 도전할 용기도, 지식도 없다. 자식들은 전부 도시에 살고 있는데 내가 죽고 나면 이 땅에서 농사는 누가 짓지? 반도체 산업을 위해서는 300조를 투자한다면서 쌀을 위해 매년 1조씩 부담하는 게 그렇게 아까운가?</p></div><div class="pcs">농자천하지대본!</div><div class="pcw">벼농사를 계속 짓는 게 현실적이지만, 이대로 가면 우리 농업이 유지될 수 있을지 걱정된다.</div></div>
+  <div class="pc p2"><div class="pch"><div class="pch-title">농민단체 대표</div><span class="pch-emoji">✊</span></div><div class="pcb"><p class="pct">농산물 시장을 개방하면서 제조업 상품을 많이 수출하게 됐지만, 그것은 농업을 파괴하면서 얻은 대가다. 반대 측에서는 농촌에는 노인과 외국인 노동자들뿐이라고 하겠지만, 양곡관리법에는 이만큼의 농촌이라도 남겨둬야 한다는 전략적 판단이 담겨 있다.</p></div><div class="pcs">농민은 그동안 피해만 받아왔다!</div><div class="pcw">농업을 보호해야 한다고 생각하지만, 지금 방식이 정말 지속 가능한지는 고민이 된다.</div></div>
+  <div class="pc p3"><div class="pch"><div class="pch-title">대기업 회사원</div><span class="pch-emoji">💼</span></div><div class="pcb"><p class="pct">농업 분야를 보면 예나 지금이나 소규모 농장이고 변한 게 없다. 이제 농업은 70세 이상 노인과 외국인 노동자가 없으면 굴러가지 않는다. 식량주권이 중요하다는 건 알지만 우리나라 쌀은 미국 캘리포니아 쌀에 비해 5배나 비싸다. 언제까지 관세로 쌀값을 방어할 수 있을까?</p></div><div class="pcs">차라리 대기업이 농사를 짓게 하자!</div><div class="pcw">농업도 변화가 필요하다고 생각하지만, 시장에 맡겼을 때 농촌이 무너질 수도 있다는 점이 걱정된다.</div></div>
+  <div class="pc p4"><div class="pch"><div class="pch-title">농촌경제연구소<br><span style="font-weight:500;font-size:10px;">연구원</span></div><span class="pch-emoji">🔬</span></div><div class="pcb"><p class="pct">식량안보를 이야기할 때 식량자급률보다 GFSI가 국제적으로 더 많이 활용된다. 식량자급률 1위는 아르헨티나, 꼴찌는 노르웨이다. 반면 GFSI에서 노르웨이는 세계 3위다. 우리나라가 모델로 삼아야 할 나라는 아르헨티나일까, 노르웨이일까?</p></div><div class="pcs">석유도 100% 수입하잖아!</div><div class="pcw">식량안보는 중요하지만, 어느 정도까지 국내 생산을 유지해야 하는지 기준을 정하기는 쉽지 않다.</div></div>
+  <div class="pc p5"><div class="pch"><div class="pch-title">농촌지역 정치인</div><span class="pch-emoji">🗳️</span></div><div class="pcb"><p class="pct">쌀 주산지인 농촌을 지역구로 두고 있다. 양곡관리법이 완벽한 정책이 아니라는 것은 나도 안다. 그러나 이 법안이 없으면 우리 지역 농민들에게는 아무런 안전장치가 없다. 농촌이 무너지면 지역 경제도 함께 무너진다. 식량은 단순한 상품이 아니다.</p></div><div class="pcs">식량주권을 지키자!</div><div class="pcw">농민을 보호해야 한다고 생각하지만, 이 정책이 장기적으로 농업을 더 약하게 만들 수 있다는 점도 고민된다.</div></div>
+  <div class="pc p6"><div class="pch"><div class="pch-title">도시지역 정치인</div><span class="pch-emoji">🏙️</span></div><div class="pcb"><p class="pct">내 지역구는 도시다. 양곡관리법은 지금의 농촌 문제를 해결하는 데 도움이 되지 못한다. 소비량이 생산량보다 훨씬 빠르게 줄고 있어 쌀 재고는 항상 생겨날 수밖에 없는데, 그것을 정부가 의무적으로 매입한다면 과연 농부들이 벼농사를 포기할까?</p></div><div class="pcs">세금으로 비싼 쌀을 구매하고 있다!</div><div class="pcw">세금 부담은 줄여야 하지만, 농업이 완전히 무너졌을 때의 위험도 무시할 수 없다.</div></div>
+  <div class="pc p7"><div class="pch"><div class="pch-title">농업 스타트업 CEO</div><span class="pch-emoji">🚀</span></div><div class="pcb"><p class="pct">스마트팜, AI, 농업용 로봇을 개발하는 스타트업을 운영한다. 양곡관리법에 반대한다. 정부가 매년 1조 원을 들여 남아도는 쌀을 사들이는 동안, 농업의 미래를 바꿀 기술 개발에는 투자가 거의 없다. 같은 돈을 스마트팜과 자동화 기술에 투자하면 고령화 문제도 생산성 문제도 함께 해결할 수 있다.</p></div><div class="pcs">기술로 농업의 미래를 밝히다!</div><div class="pcw">기술이 해결책이라고 믿지만, 모든 농가가 이 변화를 따라올 수 있을지는 확신하기 어렵다.</div></div>
+  <div class="pc p8"><div class="pch"><div class="pch-title">청년 귀농인</div><span class="pch-emoji">🌱</span></div><div class="pcb"><p class="pct">도시에서 직장을 다니다 농촌으로 내려왔다. 양곡관리법이 농민을 보호한다고 하지만, 수혜자는 대부분 이미 논을 가진 고령 농가다. 농업을 살리고 싶다면 기존 구조를 지키는 것이 아니라 새로운 사람이 들어올 수 있게 해야 한다.</p></div><div class="pcs">농업의 미래는 청년이 만든다!</div><div class="pcw">새로운 농업을 만들고 싶지만, 기존 농가를 보호하는 구조 속에서 내가 자리 잡을 수 있을지 고민된다.</div></div>
+</div>
+
+<script>
+function toggle(el){
+  const isOpen = el.classList.contains('open');
+  document.querySelectorAll('.acc-item').forEach(i=>i.classList.remove('open'));
+  if(!isOpen) el.classList.add('open');
+}
+</script>
+</body>
+</html>
