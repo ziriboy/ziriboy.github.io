@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>글로벌 생산체계와 가치사슬 — 생산의 지리</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+  background: #f2f1ed; color: #1a1a1a; min-height: 100vh; padding: 2.5rem 1rem 4rem;
+}
+.page { max-width: 800px; margin: 0 auto; }
+
+.page-header { margin-bottom: 2rem; }
+.page-tag { font-size: 11px; color: #888; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 8px; }
+.page-title { font-size: 24px; font-weight: 600; color: #111; line-height: 1.3; margin-bottom: 6px; }
+.page-sub { font-size: 13px; color: #666; line-height: 1.6; }
+
+.sec-label {
+  font-size: 11px; color: #aaa; letter-spacing: .06em; text-transform: uppercase;
+  margin-bottom: 14px; padding-bottom: 7px; border-bottom: 0.5px solid rgba(0,0,0,0.1);
+}
+
+/* ── 개념 레이아웃 ── */
+.concept-section { margin-bottom: 2rem; }
+
+/* 상위 개념 행: GPN + GVC — 가로 전폭 카드 */
+.top-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.top-card {
+  background: #fff;
+  border-radius: 10px;
+  border: 0.5px solid rgba(0,0,0,0.12);
+  padding: 1rem 1.1rem;
+}
+.top-card-num { font-size: 10px; color: #ccc; margin-bottom: 3px; }
+.top-card-title { font-size: 15px; font-weight: 600; color: #111; margin-bottom: 1px; }
+.top-card-en { font-size: 10px; color: #bbb; margin-bottom: 9px; }
+.top-card-def { font-size: 12.5px; color: #333; line-height: 1.75; }
+.top-card-note {
+  font-size: 11.5px; color: #666; margin-top: 8px;
+  padding-top: 8px; border-top: 0.5px solid rgba(0,0,0,0.07);
+  line-height: 1.6;
+}
+
+/* 하위 개념 행: OEM + ODM — 더 작고 회색빛 */
+.bottom-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.bottom-card {
+  background: #fafaf7;
+  border-radius: 10px;
+  border: 0.5px solid rgba(0,0,0,0.09);
+  padding: .9rem 1rem;
+}
+.bottom-card-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 7px;
+}
+.bottom-card-title { font-size: 14px; font-weight: 600; color: #111; }
+.bottom-card-en { font-size: 10px; color: #bbb; }
+.bottom-badge {
+  display: inline-block; font-size: 10px; padding: 1px 6px;
+  border-radius: 3px; font-weight: 500; margin-bottom: 7px;
+}
+.bottom-card-def { font-size: 12px; color: #444; line-height: 1.7; }
+
+/* 행 사이 연결 힌트 */
+.tier-connector {
+  text-align: center;
+  font-size: 11px;
+  color: #ccc;
+  margin: 4px 0;
+  letter-spacing: .04em;
+}
+
+/* ── 차트 섹션 ── */
+.chart-section {
+  background: #fff; border-radius: 12px; border: 0.5px solid rgba(0,0,0,0.1); padding: 1.5rem;
+}
+.chart-hint { font-size: 11px; color: #aaa; margin-bottom: 8px; letter-spacing: .02em; }
+.chart-wrap { position: relative; width: 100%; height: 250px; }
+
+.btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 1rem; margin-bottom: 1rem; }
+.actor-btn {
+  flex: 1; min-width: 80px; padding: 7px 10px; font-size: 13px; font-weight: 400;
+  border-radius: 8px; cursor: pointer; border: 0.5px solid rgba(0,0,0,0.15);
+  background: transparent; color: #555; transition: all .15s;
+}
+
+.detail-card { border: 0.5px solid rgba(0,0,0,0.12); border-radius: 10px; overflow: hidden; min-height: 66px; }
+.detail-head {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 10px; flex-wrap: wrap; padding: .65rem 1rem;
+  background: #f7f6f2; border-bottom: 0.5px solid rgba(0,0,0,0.08);
+}
+.detail-title { font-size: 14px; font-weight: 500; color: #111; }
+.detail-sub { font-size: 12px; color: #666; margin-top: 2px; }
+.detail-tag { font-size: 11px; padding: 2px 7px; border-radius: 4px; flex-shrink: 0; align-self: center; }
+.detail-body { padding: .65rem 1rem; font-size: 13px; color: #444; line-height: 1.7; }
+.detail-placeholder { padding: 1rem; font-size: 13px; color: #ccc; text-align: center; }
+
+.dist-section { margin-top: 1.5rem; }
+.dist-label { font-size: 11px; color: #aaa; margin-bottom: 10px; letter-spacing: .02em; }
+.dist-item { margin-bottom: 10px; }
+.dist-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 3px; gap: 8px; }
+.dist-name { font-size: 12px; color: #444; }
+.dist-pct { font-size: 13px; font-weight: 500; color: #111; white-space: nowrap; }
+.dist-bg { height: 7px; border-radius: 4px; background: #eee; }
+.dist-fill { height: 100%; border-radius: 4px; }
+.dist-note { font-size: 11px; color: #aaa; margin-top: 3px; }
+
+.footnote {
+  font-size: 11px; color: #aaa; line-height: 1.8;
+  border-top: 0.5px solid rgba(0,0,0,0.08); padding-top: .75rem; margin-top: 1.25rem;
+}
+
+@media (max-width: 520px) {
+  .top-row, .bottom-row { grid-template-columns: 1fr; }
+  .page-title { font-size: 20px; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="page-header">
+    <div class="page-tag">경제지리학 — 생산의 지리</div>
+    <h1 class="page-title">글로벌 생산체계와 가치사슬</h1>
+    <p class="page-sub">하나의 제품이 여러 나라에 걸쳐 만들어지는 방식 — 핵심 개념과 아이폰 사례</p>
+  </div>
+
+  <div class="sec-label">핵심 개념</div>
+  <div class="concept-section">
+
+    <!-- 상위 개념: GPN + GVC -->
+    <div class="top-row">
+      <div class="top-card">
+        <div class="top-card-num">01</div>
+        <div class="top-card-title">글로벌 생산체계</div>
+        <div class="top-card-en">Global Production Network</div>
+        <p class="top-card-def">기획·부품·조립·유통 등 각 단계가 여러 국가에 분산되어 이루어지는 세계적 생산 체계. 초국적 기업이 전체 구조를 설계·조정한다.</p>
+        <p class="top-card-note">각국의 노동비·기술력·인프라 등 비교우위가 서로 다르기 때문에, 기업은 각 생산 단계를 가장 유리한 국가에 배치함으로써 비용을 최소화하고 수익성을 극대화한다.</p>
+      </div>
+      <div class="top-card">
+        <div class="top-card-num">02</div>
+        <div class="top-card-title">글로벌 가치사슬</div>
+        <div class="top-card-en">Global Value Chain (GVC)</div>
+        <p class="top-card-def">각 생산 단계에서 부가가치가 어떻게 창출·분배되는지를 분석하는 틀. 스마일 커브는 R&D·마케팅 단계에서 부가가치가 높고 조립에서 낮은 U자 패턴을 보여준다.</p>
+        <p class="top-card-note">GPN이 실제 생산의 복잡한 네트워크 구조를 가리킨다면, GVC는 그 안에서 부가가치의 흐름을 기획→생산→판매의 단계적 사슬로 분석하는 틀이다.</p>
+      </div>
+    </div>
+
+    <div class="tier-connector">↓ &nbsp; 글로벌 생산체계 안에서 기업들이 맺는 구체적 생산 관계</div>
+
+    <!-- 하위 개념: OEM + ODM -->
+    <div class="bottom-row">
+      <div class="bottom-card">
+        <div class="bottom-card-head">
+          <span class="bottom-card-title">OEM</span>
+          <span class="bottom-card-en">Original Equipment Manufacturer</span>
+        </div>
+        <span class="bottom-badge" style="background:#FCEBEB;color:#791F1F;">저부가가치</span>
+        <p class="bottom-card-def">브랜드 기업이 설계, 하청업체는 그 설계대로 <strong>생산만</strong> 담당. 완성품에는 브랜드 기업의 로고가 붙는다.</p>
+      </div>
+      <div class="bottom-card">
+        <div class="bottom-card-head">
+          <span class="bottom-card-title">ODM</span>
+          <span class="bottom-card-en">Original Design Manufacturer</span>
+        </div>
+        <span class="bottom-badge" style="background:#FAEEDA;color:#633806;">중부가가치</span>
+        <p class="bottom-card-def">하청업체가 <strong>설계와 생산을 모두</strong> 담당. 브랜드 기업은 완성품에 자사 브랜드만 붙여 판매. OEM보다 기술 역량 축적 가능.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 스마일 커브 시뮬레이터 -->
+  <div class="sec-label">스마일 커브 (Smile Curve) 시뮬레이터 — 아이폰 사례</div>
+  <div class="chart-section">
+    <div class="chart-hint">아래 버튼을 클릭하면 해당 주체가 커브의 어디에 위치하는지 표시됩니다</div>
+    <div class="chart-wrap"><canvas id="sc"></canvas></div>
+    <div class="btn-row" id="btnRow"></div>
+    <div class="detail-card" id="dCard">
+      <div class="detail-placeholder">버튼을 선택하면 상세 정보가 표시됩니다</div>
+    </div>
+    <div class="dist-section">
+      <div class="dist-label">부가가치 귀속 분포 &nbsp;·&nbsp; Kraemer, Linden & Dedrick (2011) · iPhone 4 기준</div>
+      <div id="distBars"></div>
+    </div>
+    <div class="footnote">
+      Kraemer, K.L., Linden, G. & Dedrick, J. (2011). <em>Capturing Value in Global Networks: Apple's iPad and iPhone.</em> PCIC Working Paper, UC Irvine.<br>
+      Chan, J. & Pun, N. (2013). The Politics of Global Production. <em>New Political Economy</em>, 18(1). / Shih, S. (1992). <em>Me-Too is Not My Style.</em> Acer Foundation.
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const STAGES     = ['R&D','제품설계','핵심부품','조립생산','물류유통','마케팅','서비스'];
+const STAGE_FULL = ['R&D · 기술개발','제품 설계','핵심 부품','조립 생산','물류 · 유통','마케팅 · 브랜드','사후 서비스'];
+const CURVE      = [85, 72, 48, 6, 22, 78, 52];
+
+const GROUPS = [
+  { id:'apple', label:'Apple (미국)', color:'#185FA5',
+    stageIdxs:[0,1,5,6], tag:'고부가가치', tagBg:'#EAF3DE', tagTx:'#27500A',
+    country:'미국', company:'Apple 본사 / 디자인 팀 / 마케팅 / 서비스',
+    desc:'R&D·제품설계·마케팅·사후서비스 전 영역을 담당. iPhone 판매가의 58.5%를 Apple이 획득. 고부가가치 기능을 미국에 집중하고 제조는 외주화 — 스마일 커브의 양쪽 고점을 독점.'
+  },
+  { id:'parts', label:'부품사 (한·일·대만)', color:'#3B6D11',
+    stageIdxs:[2], tag:'중부가가치', tagBg:'#E6F1FB', tagTx:'#0C447C',
+    country:'한국·일본·대만', company:'삼성·SK하이닉스·Sony·TSMC 등',
+    desc:'메모리·AP칩·카메라 센서·디스플레이 등 핵심 부품 공급. 부품비가 판매가의 약 34%를 차지(Kraemer et al., 2011). 기술력은 있지만 브랜드가 없어 커브 중간에 위치.'
+  },
+  { id:'foxconn', label:'Foxconn — OEM (중국)', color:'#A32D2D',
+    stageIdxs:[3], tag:'저부가가치 · OEM', tagBg:'#FCEBEB', tagTx:'#791F1F',
+    country:'중국 (정저우·선전)', company:'Foxconn',
+    desc:'Apple 설계서대로 조립만 수행 → OEM. 조립비 약 0.5% + 노동임금 약 1.8% = 합계 약 2.3%. 스마일 커브 최저점. 설계도 브랜드도 없어 Apple이 원하면 언제든 교체 가능 → 협상력 없음.'
+  },
+  { id:'dist', label:'물류·유통', color:'#888780',
+    stageIdxs:[4], tag:'중저부가가치', tagBg:'#FAEEDA', tagTx:'#633806',
+    country:'글로벌', company:'물류사·통신사·유통사',
+    desc:'글로벌 물류망, 이동통신사 보조금 구조, 소매 유통 파트너. 경쟁이 치열해 마진이 낮으며 커브 하단 중간에 위치.'
+  }
+];
+
+const DIST = [
+  {label:'Apple (미국)', pct:58.5, color:'#185FA5', note:'Kraemer et al.(2011): iPhone 4 판매가의 58.5%'},
+  {label:'부품사 (한국·일본·대만)', pct:34.2, color:'#3B6D11', note:'한국 비중이 일본을 추월 (Kraemer et al., 2011)'},
+  {label:'Foxconn 조립 (중국) — OEM', pct:2.3, color:'#A32D2D', note:'조립비 0.5% + 노동임금 1.8% (Chan & Pun, 2013)'},
+  {label:'유통·물류·기타', pct:5.0, color:'#888780', note:'소매·통신사·물류 마진 포함'}
+];
+
+let selGroup = null;
+
+const pinPlugin = {
+  id:'pins',
+  afterDraw(chart) {
+    if (!selGroup) return;
+    const {ctx, scales:{x,y}, chartArea} = chart;
+    if (!chartArea) return;
+    const g = GROUPS.find(g => g.id === selGroup);
+    if (!g) return;
+    g.stageIdxs.forEach(idx => {
+      const px = x.getPixelForValue(idx);
+      const py = y.getPixelForValue(CURVE[idx]);
+      ctx.save();
+      ctx.beginPath(); ctx.arc(px,py,13,0,Math.PI*2);
+      ctx.strokeStyle=g.color+'33'; ctx.lineWidth=6; ctx.stroke(); ctx.restore();
+      ctx.save();
+      ctx.beginPath(); ctx.arc(px,py,8,0,Math.PI*2);
+      ctx.fillStyle=g.color; ctx.fill();
+      ctx.strokeStyle='#fff'; ctx.lineWidth=2; ctx.stroke(); ctx.restore();
+      ctx.save();
+      ctx.font='500 10px sans-serif'; ctx.fillStyle=g.color; ctx.textAlign='center';
+      ctx.fillText(STAGE_FULL[idx], px, CURVE[idx]>40 ? py-18 : py+24);
+      ctx.restore();
+    });
+  }
+};
+
+function buildCard(g) {
+  const el = document.getElementById('dCard');
+  if (!g) { el.innerHTML='<div class="detail-placeholder">버튼을 선택하면 상세 정보가 표시됩니다</div>'; return; }
+  el.innerHTML = `
+    <div class="detail-head" style="border-left:3px solid ${g.color};">
+      <div>
+        <div class="detail-title">${g.label}</div>
+        <div class="detail-sub">${g.country} · ${g.company}</div>
+      </div>
+      <span class="detail-tag" style="background:${g.tagBg};color:${g.tagTx};">${g.tag}</span>
+    </div>
+    <div class="detail-body">${g.desc}</div>
+  `;
+}
+
+function buildBtns() {
+  document.getElementById('btnRow').innerHTML = GROUPS.map(g =>
+    `<button id="btn-${g.id}" class="actor-btn" onclick="selectGroup('${g.id}')">${g.label}</button>`
+  ).join('');
+}
+
+function updateBtns() {
+  GROUPS.forEach(g => {
+    const btn = document.getElementById('btn-'+g.id);
+    const on = g.id === selGroup;
+    btn.style.background = on ? g.color+'18' : 'transparent';
+    btn.style.borderColor = on ? g.color : 'rgba(0,0,0,0.15)';
+    btn.style.color = on ? g.color : '#555';
+    btn.style.fontWeight = on ? '500' : '400';
+  });
+}
+
+function selectGroup(id) {
+  selGroup = selGroup === id ? null : id;
+  updateBtns();
+  buildCard(selGroup ? GROUPS.find(g=>g.id===selGroup) : null);
+  chart.update('none');
+}
+
+function buildDist() {
+  document.getElementById('distBars').innerHTML = DIST.map(v=>`
+    <div class="dist-item">
+      <div class="dist-header">
+        <span class="dist-name">${v.label}</span>
+        <span class="dist-pct">${v.pct}%</span>
+      </div>
+      <div class="dist-bg"><div class="dist-fill" style="background:${v.color};width:${v.pct}%;"></div></div>
+      <div class="dist-note">${v.note}</div>
+    </div>
+  `).join('');
+}
+
+const chart = new Chart(document.getElementById('sc').getContext('2d'), {
+  type:'line', plugins:[pinPlugin],
+  data:{
+    labels:STAGES,
+    datasets:[{
+      data:CURVE, borderColor:'#378ADD', borderWidth:2,
+      pointRadius:4, pointBackgroundColor:'#85B7EB',
+      tension:0.42, fill:false
+    }]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    layout:{ padding:{ top:20, bottom:20 } },
+    plugins:{ legend:{display:false}, tooltip:{enabled:false} },
+    scales:{
+      x:{ ticks:{color:'rgba(120,120,120,.8)',font:{size:11},autoSkip:false}, grid:{color:'rgba(128,128,128,.1)'} },
+      y:{ min:0, max:100,
+        ticks:{color:'rgba(120,120,120,.8)',font:{size:11},stepSize:25,callback:v=>v===0?'저':v===100?'고':v},
+        grid:{color:'rgba(128,128,128,.1)'},
+        title:{display:true,text:'부가가치',color:'rgba(120,120,120,.8)',font:{size:11}}
+      }
+    },
+    animation:{duration:180}
+  }
+});
+
+buildBtns(); buildCard(null); buildDist();
+</script>
+</body>
+</html>
