@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>한국 주요 제조업 공장 지도</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --grow:#1A7A3C; --grow-l:#E8F7EE; --grow-dot:#27AE60;
+  --warn:#B45309; --warn-l:#FEF3C7; --warn-dot:#F59E0B;
+  --cris:#B91C1C; --cris-l:#FEE2E2; --cris-dot:#E53E3E;
+  --adv:#C84B00;  --adv-l:#FFF1EA;
+  --trad:#1255A0; --trad-l:#E6F0FF;
+  --bg:#F1F4F9; --card:#FFF; --border:#DDE3EE;
+  --text:#18243A; --muted:#6B7A99;
+}
+html,body{height:100%;overflow:hidden;font-family:'Noto Sans KR',sans-serif;color:var(--text);}
+body{background:var(--bg);display:flex;flex-direction:column;}
+
+/* HEADER */
+#hd{height:58px;flex-shrink:0;
+  background:linear-gradient(110deg,#0B2550 0%,#1255A0 55%,#1A6EC0 100%);
+  display:flex;align-items:center;padding:0 18px;gap:14px;
+  position:relative;overflow:hidden;}
+#hd::before{content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(45deg,transparent,transparent 26px,rgba(255,255,255,.025) 26px,rgba(255,255,255,.025) 27px);}
+#hd-t{font-size:15px;font-weight:900;color:#fff;position:relative;letter-spacing:-.3px;}
+#hd-s{font-size:10.5px;color:rgba(255,255,255,.6);position:relative;margin-top:1px;}
+.hbadge{font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px;position:relative;
+  border:1px solid rgba(255,255,255,.3);color:rgba(255,255,255,.85);white-space:nowrap;}
+.ml-auto{margin-left:auto;display:flex;gap:6px;flex-shrink:0;}
+
+#body{flex:1;display:flex;overflow:hidden;}
+
+/* LEFT */
+#left{width:172px;flex-shrink:0;background:var(--card);border-right:1px solid var(--border);
+  overflow-y:auto;display:flex;flex-direction:column;}
+.panel-head{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--muted);padding:11px 13px 8px;border-bottom:1px solid var(--border);flex-shrink:0;}
+
+/* ── 전체보기 버튼 ── */
+#all-btn{
+  margin:6px 10px 10px;
+  padding:9px 12px;
+  border-radius:9px;
+  border:2px solid var(--border);
+  background:var(--card);
+  cursor:pointer;
+  display:flex;align-items:center;gap:8px;
+  transition:all .15s;
+  flex-shrink:0;
+}
+#all-btn:hover{border-color:#1255A0;background:#F0F6FF;}
+#all-btn.active{
+  border-color:#1255A0;
+  background:linear-gradient(135deg,#E8F7EE 0%,#E6F0FF 100%);
+  box-shadow:0 2px 10px rgba(18,85,160,.12);
+}
+#all-btn .aicon{font-size:18px;}
+#all-btn .atext{flex:1;}
+#all-btn .atitle{font-size:12px;font-weight:700;color:var(--text);line-height:1.2;}
+#all-btn .asub{font-size:10px;color:var(--muted);margin-top:1px;}
+#all-btn.active .atitle{color:#1255A0;}
+
+.left-divider{border:none;border-top:1px solid var(--border);margin:8px 10px;}
+
+.type-sec{padding:4px 9px 2px;}
+.tbadge{display:inline-flex;align-items:center;gap:4px;
+  font-size:10px;font-weight:700;padding:2px 8px;border-radius:5px;margin-bottom:5px;}
+.tb-adv{background:var(--adv-l);color:var(--adv);}
+.tb-trad{background:var(--trad-l);color:var(--trad);}
+
+.ibtn{width:100%;text-align:left;background:none;border:none;
+  display:flex;align-items:center;gap:0;
+  padding:5px 7px;border-radius:7px;cursor:pointer;
+  transition:background .13s;margin-bottom:2px;flex-wrap:wrap;}
+.ibtn:hover{background:#F4F7FC;}
+.ibtn.sel-adv{background:var(--adv-l);}
+.ibtn.sel-trad{background:var(--trad-l);}
+.ibtn.dimmed{opacity:.38;}
+.ibtn-top{display:flex;align-items:center;gap:7px;width:100%;}
+.ibtn .ie{font-size:16px;flex-shrink:0;}
+.ibtn .ilab{font-size:11.5px;font-weight:500;color:var(--text);line-height:1.3;word-break:keep-all;flex:1;}
+.ibtn.sel-adv  .ilab{font-weight:700;color:var(--adv);}
+.ibtn.sel-trad .ilab{font-weight:700;color:var(--trad);}
+.spill{font-size:9px;font-weight:700;padding:1px 6px;border-radius:4px;
+  margin-top:3px;margin-left:23px;display:inline-block;}
+.spill-grow{background:var(--grow-l);color:var(--grow);}
+.spill-warn{background:var(--warn-l);color:var(--warn);}
+.spill-cris{background:var(--cris-l);color:var(--cris);}
+
+/* MAP */
+#map-wrap{flex:1;position:relative;}
+#map{width:100%;height:100%;}
+
+#mo{position:absolute;top:11px;left:50%;transform:translateX(-50%);
+  background:rgba(255,255,255,.95);border-radius:10px;padding:8px 20px;
+  z-index:400;text-align:center;pointer-events:none;
+  box-shadow:0 2px 12px rgba(0,0,0,.13);white-space:nowrap;}
+#mo-main{font-size:13px;font-weight:700;}
+#mo-sub{font-size:10px;color:var(--muted);margin-top:1px;}
+
+/* 전체보기 범례 */
+#mleg-all{position:absolute;bottom:22px;left:12px;z-index:400;
+  background:rgba(255,255,255,.95);border-radius:10px;padding:12px 16px;
+  box-shadow:0 2px 10px rgba(0,0,0,.12);font-size:10px;display:none;min-width:175px;}
+#mleg-all .leg-title{font-weight:700;color:var(--muted);margin-bottom:9px;
+  text-transform:uppercase;letter-spacing:.05em;}
+.all-leg-row{display:flex;align-items:center;gap:9px;margin-bottom:6px;}
+.all-leg-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
+.all-leg-label{font-size:11px;color:var(--text);line-height:1.4;}
+.all-leg-label small{display:block;font-size:9.5px;color:var(--muted);}
+
+/* 개별보기 범례 */
+#mleg-ind{position:absolute;bottom:22px;left:12px;z-index:400;
+  background:rgba(255,255,255,.95);border-radius:10px;padding:10px 14px;
+  box-shadow:0 2px 8px rgba(0,0,0,.10);font-size:10px;display:none;min-width:168px;}
+.mleg-title{font-weight:700;color:var(--muted);margin-bottom:8px;
+  text-transform:uppercase;letter-spacing:.05em;}
+.mleg-section{margin-bottom:8px;}
+.mleg-sub{font-size:9px;font-weight:700;color:var(--muted);margin-bottom:5px;
+  letter-spacing:.04em;text-transform:uppercase;}
+.mleg-row{display:flex;align-items:center;gap:8px;margin-bottom:3px;}
+.mleg-dot{border-radius:50%;flex-shrink:0;}
+.mleg-label{font-size:10.5px;color:var(--text);}
+
+#msrc{position:absolute;bottom:8px;right:10px;z-index:400;
+  font-size:9px;color:rgba(0,0,0,.4);}
+.leaflet-container{background:#E8EFF8;}
+.leaflet-control-zoom{border:1px solid var(--border)!important;border-radius:8px!important;overflow:hidden;}
+.leaflet-tooltip{border-radius:9px!important;border:none!important;
+  box-shadow:0 4px 16px rgba(0,0,0,.18)!important;
+  font-family:'Noto Sans KR',sans-serif!important;
+  font-size:12px!important;padding:9px 13px!important;
+  max-width:240px;line-height:1.6;}
+
+/* RIGHT */
+#right{width:296px;flex-shrink:0;background:var(--card);border-left:1px solid var(--border);
+  overflow-y:auto;display:flex;flex-direction:column;}
+#r-ph{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:32px 20px;text-align:center;gap:9px;}
+#r-ph .icon{font-size:36px;}
+#r-ph p{font-size:13px;color:var(--muted);line-height:1.7;}
+
+/* 전체보기 오른쪽 패널 */
+#r-all{display:none;flex-direction:column;padding:16px;}
+#r-all-title{font-size:14px;font-weight:800;margin-bottom:4px;}
+#r-all-sub{font-size:11.5px;color:var(--muted);line-height:1.6;margin-bottom:14px;}
+.all-stat-card{border-radius:9px;padding:11px 13px;margin-bottom:8px;}
+.all-stat-card.grow{background:var(--grow-l);border-left:4px solid var(--grow-dot);}
+.all-stat-card.warn{background:var(--warn-l);border-left:4px solid var(--warn-dot);}
+.all-stat-card.cris{background:var(--cris-l);border-left:4px solid var(--cris-dot);}
+.asc-head{font-size:12px;font-weight:700;margin-bottom:3px;}
+.asc-grow{color:var(--grow);}
+.asc-warn{color:var(--warn);}
+.asc-cris{color:var(--cris);}
+.asc-body{font-size:11px;color:var(--text);line-height:1.55;}
+.asc-region{font-size:10px;font-weight:700;color:var(--muted);margin-top:4px;}
+
+#r-cnt{display:none;flex-direction:column;}
+#r-top{padding:14px 15px 11px;border-bottom:1px solid var(--border);
+  display:flex;align-items:flex-start;gap:10px;}
+#r-em{font-size:27px;flex-shrink:0;margin-top:2px;}
+#r-name{font-size:15px;font-weight:800;letter-spacing:-.3px;}
+#r-type{font-size:10px;font-weight:700;padding:2px 8px;border-radius:5px;
+  margin-top:3px;display:inline-block;}
+.rt-adv{background:var(--adv-l);color:var(--adv);}
+.rt-trad{background:var(--trad-l);color:var(--trad);}
+#r-status{margin:10px 14px 0;border-radius:8px;padding:10px 13px;border-left:4px solid transparent;}
+#r-status.s-grow{background:var(--grow-l);border-left-color:var(--grow);}
+#r-status.s-warn{background:var(--warn-l);border-left-color:var(--warn);}
+#r-status.s-cris{background:var(--cris-l);border-left-color:var(--cris);}
+#r-status-badge{font-size:12px;font-weight:700;margin-bottom:3px;}
+#r-status-desc{font-size:11.5px;line-height:1.6;color:var(--text);}
+.r-sec{padding:12px 14px 4px;}
+.r-sec h4{font-size:10px;font-weight:700;color:var(--muted);
+  letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px;}
+#cbox{height:155px;}
+#spark-wrap{padding:4px 14px 0;}
+#spark-wrap h4{font-size:10px;font-weight:700;color:var(--muted);
+  letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;}
+#sbox{height:68px;}
+.co-card{padding:8px 11px;border-radius:8px;background:#F6F8FC;
+  margin-bottom:5px;border-left:3px solid var(--border);}
+.co-card.hi-adv{border-left-color:var(--adv);}
+.co-card.hi-trad{border-left-color:var(--trad);}
+.co-rname{font-size:10px;font-weight:700;color:var(--muted);}
+.co-pct{font-size:11px;font-weight:900;float:right;}
+.co-pct.adv{color:var(--adv);}
+.co-pct.trad{color:var(--trad);}
+.co-facs{font-size:11px;color:var(--text);margin-top:3px;line-height:1.55;}
+
+/* WORKSHEET */
+#ws-toggle{flex-shrink:0;background:var(--card);border:none;
+  border-top:1px solid var(--border);width:100%;
+  display:flex;align-items:center;gap:9px;
+  padding:0 20px;height:42px;cursor:pointer;transition:background .13s;}
+#ws-toggle:hover{background:#F6F9FF;}
+#ws-t-title{font-size:13px;font-weight:700;}
+#ws-t-sub{font-size:11px;color:var(--muted);margin-left:auto;}
+.wschev{font-size:11px;color:var(--muted);transition:transform .18s;}
+.wschev.open{transform:rotate(180deg);}
+#ws-body{display:none;flex-shrink:0;background:var(--card);
+  border-top:1px solid var(--border);max-height:320px;overflow-y:auto;}
+#ws-inner{padding:16px 22px 20px;display:flex;gap:14px;flex-wrap:wrap;}
+.ws-item{flex:1;min-width:240px;}
+.ws-step{display:inline-flex;align-items:center;gap:5px;
+  font-size:10px;font-weight:700;letter-spacing:.05em;
+  padding:3px 10px;border-radius:5px;margin-bottom:7px;}
+.ws-s1{background:#E6F0FF;color:var(--trad);}
+.ws-s2{background:#FEF3C7;color:var(--warn);}
+.ws-s3{background:#E8F7EE;color:var(--grow);}
+.ws-s4{background:var(--adv-l);color:var(--adv);}
+.ws-q{font-size:12.5px;font-weight:500;line-height:1.75;margin-bottom:7px;word-break:keep-all;}
+.ws-q strong{color:var(--trad);}
+.ws-q em{font-style:normal;color:#B91C1C;font-weight:700;}
+.ws-q b{color:var(--grow);font-weight:700;}
+.ws-hint{background:#F6F8FC;border-radius:7px;padding:8px 12px;
+  font-size:11px;color:var(--muted);line-height:1.65;margin-bottom:8px;}
+.ws-hint b{color:var(--text);}
+.ws-a{width:100%;border:1.5px solid var(--border);border-radius:7px;
+  padding:8px 11px;font-family:inherit;font-size:12px;
+  color:var(--text);background:#FAFBFE;resize:vertical;min-height:64px;
+  line-height:1.65;transition:border-color .14s;}
+.ws-a:focus{outline:none;border-color:var(--trad);background:#fff;}
+.ws-divider{border:none;border-top:2px dashed var(--border);margin:14px 0;}
+
+/* 2단계 입력 테이블 */
+.ws-table{width:100%;border-collapse:collapse;font-size:11.5px;margin-top:2px;}
+.ws-th{padding:6px 10px;border:1px solid #C8D8F0;font-weight:700;font-size:11px;text-align:left;}
+.ws-td{padding:5px 8px;border:1px solid #DDE3EE;vertical-align:middle;}
+.ws-td-label{font-size:10px;color:#6B7A99;white-space:nowrap;width:60px;}
+.ws-td-edit{
+  min-height:32px;cursor:text;
+  background:#FAFBFE;transition:background .13s,border-color .13s;
+  font-size:12px;color:var(--text);line-height:1.5;
+}
+.ws-td-edit:focus{outline:none;background:#fff;border-color:var(--trad)!important;}
+.ws-td-edit.ph-active::before{
+  content:attr(data-ph);color:#B0BAD0;font-size:11px;pointer-events:none;
+}
+.ws-all-hint{
+  background:linear-gradient(135deg,#E8F7EE,#E6F0FF);
+  border-radius:8px;padding:10px 14px;margin-bottom:10px;
+  font-size:11.5px;line-height:1.7;border:1px solid #C8D8F0;
+}
+.ws-all-hint strong{color:#1255A0;}
+
+/* 이름 + 저장 바 */
+#ws-name-bar{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 22px 0;flex-shrink:0;
+}
+#ws-name-label{font-size:11.5px;font-weight:700;color:var(--muted);white-space:nowrap;}
+#ws-name-input{
+  flex:1;max-width:200px;height:32px;
+  border:1.5px solid var(--border);border-radius:7px;
+  padding:0 10px;font-family:inherit;font-size:12px;color:var(--text);
+  background:#FAFBFE;transition:border-color .14s;
+}
+#ws-name-input:focus{outline:none;border-color:var(--trad);}
+#ws-save-btn{
+  margin-left:auto;height:32px;padding:0 16px;
+  background:linear-gradient(110deg,#1255A0,#1A6EC0);
+  color:#fff;border:none;border-radius:7px;
+  font-family:inherit;font-size:12px;font-weight:700;
+  cursor:pointer;display:flex;align-items:center;gap:6px;
+  transition:opacity .15s;white-space:nowrap;
+}
+#ws-save-btn:hover{opacity:.88;}
+#ws-save-btn:disabled{opacity:.5;cursor:not-allowed;}
+#ws-save-msg{font-size:11px;color:var(--grow);font-weight:600;display:none;}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+<div id="hd">
+  <div>
+    <div id="hd-t">📍 한국 주요 제조업 — 어디서 만드는가, 그 산업은 지금 어떤 상태인가?</div>
+    <div id="hd-s">한국은행 「주요 제조업 생산 및 공급망 지도」(2023) · 실제 공장 위치 기반</div>
+  </div>
+  <div class="ml-auto">
+    <span class="hbadge" style="background:rgba(39,174,96,.25);">● 성장</span>
+    <span class="hbadge" style="background:rgba(245,158,11,.25);">● 전환 중</span>
+    <span class="hbadge" style="background:rgba(229,62,62,.25);">● 위기</span>
+  </div>
+</div>
+
+<div id="body">
+
+  <!-- LEFT -->
+  <div id="left">
+    <div class="panel-head">산업 선택</div>
+
+    <div class="type-sec">
+      <div class="tbadge tb-adv">첨단 제조업</div>
+      <div id="adv-list"></div>
+    </div>
+    <div class="type-sec">
+      <div class="tbadge tb-trad">전통 제조업</div>
+      <div id="trad-list"></div>
+    </div>
+
+    <hr class="left-divider" style="margin-top:auto;">
+
+    <!-- 전체보기 버튼 (하단) -->
+    <button id="all-btn">
+      <span class="aicon">🗺️</span>
+      <div class="atext">
+        <div class="atitle">전체 보기</div>
+        <div class="asub">모든 산업 동시 표시</div>
+      </div>
+    </button>
+  </div>
+
+  <!-- MAP -->
+  <div id="map-wrap">
+    <div id="map"></div>
+    <div id="mo">
+      <div id="mo-main">산업을 선택하거나 '전체 보기'를 클릭하세요</div>
+      <div id="mo-sub">반투명 원 = 권역 생산 점유율 · 작은 점 = 실제 공장 위치</div>
+    </div>
+
+    <!-- 전체보기 범례 -->
+    <div id="mleg-all">
+      <div class="leg-title">범례 — 전체 보기</div>
+      <div class="all-leg-row">
+        <div class="all-leg-dot" style="background:var(--grow-dot);"></div>
+        <div class="all-leg-label">성장 중<small>반도체·이차전지·기계장비</small></div>
+      </div>
+      <div class="all-leg-row">
+        <div class="all-leg-dot" style="background:var(--warn-dot);"></div>
+        <div class="all-leg-label">전환 중<small>디스플레이·무선통신·자동차·조선·석유정제</small></div>
+      </div>
+      <div class="all-leg-row">
+        <div class="all-leg-dot" style="background:var(--cris-dot);"></div>
+        <div class="all-leg-label">위기·정체<small>자동차부품·철강·석유화학</small></div>
+      </div>
+      <div style="font-size:9.5px;color:var(--muted);margin-top:6px;border-top:1px solid var(--border);padding-top:5px;">
+        마커를 올리면 공장명·산업명이 표시됩니다
+      </div>
+    </div>
+
+    <!-- 개별보기 범례 -->
+    <div id="mleg-ind">
+      <div class="mleg-title">범례</div>
+      <div class="mleg-section">
+        <div class="mleg-sub">● 반투명 원 — 권역 생산 점유율</div>
+        <div class="mleg-row"><div class="mleg-dot" id="lg-big"   style="width:28px;height:28px;opacity:.3;"></div><span class="mleg-label">40% 이상</span></div>
+        <div class="mleg-row"><div class="mleg-dot" id="lg-mid"   style="width:18px;height:18px;opacity:.3;"></div><span class="mleg-label">15 – 39%</span></div>
+        <div class="mleg-row"><div class="mleg-dot" id="lg-small" style="width:10px;height:10px;opacity:.3;"></div><span class="mleg-label">15% 미만</span></div>
+      </div>
+      <div class="mleg-section">
+        <div class="mleg-sub">● 작은 점 — 실제 공장 위치</div>
+        <div class="mleg-row"><div class="mleg-dot" id="lg-pin" style="width:10px;height:10px;"></div><span class="mleg-label">주요 공장</span></div>
+      </div>
+    </div>
+
+    <div id="msrc">© OpenStreetMap · CartoDB · 한국은행(2023)</div>
+  </div>
+
+  <!-- RIGHT -->
+  <div id="right">
+    <div class="panel-head">산업 상세</div>
+    <div id="r-ph">
+      <span class="icon">🗺️</span>
+      <p><strong>전체 보기</strong>를 누르면<br>모든 공장이 상태별 색으로<br>한눈에 표시됩니다<br><br>
+      개별 산업을 클릭하면<br>상세 정보를 볼 수 있습니다</p>
+    </div>
+
+    <!-- 전체보기 오른쪽 -->
+    <div id="r-all">
+      <div id="r-all-title">🗺️ 전체 산업 현황</div>
+      <div id="r-all-sub">지도에서 색깔 패턴을 관찰해보세요.<br>어떤 색이 어느 지역에 모여 있나요?</div>
+
+      <div class="all-stat-card grow">
+        <div class="asc-head asc-grow">성장 중 산업</div>
+        <div class="asc-body">반도체 · 이차전지 · 기계장비</div>
+        <div class="asc-region">주요 집중 지역 →</div>
+      </div>
+      <div class="all-stat-card warn">
+        <div class="asc-head asc-warn">전환 중 산업</div>
+        <div class="asc-body">디스플레이 · 무선통신 · 자동차 · 조선 · 석유정제</div>
+        <div class="asc-region">주요 집중 지역 →</div>
+      </div>
+      <div class="all-stat-card cris">
+        <div class="asc-head asc-cris">위기·정체 산업</div>
+        <div class="asc-body">자동차부품 · 철강 · 석유화학</div>
+        <div class="asc-region">주요 집중 지역 →</div>
+      </div>
+
+      <div style="font-size:11px;color:var(--muted);margin-top:8px;line-height:1.65;padding:0 2px;">
+        💡 각 산업을 개별 클릭하면<br>생산액 추이와 공장 목록을 확인할 수 있습니다.
+      </div>
+    </div>
+
+    <!-- 개별보기 오른쪽 -->
+    <div id="r-cnt">
+      <div id="r-top">
+        <span id="r-em"></span>
+        <div>
+          <div id="r-name"></div>
+          <span id="r-type"></span>
+        </div>
+      </div>
+      <div id="r-status">
+        <div id="r-status-badge"></div>
+        <div id="r-status-desc"></div>
+      </div>
+      <div id="spark-wrap">
+        <h4>생산액 추이 (2017→2021, 조원)</h4>
+        <div id="sbox"><canvas id="schart"></canvas></div>
+      </div>
+      <div class="r-sec">
+        <h4>권역별 생산 점유율</h4>
+        <div id="cbox"><canvas id="rchart"></canvas></div>
+      </div>
+      <div class="r-sec" style="padding-bottom:16px;">
+        <h4>권역별 주요 공장</h4>
+        <div id="co-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WORKSHEET -->
+<button id="ws-toggle">
+  <span>📋</span>
+  <span id="ws-t-title">탐구 워크시트 — 4단계 발견 활동</span>
+  <span id="ws-t-sub">클릭하여 열기</span>
+  <span class="wschev" id="wschev">▲</span>
+</button>
+<div id="ws-body">
+  <div id="ws-name-bar">
+    <span id="ws-name-label">이름</span>
+    <input id="ws-name-input" type="text" placeholder="학번 / 이름 입력" maxlength="30">
+    <span id="ws-save-msg">✓ PDF 저장 완료!</span>
+    <button id="ws-save-btn">📄 PDF 저장</button>
+  </div>
+  <div id="ws-inner">
+
+    <div class="ws-item" style="min-width:100%;">
+      <div class="ws-all-hint">
+        💡 <strong>먼저 '전체 보기'(왼쪽 하단)를 클릭하세요.</strong> 모든 공장이 녹색(성장) / 주황(전환) / 빨간색(위기) 색으로 표시됩니다.
+        색깔 패턴을 관찰한 뒤 아래 질문에 답하세요.
+      </div>
+    </div>
+
+    <!-- STEP 1 -->
+    <div class="ws-item">
+      <span class="ws-step ws-s1">1단계 · 패턴 찾기</span>
+      <div class="ws-hint">💡 전체 보기 지도를 보자. <b>녹색 점(성장)</b>은 주로 어느 지역에 모여 있고, <b>빨간 점(위기)</b>은 주로 어느 지역에 모여 있는가?</div>
+      <div class="ws-q"><b>성장 산업 공장</b>이 많은 지역과 <em>위기 산업 공장</em>이 많은 지역을 각각 적어보자. 구체적인 도시명도 함께 쓰자.</div>
+      <textarea class="ws-a" placeholder="성장 공장이 많은 지역: (예) ○○시, ○○시, ○○시 ...&#10;위기 공장이 많은 지역: (예) ○○시, ○○시, ○○시 ..."></textarea>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="ws-item">
+      <span class="ws-step ws-s2">2단계 · 산업 유형 확인</span>
+      <div class="ws-hint">💡 이제 개별 산업을 클릭해서 오른쪽 패널의 <b>현황 배너</b>와 <b>생산액 추이 그래프</b>를 확인하자.</div>
+      <div class="ws-q">성장 지역의 주요 산업과 위기 지역의 주요 산업은 어떻게 다른가? 아래 칸을 채워보자.</div>
+      <table class="ws-table">
+        <tr style="background:#E8F1FF;">
+          <th class="ws-th">지역</th>
+          <th class="ws-th">주요 산업</th>
+          <th class="ws-th">산업 유형</th>
+          <th class="ws-th">현재 상태</th>
+        </tr>
+        <tr>
+          <td class="ws-td ws-td-label">성장 지역</td>
+          <td class="ws-td ws-td-edit" contenteditable="true" data-ph="예) 반도체, 이차전지"></td>
+          <td class="ws-td ws-td-edit" contenteditable="true" data-ph="예) 첨단 제조업"></td>
+          <td class="ws-td ws-td-edit" contenteditable="true" data-ph="예) 성장 중"></td>
+        </tr>
+        <tr>
+          <td class="ws-td ws-td-label">위기 지역</td>
+          <td class="ws-td ws-td-edit" contenteditable="true" data-ph="예) 철강, 자동차부품"></td>
+          <td class="ws-td ws-td-edit" contenteditable="true" data-ph="예) 전통 제조업"></td>
+          <td class="ws-td ws-td-edit" contenteditable="true" data-ph="예) 위기·정체"></td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="ws-item">
+      <span class="ws-step ws-s3">3단계 · 패턴을 한 문장으로</span>
+      <div class="ws-q">1, 2단계를 종합하면 어떤 패턴이 보이는가? <strong>"한국 제조업의 성장과 위기는 특정 지역에 따라 나뉘어 나타난다"</strong>는 주장을 지도 데이터로 설명해보자.</div>
+      <textarea class="ws-a" style="min-height:56px;" placeholder="예) ○○ 지역은 첨단 제조업 중심으로 성장하고 있는 반면, ○○ 지역은 전통 중화학공업 중심으로 ..."></textarea>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="ws-item" style="min-width:100%;">
+      <hr class="ws-divider">
+      <span class="ws-step ws-s4">4단계 · 정책 평가</span>
+      <div class="ws-hint">💡 앞에서 확인한 지도 데이터(공장 분포, 권역별 점유율, 산업 현황)를 근거로 써보자.</div>
+      <div class="ws-q">정부는 반도체·이차전지 등을 <strong>국가첨단전략산업</strong>으로 지정하고, <strong>경기·충청 중심의 특화단지</strong>를 조성하는 정책을 추진하고 있다. 이 정책의 예상되는 장점과 단점을 각각 서술해보자.</div>
+      <textarea class="ws-a" style="min-height:90px;margin-top:6px;" placeholder="장점: 예) 이미 성장 중인 ○○ 산업이 집중된 ○○ 지역에 투자가 더해져 ...&#10;단점: 예) 위기 산업이 집중된 ○○ 지역은 정책 지원에서 소외되어 ..."></textarea>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const RNAMES={sudo:"수도권",gang:"강원권",chung:"충청권",
+              honam:"호남권",daeg:"대경권",dong:"동남권"};
+const RCENTERS={
+  sudo:[37.35,126.95],gang:[37.55,128.30],
+  chung:[36.55,127.10],honam:[35.40,126.90],
+  daeg:[36.15,128.65],dong:[35.35,128.80],
+};
+const STATUS={
+  grow:{cls:'s-grow',badge:'성장 중'},
+  warn:{cls:'s-warn',badge:'전환 중'},
+  cris:{cls:'s-cris',badge:'위기·정체'},
+};
+const DOT_COLOR={grow:'#27AE60',warn:'#F59E0B',cris:'#E53E3E'};
+
+const IND=[
+  {id:"semi", name:"반도체",         emoji:"💾",type:"adv",status:"grow",
+   statusDesc:"생산액 120→179조원으로 꾸준히 증가. AI·서버 수요 급증으로 메모리 중심의 고성장 지속.",
+   trend:[120,143,134,142,179],
+   share:{sudo:80.7,chung:15.8,daeg:1.9,honam:1.3,dong:0.1},
+   factories:[
+    {lat:37.204,lng:127.072,name:"삼성전자 화성공장",   region:"sudo"},
+    {lat:37.096,lng:127.082,name:"삼성전자 평택공장",   region:"sudo"},
+    {lat:37.279,lng:127.046,name:"삼성전자 기흥공장",   region:"sudo"},
+    {lat:37.276,lng:127.437,name:"SK하이닉스 이천공장", region:"sudo"},
+    {lat:37.374,lng:126.768,name:"서울반도체 안산공장", region:"sudo"},
+    {lat:36.644,lng:127.502,name:"SK하이닉스 청주공장", region:"chung"},
+    {lat:36.649,lng:127.080,name:"삼성전자 온양공장",   region:"chung"},
+    {lat:36.355,lng:127.379,name:"LX세미콘 대전사업장", region:"chung"},
+    {lat:36.108,lng:128.330,name:"SK실트론 구미공장",   region:"daeg"},
+    {lat:35.155,lng:126.829,name:"앰코테크놀로지 광주", region:"honam"},
+   ]},
+  {id:"batt", name:"이차전지",       emoji:"🔋",type:"adv",status:"grow",
+   statusDesc:"생산액 79→115조원으로 급성장. 전기차 보급 확대로 글로벌 수요 폭증 중.",
+   trend:[79,84,89,99,115],
+   share:{chung:31.2,sudo:23.9,dong:23.8,daeg:11.1,honam:9.4},
+   factories:[
+    {lat:36.664,lng:127.446,name:"LG에너지솔루션 청주", region:"chung"},
+    {lat:36.818,lng:127.131,name:"삼성SDI 천안공장",    region:"chung"},
+    {lat:36.777,lng:126.459,name:"SK온 서산공장",       region:"chung"},
+    {lat:36.715,lng:127.426,name:"에코프로비엠 오창",   region:"chung"},
+    {lat:36.642,lng:127.450,name:"LG화학 청주공장",     region:"chung"},
+    {lat:35.234,lng:128.692,name:"LG전자 창원공장",     region:"dong"},
+    {lat:35.536,lng:129.286,name:"삼성SDI 울산공장",    region:"dong"},
+    {lat:35.859,lng:128.626,name:"현대모비스 대구공장", region:"daeg"},
+    {lat:35.873,lng:128.597,name:"엘앤에프 대구공장",   region:"daeg"},
+    {lat:34.928,lng:127.700,name:"포스코퓨처엠 광양",   region:"honam"},
+   ]},
+  {id:"disp", name:"디스플레이",     emoji:"🖥️",type:"adv",status:"warn",
+   statusDesc:"생산액 정체(74→74조원). OLED 전환으로 기회가 있으나 중국의 LCD 시장 잠식 심화.",
+   trend:[74,69,66,67,74],
+   share:{chung:43.2,sudo:35.4,daeg:20.9,dong:0.5},
+   factories:[
+    {lat:36.786,lng:126.991,name:"삼성디스플레이 아산", region:"chung"},
+    {lat:36.809,lng:127.151,name:"삼성디스플레이 천안", region:"chung"},
+    {lat:36.644,lng:127.502,name:"삼성SDI 청주공장",    region:"chung"},
+    {lat:37.742,lng:126.779,name:"LG디스플레이 파주",   region:"sudo"},
+    {lat:36.122,lng:128.340,name:"LG디스플레이 구미",   region:"daeg"},
+    {lat:36.115,lng:128.343,name:"LG전자 구미공장",     region:"daeg"},
+    {lat:36.118,lng:128.348,name:"삼성SDI 구미공장",    region:"daeg"},
+   ]},
+  {id:"wire", name:"무선통신·전자부품",emoji:"📱",type:"adv",status:"warn",
+   statusDesc:"생산액 72→63조원으로 하락. 스마트폰 성장 둔화 속에 고부가 부품 중심 재편 중.",
+   trend:[72,66,61,54,63],
+   share:{sudo:44.7,daeg:36.0,chung:9.7,dong:6.3,honam:3.1},
+   factories:[
+    {lat:37.262,lng:127.028,name:"삼성전기 수원공장",   region:"sudo"},
+    {lat:37.272,lng:127.032,name:"삼성전자 수원공장",   region:"sudo"},
+    {lat:37.294,lng:127.192,name:"가온그룹 성남공장",   region:"sudo"},
+    {lat:36.119,lng:128.338,name:"삼성전자 구미공장",   region:"daeg"},
+    {lat:36.113,lng:128.350,name:"LG이노텍 구미공장",   region:"daeg"},
+    {lat:35.869,lng:128.591,name:"이수페타시스 대구",   region:"daeg"},
+    {lat:36.644,lng:127.507,name:"심텍 청주공장",       region:"chung"},
+    {lat:35.219,lng:129.014,name:"삼성전기 부산공장",   region:"dong"},
+    {lat:35.130,lng:126.906,name:"LG이노텍 광주공장",   region:"honam"},
+   ]},
+  {id:"mach", name:"기계장비",       emoji:"🔧",type:"adv",status:"grow",
+   statusDesc:"생산액 121→136조원으로 성장. 반도체 제조 장비 수요 폭증이 성장 견인.",
+   trend:[121,123,119,118,136],
+   share:{sudo:42.5,dong:24.4,chung:18.1,daeg:8.6,honam:5.8},
+   factories:[
+    {lat:37.462,lng:126.636,name:"HD현대인프라코어 인천",region:"sudo"},
+    {lat:37.052,lng:126.990,name:"원익IPS 평택공장",    region:"sudo"},
+    {lat:35.545,lng:129.286,name:"HD현대건설기계 울산", region:"dong"},
+    {lat:35.228,lng:128.672,name:"DN솔루션즈 창원",     region:"dong"},
+    {lat:36.822,lng:127.131,name:"세메스 천안공장",      region:"chung"},
+    {lat:35.874,lng:128.606,name:"대동 대구공장",        region:"daeg"},
+    {lat:35.823,lng:127.130,name:"LS엠트론 전주공장",    region:"honam"},
+   ]},
+  {id:"auto", name:"자동차",         emoji:"🚗",type:"trad",status:"warn",
+   statusDesc:"생산액 95→105조원. 전기차 전환 과도기. 내연기관 수요 감소 진행 중.",
+   trend:[95,91,95,94,105],
+   share:{dong:40.8,sudo:35.5,honam:14.7,chung:8.8,daeg:0.2},
+   factories:[
+    {lat:35.541,lng:129.325,name:"현대자동차 울산공장", region:"dong"},
+    {lat:35.200,lng:129.046,name:"르노코리아 부산공장", region:"dong"},
+    {lat:35.232,lng:128.592,name:"한국지엠 창원공장",   region:"dong"},
+    {lat:37.183,lng:126.829,name:"기아 화성공장",       region:"sudo"},
+    {lat:37.481,lng:126.864,name:"기아 광명공장",       region:"sudo"},
+    {lat:37.513,lng:126.727,name:"한국지엠 인천공장",   region:"sudo"},
+    {lat:35.178,lng:126.890,name:"기아 광주공장",       region:"honam"},
+    {lat:35.845,lng:127.143,name:"현대자동차 전주공장", region:"honam"},
+    {lat:36.788,lng:127.049,name:"현대자동차 아산공장", region:"chung"},
+   ]},
+  {id:"apar", name:"자동차부품",     emoji:"⚙️",type:"trad",status:"cris",
+   statusDesc:"내연기관 부품 수요 급감. 전기차 부품 전환 속도가 느려 동남권 지역경제 타격 우려.",
+   trend:[98,99,101,102,109],
+   share:{dong:27.7,chung:25.5,sudo:20.5,daeg:19.0,honam:6.1,gang:1.2},
+   factories:[
+    {lat:35.543,lng:129.280,name:"현대모비스 울산공장", region:"dong"},
+    {lat:35.245,lng:128.657,name:"현대위아 창원공장",   region:"dong"},
+    {lat:35.539,lng:129.290,name:"한온시스템 울산공장", region:"dong"},
+    {lat:36.930,lng:126.427,name:"현대트랜시스 서산",   region:"chung"},
+    {lat:36.915,lng:127.449,name:"현대모비스 진천공장", region:"chung"},
+    {lat:37.054,lng:126.987,name:"HL만도 평택공장",     region:"sudo"},
+    {lat:35.887,lng:128.586,name:"평화발레오 대구공장", region:"daeg"},
+    {lat:35.840,lng:129.213,name:"경신 경주공장",       region:"daeg"},
+    {lat:35.131,lng:126.901,name:"현대위아 광주공장",   region:"honam"},
+    {lat:37.351,lng:127.948,name:"HL만도 원주공장",     region:"gang"},
+   ]},
+  {id:"stl",  name:"철강",           emoji:"🏗️",type:"trad",status:"cris",
+   statusDesc:"중국 과잉 공급과 건설 수요 감소로 구조적 위기. 포항·광양·당진 등 생산 거점 정체.",
+   trend:[141,145,141,133,183],
+   share:{daeg:24.6,dong:23.8,honam:19.1,chung:16.9,sudo:15.2,gang:0.4},
+   factories:[
+    {lat:36.028,lng:129.343,name:"포스코 포항제철소",   region:"daeg"},
+    {lat:36.043,lng:129.345,name:"현대제철 포항공장",   region:"daeg"},
+    {lat:35.432,lng:129.323,name:"고려아연 울산제련소", region:"dong"},
+    {lat:35.536,lng:129.293,name:"현대제철 울산공장",   region:"dong"},
+    {lat:35.225,lng:128.690,name:"세아창원특수강",      region:"dong"},
+    {lat:34.928,lng:127.697,name:"포스코 광양제철소",   region:"honam"},
+    {lat:34.979,lng:127.524,name:"현대제철 순천공장",   region:"honam"},
+    {lat:36.998,lng:126.625,name:"현대제철 당진제철소", region:"chung"},
+    {lat:36.994,lng:126.631,name:"동국제강 당진공장",   region:"chung"},
+    {lat:37.504,lng:126.660,name:"현대제철 인천공장",   region:"sudo"},
+   ]},
+  {id:"ship", name:"조선",           emoji:"🚢",type:"trad",status:"warn",
+   statusDesc:"생산액 하락했으나 LNG운반선·친환경선 수주 급증으로 2022년 이후 회복세. 고부가가치 전환 중.",
+   trend:[42,36,37,36,33],
+   share:{dong:79.3,honam:19.8,daeg:0.7,sudo:0.1},
+   factories:[
+    {lat:35.535,lng:129.384,name:"HD현대중공업 울산",   region:"dong"},
+    {lat:34.873,lng:128.618,name:"삼성중공업 거제",     region:"dong"},
+    {lat:34.868,lng:128.592,name:"한화오션 거제",       region:"dong"},
+    {lat:35.503,lng:129.385,name:"현대미포조선 울산",   region:"dong"},
+    {lat:35.082,lng:129.046,name:"HJ중공업 부산",       region:"dong"},
+    {lat:34.607,lng:128.454,name:"케이조선 창원(진해)", region:"dong"},
+    {lat:34.752,lng:126.442,name:"현대삼호중공업 영암", region:"honam"},
+    {lat:34.573,lng:126.586,name:"대한조선 해남",       region:"honam"},
+   ]},
+  {id:"oil",  name:"석유정제",       emoji:"🛢️",type:"trad",status:"warn",
+   statusDesc:"탄소중립 정책으로 장기 수요 감소 전망. 울산·여수·서산 정유 거점 전환 모색 중.",
+   trend:[107,133,126,81,123],
+   share:{dong:47.5,honam:25.7,chung:20.6,sudo:6.1},
+   factories:[
+    {lat:35.508,lng:129.359,name:"SK에너지 울산공장",    region:"dong"},
+    {lat:35.434,lng:129.320,name:"S-OIL 울산공장",      region:"dong"},
+    {lat:35.510,lng:129.348,name:"SK엔무브 울산공장",    region:"dong"},
+    {lat:34.762,lng:127.759,name:"GS칼텍스 여수공장",    region:"honam"},
+    {lat:37.007,lng:126.383,name:"HD현대오일뱅크 서산", region:"chung"},
+    {lat:37.503,lng:126.626,name:"SK인천석유화학",       region:"sudo"},
+   ]},
+  {id:"chem", name:"석유화학",       emoji:"⚗️",type:"trad",status:"cris",
+   statusDesc:"중국의 자급률 급상승으로 수출 시장 잠식. 범용 제품 마진 급락, 여수·울산·서산 거점 구조조정 압력.",
+   trend:[95,106,97,83,115],
+   share:{honam:38.9,dong:33.6,chung:22.2,sudo:3.0,daeg:2.2},
+   factories:[
+    {lat:34.755,lng:127.750,name:"LG화학 여수공장",      region:"honam"},
+    {lat:34.748,lng:127.745,name:"롯데케미칼 여수공장",  region:"honam"},
+    {lat:34.751,lng:127.748,name:"여천NCC 여수공장",     region:"honam"},
+    {lat:34.758,lng:127.741,name:"한화솔루션 여수공장",  region:"honam"},
+    {lat:34.754,lng:127.753,name:"금호석유화학 여수",    region:"honam"},
+    {lat:35.506,lng:129.368,name:"SK지오센트릭 울산",    region:"dong"},
+    {lat:35.435,lng:129.322,name:"금호석유화학 울산",    region:"dong"},
+    {lat:35.501,lng:129.364,name:"롯데케미칼 울산공장",  region:"dong"},
+    {lat:37.005,lng:126.380,name:"한화토탈에너지스 서산",region:"chung"},
+    {lat:36.999,lng:126.385,name:"LG화학 서산공장",      region:"chung"},
+   ]},
+];
+
+/* ============================================================
+   LEAFLET
+   ============================================================ */
+const map=L.map('map',{center:[36.3,127.9],zoom:7,
+  zoomControl:true,attributionControl:false});
+L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+  {subdomains:'abcd',maxZoom:18}).addTo(map);
+
+let regionLayers=[],pinLayers=[],chartBar=null,chartSpark=null;
+let curInd=null, allMode=false;
+
+function mainColor(type){return type==='adv'?'#C84B00':'#1255A0';}
+function lightColor(type){return type==='adv'?'#F4A57A':'#7AAEE0';}
+function statusColor(s){return s==='grow'?'#1A7A3C':s==='cris'?'#B91C1C':'#B45309';}
+function bubbleRadius(pct){return Math.round(Math.sqrt(pct)*9.5);}
+
+/* ── 개별 산업 그리기 ── */
+function drawSingle(ind){
+  clearLayers();
+  const col=mainColor(ind.type);
+
+  Object.entries(ind.share).forEach(([rk,pct])=>{
+    if(!pct||!RCENTERS[rk]) return;
+    const c=L.circleMarker(RCENTERS[rk],{
+      radius:bubbleRadius(pct),fillColor:col,fillOpacity:.22,
+      color:col,weight:1.2,opacity:.45,
+    }).addTo(map);
+    c.bindTooltip(
+      `<strong>${RNAMES[rk]}</strong><br>`+
+      `<span style="font-size:15px;font-weight:900;color:${col};">${pct}%</span>`+
+      `<br><span style="font-size:10px;opacity:.7;">전국 생산 점유율</span>`,
+      {sticky:true,direction:'top',offset:[0,-4]});
+    regionLayers.push(c);
+  });
+
+  ind.factories.forEach(f=>{
+    const sh=ind.share[f.region]||0;
+    const m=L.circleMarker([f.lat,f.lng],{
+      radius:5,fillColor:col,color:'#fff',weight:1.5,fillOpacity:.92,
+    }).addTo(map);
+    m.bindTooltip(
+      `<strong>${f.name}</strong><br>`+
+      `<span style="font-size:10px;color:#6B7A99;">${RNAMES[f.region]}</span>`+
+      `&ensp;<span style="font-weight:900;color:${col};">${sh}%</span>`+
+      `<br><span style="font-size:10px;opacity:.7;">이 권역의 전국 생산 비중</span>`,
+      {sticky:true,direction:'top',offset:[0,-6]});
+    pinLayers.push(m);
+  });
+
+  ['lg-big','lg-mid','lg-small'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.style.background=col;
+  });
+  document.getElementById('lg-pin').style.background=col;
+
+  document.getElementById('mleg-all').style.display='none';
+  document.getElementById('mleg-ind').style.display='block';
+  document.getElementById('mo-main').textContent=`${ind.emoji} ${ind.name} — 공장 위치 & 권역 생산 점유율`;
+  document.getElementById('mo-sub').textContent='반투명 원 크기 = 권역 점유율(면적 비례) · 작은 점 = 실제 공장 위치';
+}
+
+/* ── 전체보기 그리기 ── */
+function drawAll(){
+  clearLayers();
+
+  IND.forEach(ind=>{
+    const col=DOT_COLOR[ind.status];
+    ind.factories.forEach(f=>{
+      const m=L.circleMarker([f.lat,f.lng],{
+        radius:6,
+        fillColor:col,
+        color:'#fff',weight:1.5,fillOpacity:.88,
+      }).addTo(map);
+
+      const statusLabel=ind.status==='grow'?'성장':ind.status==='cris'?'위기':'전환 중';
+      m.bindTooltip(
+        `<strong>${f.name}</strong><br>`+
+        `<span style="font-size:10.5px;color:#6B7A99;">${ind.emoji} ${ind.name}</span>`+
+        `&ensp;<span style="font-weight:900;color:${col};">${statusLabel}</span>`,
+        {sticky:true,direction:'top',offset:[0,-6]});
+      pinLayers.push(m);
+    });
+  });
+
+  document.getElementById('mleg-ind').style.display='none';
+  document.getElementById('mleg-all').style.display='block';
+  document.getElementById('mo-main').textContent='🗺️ 전체 산업 — 성장·전환·위기 공장 동시 표시';
+  document.getElementById('mo-sub').textContent='녹색=성장 · 주황=전환 중 · 빨간색=위기  |  마커를 올리면 산업명이 표시됩니다';
+}
+
+function clearLayers(){
+  regionLayers.forEach(l=>map.removeLayer(l));
+  pinLayers.forEach(l=>map.removeLayer(l));
+  regionLayers=[]; pinLayers=[];
+}
+
+/* ── 오른쪽 패널 ── */
+function showAllPanel(){
+  document.getElementById('r-ph').style.display='none';
+  document.getElementById('r-all').style.display='flex';
+  document.getElementById('r-cnt').style.display='none';
+}
+
+function updateDetail(ind){
+  document.getElementById('r-ph').style.display='none';
+  document.getElementById('r-all').style.display='none';
+  document.getElementById('r-cnt').style.display='flex';
+
+  document.getElementById('r-em').textContent=ind.emoji;
+  document.getElementById('r-name').textContent=ind.name;
+  const rt=document.getElementById('r-type');
+  rt.textContent=ind.type==='adv'?'🔴 첨단 제조업':'🔵 전통 제조업';
+  rt.className=ind.type==='adv'?'rt-adv':'rt-trad';
+
+  const sb=document.getElementById('r-status');
+  sb.className=''; sb.classList.add(STATUS[ind.status].cls);
+  document.getElementById('r-status-badge').textContent=STATUS[ind.status].badge;
+  document.getElementById('r-status-desc').textContent=ind.statusDesc;
+
+  if(chartSpark) chartSpark.destroy();
+  const sc=statusColor(ind.status);
+  chartSpark=new Chart(document.getElementById('schart').getContext('2d'),{
+    type:'line',
+    data:{labels:['2017','2018','2019','2020','2021'],datasets:[{
+      data:ind.trend,borderColor:sc,backgroundColor:sc+'22',
+      borderWidth:2.5,pointRadius:3,pointBackgroundColor:sc,
+      fill:true,tension:0.3,
+    }]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.raw}조원`}}},
+      scales:{
+        x:{grid:{display:false},ticks:{font:{size:9,family:"'Noto Sans KR'"}}},
+        y:{grid:{color:'#F0F4FA'},ticks:{callback:v=>v+'조',font:{size:9,family:"'Noto Sans KR'"}}}
+      }}
+  });
+
+  const sorted=Object.entries(ind.share).filter(([,v])=>v>0).sort(([,a],[,b])=>b-a);
+  const col=mainColor(ind.type),colL=lightColor(ind.type);
+  if(chartBar) chartBar.destroy();
+  chartBar=new Chart(document.getElementById('rchart').getContext('2d'),{
+    type:'bar',
+    data:{labels:sorted.map(([k])=>RNAMES[k]),
+      datasets:[{data:sorted.map(([,v])=>v),
+        backgroundColor:sorted.map((_,i)=>i===0?col:colL),
+        borderRadius:4,borderSkipped:false}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.raw}%`}}},
+      scales:{
+        x:{max:100,grid:{color:'#F0F4FA'},ticks:{callback:v=>v+'%',font:{size:9,family:"'Noto Sans KR'"}}},
+        y:{grid:{display:false},ticks:{font:{size:11,weight:'600',family:"'Noto Sans KR'"}}}
+      }}
+  });
+
+  const byR={};
+  ind.factories.forEach(f=>{
+    if(!byR[f.region]) byR[f.region]=[];
+    byR[f.region].push(f.name);
+  });
+  const cl=document.getElementById('co-list');
+  cl.innerHTML='';
+  sorted.forEach(([k,v],i)=>{
+    if(!byR[k]) return;
+    const el=document.createElement('div');
+    el.className=`co-card ${i===0?'hi-'+ind.type:''}`;
+    el.innerHTML=`<span class="co-rname">${RNAMES[k]}</span>`+
+      `<span class="co-pct ${ind.type}">${v}%</span>`+
+      `<div class="co-facs">${byR[k].join(' · ')}</div>`;
+    cl.appendChild(el);
+  });
+}
+
+/* ── 전체보기 토글 ── */
+const allBtn=document.getElementById('all-btn');
+allBtn.addEventListener('click',()=>{
+  allMode=true; curInd=null;
+  document.querySelectorAll('.ibtn').forEach(b=>{b.className='ibtn dimmed';});
+  allBtn.classList.add('active');
+  drawAll();
+  showAllPanel();
+});
+
+/* ── 개별 산업 선택 ── */
+function selectInd(id){
+  allMode=false; curInd=IND.find(i=>i.id===id);
+  document.querySelectorAll('.ibtn').forEach(b=>{b.className='ibtn';});
+  allBtn.classList.remove('active');
+  const btn=document.querySelector(`[data-id="${id}"]`);
+  btn.classList.add(curInd.type==='adv'?'sel-adv':'sel-trad');
+  drawSingle(curInd);
+  updateDetail(curInd);
+}
+
+/* ── 리스트 빌드 ── */
+function buildList(){
+  IND.forEach(ind=>{
+    const btn=document.createElement('button');
+    btn.className='ibtn';
+    btn.dataset.id=ind.id;
+    btn.innerHTML=
+      `<div class="ibtn-top"><span class="ie">${ind.emoji}</span>`+
+      `<span class="ilab">${ind.name}</span></div>`;
+    btn.addEventListener('click',()=>selectInd(ind.id));
+    document.getElementById(ind.type==='adv'?'adv-list':'trad-list').appendChild(btn);
+  });
+}
+
+/* ── WORKSHEET ── */
+document.getElementById('ws-toggle').addEventListener('click',()=>{
+  const wb=document.getElementById('ws-body');
+  const open=wb.style.display==='block';
+  wb.style.display=open?'none':'block';
+  document.getElementById('wschev').classList.toggle('open',!open);
+  document.getElementById('ws-t-sub').textContent=open?'클릭하여 열기':'클릭하여 닫기';
+});
+
+/* ── PDF 저장 ── */
+document.getElementById('ws-save-btn').addEventListener('click', async ()=>{
+  const btn=document.getElementById('ws-save-btn');
+  const msg=document.getElementById('ws-save-msg');
+  const nameVal=document.getElementById('ws-name-input').value.trim()||'이름미입력';
+
+  btn.disabled=true;
+  btn.textContent='⏳ 생성 중...';
+
+  // 인쇄용 렌더링 div 생성
+  const pw=document.createElement('div');
+  pw.style.cssText=`
+    position:fixed;left:-9999px;top:0;width:820px;
+    background:#fff;padding:32px 36px 36px;
+    font-family:'Noto Sans KR',sans-serif;color:#18243A;
+    font-size:13px;line-height:1.7;
+  `;
+
+  // 단계 정보
+  const steps=[
+    {id:'ws-s1-ta', label:'1단계 · 패턴 찾기', color:'#1255A0', bg:'#E6F0FF'},
+    {id:'ws-s2-ta', label:'2단계 · 산업 유형 확인', color:'#B45309', bg:'#FEF3C7'},
+    {id:'ws-s3-ta', label:'3단계 · 패턴을 한 문장으로', color:'#1A7A3C', bg:'#E8F7EE'},
+  ];
+
+  // 각 textarea에 id 부여 (아직 없으면)
+  const tas=document.querySelectorAll('#ws-inner .ws-a');
+  if(tas[0]) tas[0].id='ws-s1-ta';
+  if(tas[1]) tas[1].id='ws-s3-ta'; // step3 textarea
+
+  // 모든 textarea 값 수집
+  const taAll=document.querySelectorAll('#ws-inner .ws-a');
+  const taVals=[...taAll].map(t=>t.value||'(미작성)');
+
+  // contenteditable 테이블 셀 값 수집
+  const editCells=document.querySelectorAll('.ws-td-edit');
+  const cellVals=[...editCells].map(c=>c.textContent.trim()||'—');
+
+  pw.innerHTML=`
+    <div style="border-bottom:3px solid #1255A0;padding-bottom:14px;margin-bottom:20px;">
+      <div style="font-size:17px;font-weight:900;color:#0B2550;">📍 한국 주요 제조업 — 탐구 워크시트</div>
+      <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:12px;color:#6B7A99;">
+        <span>한국은행 「주요 제조업 생산 및 공급망 지도」(2023) 기반</span>
+        <span style="font-weight:700;color:#18243A;">이름: ${nameVal}</span>
+      </div>
+    </div>
+
+    <!-- 1단계 -->
+    <div style="margin-bottom:20px;">
+      <div style="display:inline-block;background:#E6F0FF;color:#1255A0;font-size:11px;font-weight:700;padding:3px 12px;border-radius:5px;margin-bottom:8px;">1단계 · 패턴 찾기</div>
+      <div style="font-size:12.5px;margin-bottom:8px;font-weight:500;">성장 산업 공장이 많은 지역과 위기 산업 공장이 많은 지역을 각각 적어보자.</div>
+      <div style="border:1.5px solid #DDE3EE;border-radius:7px;padding:12px 14px;min-height:70px;background:#FAFBFE;font-size:12px;white-space:pre-wrap;">${taVals[0]}</div>
+    </div>
+
+    <!-- 2단계 -->
+    <div style="margin-bottom:20px;">
+      <div style="display:inline-block;background:#FEF3C7;color:#B45309;font-size:11px;font-weight:700;padding:3px 12px;border-radius:5px;margin-bottom:8px;">2단계 · 산업 유형 확인</div>
+      <div style="font-size:12.5px;margin-bottom:8px;font-weight:500;">성장 지역의 주요 산업과 위기 지역의 주요 산업은 어떻게 다른가?</div>
+      <table style="width:100%;border-collapse:collapse;font-size:12px;">
+        <tr style="background:#E8F1FF;">
+          <th style="padding:6px 10px;border:1px solid #C8D8F0;">지역</th>
+          <th style="padding:6px 10px;border:1px solid #C8D8F0;">주요 산업</th>
+          <th style="padding:6px 10px;border:1px solid #C8D8F0;">산업 유형</th>
+          <th style="padding:6px 10px;border:1px solid #C8D8F0;">현재 상태</th>
+        </tr>
+        <tr>
+          <td style="padding:7px 10px;border:1px solid #DDE3EE;color:#6B7A99;font-size:11px;">성장 지역</td>
+          <td style="padding:7px 10px;border:1px solid #DDE3EE;">${cellVals[0]||'—'}</td>
+          <td style="padding:7px 10px;border:1px solid #DDE3EE;">${cellVals[1]||'—'}</td>
+          <td style="padding:7px 10px;border:1px solid #DDE3EE;">${cellVals[2]||'—'}</td>
+        </tr>
+        <tr>
+          <td style="padding:7px 10px;border:1px solid #DDE3EE;color:#6B7A99;font-size:11px;">위기 지역</td>
+          <td style="padding:7px 10px;border:1px solid #DDE3EE;">${cellVals[3]||'—'}</td>
+          <td style="padding:7px 10px;border:1px solid #DDE3EE;">${cellVals[4]||'—'}</td>
+          <td style="padding:7px 10px;border:1px solid #DDE3EE;">${cellVals[5]||'—'}</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- 3단계 -->
+    <div style="margin-bottom:20px;">
+      <div style="display:inline-block;background:#E8F7EE;color:#1A7A3C;font-size:11px;font-weight:700;padding:3px 12px;border-radius:5px;margin-bottom:8px;">3단계 · 패턴을 한 문장으로</div>
+      <div style="font-size:12.5px;margin-bottom:8px;font-weight:500;">1, 2단계를 종합하면 어떤 패턴이 보이는가?</div>
+      <div style="border:1.5px solid #DDE3EE;border-radius:7px;padding:12px 14px;min-height:60px;background:#FAFBFE;font-size:12px;white-space:pre-wrap;">${taVals[1]}</div>
+    </div>
+
+    <!-- 4단계 -->
+    <div style="margin-bottom:24px;">
+      <div style="display:inline-block;background:#FFF1EA;color:#C84B00;font-size:11px;font-weight:700;padding:3px 12px;border-radius:5px;margin-bottom:8px;">4단계 · 정책 평가</div>
+      <div style="font-size:12.5px;margin-bottom:10px;font-weight:500;">정부는 반도체·이차전지 등을 국가첨단전략산업으로 지정하고, 경기·충청 중심의 특화단지를 조성하는 정책을 추진하고 있다. 이 정책의 예상되는 장점과 단점을 각각 서술해보자.</div>
+      <div style="border:1.5px solid #DDE3EE;border-radius:7px;padding:12px 14px;min-height:90px;background:#FAFBFE;font-size:12px;white-space:pre-wrap;">${taVals[2]}</div>
+    </div>
+
+    <div style="font-size:10.5px;color:#9BA8BC;border-top:1px solid #EEF1F8;padding-top:10px;text-align:right;">
+      생성일: ${new Date().toLocaleDateString('ko-KR')}
+    </div>
+  `;
+
+  document.body.appendChild(pw);
+
+  try {
+    const canvas=await html2canvas(pw,{scale:2,useCORS:true,backgroundColor:'#ffffff'});
+    const {jsPDF}=window.jspdf;
+    const pdf=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+    const pageW=pdf.internal.pageSize.getWidth();
+    const pageH=pdf.internal.pageSize.getHeight();
+    const imgW=pageW-20;
+    const imgH=(canvas.height*imgW)/canvas.width;
+    let y=10;
+    if(imgH<=pageH-20){
+      pdf.addImage(canvas.toDataURL('image/png'),'PNG',10,y,imgW,imgH);
+    } else {
+      // 여러 페이지로 분할
+      const ratio=canvas.width/imgW;
+      let srcY=0;
+      while(srcY<canvas.height){
+        const sliceH=Math.min((pageH-20)*ratio, canvas.height-srcY);
+        const sliceCanvas=document.createElement('canvas');
+        sliceCanvas.width=canvas.width;
+        sliceCanvas.height=sliceH;
+        sliceCanvas.getContext('2d').drawImage(canvas,0,srcY,canvas.width,sliceH,0,0,canvas.width,sliceH);
+        pdf.addImage(sliceCanvas.toDataURL('image/png'),'PNG',10,10,imgW,sliceH/ratio);
+        srcY+=sliceH;
+        if(srcY<canvas.height) pdf.addPage();
+      }
+    }
+    pdf.save(`한국제조업_탐구워크시트_${nameVal}.pdf`);
+    msg.style.display='inline';
+    setTimeout(()=>msg.style.display='none',3000);
+  } catch(e){
+    alert('PDF 생성 중 오류가 발생했습니다.');
+    console.error(e);
+  }
+
+  document.body.removeChild(pw);
+  btn.disabled=false;
+  btn.innerHTML='📄 PDF 저장';
+});
+
+buildList();
+// 시작은 전체보기
+allBtn.click();
+
+/* ── contenteditable placeholder ── */
+document.querySelectorAll('.ws-td-edit').forEach(td=>{
+  td.classList.add('ph-active');
+  td.addEventListener('focus',()=>td.classList.remove('ph-active'));
+  td.addEventListener('blur',()=>{
+    if(!td.textContent.trim()) td.classList.add('ph-active');
+  });
+});
+</script>
+</body>
+</html>
