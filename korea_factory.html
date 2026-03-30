@@ -434,7 +434,7 @@ body{background:var(--bg);display:flex;flex-direction:column;}
 <!-- WORKSHEET -->
 <button id="ws-toggle">
   <span>📋</span>
-  <span id="ws-t-title">탐구 워크시트 — 3단계 발견 활동</span>
+  <span id="ws-t-title">탐구 워크시트 — 4단계 발견 활동</span>
   <span id="ws-t-sub">클릭하여 열기</span>
   <span class="wschev" id="wschev">▲</span>
 </button>
@@ -494,6 +494,15 @@ body{background:var(--bg);display:flex;flex-direction:column;}
       <span class="ws-step ws-s3">3단계 · 패턴을 한 문장으로</span>
       <div class="ws-q">1, 2단계를 종합하면 어떤 패턴이 보이는가? <strong>"한국 제조업의 성장과 위기는 특정 지역에 따라 나뉘어 나타난다"</strong>는 주장을 지도 데이터로 설명해보자.</div>
       <textarea class="ws-a" style="min-height:56px;" placeholder="예) ○○ 지역은 첨단 제조업 중심으로 성장하고 있는 반면, ○○ 지역은 전통 중화학공업 중심으로 ..."></textarea>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="ws-item" style="min-width:100%;">
+      <hr class="ws-divider">
+      <span class="ws-step ws-s4">4단계 · 정책 평가</span>
+      <div class="ws-hint">💡 앞에서 확인한 지도 데이터(공장 분포, 권역별 점유율, 산업 현황)를 근거로 써보자.</div>
+      <div class="ws-q">정부는 반도체·이차전지 등을 <strong>국가첨단전략산업</strong>으로 지정하고, <strong>경기·충청 중심의 특화단지</strong>를 조성하는 정책을 추진하고 있다. 이 정책의 예상되는 장점과 단점을 각각 서술해보자.</div>
+      <textarea class="ws-a" style="min-height:90px;margin-top:6px;" placeholder="장점: 예) 이미 성장 중인 ○○ 산업이 집중된 ○○ 지역에 투자가 더해져 ...&#10;단점: 예) 위기 산업이 집중된 ○○ 지역은 정책 지원에서 소외되어 ..."></textarea>
     </div>
 
   </div>
@@ -975,10 +984,17 @@ document.getElementById('ws-save-btn').addEventListener('click', async ()=>{
     </div>
 
     <!-- 3단계 -->
-    <div style="margin-bottom:24px;">
+    <div style="margin-bottom:20px;">
       <div style="display:inline-block;background:#E8F7EE;color:#1A7A3C;font-size:11px;font-weight:700;padding:3px 12px;border-radius:5px;margin-bottom:8px;">3단계 · 패턴을 한 문장으로</div>
       <div style="font-size:12.5px;margin-bottom:8px;font-weight:500;">1, 2단계를 종합하면 어떤 패턴이 보이는가?</div>
       <div style="border:1.5px solid #DDE3EE;border-radius:7px;padding:12px 14px;min-height:60px;background:#FAFBFE;font-size:12px;white-space:pre-wrap;">${taVals[1]}</div>
+    </div>
+
+    <!-- 4단계 -->
+    <div style="margin-bottom:24px;">
+      <div style="display:inline-block;background:#FFF1EA;color:#C84B00;font-size:11px;font-weight:700;padding:3px 12px;border-radius:5px;margin-bottom:8px;">4단계 · 정책 평가</div>
+      <div style="font-size:12.5px;margin-bottom:10px;font-weight:500;">정부는 반도체·이차전지 등을 국가첨단전략산업으로 지정하고, 경기·충청 중심의 특화단지를 조성하는 정책을 추진하고 있다. 이 정책의 예상되는 장점과 단점을 각각 서술해보자.</div>
+      <div style="border:1.5px solid #DDE3EE;border-radius:7px;padding:12px 14px;min-height:90px;background:#FAFBFE;font-size:12px;white-space:pre-wrap;">${taVals[2]}</div>
     </div>
 
     <div style="font-size:10.5px;color:#9BA8BC;border-top:1px solid #EEF1F8;padding-top:10px;text-align:right;">
