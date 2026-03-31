@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>베버의 공업입지론 — 최소운송비 원리</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+    background: #f5f4f0;
+    color: #1a1a1a;
+    padding: 2rem 1rem;
+    min-height: 100vh;
+  }
+  .container {
+    max-width: 760px;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 2rem;
+    border: 0.5px solid rgba(0,0,0,0.1);
+  }
+  h1 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #111;
+    margin-bottom: 4px;
+  }
+  .subtitle {
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 1.5rem;
+  }
+  .preset-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+  }
+  .preset-btn {
+    flex: 1;
+    min-width: 80px;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 0.5px solid rgba(0,0,0,0.18);
+    background: transparent;
+    color: #666;
+    transition: background 0.15s, color 0.15s;
+  }
+  .preset-btn.active {
+    background: #eee;
+    border-color: rgba(0,0,0,0.35);
+    color: #111;
+  }
+  .slider-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 1.25rem;
+  }
+  .slider-card {
+    background: #f5f4f0;
+    border-radius: 8px;
+    padding: 1rem;
+  }
+  .slider-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .slider-label { font-size: 13px; color: #666; }
+  input[type=range] { width: 100%; accent-color: #555; }
+  .slider-ticks {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6px;
+    font-size: 11px;
+    color: #aaa;
+  }
+  .summary-box {
+    font-size: 13px;
+    color: #555;
+    border: 0.5px solid rgba(0,0,0,0.15);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.25rem;
+    line-height: 1.6;
+  }
+  .legend-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 10px;
+    font-size: 12px;
+    color: #666;
+  }
+  .legend-item { display: inline-flex; align-items: center; gap: 6px; }
+  .chart-wrap {
+    position: relative;
+    width: 100%;
+    height: 260px;
+    margin-bottom: 1.5rem;
+  }
+  .industry-panel { display: none; }
+  .tab-row {
+    display: flex;
+    border: 0.5px solid rgba(0,0,0,0.15);
+    border-radius: 12px 12px 0 0;
+    overflow: hidden;
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 9px 0;
+    font-size: 13px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    background: #f5f4f0;
+    color: #888;
+    transition: background 0.15s, color 0.15s;
+  }
+  .tab-btn:first-child { border-right: 0.5px solid rgba(0,0,0,0.12); }
+  .tab-btn.active { background: #fff; color: #111; }
+  .pane {
+    border: 0.5px solid rgba(0,0,0,0.15);
+    border-top: none;
+    border-radius: 0 0 12px 12px;
+    overflow: hidden;
+  }
+  .card-header {
+    padding: 0.75rem 1.25rem;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .card-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .card-col {
+    padding: 1rem 1.25rem;
+    font-size: 13px;
+    color: #555;
+    line-height: 1.8;
+  }
+  .card-col:first-child { border-right: 0.5px solid rgba(0,0,0,0.1); }
+  .col-label {
+    font-size: 11px;
+    color: #aaa;
+    margin-bottom: 8px;
+    letter-spacing: 0.04em;
+  }
+  .card-note {
+    padding: 0.75rem 1.25rem;
+    font-size: 12px;
+    color: #666;
+    border-top: 0.5px solid rgba(0,0,0,0.1);
+    line-height: 1.7;
+    background: #f5f4f0;
+  }
+  #pane-map { display: none; }
+  #mapLegend {
+    padding: 0.6rem 1rem;
+    font-size: 12px;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    background: #f5f4f0;
+    border-bottom: 0.5px solid rgba(0,0,0,0.1);
+    color: #666;
+  }
+  #leafletMap { width: 100%; height: 360px; }
+  @media (max-width: 500px) {
+    .slider-grid { grid-template-columns: 1fr; }
+    .card-cols { grid-template-columns: 1fr; }
+    .card-col:first-child { border-right: none; border-bottom: 0.5px solid rgba(0,0,0,0.1); }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>베버의 공업입지론</h1>
+  <p class="subtitle">최소운송비 원리 — 원료운송비와 제품운송비의 상대적 크기가 공장 입지를 결정한다</p>
+
+  <div class="preset-row">
+    <button class="preset-btn active" onclick="setPreset('custom')" id="btn-custom">직접 조절</button>
+    <button class="preset-btn" onclick="setPreset('cement')" id="btn-cement">🏭 시멘트 산업</button>
+    <button class="preset-btn" onclick="setPreset('cola')" id="btn-cola">🥤 음료 산업</button>
+  </div>
+
+  <div class="slider-grid">
+    <div class="slider-card">
+      <div class="slider-header">
+        <span class="slider-label">원료운송비율</span>
+        <span style="font-size:16px;font-weight:500;color:#D4853A;" id="rawOut">5</span>
+      </div>
+      <input type="range" min="1" max="10" value="5" step="1" id="rawSlider">
+      <div class="slider-ticks"><span>낮음 (1)</span><span>높음 (10)</span></div>
+    </div>
+    <div class="slider-card">
+      <div class="slider-header">
+        <span class="slider-label">제품운송비율</span>
+        <span style="font-size:16px;font-weight:500;color:#2A7EC8;" id="prodOut">5</span>
+      </div>
+      <input type="range" min="1" max="10" value="5" step="1" id="prodSlider">
+      <div class="slider-ticks"><span>낮음 (1)</span><span>높음 (10)</span></div>
+    </div>
+  </div>
+
+  <div class="summary-box" id="summary">
+    원료운송비율 = 제품운송비율 → 어느 위치에 입지해도 총 운송비는 동일합니다.
+  </div>
+
+  <div class="legend-row">
+    <span class="legend-item"><svg width="22" height="10"><line x1="0" y1="5" x2="22" y2="5" stroke="#D4853A" stroke-width="2"/></svg>원료운송비</span>
+    <span class="legend-item"><svg width="22" height="10"><line x1="0" y1="5" x2="22" y2="5" stroke="#2A7EC8" stroke-width="2"/></svg>제품운송비</span>
+    <span class="legend-item"><svg width="22" height="10"><line x1="0" y1="5" x2="22" y2="5" stroke="#178A5E" stroke-width="2.5"/></svg>총 운송비</span>
+  </div>
+
+  <div class="chart-wrap">
+    <canvas id="weberChart"></canvas>
+  </div>
+
+  <div class="industry-panel" id="industryPanel">
+    <div class="tab-row">
+      <button class="tab-btn active" onclick="showTab('info')" id="tab-info">입지 분석</button>
+      <button class="tab-btn" onclick="showTab('map')" id="tab-map">공장 지도</button>
+    </div>
+    <div class="pane" id="pane-info">
+      <div class="card-header" id="cardHeader"></div>
+      <div class="card-cols">
+        <div class="card-col">
+          <div class="col-label" id="col1Label"></div>
+          <div id="col1Content"></div>
+        </div>
+        <div class="card-col">
+          <div class="col-label" id="col2Label"></div>
+          <div id="col2Content"></div>
+        </div>
+      </div>
+      <div class="card-note" id="cardNote"></div>
+    </div>
+    <div class="pane" id="pane-map">
+      <div id="mapLegend"></div>
+      <div id="leafletMap"></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+const N = 101;
+let rawRate = 5, prodRate = 5, currentPreset = 'custom';
+let leafletMap = null;
+
+const presets = {
+  custom: { raw: 5, prod: 5 },
+  cement: { raw: 8, prod: 3 },
+  cola:   { raw: 2, prod: 8 }
+};
+
+const industryData = {
+  cement: {
+    headerText: '🏭 시멘트 산업 — 원료지향형 (원료율 8 : 제품율 3)',
+    headerBg: 'rgba(212,133,58,0.12)', headerColor: '#B8722A',
+    col1Label: '원료산지 (= 공장 입지)',
+    col1Content: `<b>쌍용C&E</b><br>동해공장 (강원 동해시)<br>영월공장 (강원 영월군)<br><br><b>한일시멘트</b><br>영월공장 (강원 영월군)<br>단양공장 (충북 단양군)`,
+    col2Label: '소비 시장 (건설 현장)',
+    col2Content: `수도권·대도시 건설 현장<br><br>공장 전부가 강원·충북<br>석회암 산지 벨트에 집중<br>→ 원료산지 = 공장 위치`,
+    note: '석회석 약 1.5톤으로 시멘트 1톤 생산 → 중량감소 원료. 무거운 원료를 원거리 운반하면 비용이 급증하므로 원료산지 입지가 절대적으로 유리.',
+    legend: [
+      { color: '#D4853A', label: '시멘트 공장' },
+      { color: '#8B5CF6', label: '석회암 산지', isArea: true },
+      { color: '#6B7280', label: '소비 시장 (수도권)' }
+    ],
+    markers: [
+      { lat: 37.4816, lng: 129.0559, color: '#D4853A', label: '쌍용C&E 동해공장' },
+      { lat: 37.1848, lng: 128.3221, color: '#D4853A', label: '쌍용양회 영월공장' },
+      { lat: 37.2309, lng: 128.3220, color: '#D4853A', label: '한일시멘트 영월공장' },
+      { lat: 37.0256, lng: 128.3206, color: '#D4853A', label: '한일시멘트 단양공장' },
+      { lat: 37.5665, lng: 126.9780, color: '#6B7280', label: '소비 시장 (서울·수도권)' }
+    ],
+    limestone: [
+      [37.52, 128.70], [37.55, 128.85], [37.48, 129.00], [37.40, 129.05],
+      [37.30, 128.95], [37.20, 128.80], [37.10, 128.60], [37.00, 128.45],
+      [36.90, 128.30], [36.88, 128.10], [36.95, 127.95], [37.05, 127.92],
+      [37.15, 128.05], [37.20, 128.20], [37.30, 128.35], [37.42, 128.50], [37.52, 128.70]
+    ],
+    center: [37.28, 128.5], zoom: 8
+  },
+  cola: {
+    headerText: '🥤 음료 산업(코카콜라) — 시장지향형 (원료율 2 : 제품율 8)',
+    headerBg: 'rgba(42,126,200,0.10)', headerColor: '#1A5F9E',
+    col1Label: '원료 공급 (경량·소량)',
+    col1Content: `코카콜라 원액(시럽)<br>→ 극소량·경량 공급<br>원료운송비 매우 낮음<br><br>물은 현지 조달<br>(편재원료 ubiquitous)`,
+    col2Label: '시장 (= 공장 입지)',
+    col2Content: `<b>코카콜라음료</b><br>여주공장 → 수도권 시장<br>양산공장 → 부산·경남 시장<br>광주공장 → 호남 시장<br><br>→ 대소비지 분산 입지`,
+    note: '원액에 물을 혼합·병입(bottling) → 완제품이 원료보다 훨씬 무거운 중량증가 원료. 무거운 완제품의 운송비를 줄이기 위해 각 대소비지 인근에 분산 입지.',
+    legend: [
+      { color: '#2A7EC8', label: '코카콜라 공장' },
+      { color: '#6B7280', label: '소비 시장 권역' }
+    ],
+    markers: [
+      { lat: 37.2630, lng: 127.6432, color: '#2A7EC8', label: '코카콜라 여주공장 (수도권)' },
+      { lat: 35.3661, lng: 129.0382, color: '#2A7EC8', label: '코카콜라 양산공장 (부산·경남)' },
+      { lat: 35.1967, lng: 126.8783, color: '#2A7EC8', label: '코카콜라 광주공장 (호남)' },
+      { lat: 37.5665, lng: 126.9780, color: '#9CA3AF', label: '수도권 시장' },
+      { lat: 35.1796, lng: 129.0756, color: '#9CA3AF', label: '부산·경남 시장' },
+      { lat: 35.1595, lng: 126.8526, color: '#9CA3AF', label: '광주·호남 시장' }
+    ],
+    center: [36.5, 127.8], zoom: 7
+  }
+};
+
+function getData(rr, pr) {
+  const raw = [], prod = [], total = [];
+  for (let i = 0; i < N; i++) {
+    raw.push(rr * i);
+    prod.push(pr * (N - 1 - i));
+    total.push(rr * i + pr * (N - 1 - i));
+  }
+  return { raw, prod, total };
+}
+function getOptIdx(rr, pr) {
+  if (rr < pr) return N - 1;
+  if (rr > pr) return 0;
+  return null;
+}
+
+let d = getData(rawRate, prodRate);
+let optIdx = getOptIdx(rawRate, prodRate);
+
+const markerPlugin = {
+  id: 'marker',
+  afterDraw(chart) {
+    const { ctx, chartArea, scales } = chart;
+    if (!chartArea) return;
+    if (optIdx !== null) {
+      const px = scales.x.getPixelForValue(optIdx);
+      ctx.save();
+      ctx.setLineDash([5,3]); ctx.strokeStyle='#178A5E'; ctx.lineWidth=1.5; ctx.globalAlpha=0.85;
+      ctx.beginPath(); ctx.moveTo(px, chartArea.top); ctx.lineTo(px, chartArea.bottom); ctx.stroke();
+      ctx.setLineDash([]); ctx.globalAlpha=1;
+      ctx.beginPath(); ctx.arc(px, scales.y.getPixelForValue(d.total[optIdx]), 5, 0, Math.PI*2);
+      ctx.fillStyle='#178A5E'; ctx.fill();
+      ctx.font='11px sans-serif'; ctx.fillStyle='#178A5E';
+      ctx.textAlign = optIdx===0?'left':'right';
+      ctx.fillText(optIdx===0?'최적: 원료산지':'최적: 시장', optIdx===0?px+6:px-6, chartArea.top+14);
+      ctx.restore();
+    }
+    ctx.save(); ctx.font='11px sans-serif'; ctx.fillStyle='rgba(120,120,120,0.8)';
+    ctx.textAlign='left'; ctx.fillText('◀ 원료산지', chartArea.left, chartArea.bottom-6);
+    ctx.textAlign='right'; ctx.fillText('시장 ▶', chartArea.right, chartArea.bottom-6);
+    ctx.restore();
+  }
+};
+
+const chartCtx = document.getElementById('weberChart').getContext('2d');
+const chart = new Chart(chartCtx, {
+  type:'line', plugins:[markerPlugin],
+  data: {
+    labels: Array.from({length:N},(_,i)=>i),
+    datasets: [
+      {label:'원료운송비', data:d.raw, borderColor:'#D4853A', borderWidth:2, pointRadius:0, tension:0},
+      {label:'제품운송비', data:d.prod, borderColor:'#2A7EC8', borderWidth:2, pointRadius:0, tension:0},
+      {label:'총 운송비', data:d.total, borderColor:'#178A5E', borderWidth:2.5, pointRadius:0, tension:0}
+    ]
+  },
+  options: {
+    responsive:true, maintainAspectRatio:false,
+    plugins:{
+      legend:{display:false},
+      tooltip:{
+        mode:'index', intersect:false,
+        callbacks:{
+          title: items => { const v=items[0].dataIndex; return v===0?'위치: 원료산지':v===N-1?'위치: 시장':`위치: 원료산지로부터 ${v}% 지점`; },
+          label: item => `${item.dataset.label}: ${Math.round(item.raw)}`
+        }
+      }
+    },
+    scales:{
+      x:{ ticks:{maxRotation:0, callback:v=>[0,50,100].includes(v)?v:null, color:'rgba(120,120,120,0.7)', font:{size:11}}, grid:{color:'rgba(128,128,128,0.12)'} },
+      y:{ beginAtZero:true, ticks:{color:'rgba(120,120,120,0.7)', font:{size:11}}, grid:{color:'rgba(128,128,128,0.12)'}, title:{display:true, text:'운송비', color:'rgba(120,120,120,0.7)', font:{size:11}} }
+    },
+    animation:{duration:200}
+  }
+});
+
+function updateSummary(rr, pr) {
+  const el = document.getElementById('summary');
+  if (rr > pr) el.innerHTML=`원료운송비율(${rr}) &gt; 제품운송비율(${pr}) → <strong>원료지향형</strong>: 공장은 <span style="color:#D4853A;font-weight:500;">원료산지</span>에 입지할 때 총 운송비 최소.`;
+  else if (pr > rr) el.innerHTML=`제품운송비율(${pr}) &gt; 원료운송비율(${rr}) → <strong>시장지향형</strong>: 공장은 <span style="color:#2A7EC8;font-weight:500;">시장</span>에 입지할 때 총 운송비 최소.`;
+  else el.innerHTML=`원료운송비율 = 제품운송비율(${rr}) → 어느 위치에 입지해도 총 운송비는 동일합니다.`;
+}
+
+function updateChart() {
+  d = getData(rawRate, prodRate);
+  chart.data.datasets[0].data = d.raw;
+  chart.data.datasets[1].data = d.prod;
+  chart.data.datasets[2].data = d.total;
+  optIdx = getOptIdx(rawRate, prodRate);
+  chart.update('none');
+  updateSummary(rawRate, prodRate);
+}
+
+function makeSvgIcon(color) {
+  return L.divIcon({
+    html: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"><circle cx="12" cy="12" r="9" fill="${color}" stroke="white" stroke-width="2"/></svg>`,
+    className:'', iconSize:[24,24], iconAnchor:[12,12], popupAnchor:[0,-14]
+  });
+}
+
+function initMap(preset) {
+  const info = industryData[preset];
+  if (leafletMap) { leafletMap.remove(); leafletMap = null; }
+  leafletMap = L.map('leafletMap', { scrollWheelZoom: false }).setView(info.center, info.zoom);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+    attribution: '© OpenStreetMap © CARTO', maxZoom:15
+  }).addTo(leafletMap);
+  if (info.limestone) {
+    L.polygon(info.limestone, {
+      color: '#7C3AED', weight: 1.5, opacity: 0.7,
+      fillColor: '#8B5CF6', fillOpacity: 0.22
+    }).addTo(leafletMap).bindPopup('<span style="font-size:13px;font-weight:500;">태백산 석회암 지대</span>');
+  }
+  info.markers.forEach(m => {
+    L.marker([m.lat, m.lng], {icon: makeSvgIcon(m.color)}).addTo(leafletMap)
+      .bindPopup(`<span style="font-size:13px;font-weight:500;">${m.label}</span>`);
+  });
+  const legend = document.getElementById('mapLegend');
+  legend.innerHTML = info.legend.map(l =>
+    l.isArea
+      ? `<span style="display:inline-flex;align-items:center;gap:5px;"><svg width="16" height="12"><rect x="0" y="1" width="16" height="10" rx="2" fill="${l.color}" fill-opacity="0.25" stroke="${l.color}" stroke-width="1.5"/></svg>${l.label}</span>`
+      : `<span style="display:inline-flex;align-items:center;gap:5px;"><svg width="12" height="12"><circle cx="6" cy="6" r="5" fill="${l.color}"/></svg>${l.label}</span>`
+  ).join('');
+  setTimeout(() => leafletMap.invalidateSize(), 150);
+}
+
+function showTab(tab) {
+  const pI = document.getElementById('pane-info');
+  const pM = document.getElementById('pane-map');
+  const tI = document.getElementById('tab-info');
+  const tM = document.getElementById('tab-map');
+  if (tab === 'info') {
+    pI.style.display='block'; pM.style.display='none';
+    tI.classList.add('active'); tM.classList.remove('active');
+  } else {
+    pI.style.display='none'; pM.style.display='block';
+    tM.classList.add('active'); tI.classList.remove('active');
+    if (currentPreset !== 'custom') initMap(currentPreset);
+  }
+}
+
+function updateIndustryPanel(preset) {
+  const panel = document.getElementById('industryPanel');
+  if (preset === 'custom') { panel.style.display='none'; return; }
+  panel.style.display='block';
+  const info = industryData[preset];
+  document.getElementById('cardHeader').textContent = info.headerText;
+  document.getElementById('cardHeader').style.background = info.headerBg;
+  document.getElementById('cardHeader').style.color = info.headerColor;
+  document.getElementById('col1Label').textContent = info.col1Label;
+  document.getElementById('col1Content').innerHTML = info.col1Content;
+  document.getElementById('col2Label').textContent = info.col2Label;
+  document.getElementById('col2Content').innerHTML = info.col2Content;
+  document.getElementById('cardNote').textContent = info.note;
+  showTab('info');
+}
+
+function updateBtns(preset) {
+  ['custom','cement','cola'].forEach(k => {
+    const btn = document.getElementById('btn-'+k);
+    btn.classList.toggle('active', k===preset);
+  });
+}
+
+function setPreset(preset) {
+  currentPreset = preset;
+  const p = presets[preset];
+  rawRate = p.raw; prodRate = p.prod;
+  document.getElementById('rawSlider').value = rawRate;
+  document.getElementById('prodSlider').value = prodRate;
+  document.getElementById('rawOut').textContent = rawRate;
+  document.getElementById('prodOut').textContent = prodOut;
+  updateBtns(preset);
+  updateIndustryPanel(preset);
+  updateChart();
+}
+
+function setPreset(preset) {
+  currentPreset = preset;
+  const p = presets[preset];
+  rawRate = p.raw; prodRate = p.prod;
+  document.getElementById('rawSlider').value = rawRate;
+  document.getElementById('prodSlider').value = prodRate;
+  document.getElementById('rawOut').textContent = rawRate;
+  document.getElementById('prodOut').textContent = prodRate;
+  updateBtns(preset);
+  updateIndustryPanel(preset);
+  updateChart();
+}
+
+document.getElementById('rawSlider').addEventListener('input', e => {
+  rawRate = +e.target.value;
+  document.getElementById('rawOut').textContent = rawRate;
+  currentPreset='custom'; updateBtns('custom'); updateIndustryPanel('custom'); updateChart();
+});
+document.getElementById('prodSlider').addEventListener('input', e => {
+  prodRate = +e.target.value;
+  document.getElementById('prodOut').textContent = prodRate;
+  currentPreset='custom'; updateBtns('custom'); updateIndustryPanel('custom'); updateChart();
+});
+
+updateBtns('custom');
+</script>
+</body>
+</html>
