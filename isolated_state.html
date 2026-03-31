@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>튀넨의 고립국 이론</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif;
+  background:#f5f4f0;color:#1a1a18;padding:24px 16px;line-height:1.7;
+}
+.wrapper{max-width:720px;margin:0 auto}
+header{margin-bottom:20px}
+header h1{font-size:18px;font-weight:700;margin-bottom:4px}
+header p{font-size:12px;color:#888}
+.tab-nav{display:flex;border-bottom:1.5px solid #e0ddd8;flex-wrap:wrap}
+.tab-btn{
+  background:none;border:none;padding:10px 16px;font-size:13px;
+  font-family:inherit;color:#888;cursor:pointer;font-weight:500;
+  border-bottom:2px solid transparent;margin-bottom:-1.5px;
+  transition:color .15s,border-color .15s;white-space:nowrap;
+}
+.tab-btn:hover{color:#3a7a3a}
+.tab-btn.active{color:#3a7a3a;border-bottom-color:#3a7a3a}
+.tab-panel{
+  display:none;background:#fff;
+  border:0.5px solid #e0ddd8;border-top:none;
+  border-radius:0 0 10px 10px;padding:24px;
+}
+.tab-panel.active{display:block}
+.panel-lead{font-size:13px;color:#444;margin-bottom:18px;line-height:1.75}
+.sec{font-size:11px;font-weight:700;color:#3a7a3a;text-transform:uppercase;
+     letter-spacing:.06em;margin:20px 0 10px}
+.sec:first-child{margin-top:0}
+blockquote{
+  margin:0 0 20px;padding:10px 16px;
+  border-left:3px solid #6EBF6E;background:#fafdf8;
+  font-size:13px;color:#444;border-radius:0 6px 6px 0;font-style:italic;
+}
+.timeline{display:flex;flex-direction:column;position:relative;padding-left:40px}
+.timeline::before{content:'';position:absolute;left:14px;top:8px;bottom:8px;width:1.5px;background:#d8d5d0}
+.tl-item{position:relative;padding:0 0 20px 16px}
+.tl-item:last-child{padding-bottom:0}
+.tl-dot{position:absolute;left:-26px;top:5px;width:12px;height:12px;border-radius:50%;background:#6EBF6E;border:2px solid #fff;box-shadow:0 0 0 1.5px #6EBF6E}
+.tl-year{font-size:11px;font-weight:700;color:#3a7a3a;margin-bottom:2px}
+.tl-text{font-size:13px;color:#444;line-height:1.65}
+.body-text{font-size:13px;color:#444;line-height:1.75}
+.formula-box{background:#f5f8f2;border:0.5px solid #c8d8a8;border-radius:8px;padding:14px 18px;margin:0 0 20px}
+.formula-main{font-size:17px;color:#1a1a18;font-family:'Georgia',serif;margin-bottom:8px}
+.formula-terms{display:flex;gap:16px;flex-wrap:wrap;margin-top:6px}
+.formula-term{font-size:11px;color:#555}
+.formula-term strong{color:#3a7a3a;font-weight:700}
+.formula-note{font-size:11px;color:#888;margin-top:8px;font-style:italic}
+.alist{display:flex;flex-direction:column;gap:10px}
+.aitem{display:flex;gap:14px;align-items:flex-start;padding:12px 14px;border:0.5px solid #e8e5e0;border-radius:8px;background:#fafaf8;transition:border-color .15s}
+.aitem:hover{border-color:#9ED47A}
+.anum{width:24px;height:24px;border-radius:50%;background:#3a7a3a;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.atitle{font-size:13px;font-weight:600;color:#1a1a18;margin-bottom:2px}
+.adesc{font-size:12px;color:#555;line-height:1.6}
+.anote{font-size:11px;color:#3a7a3a;margin-top:3px;font-style:italic}
+.viz-panels{display:flex;gap:10px;align-items:flex-start}
+.viz-map{flex:1.15;min-width:0}
+.viz-chart{flex:.85;min-width:0}
+.zr{cursor:pointer;transition:opacity .2s}
+.zr.dim{opacity:.25}
+.bl{transition:stroke-width .15s,opacity .15s}
+.bl.dim{opacity:.14}
+.bl.hi{stroke-width:3.2}
+.info-bar{border-top:0.5px solid #e0ddd8;padding:12px 0 4px;margin-top:4px}
+.info-bar-header{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+#ic{width:12px;height:12px;border-radius:3px;background:#ddd;flex-shrink:0;transition:background .2s}
+#it{font-size:13px;font-weight:600;color:#1a1a18}
+#idesc{font-size:12px;color:#666;line-height:1.6}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:12px;padding-top:10px;border-top:0.5px solid #eee}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:#555;cursor:pointer;padding:2px 4px;border-radius:4px;transition:background .15s}
+.legend-item:hover{background:#f0f0ee}
+.legend-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:4px}
+@media(max-width:520px){.two-col{grid-template-columns:1fr}}
+.card{border:0.5px solid #e8e5e0;border-radius:8px;padding:14px}
+.card-title{font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px}
+.card ul{padding-left:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+.card li{font-size:12px;color:#444;line-height:1.6;padding-left:14px;position:relative}
+.card li::before{content:'–';position:absolute;left:0;color:#bbb}
+.card.green{border-color:#b8d8a0;background:#fafdf8}
+.card.green .card-title{color:#3a7a3a}
+.card.green li::before{color:#6EBF6E}
+.river-note{font-size:12px;color:#444;line-height:1.7;margin-bottom:12px}
+.rleg{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:10px;padding-top:10px;border-top:0.5px solid #eee}
+.rleg-item{display:flex;align-items:center;gap:6px;font-size:11px;color:#555}
+.rleg-dot{width:12px;height:12px;border-radius:2px;flex-shrink:0}
+.alonso-note{margin-top:16px;padding:12px 14px;background:#f5f8f2;border-left:3px solid #6EBF6E;border-radius:0 6px 6px 0;font-size:12px;color:#444;line-height:1.7}
+.alonso-note strong{color:#3a7a3a}
+footer{text-align:center;font-size:11px;color:#bbb;margin-top:16px}
+</style>
+</head>
+<body>
+<div class="wrapper">
+<header>
+  <h1>튀넨의 고립국 이론 (von Thünen's Isolated State)</h1>
+  <p>Johann Heinrich von Thünen, <em>Der Isolierte Staat</em> (1826) — 농업 입지론의 고전</p>
+</header>
+
+<nav class="tab-nav">
+  <button class="tab-btn active" data-tab="background">탄생 배경</button>
+  <button class="tab-btn" data-tab="assumptions">전제조건</button>
+  <button class="tab-btn" data-tab="model">시각화 모델</button>
+  <button class="tab-btn" data-tab="limits">한계와 의의</button>
+</nav>
+
+<!-- ① 탄생 배경 -->
+<div class="tab-panel active" id="tab-background">
+  <p class="panel-lead">요한 하인리히 폰 튀넨(1783–1850)은 북독일 메클렌부르크의 농업 경영인이었습니다. 그는 단순한 이론가가 아니라 40년간 자신의 농장 <em>텔로우(Tellow)</em>의 수입·지출·생산량을 꼼꼼히 기록한 실증주의적 경제학자였습니다. 이 경험에서 출발한 그의 질문은 단순했습니다.</p>
+  <blockquote>"비옥도가 동일한 평원 한가운데에 도시가 하나 있다면, 농업 지대는 어떤 패턴으로 배열될 것인가?"</blockquote>
+  <div class="sec">연구의 흐름</div>
+  <div class="timeline">
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1783</div><div class="tl-text">메클렌부르크 출생. 농업 교육을 받고 지주 가문의 경영 방식을 익힘.</div></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1810년대</div><div class="tl-text">텔로우 농장 경영 시작. 수십 년간 생산·비용·운송 기록을 축적하며 도시(로스토크)와의 거리에 따라 어떤 작물이 경제적으로 유리한지 분석하기 시작.</div></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1826</div><div class="tl-text">『고립국(Der Isolierte Staat)』 1권 출판. 입찰지대 개념과 동심원적 농업 지대 모델을 수학적으로 제시. 고전 입지이론의 출발점이 됨.</div></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1850 이후</div><div class="tl-text">사망 후 2권 유고 출판. 리카도의 지대론을 공간적으로 확장한 최초의 시도로 평가받으며, 이후 크리스탈러·베버·알론소의 이론적 토대가 됨.</div></div>
+  </div>
+  <div class="sec" style="margin-top:24px">이 이론이 중요한 이유</div>
+  <p class="body-text">튀넨 이전에는 농업 입지를 체계적으로 설명하는 경제 모델이 없었습니다. 그는 <strong>운송비</strong>라는 단 하나의 변수로, 왜 서로 다른 농업 유형이 특정 거리대에 집중되는지를 설명했습니다. 이 원리는 이후 알론소(도시 토지이용), 크리스탈러(중심지이론), 베버(공업입지론)로 이어지는 고전 입지이론의 원형이 되었습니다.</p>
+</div>
+
+<!-- ② 전제조건 -->
+<div class="tab-panel" id="tab-assumptions">
+  <p class="panel-lead">튀넨은 복잡한 현실을 단순화하기 위해 여러 가정을 설정했습니다. 이 전제조건들은 모델의 한계이기도 하지만, "어떤 조건이 바뀌면 패턴이 어떻게 달라지는가?"를 탐구하는 출발점이 됩니다.</p>
+  <div class="formula-box">
+    <div class="formula-main"><em>R</em> = (<em>p</em> − <em>a</em>) − <em>f</em> · <em>d</em></div>
+    <div class="formula-terms">
+      <span class="formula-term"><strong>R</strong> 입찰지대 — 그 위치를 쓰기 위해 지불할 수 있는 최대 금액</span>
+      <span class="formula-term"><strong>p</strong> 시장 판매가격</span>
+      <span class="formula-term"><strong>a</strong> 단위 생산비</span>
+      <span class="formula-term"><strong>f</strong> 단위거리당 운송비율 (곡선의 기울기)</span>
+      <span class="formula-term"><strong>d</strong> 시장까지의 거리</span>
+    </div>
+    <p class="formula-note">거리(d)가 멀수록 지대(R) 감소. 기울기(f)가 가파를수록 운송비에 민감한 작물 → 시장 가까이에만 입지 가능.</p>
+  </div>
+  <div class="alist">
+    <div class="aitem"><div class="anum">1</div><div><div class="atitle">고립된 균질 평원</div><div class="adesc">외부와 단절된, 지형적으로 완전히 평탄하고 균일한 평원. 산·강·도로 등 지형적 차이 없음.</div><div class="anote">→ 운송비가 오직 '거리'에만 의존할 수 있는 조건</div></div></div>
+    <div class="aitem"><div class="anum">2</div><div><div class="atitle">단일 중심 시장</div><div class="adesc">시장 도시는 하나뿐이며, 모든 농산물은 이 도시에서만 판매됨.</div><div class="anote">→ 동심원 구조의 논리적 근거</div></div></div>
+    <div class="aitem"><div class="anum">3</div><div><div class="atitle">균질한 토양 비옥도</div><div class="adesc">평원 어디서나 토양 조건과 농업 생산성이 동일함.</div><div class="anote">→ 위치에 따른 생산비 차이를 제거하여 순수하게 운송비의 영향만 분석</div></div></div>
+    <div class="aitem"><div class="anum">4</div><div><div class="atitle">단일 등방성 운송 수단</div><div class="adesc">하나의 운송 수단만 존재하며, 모든 방향으로 동일한 비용과 속도로 이용 가능.</div><div class="anote">→ 원형의 등비용선이 도출되어 동심원 형태가 성립</div></div></div>
+    <div class="aitem"><div class="anum">5</div><div><div class="atitle">운송비의 거리 비례</div><div class="adesc">운송비는 거리와 화물량에 정비례하여 증가함. 규모의 경제 없음.</div><div class="anote">→ 입찰지대 곡선이 직선(1차 함수)이 되는 수학적 근거</div></div></div>
+    <div class="aitem"><div class="anum">6</div><div><div class="atitle">합리적 경제인 &amp; 완전 경쟁</div><div class="adesc">모든 농업인은 이윤 극대화를 추구하는 합리적 의사결정자이며, 진입·퇴출이 자유로운 완전 경쟁 시장.</div><div class="anote">→ 토지 이용은 가장 높은 지대를 지불할 수 있는 농업 유형에 의해 결정됨</div></div></div>
+  </div>
+</div>
+
+<!-- ③ 시각화 모델 -->
+<div class="tab-panel" id="tab-model">
+  <p class="panel-lead" style="margin-bottom:12px">각 농업 유형은 고유한 <strong>입찰지대 곡선</strong>(bid-rent curve)을 가집니다. 시장에서 가장 높은 지대를 지불할 수 있는 유형이 그 거리대에 입지하며, 이 경쟁의 결과로 동심원적 농업 지대가 형성됩니다.</p>
+  <div class="viz-panels">
+    <div class="viz-map">
+      <svg id="mp" width="100%" viewBox="0 0 360 360">
+        <circle id="r6" class="zr" data-z="6" cx="180" cy="180" r="175" fill="#9ED47A"/>
+        <circle id="r5" class="zr" data-z="5" cx="180" cy="180" r="148" fill="#E8A848"/>
+        <circle id="r4" class="zr" data-z="4" cx="180" cy="180" r="126" fill="#E8C850"/>
+        <circle id="r3" class="zr" data-z="3" cx="180" cy="180" r="104" fill="#C8D850"/>
+        <circle id="r2" class="zr" data-z="2" cx="180" cy="180" r="82"  fill="#B07A30"/>
+        <circle id="r1" class="zr" data-z="1" cx="180" cy="180" r="50"  fill="#6EBF6E"/>
+        <circle cx="180" cy="180" r="16" fill="#2C2B28" pointer-events="none"/>
+        <text x="180" y="183" text-anchor="middle" pointer-events="none" style="font-size:7.5px;fill:#fff;font-family:inherit">도시</text>
+        <circle cx="180" cy="180" r="175" fill="none" stroke="#000" stroke-opacity=".1" stroke-width=".8" pointer-events="none"/>
+        <circle cx="180" cy="180" r="148" fill="none" stroke="#000" stroke-opacity=".1" stroke-width=".8" pointer-events="none"/>
+        <circle cx="180" cy="180" r="126" fill="none" stroke="#000" stroke-opacity=".1" stroke-width=".8" pointer-events="none"/>
+        <circle cx="180" cy="180" r="104" fill="none" stroke="#000" stroke-opacity=".1" stroke-width=".8" pointer-events="none"/>
+        <circle cx="180" cy="180" r="82"  fill="none" stroke="#000" stroke-opacity=".1" stroke-width=".8" pointer-events="none"/>
+        <circle cx="180" cy="180" r="50"  fill="none" stroke="#000" stroke-opacity=".1" stroke-width=".8" pointer-events="none"/>
+        <text x="198" y="162" text-anchor="middle" pointer-events="none" style="font-size:10px;fill:#fff;font-family:inherit">①</text>
+        <text x="227" y="134" text-anchor="middle" pointer-events="none" style="font-size:11px;fill:#fff;font-family:inherit">②</text>
+        <text x="246" y="114" text-anchor="middle" pointer-events="none" style="font-size:11px;fill:#444;font-family:inherit">③</text>
+        <text x="261" y="99"  text-anchor="middle" pointer-events="none" style="font-size:11px;fill:#444;font-family:inherit">④</text>
+        <text x="277" y="84"  text-anchor="middle" pointer-events="none" style="font-size:11px;fill:#444;font-family:inherit">⑤</text>
+        <text x="294" y="67"  text-anchor="middle" pointer-events="none" style="font-size:11px;fill:#333;font-family:inherit">⑥</text>
+      </svg>
+    </div>
+    <div class="viz-chart">
+      <svg id="ch" width="100%" viewBox="0 0 260 278">
+        <text x="143" y="12" text-anchor="middle" style="font-size:9px;fill:#888;font-family:inherit">입찰지대 곡선 (Bid-Rent Curves)</text>
+        <line x1="38" y1="20" x2="38" y2="240" stroke="#bbb" stroke-width=".8"/>
+        <line x1="38" y1="240" x2="248" y2="240" stroke="#bbb" stroke-width=".8"/>
+        <text x="8" y="130" text-anchor="middle" transform="rotate(-90,8,130)" style="font-size:8px;fill:#888;font-family:inherit">지대 (Rent)</text>
+        <line x1="34" y1="240" x2="38" y2="240" stroke="#bbb" stroke-width=".8"/><text x="32" y="243" text-anchor="end" style="font-size:8px;fill:#888;font-family:inherit">0</text>
+        <line x1="34" y1="190" x2="38" y2="190" stroke="#bbb" stroke-width=".8"/><text x="32" y="193" text-anchor="end" style="font-size:8px;fill:#888;font-family:inherit">25</text>
+        <line x1="34" y1="140" x2="38" y2="140" stroke="#bbb" stroke-width=".8"/><text x="32" y="143" text-anchor="end" style="font-size:8px;fill:#888;font-family:inherit">50</text>
+        <line x1="34" y1="90" x2="38" y2="90" stroke="#bbb" stroke-width=".8"/><text x="32" y="93" text-anchor="end" style="font-size:8px;fill:#888;font-family:inherit">75</text>
+        <line x1="34" y1="40" x2="38" y2="40" stroke="#bbb" stroke-width=".8"/><text x="32" y="43" text-anchor="end" style="font-size:8px;fill:#888;font-family:inherit">100</text>
+        <line x1="38"  y1="240" x2="38"  y2="245" stroke="#bbb" stroke-width=".8"/><text x="38"  y="258" text-anchor="middle" style="font-size:8px;fill:#888;font-family:inherit">0</text>
+        <line x1="108" y1="240" x2="108" y2="245" stroke="#bbb" stroke-width=".8"/><text x="108" y="258" text-anchor="middle" style="font-size:8px;fill:#888;font-family:inherit">10</text>
+        <line x1="178" y1="240" x2="178" y2="245" stroke="#bbb" stroke-width=".8"/><text x="178" y="258" text-anchor="middle" style="font-size:8px;fill:#888;font-family:inherit">20</text>
+        <line x1="248" y1="240" x2="248" y2="245" stroke="#bbb" stroke-width=".8"/><text x="248" y="258" text-anchor="middle" style="font-size:8px;fill:#888;font-family:inherit">30</text>
+        <text x="143" y="271" text-anchor="middle" style="font-size:8px;fill:#888;font-family:inherit">거리 →</text>
+        <line id="l1" class="bl" x1="38" y1="40"  x2="116" y2="240" stroke="#3A8B3A" stroke-width="1.8"/>
+        <line id="l2" class="bl" x1="38" y1="94"  x2="152" y2="240" stroke="#7A5010" stroke-width="1.8"/>
+        <line id="l3" class="bl" x1="38" y1="136" x2="184" y2="240" stroke="#788800" stroke-width="1.8"/>
+        <line id="l4" class="bl" x1="38" y1="164" x2="228" y2="240" stroke="#A07800" stroke-width="1.8"/>
+        <line id="l5" class="bl" x1="38" y1="178" x2="248" y2="238" stroke="#A05800" stroke-width="1.8"/>
+        <line id="l6" class="bl" x1="38" y1="200" x2="248" y2="230" stroke="#4A9030" stroke-width="1.8"/>
+        <line x1="80"  y1="148" x2="80"  y2="240" stroke="#ccc" stroke-width=".6" stroke-dasharray="3,2" pointer-events="none"/>
+        <line x1="112" y1="189" x2="112" y2="240" stroke="#ccc" stroke-width=".6" stroke-dasharray="3,2" pointer-events="none"/>
+        <line x1="127" y1="200" x2="127" y2="240" stroke="#ccc" stroke-width=".6" stroke-dasharray="3,2" pointer-events="none"/>
+        <line x1="161" y1="213" x2="161" y2="240" stroke="#ccc" stroke-width=".6" stroke-dasharray="3,2" pointer-events="none"/>
+        <line x1="192" y1="222" x2="192" y2="240" stroke="#ccc" stroke-width=".6" stroke-dasharray="3,2" pointer-events="none"/>
+        <polyline points="38,40 80,148 112,189 127,200 161,213 192,222 248,230" fill="none" stroke="#444" stroke-width="2" stroke-opacity=".5" stroke-linejoin="round" pointer-events="none"/>
+        <rect x="38"  y="241" width="42" height="4" fill="#6EBF6E" pointer-events="none"/>
+        <rect x="80"  y="241" width="32" height="4" fill="#B07A30" pointer-events="none"/>
+        <rect x="112" y="241" width="15" height="4" fill="#C8D850" pointer-events="none"/>
+        <rect x="127" y="241" width="34" height="4" fill="#E8C850" pointer-events="none"/>
+        <rect x="161" y="241" width="31" height="4" fill="#E8A848" pointer-events="none"/>
+        <rect x="192" y="241" width="56" height="4" fill="#9ED47A" pointer-events="none"/>
+        <circle cx="80"  cy="148" r="2.5" fill="#666" opacity=".65" pointer-events="none"/>
+        <circle cx="112" cy="189" r="2.5" fill="#666" opacity=".65" pointer-events="none"/>
+        <circle cx="127" cy="200" r="2.5" fill="#666" opacity=".65" pointer-events="none"/>
+        <circle cx="161" cy="213" r="2.5" fill="#666" opacity=".65" pointer-events="none"/>
+        <circle cx="192" cy="222" r="2.5" fill="#666" opacity=".65" pointer-events="none"/>
+      </svg>
+    </div>
+  </div>
+  <div class="info-bar">
+    <div class="info-bar-header"><div id="ic"></div><span id="it">튀넨의 고립국 이론 (von Thünen, 1826)</span></div>
+    <p id="idesc">지도의 각 권역 위에 마우스를 올리면 설명이 나타납니다. 동심원 지도와 입찰지대 곡선이 연동됩니다.</p>
+  </div>
+  <div class="legend">
+    <div class="legend-item" onclick="hi(1)"><div class="legend-dot" style="background:#6EBF6E"></div>① 원예·낙농</div>
+    <div class="legend-item" onclick="hi(2)"><div class="legend-dot" style="background:#B07A30"></div>② 임업</div>
+    <div class="legend-item" onclick="hi(3)"><div class="legend-dot" style="background:#C8D850"></div>③ 윤작농업</div>
+    <div class="legend-item" onclick="hi(4)"><div class="legend-dot" style="background:#E8C850"></div>④ 곡초식 농업</div>
+    <div class="legend-item" onclick="hi(5)"><div class="legend-dot" style="background:#E8A848"></div>⑤ 3포식 농업</div>
+    <div class="legend-item" onclick="hi(6)"><div class="legend-dot" style="background:#9ED47A"></div>⑥ 목축업</div>
+  </div>
+</div>
+
+<!-- ④ 한계와 의의 -->
+<div class="tab-panel" id="tab-limits">
+  <p class="panel-lead">고립국 이론은 현실을 단순화한 모델이지만, 그 단순함이 오히려 강점입니다. 전제조건이 완화될 때 패턴이 어떻게 달라지는지를 탐구하는 출발점이 되기 때문입니다.</p>
+
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">현실과의 차이 — 한계</div>
+      <ul>
+        <li>실제 지형은 불균질함 — 강·철도·고속도로가 운송비를 비선형으로 변화시킴</li>
+        <li>시장이 하나가 아님 — 복수의 도시와 시장이 중첩된 영향권을 형성</li>
+        <li>기술 변화 — 냉장 기술 발달로 신선도 민감도가 크게 낮아짐</li>
+        <li>비경제적 요인 — 역사·문화·정책·지가 규제 등이 토지 이용에 개입</li>
+        <li>글로벌 농업의 등장 — 운송혁명으로 원거리 생산·공급이 일반화됨</li>
+      </ul>
+    </div>
+    <div class="card green">
+      <div class="card-title">이론적 의의 — 현대적 계승</div>
+      <ul>
+        <li>입지이론의 시초 — 크리스탈러(중심지이론), 베버(공업입지론)의 원형</li>
+        <li>알론소(1964)의 도시 입찰지대 이론으로 발전 → 도심-교외 토지 이용 설명</li>
+        <li>'거리-지대 관계' 원리는 현대 GIS 기반 입지 분석에도 유효</li>
+        <li>접근성(accessibility)으로 재해석하면 디지털 경제에도 적용 가능</li>
+      </ul>
+    </div>
+  </div>
+
+
+</div>
+
+</div>
+<footer>kgeography.tistory.com · 튀넨 고립국 이론 인터랙티브 강의 도구</footer>
+
+<script>
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+  });
+});
+const D=[
+  {c:'#6EBF6E',n:'1권역 — 원예·낙농',e:'Horticulture & Dairy',t:'시장에서 가장 가까운 권역. 신선 채소·과일·우유를 생산하며 부패하기 쉬워 운송비에 가장 민감합니다. 입찰지대 곡선의 기울기(f)가 가장 가팔라 시장 인근에서만 경쟁력을 가집니다.'},
+  {c:'#B07A30',n:'2권역 — 임업',e:'Forestry',t:'목재는 무겁고 부피가 커서 운송비 부담이 큽니다. 튀넨 시대에는 난방·건축용 목재가 필수재였기 때문에 도시 인근에 숲이 위치해야 했습니다. 현재는 냉장기술·운송 발달로 이 패턴이 크게 변화했습니다.'},
+  {c:'#C8D850',n:'3권역 — 윤작농업 (6포식)',e:'Intensive Crop Rotation',t:'6포식 윤작을 통해 휴경 없이 집약적으로 곡물을 재배합니다. 생산성이 높아 상당한 운송비를 감당할 수 있습니다. 콩과식물을 포함한 순환 작부체계로 토지 비옥도를 유지합니다.'},
+  {c:'#E8C850',n:'4권역 — 곡초식 농업',e:'Mixed Farming',t:'곡물 경작과 목초지를 결합한 방식입니다. 3권역보다 덜 집약적이며 경지 일부를 목초로 이용합니다. 가축의 퇴비를 통해 토지 비옥도를 유지하는 혼합 농업 체계입니다.'},
+  {c:'#E8A848',n:'5권역 — 3포식 농업',e:'Three-Field System',t:'경지를 세 구획으로 나눠 춘곡·추곡·휴경을 순환하는 중세 유럽의 전통 농업 방식입니다. 토지이용 강도가 낮고 시장에서 멀어 낮은 지대임에도 입지 가능합니다.'},
+  {c:'#9ED47A',n:'6권역 — 목축업',e:'Livestock Ranching',t:'가장 외곽에 위치하는 광범위한 가축 사육 권역. 가축이 스스로 시장까지 이동하므로 운송비 부담이 적고 입찰지대 곡선의 기울기가 가장 완만합니다. 넓은 면적의 저렴한 토지를 이용합니다.'}
+];
+const DT='튀넨의 고립국 이론 (von Thünen, 1826)';
+const DD='지도의 각 권역 위에 마우스를 올리면 설명이 나타납니다. 동심원 지도와 입찰지대 곡선이 연동됩니다.';
+function hi(n){
+  const z=D[n-1];
+  document.getElementById('ic').style.background=z.c;
+  document.getElementById('it').textContent=z.n+' ('+z.e+')';
+  document.getElementById('idesc').textContent=z.t;
+  for(let i=1;i<=6;i++){
+    document.getElementById('r'+i).classList.toggle('dim',i!==n);
+    const l=document.getElementById('l'+i);
+    l.classList.toggle('dim',i!==n);
+    l.classList.toggle('hi',i===n);
+  }
+}
+function rs(){
+  document.getElementById('ic').style.background='#ddd';
+  document.getElementById('it').textContent=DT;
+  document.getElementById('idesc').textContent=DD;
+  for(let i=1;i<=6;i++){
+    document.getElementById('r'+i).classList.remove('dim');
+    const l=document.getElementById('l'+i);
+    l.classList.remove('dim','hi');
+  }
+}
+document.querySelectorAll('.zr').forEach(el=>{
+  el.addEventListener('mouseover',()=>hi(+el.dataset.z));
+  el.addEventListener('click',()=>hi(+el.dataset.z));
+  el.addEventListener('touchstart',e=>{hi(+el.dataset.z);e.preventDefault();},{passive:false});
+});
+document.getElementById('mp').addEventListener('mouseleave',rs);
+</script>
+</body>
+</html>
