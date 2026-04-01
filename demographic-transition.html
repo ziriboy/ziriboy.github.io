@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>인구 변천 이론 — 인터랙티브 강의 도구</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#fff;color:#111;max-width:760px;margin:0 auto;padding:24px 20px 48px;}
+:root{--bg:#fff;--bg2:#f7f7f5;--bd:rgba(0,0,0,0.12);--t:#111;--t2:#666;--t3:#aaa;--r:10px;}
+@media(prefers-color-scheme:dark){:root{--bg:#1a1a1a;--bg2:#242424;--bd:rgba(255,255,255,0.12);--t:#eee;--t2:#aaa;--t3:#555;}}
+body{background:var(--bg);color:var(--t);}
+.vbtn{padding:7px 14px;border:0.5px solid var(--bd);background:var(--bg);border-radius:var(--r);cursor:pointer;font-size:13px;color:var(--t2);transition:all .15s;white-space:nowrap;font-family:inherit;}
+.vbtn.on{background:var(--t);color:var(--bg);font-weight:500;}
+.sbtn{flex:1;padding:7px 4px;border:0.5px solid var(--bd);background:var(--bg);border-radius:var(--r);cursor:pointer;font-size:12px;color:var(--t2);transition:all .15s;text-align:center;font-family:inherit;}
+.sbtn.on{font-weight:500;border-width:1.5px;}
+.sbtn.s1.on{border-color:#888780;background:#F1EFE8;color:#2C2C2A;}
+.sbtn.s2.on{border-color:#D85A30;background:#FAECE7;color:#4A1B0C;}
+.sbtn.s3.on{border-color:#BA7517;background:#FAEEDA;color:#412402;}
+.sbtn.s4.on{border-color:#185FA5;background:#E6F1FB;color:#042C53;}
+.sbtn.s5.on{border-color:#0F6E56;background:#E1F5EE;color:#04342C;}
+.card{border-radius:var(--r);border:0.5px solid var(--bd);padding:1rem 1.25rem;background:var(--bg2);}
+.tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:6px;margin:2px;}
+.ccard{border:0.5px solid var(--bd);border-radius:var(--r);padding:.9rem 1rem;background:var(--bg2);margin-bottom:8px;}
+.li{display:flex;gap:8px;margin-bottom:8px;align-items:flex-start;}
+.mpill{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--t2);margin:2px 4px 2px 0;}
+.mdot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.abar{width:3px;border-radius:2px;flex-shrink:0;align-self:stretch;}
+.ctag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:6px;margin:2px;background:var(--bg);border:0.5px solid var(--bd);color:var(--t2);}
+</style>
+</head>
+<body>
+<div style="padding:1rem 0 0;">
+
+  <div style="margin-bottom:1.25rem;">
+    <p style="font-size:11px;color:var(--t2);margin-bottom:2px;">인구지리학 핵심 개념</p>
+    <p style="font-size:20px;font-weight:500;margin-bottom:2px;">인구 변천 이론</p>
+    <p style="font-size:13px;color:var(--t2);">Demographic Transition Theory</p>
+  </div>
+
+  <div style="display:flex;gap:5px;margin-bottom:1.25rem;flex-wrap:wrap;">
+    <button class="vbtn on" id="btnT" onclick="sw('theory')">이론 모델</button>
+    <button class="vbtn" id="btnK" onclick="sw('korea')">한국 데이터 (1960–2024)</button>
+    <button class="vbtn" id="btnC" onclick="sw('context')">이 모델의 의미</button>
+  </div>
+
+  <!-- 이론 모델 -->
+  <div id="pT">
+    <div style="display:flex;gap:5px;margin-bottom:1.25rem;">
+      <button class="sbtn s1 on" onclick="sel(1)">1단계<br><span style="font-size:10px;">전통 정체</span></button>
+      <button class="sbtn s2" onclick="sel(2)">2단계<br><span style="font-size:10px;">초기 팽창</span></button>
+      <button class="sbtn s3" onclick="sel(3)">3단계<br><span style="font-size:10px;">후기 팽창</span></button>
+      <button class="sbtn s4" onclick="sel(4)">4단계<br><span style="font-size:10px;">저위 안정</span></button>
+      <button class="sbtn s5" onclick="sel(5)">5단계<br><span style="font-size:10px;">인구 감소</span></button>
+    </div>
+    <div style="position:relative;width:100%;height:260px;margin-bottom:.75rem;"><canvas id="cT"></canvas></div>
+    <div style="display:flex;gap:14px;margin-bottom:1rem;font-size:12px;color:var(--t2);flex-wrap:wrap;">
+      <span style="display:flex;align-items:center;gap:5px;"><span style="width:22px;height:2.5px;background:#D85A30;display:inline-block;border-radius:2px;"></span>출생률</span>
+      <span style="display:flex;align-items:center;gap:5px;"><span style="width:22px;height:2.5px;background:#378ADD;display:inline-block;border-radius:2px;"></span>사망률</span>
+      <span style="display:flex;align-items:center;gap:5px;"><span style="width:14px;height:10px;background:rgba(52,168,83,0.18);display:inline-block;border-radius:2px;border:0.5px solid rgba(52,168,83,0.4);"></span>자연증가</span>
+      <span style="display:flex;align-items:center;gap:5px;"><span style="width:14px;height:10px;background:rgba(216,90,48,0.15);display:inline-block;border-radius:2px;border:0.5px solid rgba(216,90,48,0.4);"></span>자연감소</span>
+    </div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
+        <div>
+          <p style="font-size:12px;color:var(--t2);margin-bottom:2px;" id="sLabel">1단계</p>
+          <p style="font-size:15px;font-weight:500;" id="sTitle"></p>
+        </div>
+        <div style="display:flex;gap:14px;">
+          <div style="text-align:center;"><p style="font-size:10px;color:var(--t2);margin-bottom:2px;">출생률</p><p style="font-size:14px;font-weight:500;" id="sBR"></p></div>
+          <div style="text-align:center;"><p style="font-size:10px;color:var(--t2);margin-bottom:2px;">사망률</p><p style="font-size:14px;font-weight:500;" id="sDR"></p></div>
+          <div style="text-align:center;"><p style="font-size:10px;color:var(--t2);margin-bottom:2px;">인구변화</p><p style="font-size:14px;font-weight:500;" id="sNI"></p></div>
+        </div>
+      </div>
+      <p style="font-size:13px;color:var(--t2);line-height:1.6;margin-bottom:10px;" id="sDesc"></p>
+      <div id="sTags"></div>
+    </div>
+  </div>
+
+  <!-- 한국 데이터 -->
+  <div id="pK" style="display:none;">
+    <div style="position:relative;width:100%;height:260px;margin-bottom:.75rem;"><canvas id="cK"></canvas></div>
+    <div style="display:flex;gap:14px;margin-bottom:.5rem;font-size:12px;color:var(--t2);flex-wrap:wrap;">
+      <span style="display:flex;align-items:center;gap:5px;"><span style="width:22px;height:2.5px;background:#D85A30;display:inline-block;border-radius:2px;"></span>출생률</span>
+      <span style="display:flex;align-items:center;gap:5px;"><span style="width:22px;height:2.5px;background:#378ADD;display:inline-block;border-radius:2px;"></span>사망률</span>
+    </div>
+    <div style="margin-bottom:1rem;font-size:12px;">
+      <span class="mpill"><span class="mdot" style="background:#D85A30;"></span>1962 가족계획 정책</span>
+      <span class="mpill"><span class="mdot" style="background:#BA7517;"></span>1983 '둘만 낳아'</span>
+      <span class="mpill"><span class="mdot" style="background:#378ADD;"></span>1996 산아제한 폐지</span>
+      <span class="mpill"><span class="mdot" style="background:#185FA5;"></span>2006 저출산 대책</span>
+      <span class="mpill"><span class="mdot" style="background:#0F6E56;"></span>2020 자연감소 시작</span>
+    </div>
+    <div class="card">
+      <p style="font-size:12px;color:var(--t2);margin-bottom:4px;">한국 인구 변천</p>
+      <p style="font-size:15px;font-weight:500;margin-bottom:10px;">1960–2024: 64년의 기록</p>
+      <p style="font-size:13px;color:var(--t2);line-height:1.6;margin-bottom:10px;">한국은 출생률이 41‰(1960)에서 4.2‰(2024)로 64년 만에 10분의 1로 줄었다. 영국(95년)·미국(82년)이 같은 변화에 수십 년이 걸린 것과 달리 한국은 18년 만에 절반으로 떨어졌다. 2020년 사망자 수가 출생자 수를 처음 넘어섰다.</p>
+      <div>
+        <span class="tag" style="background:#FAECE7;color:#712B13;">1·2단계: 1960년대</span>
+        <span class="tag" style="background:#FAEEDA;color:#633806;">3단계: 1970–80년대</span>
+        <span class="tag" style="background:#E6F1FB;color:#0C447C;">4단계: 1990년대</span>
+        <span class="tag" style="background:#E1F5EE;color:#085041;">5단계: 2020년~</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 모델의 의미 -->
+  <div id="pC" style="display:none;">
+
+    <div style="margin-bottom:1.25rem;">
+      <p style="font-size:13px;font-weight:500;margin-bottom:8px;">왜, 어디서 만들어졌는가</p>
+      <div class="ccard">
+        <p style="font-size:12px;color:var(--t2);line-height:1.6;margin-bottom:8px;">19세기 영국·프랑스·스웨덴 등 서유럽 국가들이 산업화를 거치면서 공통적인 인구 변화 패턴을 보였다. 산업화 이전에는 출생률과 사망률이 모두 높아 인구가 거의 증가하지 않았지만, 산업화 이후 위생·의료가 개선되자 사망률이 먼저 급락했고, 뒤이어 출생률도 낮아지는 흐름이 반복됐다. Thompson(1929)이 이 패턴을 처음 유형화했고, Notestein(1945)이 '인구 변천'이라는 이름을 붙여 4단계 이론으로 체계화했다.</p>
+        <div>
+          <span class="ctag">19세기 영국 (산업혁명)</span>
+          <span class="ctag">프랑스 (완만한 출산율 하락)</span>
+          <span class="ctag">스웨덴 (장기 인구통계 기록)</span>
+          <span class="ctag">독일·벨기에 (공업화 국가)</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;">
+        <div style="display:flex;gap:12px;align-items:stretch;">
+          <div style="display:flex;flex-direction:column;align-items:center;width:32px;flex-shrink:0;">
+            <div style="width:10px;height:10px;border-radius:50%;background:#D85A30;flex-shrink:0;margin-top:3px;"></div>
+            <div style="width:1.5px;background:var(--bd);flex:1;"></div>
+          </div>
+          <div style="padding-bottom:14px;">
+            <p style="font-size:12px;font-weight:500;margin-bottom:2px;">1929 — Warren Thompson</p>
+            <p style="font-size:12px;color:var(--t2);line-height:1.5;">미국 인구학자. 세계 인구를 A·B·C 유형으로 분류하며 산업화 수준에 따라 출생·사망 패턴이 다름을 처음 체계화했다. 당시 배경은 1차 대전 이후 급증한 세계 인구를 어떻게 이해할 것인가였다.</p>
+          </div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:stretch;">
+          <div style="display:flex;flex-direction:column;align-items:center;width:32px;flex-shrink:0;">
+            <div style="width:10px;height:10px;border-radius:50%;background:#185FA5;flex-shrink:0;margin-top:3px;"></div>
+            <div style="width:1.5px;background:var(--bd);flex:1;"></div>
+          </div>
+          <div style="padding-bottom:14px;">
+            <p style="font-size:12px;font-weight:500;margin-bottom:2px;">1945 — Frank Notestein</p>
+            <p style="font-size:12px;color:var(--t2);line-height:1.5;">미국 프린스턴대 인구연구소. '인구 변천(demographic transition)'이라는 용어를 만들고 4단계 모델로 정립했다. 2차 대전 이후 개발도상국 원조·가족계획 정책의 이론적 토대가 됐다.</p>
+          </div>
+        </div>
+        <div style="display:flex;gap:12px;">
+          <div style="display:flex;flex-direction:column;align-items:center;width:32px;flex-shrink:0;">
+            <div style="width:10px;height:10px;border-radius:50%;background:#0F6E56;flex-shrink:0;margin-top:3px;"></div>
+          </div>
+          <div>
+            <p style="font-size:12px;font-weight:500;margin-bottom:2px;">1970년대 이후 — 5단계 추가</p>
+            <p style="font-size:12px;color:var(--t2);line-height:1.5;">서유럽·일본에서 출생률이 사망률 아래로 떨어지는 사례가 나타나자 Chesnais 등이 5단계를 추가로 제안했다. 한국은 2020년 이 단계에 진입했다.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:1.25rem;">
+      <p style="font-size:13px;font-weight:500;margin-bottom:8px;">모델의 핵심 통찰</p>
+      <div class="ccard">
+        <div class="li">
+          <span style="font-size:15px;line-height:1.3;flex-shrink:0;color:var(--t2);">①</span>
+          <p style="font-size:12px;color:var(--t2);line-height:1.5;"><strong>사망률이 먼저 떨어진다</strong> — 의학·위생 기술은 빠르게 전파되지만 출산 행동은 문화·경제 구조가 바뀌어야 변한다. 이 시차(lag)가 인구 폭발을 만든다.</p>
+        </div>
+        <div class="li">
+          <span style="font-size:15px;line-height:1.3;flex-shrink:0;color:var(--t2);">②</span>
+          <p style="font-size:12px;color:var(--t2);line-height:1.5;"><strong>인구 변화는 사회의 거울</strong> — 출생률·사망률 수치 자체보다, 그 배후의 산업화·도시화·여성 교육·의료 수준을 읽는 틀이다.</p>
+        </div>
+        <div class="li" style="margin-bottom:0;">
+          <span style="font-size:15px;line-height:1.3;flex-shrink:0;color:var(--t2);">③</span>
+          <p style="font-size:12px;color:var(--t2);line-height:1.5;"><strong>현재를 진단하는 좌표</strong> — "지금 이 나라는 몇 단계인가?"라는 질문 하나가 그 사회의 인구 구조와 정책 과제를 압축적으로 드러낸다.</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:1.25rem;">
+      <p style="font-size:13px;font-weight:500;margin-bottom:8px;">한계 — 모델이 설명하지 못하는 것</p>
+      <div class="ccard">
+        <div class="li"><span style="font-size:15px;line-height:1.3;flex-shrink:0;color:var(--t2);">①</span><p style="font-size:12px;color:var(--t2);line-height:1.5;"><strong>유럽 중심 가정</strong> — 서유럽의 경험을 보편 법칙으로 일반화했다. 중국(강제 산아제한)·한국(초압축 전환) 같은 비선형 사례는 설명하기 어렵다.</p></div>
+        <div class="li"><span style="font-size:15px;line-height:1.3;flex-shrink:0;color:var(--t2);">②</span><p style="font-size:12px;color:var(--t2);line-height:1.5;"><strong>이주를 무시</strong> — 국제 이민은 단계와 무관하게 인구 규모와 구조를 바꾸지만 원래 모델에는 포함되지 않는다.</p></div>
+        <div class="li"><span style="font-size:15px;line-height:1.3;flex-shrink:0;color:var(--t2);">③</span><p style="font-size:12px;color:var(--t2);line-height:1.5;"><strong>5단계를 예측하지 못했다</strong> — 출생률이 사망률 아래로 떨어지는 자연감소는 원래 모델에 없었다. 한국·일본·독일의 현실이 이론을 확장시켰다.</p></div>
+        <div class="li" style="margin-bottom:0;"><span style="font-size:15px;line-height:1.3;flex-shrink:0;color:var(--t2);">④</span><p style="font-size:12px;color:var(--t2);line-height:1.5;"><strong>국가 내 지역 차이를 숨긴다</strong> — 같은 단계라도 수도권과 농촌의 출생률은 전혀 다를 수 있다. 평균이 불평등을 가린다.</p></div>
+      </div>
+    </div>
+
+    <div class="ccard" style="display:flex;gap:10px;align-items:flex-start;">
+      <div class="abar" style="background:#0F6E56;min-height:40px;"></div>
+      <div>
+        <p style="font-size:12px;font-weight:500;margin-bottom:4px;">그래서 이 모델은 지금도 유효한가?</p>
+        <p style="font-size:12px;color:var(--t2);line-height:1.6;">서유럽의 경험에서 출발했지만, "어느 단계인가"라는 질문 하나로 어떤 사회의 인구 구조·정책 과제·경제 국면을 동시에 읽을 수 있는 압축된 지도가 됐다. 모델의 가치는 정확한 예측이 아니라, 비교와 질문의 출발점을 제공하는 데 있다.</p>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:1.5rem;padding-top:.75rem;border-top:0.5px solid var(--bd);text-align:right;">
+    <a href="https://kgeography.tistory.com" style="font-size:11px;color:var(--t3);text-decoration:none;">kgeography.tistory.com</a>
+  </div>
+</div>
+
+<script>
+const SD={
+  1:{label:'1단계',title:'전통 정체 사회',br:'높음 (~40‰)',dr:'높음 (~38‰)',ni:'정체',
+    desc:'농업 중심 사회로 전염병·기아·전쟁으로 사망률이 매우 높다. 출생률도 높지만 차이가 크지 않아 인구는 거의 정체 상태다. 자녀는 노동력이자 노후 보장 수단으로 여겨진다.',
+    tags:[{t:'전통 농경사회',c:'#5F5E5A',b:'#F1EFE8'},{t:'아프가니스탄',c:'#5F5E5A',b:'#F1EFE8'},{t:'사하라 이남 일부',c:'#5F5E5A',b:'#F1EFE8'}]},
+  2:{label:'2단계',title:'초기 팽창 사회',br:'높음 (~40‰)',dr:'급감 (→12‰)',ni:'급성장',
+    desc:'위생·의료 기술 도입으로 사망률이 급격히 낮아진다. 출생률은 여전히 높아 자연증가폭이 가장 크게 벌어지는 단계다. 인구 폭발이라고 불릴 만큼 빠른 증가가 나타난다.',
+    tags:[{t:'한국 1960년대',c:'#712B13',b:'#FAECE7'},{t:'방글라데시',c:'#712B13',b:'#FAECE7'},{t:'파키스탄',c:'#712B13',b:'#FAECE7'}]},
+  3:{label:'3단계',title:'후기 팽창 사회',br:'하락 (→15‰)',dr:'낮음 (~10‰)',ni:'성장 둔화',
+    desc:'도시화·여성 교육·피임 보급으로 출생률이 본격적으로 하락하기 시작한다. 사망률은 이미 낮은 수준에서 안정됐고, 인구는 계속 증가하지만 속도가 눈에 띄게 줄어든다.',
+    tags:[{t:'한국 1970–80년대',c:'#633806',b:'#FAEEDA'},{t:'인도',c:'#633806',b:'#FAEEDA'},{t:'브라질',c:'#633806',b:'#FAEEDA'}]},
+  4:{label:'4단계',title:'저위 안정 사회',br:'낮음 (~12‰)',dr:'낮음 (~10‰)',ni:'안정',
+    desc:'출생률과 사망률이 모두 낮고 안정된 상태다. 두 곡선의 간격이 좁아져 인구가 거의 정체된다. 한국은 이 단계를 아주 짧게 통과하며 곧바로 5단계로 진입했다.',
+    tags:[{t:'한국 1990년대',c:'#0C447C',b:'#E6F1FB'},{t:'프랑스',c:'#0C447C',b:'#E6F1FB'},{t:'스웨덴',c:'#0C447C',b:'#E6F1FB'}]},
+  5:{label:'5단계',title:'인구 감소 사회',br:'초저 (~8‰)',dr:'상승 (~12‰)',ni:'감소',
+    desc:'출생률이 사망률 아래로 떨어져 자연감소가 시작된다. 원래 모델에는 없었던 단계로, 한국·일본·독일의 현실이 이론을 확장시켰다. 한국은 2024년 합계출산율 0.75명으로 세계 최저 수준이다.',
+    tags:[{t:'한국 2020년~',c:'#085041',b:'#E1F5EE'},{t:'일본',c:'#085041',b:'#E1F5EE'},{t:'독일',c:'#085041',b:'#E1F5EE'}]}
+};
+
+const tXs=[0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30];
+const tBR=[40,40,40,40,39,38,36,34,28,21,16,13,12,12,11,8];
+const tDR=[38,37,38,37,28,19,13,11,10,10,10,10,10,11,11,13];
+const CROSS_IDX=14;
+const STAGE_IDX=[
+  null,
+  {si:0,         ei:3,         c:'rgba(136,135,128,0.12)'},
+  {si:3,         ei:7,         c:'rgba(216,90,48,0.11)'},
+  {si:7,         ei:11,        c:'rgba(186,117,23,0.11)'},
+  {si:11,        ei:CROSS_IDX, c:'rgba(24,95,165,0.11)'},
+  {si:CROSS_IDX, ei:999,       c:'rgba(15,110,86,0.12)'},
+];
+let curS=1;
+
+const niPlugin={
+  id:'ni',
+  beforeDatasetsDraw(chart){
+    const{ctx:c}=chart;
+    const bM=chart.getDatasetMeta(0).data, dM=chart.getDatasetMeta(1).data;
+    if(!bM.length) return;
+    const top=chart.chartArea.top, bot=chart.chartArea.bottom, cPx=bM[CROSS_IDX].x;
+    c.save(); c.beginPath();
+    for(let i=0;i<=CROSS_IDX;i++) i===0?c.moveTo(bM[i].x,bM[i].y):c.lineTo(bM[i].x,bM[i].y);
+    c.lineTo(cPx,dM[CROSS_IDX].y);
+    for(let i=CROSS_IDX;i>=0;i--) c.lineTo(dM[i].x,dM[i].y);
+    c.closePath(); c.fillStyle='rgba(52,168,83,0.15)'; c.fill(); c.restore();
+    c.save(); c.beginPath();
+    c.moveTo(bM[CROSS_IDX].x,bM[CROSS_IDX].y);
+    for(let i=CROSS_IDX+1;i<bM.length;i++) c.lineTo(bM[i].x,bM[i].y);
+    for(let i=dM.length-1;i>=CROSS_IDX;i--) c.lineTo(dM[i].x,dM[i].y);
+    c.closePath(); c.fillStyle='rgba(216,90,48,0.15)'; c.fill(); c.restore();
+    const h=STAGE_IDX[curS];
+    if(!h) return;
+    const sx=bM[h.si].x, ex=(h.ei>=bM.length)?chart.chartArea.right:bM[h.ei].x;
+    c.save(); c.fillStyle=h.c; c.fillRect(sx,top,ex-sx,bot-top); c.restore();
+  }
+};
+
+const tChart=new Chart(document.getElementById('cT'),{
+  type:'line', plugins:[niPlugin],
+  data:{labels:tXs,datasets:[
+    {label:'출생률',data:tBR,borderColor:'#D85A30',borderWidth:2.5,tension:0.4,pointRadius:0,fill:false},
+    {label:'사망률',data:tDR,borderColor:'#378ADD',borderWidth:2.5,tension:0.4,pointRadius:0,fill:false}
+  ]},
+  options:{responsive:true,maintainAspectRatio:false,animation:{duration:300},
+    plugins:{legend:{display:false},tooltip:{callbacks:{title:i=>`시간 ${i[0].label}`,label:i=>` ${i.dataset.label}: ${i.parsed.y}‰`}}},
+    scales:{
+      x:{title:{display:true,text:'시간 (역사적 흐름 →)',color:'#888',font:{size:11}},grid:{color:'rgba(128,128,128,0.1)'},ticks:{display:false}},
+      y:{min:0,max:48,title:{display:true,text:'인구 1,000명당 (‰)',color:'#888',font:{size:11}},grid:{color:'rgba(128,128,128,0.1)'},ticks:{font:{size:11},color:'#888',stepSize:10}}
+    }
+  }
+});
+
+const kYr=[1960,1965,1970,1975,1980,1985,1990,1995,2000,2005,2010,2015,2020,2021,2022,2023,2024];
+const kBR=[41.2,35.5,31.2,25.3,22.7,16.1,15.4,15.7,13.3,10.0,9.4,8.6,5.9,5.1,4.9,4.5,4.2];
+const kDR=[12.8,10.8,8.9,7.7,6.6,6.3,5.8,5.4,5.2,5.0,5.1,5.5,5.9,6.6,7.3,7.8,8.2];
+const mLines=[{yr:1962,c:'#D85A30'},{yr:1983,c:'#BA7517'},{yr:1996,c:'#378ADD'},{yr:2006,c:'#185FA5'},{yr:2020,c:'#0F6E56'}];
+
+const niKPlugin={
+  id:'niK',
+  beforeDatasetsDraw(chart){
+    const{ctx:c,scales:{x}}=chart;
+    if(!chart.getDatasetMeta(0).data.length) return;
+    const top=chart.chartArea.top, bot=chart.chartArea.bottom;
+    mLines.forEach(m=>{
+      const px=x.getPixelForValue(m.yr);
+      if(px<chart.chartArea.left||px>chart.chartArea.right) return;
+      c.save(); c.strokeStyle=m.c; c.lineWidth=1; c.setLineDash([3,3]);
+      c.beginPath(); c.moveTo(px,top); c.lineTo(px,bot); c.stroke(); c.restore();
+    });
+    const cx=x.getPixelForValue(2020);
+    if(cx>=chart.chartArea.left&&cx<=chart.chartArea.right){
+      c.save(); c.fillStyle='rgba(216,90,48,0.10)';
+      c.fillRect(cx,top,chart.chartArea.right-cx,bot-top); c.restore();
+    }
+  }
+};
+
+const kChart=new Chart(document.getElementById('cK'),{
+  type:'line', plugins:[niKPlugin],
+  data:{labels:kYr,datasets:[
+    {label:'출생률',data:kBR,borderColor:'#D85A30',borderWidth:2.5,tension:0.3,pointRadius:4,pointBackgroundColor:'#D85A30',fill:false},
+    {label:'사망률',data:kDR,borderColor:'#378ADD',borderWidth:2.5,tension:0.3,pointRadius:4,pointBackgroundColor:'#378ADD',fill:false}
+  ]},
+  options:{responsive:true,maintainAspectRatio:false,animation:{duration:300},
+    plugins:{legend:{display:false},tooltip:{callbacks:{title:i=>`${i[0].label}년`,label:i=>` ${i.dataset.label}: ${i.parsed.y}‰`}}},
+    scales:{
+      x:{grid:{color:'rgba(128,128,128,0.1)'},ticks:{font:{size:11},color:'#888',maxRotation:45}},
+      y:{min:0,max:48,title:{display:true,text:'인구 1,000명당 (‰)',color:'#888',font:{size:11}},grid:{color:'rgba(128,128,128,0.1)'},ticks:{font:{size:11},color:'#888',stepSize:10}}
+    }
+  }
+});
+
+function sw(v){
+  document.getElementById('pT').style.display=v==='theory'?'block':'none';
+  document.getElementById('pK').style.display=v==='korea'?'block':'none';
+  document.getElementById('pC').style.display=v==='context'?'block':'none';
+  document.getElementById('btnT').className='vbtn'+(v==='theory'?' on':'');
+  document.getElementById('btnK').className='vbtn'+(v==='korea'?' on':'');
+  document.getElementById('btnC').className='vbtn'+(v==='context'?' on':'');
+  if(v==='theory') tChart.update();
+  if(v==='korea') kChart.update();
+}
+
+function sel(n){
+  curS=n;
+  document.querySelectorAll('.sbtn').forEach((b,i)=>{b.classList.remove('on');if(i===n-1)b.classList.add('on');});
+  const d=SD[n];
+  document.getElementById('sLabel').textContent=d.label;
+  document.getElementById('sTitle').textContent=d.title;
+  document.getElementById('sBR').textContent=d.br;
+  document.getElementById('sDR').textContent=d.dr;
+  document.getElementById('sNI').textContent=d.ni;
+  document.getElementById('sDesc').textContent=d.desc;
+  document.getElementById('sTags').innerHTML=d.tags.map(t=>`<span class="tag" style="background:${t.b};color:${t.c};">${t.t}</span>`).join('');
+  tChart.update();
+}
+
+sel(1);
+</script>
+</body>
+</html>
