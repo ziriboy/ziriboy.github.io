@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1인가구 — 청년 vs 노년 공간 분포</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Noto Sans KR', sans-serif; }
+.header {
+  background: white; border-bottom: 2px solid #E8E4DE;
+  padding: 14px 24px; display: flex; align-items: baseline; gap: 16px;
+  position: relative; z-index: 1000;
+}
+.header h1 { font-size: 16px; font-weight: 700; color: #111; }
+.header p  { font-size: 12px; color: #999; }
+#map { height: calc(100vh - 54px); width: 100%; }
+.info-box {
+  position: absolute; top: 70px; right: 16px;
+  background: white; border: 1px solid #DDD; border-radius: 8px;
+  padding: 14px 18px; z-index: 1000; min-width: 190px;
+  box-shadow: 0 2px 10px rgba(0,0,0,.1); font-size: 12px; line-height: 1.9;
+}
+.info-box .region-name { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+.info-box .hint { color: #AAA; font-size: 11px; }
+.legend {
+  position: absolute; bottom: 28px; right: 16px;
+  background: white; border: 1px solid #DDD; border-radius: 8px;
+  padding: 16px 20px; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,.1);
+}
+.legend-title { font-size: 11px; font-weight: 700; color: #555; margin-bottom: 10px; letter-spacing:.04em; }
+.legend-bar {
+  width: 200px; height: 12px; border-radius: 6px;
+  background: linear-gradient(to right, #B84040, #DC6868, #EEEEEE, #588ECE, #2E5FA8);
+  margin-bottom: 5px;
+}
+.legend-labels { display: flex; justify-content: space-between; font-size: 10px; color: #888; }
+.legend-labels span:first-child { color: #B84040; font-weight: 600; }
+.legend-labels span:last-child  { color: #2E5FA8; font-weight: 600; }
+.legend-note { font-size: 10px; color: #BBB; margin-top: 8px; border-top: 1px solid #EEE; padding-top: 6px; }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>1인가구의 공간적 분리 — 청년은 어디에, 노년은 어디에?</h1>
+  <p>청년(20–39세) 비율 − 노년(65세+) 비율  |  시군구를 클릭하면 수치를 볼 수 있습니다  |  2020년 인구총조사</p>
+</div>
+<div style="position:relative">
+  <div id="map"></div>
+  <div class="info-box" id="infoBox"><div class="hint">시군구를 클릭하세요</div></div>
+  <div class="legend">
+    <div class="legend-title">청년 비율 − 노년 비율 (단위: %p)</div>
+    <div class="legend-bar"></div>
+    <div class="legend-labels"><span>노년 집중</span><span>균형</span><span>청년 집중</span></div>
+    <div class="legend-note">출처: 통계청 인구총조사 (2020)</div>
+  </div>
+</div>
+<script>
+const DATA = {
+  "가평군":{"young":16.7,"old":37.0},"강남구":{"young":52.6,"old":15.0},
+  "강동구":{"young":39.2,"old":21.5},"강릉시":{"young":39.5,"old":26.5},
+  "강북구":{"young":31.9,"old":27.8},"강서구":{"young":47.5,"old":19.0},
+  "강진군":{"young":11.4,"old":57.8},"강화군":{"young":10.2,"old":49.3},
+  "거제시":{"young":29.5,"old":18.7},"거창군":{"young":13.6,"old":52.3},
+  "경산시":{"young":43.3,"old":21.0},"경주시":{"young":27.1,"old":32.9},
+  "고령군":{"young":8.8,"old":49.6},"고성군":{"young":13.7,"old":49.0},
+  "고양시":{"young":31.4,"old":23.4},"고창군":{"young":9.6,"old":58.3},
+  "고흥군":{"young":6.1,"old":64.0},"곡성군":{"young":15.9,"old":53.0},
+  "공주시":{"young":30.0,"old":33.4},"과천시":{"young":31.4,"old":32.6},
+  "관악구":{"young":66.1,"old":10.6},"광명시":{"young":28.6,"old":28.2},
+  "광산구":{"young":41.6,"old":16.8},"광양시":{"young":28.1,"old":25.1},
+  "광주시":{"young":30.3,"old":19.0},"광진구":{"young":56.5,"old":13.2},
+  "괴산군":{"young":25.5,"old":38.1},"구례군":{"young":8.3,"old":54.1},
+  "구로구":{"young":42.3,"old":21.2},"구리시":{"young":27.4,"old":24.6},
+  "구미시":{"young":45.4,"old":14.7},"군산시":{"young":28.9,"old":29.3},
+  "군위군":{"young":6.3,"old":56.5},"군포시":{"young":31.7,"old":25.1},
+  "금산군":{"young":21.5,"old":41.9},"금정구":{"young":40.1,"old":26.7},
+  "금천구":{"young":45.2,"old":18.0},"기장군":{"young":28.3,"old":28.9},
+  "김제시":{"young":10.5,"old":54.6},"김천시":{"young":25.5,"old":37.7},
+  "김포시":{"young":35.8,"old":20.1},"김해시":{"young":30.6,"old":21.9},
+  "나주시":{"young":28.4,"old":35.7},"남구":{"young":34.0,"old":25.7},
+  "남동구":{"young":31.7,"old":23.6},"남양주시":{"young":25.0,"old":27.4},
+  "남원시":{"young":13.6,"old":48.8},"남해군":{"young":9.4,"old":61.1},
+  "노원구":{"young":32.2,"old":31.4},"논산시":{"young":22.0,"old":39.6},
+  "단양군":{"young":9.9,"old":47.8},"달서구":{"young":32.0,"old":25.3},
+  "달성군":{"young":33.2,"old":23.4},"담양군":{"young":14.5,"old":53.1},
+  "당진시":{"young":30.2,"old":25.7},"대덕구":{"young":31.1,"old":24.8},
+  "도봉구":{"young":26.9,"old":30.7},"동구":{"young":33.1,"old":27.7},
+  "동대문구":{"young":51.3,"old":18.2},"동두천시":{"young":19.6,"old":35.9},
+  "동래구":{"young":27.7,"old":32.0},"동안구":{"young":35.0,"old":24.2},
+  "동작구":{"young":57.9,"old":15.5},"동해시":{"young":17.1,"old":36.7},
+  "마포구":{"young":58.8,"old":13.6},"만안구":{"young":30.2,"old":25.8},
+  "목포시":{"young":27.0,"old":28.6},"무안군":{"young":39.2,"old":29.8},
+  "무주군":{"young":10.4,"old":54.0},"문경시":{"young":12.7,"old":51.2},
+  "밀양시":{"young":13.1,"old":46.8},"보령시":{"young":18.5,"old":41.5},
+  "보성군":{"young":7.3,"old":61.2},"보은군":{"young":9.3,"old":54.8},
+  "봉화군":{"young":6.8,"old":57.3},"부산진구":{"young":41.0,"old":25.4},
+  "부안군":{"young":9.6,"old":55.9},"부여군":{"young":12.6,"old":54.5},
+  "부천시":{"young":30.4,"old":23.5},"부평구":{"young":28.1,"old":26.7},
+  "북구":{"young":32.5,"old":26.1},"분당구":{"young":46.4,"old":19.5},
+  "사상구":{"young":28.0,"old":28.2},"사천시":{"young":21.4,"old":37.0},
+  "사하구":{"young":27.5,"old":31.5},"산청군":{"young":6.7,"old":54.7},
+  "삼척시":{"young":32.5,"old":32.3},"상당구":{"young":23.9,"old":31.7},
+  "상록구":{"young":34.6,"old":17.9},"상주시":{"young":19.2,"old":47.3},
+  "서구":{"young":38.1,"old":21.6},"서귀포시":{"young":22.3,"old":26.1},
+  "서대문구":{"young":54.0,"old":17.8},"서산시":{"young":31.8,"old":27.6},
+  "서천군":{"young":8.3,"old":58.9},"서초구":{"young":50.1,"old":15.7},
+  "성남시":{"young":39.6,"old":20.4},"성동구":{"young":48.4,"old":17.3},
+  "성북구":{"young":49.7,"old":19.1},"세종시":{"young":52.4,"old":12.9},
+  "속초시":{"young":19.7,"old":32.0},"송파구":{"young":48.8,"old":16.7},
+  "수성구":{"young":28.0,"old":31.3},"수영구":{"young":40.1,"old":25.8},
+  "순창군":{"young":7.2,"old":60.3},"순천시":{"young":30.2,"old":29.8},
+  "시흥시":{"young":36.9,"old":15.0},"신안군":{"young":9.1,"old":53.4},
+  "아산시":{"young":39.7,"old":19.9},"안동시":{"young":29.4,"old":34.8},
+  "안산시":{"young":35.6,"old":17.1},"안성시":{"young":34.6,"old":23.5},
+  "안양시":{"young":32.5,"old":25.0},"양구군":{"young":23.5,"old":37.7},
+  "양산시":{"young":29.3,"old":25.3},"양양군":{"young":13.9,"old":42.3},
+  "양주시":{"young":25.4,"old":27.9},"양천구":{"young":32.0,"old":27.5},
+  "양평군":{"young":13.7,"old":38.0},"여수시":{"young":25.3,"old":32.7},
+  "여주시":{"young":21.2,"old":32.6},"연수구":{"young":41.4,"old":17.7},
+  "연제구":{"young":32.2,"old":29.6},"연천군":{"young":21.3,"old":41.6},
+  "영광군":{"young":14.2,"old":50.4},"영덕군":{"young":8.3,"old":57.3},
+  "영도구":{"young":23.5,"old":39.2},"영동군":{"young":19.3,"old":45.6},
+  "영등포구":{"young":53.9,"old":15.7},"영암군":{"young":21.9,"old":39.3},
+  "영양군":{"young":8.5,"old":58.0},"영월군":{"young":11.1,"old":44.5},
+  "영주시":{"young":23.1,"old":40.2},"영천시":{"young":18.1,"old":41.7},
+  "예산군":{"young":16.8,"old":46.4},"예천군":{"young":15.9,"old":52.0},
+  "오산시":{"young":47.8,"old":13.2},"옥천군":{"young":10.9,"old":52.0},
+  "완도군":{"young":11.1,"old":51.4},"용산구":{"young":48.7,"old":17.3},
+  "울릉군":{"young":19.6,"old":29.2},"울주군":{"young":26.3,"old":26.2},
+  "울진군":{"young":16.2,"old":47.1},"원주시":{"young":36.5,"old":21.3},
+  "유성구":{"young":59.5,"old":9.7},"은평구":{"young":38.6,"old":24.2},
+  "음성군":{"young":27.3,"old":27.4},"의령군":{"young":9.3,"old":57.8},
+  "의성군":{"young":7.9,"old":60.6},"의왕시":{"young":36.6,"old":24.4},
+  "의정부시":{"young":30.2,"old":25.8},"이천시":{"young":36.7,"old":21.5},
+  "익산시":{"young":32.8,"old":29.5},"인제군":{"young":20.0,"old":35.6},
+  "임실군":{"young":17.5,"old":51.1},"장성군":{"young":14.8,"old":53.6},
+  "장수군":{"young":8.9,"old":56.7},"장흥군":{"young":9.9,"old":58.1},
+  "전주시":{"young":38.9,"old":22.7},"정선군":{"young":13.9,"old":39.8},
+  "정읍시":{"young":14.0,"old":48.1},"제주시":{"young":31.9,"old":20.7},
+  "제천시":{"young":28.9,"old":31.2},"종로구":{"young":47.5,"old":18.8},
+  "중구":{"young":36.8,"old":24.5},"중랑구":{"young":34.1,"old":23.5},
+  "진도군":{"young":9.8,"old":56.6},"진안군":{"young":7.2,"old":55.9},
+  "진주시":{"young":37.0,"old":27.1},"진천군":{"young":33.4,"old":24.4},
+  "창녕군":{"young":10.4,"old":51.0},"천안시":{"young":49.0,"old":14.3},
+  "철원군":{"young":18.9,"old":43.1},"청도군":{"young":7.0,"old":57.3},
+  "청송군":{"young":10.6,"old":51.9},"청양군":{"young":11.4,"old":53.0},
+  "화성시":{"young":49.3,"old":12.7},"화순군":{"young":12.0,"old":51.9},
+  "함안군":{"young":10.7,"old":46.8},"함양군":{"young":9.0,"old":56.3},
+  "함평군":{"young":7.9,"old":58.8},"합천군":{"young":6.5,"old":62.6},
+  "해남군":{"young":9.6,"old":57.5},"해운대구":{"young":27.0,"old":31.9},
+  "홍성군":{"young":28.4,"old":34.5},"홍천군":{"young":15.5,"old":40.5},
+  "화천군":{"young":24.6,"old":36.4},"횡성군":{"young":11.3,"old":44.0},
+};
+
+function diffColor(diff) {
+  const MAX = 55;
+  const t = Math.max(-1, Math.min(1, diff / MAX));
+  return t >= 0 ? lerpHex('#EEEEEE','#2E5FA8', t) : lerpHex('#EEEEEE','#B84040', -t);
+}
+function lerpHex(a, b, t) {
+  const h = s => [parseInt(s.slice(1,3),16), parseInt(s.slice(3,5),16), parseInt(s.slice(5,7),16)];
+  const [r1,g1,b1]=h(a), [r2,g2,b2]=h(b);
+  const r=Math.round(r1+(r2-r1)*t), g=Math.round(g1+(g2-g1)*t), bl=Math.round(b1+(b2-b1)*t);
+  return `#${r.toString(16).padStart(2,'0')}${g.toString(16).padStart(2,'0')}${bl.toString(16).padStart(2,'0')}`;
+}
+
+const map = L.map('map', {center:[36.5,127.8], zoom:7});
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
+  attribution:'© OpenStreetMap © CARTO', subdomains:'abcd', maxZoom:19
+}).addTo(map);
+
+const GEOJSON_URL = 'https://cdn.jsdelivr.net/gh/southkorea/southkorea-maps@master/kostat/2018/json/skorea-municipalities-2018-geo.json';
+
+fetch(GEOJSON_URL).then(r=>r.json()).then(geo => {
+  const getName = p => p.name||p.NAME||p.SIG_KOR_NM||'';
+  const gj = L.geoJSON(geo, {
+    style: f => {
+      const d = DATA[getName(f.properties)];
+      return {
+        fillColor: d ? diffColor(d.young - d.old) : '#DDDDDD',
+        fillOpacity: 0.88, color: '#FFFFFF', weight: 0.6,
+      };
+    },
+    onEachFeature: (f, layer) => {
+      const name = getName(f.properties);
+      layer.on({
+        mouseover: e => e.target.setStyle({weight:2, color:'#333'}),
+        mouseout:  e => gj.resetStyle(e.target),
+        click:     () => showInfo(name),
+      });
+    }
+  }).addTo(map);
+}).catch(() => {
+  document.getElementById('infoBox').innerHTML = '<div style="color:#DC6868;font-size:12px">⚠️ 지도 데이터를 불러올 수 없습니다.</div>';
+});
+
+function showInfo(name) {
+  const d = DATA[name];
+  const box = document.getElementById('infoBox');
+  if (!d) { box.innerHTML=`<div class="region-name">${name}</div><div class="hint">데이터 없음</div>`; return; }
+  const diff = d.young - d.old;
+  const color = diff > 0 ? '#2E5FA8' : '#B84040';
+  const label = diff > 0 ? '청년 집중 지역' : '노년 집중 지역';
+  box.innerHTML = `
+    <div class="region-name" style="color:${color}">${name}</div>
+    <div style="font-size:11px;color:${color};font-weight:600;margin-bottom:8px">${label}</div>
+    <div style="font-size:12px;line-height:2">
+      <span style="color:#3A6EA8">● 청년(20–39세)</span> <strong>${d.young}%</strong><br>
+      <span style="color:#B84040">● 노년(65세+)</span>&nbsp; <strong>${d.old}%</strong><br>
+      <span style="color:#888;font-size:11px">차이: ${diff>0?'+':''}${diff.toFixed(1)}%p</span>
+    </div>`;
+}
+</script>
+</body>
+</html>
