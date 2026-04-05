@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1인가구 산점도</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: "Noto Sans KR", sans-serif; background: white; }
+
+.wrap { padding: 28px 36px 20px; }
+
+.title { font-size: 15px; font-weight: 700; color: #111; line-height: 1.5; margin-bottom: 4px; }
+.subtitle { font-size: 10.5px; color: #999; margin-bottom: 20px; }
+
+/* 범례 — 토글 버튼 */
+.legend-row {
+  display: flex; gap: 10px; margin-bottom: 18px; flex-wrap: wrap;
+}
+.legend-btn {
+  display: flex; align-items: center; gap: 6px;
+  padding: 5px 14px; border-radius: 20px; cursor: pointer;
+  border: 1.5px solid; font-size: 11px; font-family: "Noto Sans KR", sans-serif;
+  font-weight: 500; transition: all .18s; user-select: none;
+}
+.legend-btn .dot {
+  width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0;
+}
+.legend-btn.active   { color: white; }
+.legend-btn.inactive { background: white !important; color: #AAA !important; border-color: #DDD !important; }
+.legend-btn.inactive .dot { background: #DDD !important; }
+
+#chart { width: 100%; }
+
+.tooltip {
+  position: fixed; background: white; border: 1px solid #E0DDD8;
+  border-radius: 8px; padding: 10px 14px; font-size: 11px;
+  pointer-events: none; opacity: 0; transition: opacity .12s;
+  box-shadow: 0 2px 12px rgba(0,0,0,.10); line-height: 1.9;
+  font-family: "Noto Sans KR", sans-serif; z-index: 100;
+}
+
+.r-box {
+  position: absolute; font-size: 10px; color: #777;
+  background: white; border: 1px solid #EEEEEE;
+  border-radius: 6px; padding: 6px 10px; line-height: 1.6;
+  font-family: "Noto Sans KR", sans-serif;
+}
+
+@keyframes dotblink {
+  0%,100% { opacity: 0.85; }
+  50%     { opacity: 0.15; }
+}
+.dot-blink { animation: dotblink 0.85s ease-in-out infinite; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="title">청년 1인가구와 노년 1인가구는 왜 서로 다른 곳에 모이는가?</div>
+  <div class="subtitle">X축: 청년(20–39세) 1인가구 비율(%) &nbsp;|&nbsp; Y축: 노년(65세 이상) 1인가구 비율(%) &nbsp;|&nbsp; 출처: 통계청 등록센서스 2024</div>
+
+  <div class="legend-row" id="legend"></div>
+  <div style="position:relative;">
+    <div id="chart"></div>
+    <div class="r-box" id="rbox"></div>
+  </div>
+</div>
+<div class="tooltip" id="tt"></div>
+
+<script>
+const DATA = [{"name": "종로구", "total": 29779, "youngPct": 48.4, "oldPct": 20.5, "type": "서울 자치구"}, {"name": "중구", "total": 28968, "youngPct": 47.3, "oldPct": 21.4, "type": "서울 자치구"}, {"name": "용산구", "total": 40445, "youngPct": 50.2, "oldPct": 18.4, "type": "서울 자치구"}, {"name": "성동구", "total": 48442, "youngPct": 49.5, "oldPct": 19.9, "type": "서울 자치구"}, {"name": "광진구", "total": 72933, "youngPct": 57.4, "oldPct": 15.3, "type": "서울 자치구"}, {"name": "동대문구", "total": 72355, "youngPct": 52.8, "oldPct": 20.2, "type": "서울 자치구"}, {"name": "중랑구", "total": 69149, "youngPct": 35.8, "oldPct": 27.2, "type": "서울 자치구"}, {"name": "성북구", "total": 70230, "youngPct": 48.8, "oldPct": 22.5, "type": "서울 자치구"}, {"name": "강북구", "total": 53705, "youngPct": 32.1, "oldPct": 32.0, "type": "서울 자치구"}, {"name": "도봉구", "total": 43347, "youngPct": 27.5, "oldPct": 35.0, "type": "서울 자치구"}, {"name": "노원구", "total": 67182, "youngPct": 31.3, "oldPct": 35.4, "type": "서울 자치구"}, {"name": "은평구", "total": 70568, "youngPct": 39.0, "oldPct": 27.5, "type": "서울 자치구"}, {"name": "서대문구", "total": 56770, "youngPct": 53.3, "oldPct": 20.3, "type": "서울 자치구"}, {"name": "마포구", "total": 73327, "youngPct": 57.9, "oldPct": 15.1, "type": "서울 자치구"}, {"name": "양천구", "total": 47886, "youngPct": 31.5, "oldPct": 32.2, "type": "서울 자치구"}, {"name": "강서구", "total": 106748, "youngPct": 48.9, "oldPct": 21.9, "type": "서울 자치구"}, {"name": "구로구", "total": 62632, "youngPct": 43.2, "oldPct": 24.5, "type": "서울 자치구"}, {"name": "금천구", "total": 53858, "youngPct": 49.2, "oldPct": 19.9, "type": "서울 자치구"}, {"name": "영등포구", "total": 79698, "youngPct": 56.3, "oldPct": 16.7, "type": "서울 자치구"}, {"name": "동작구", "total": 75148, "youngPct": 58.4, "oldPct": 17.2, "type": "서울 자치구"}, {"name": "관악구", "total": 153605, "youngPct": 65.5, "oldPct": 12.3, "type": "서울 자치구"}, {"name": "서초구", "total": 49443, "youngPct": 47.8, "oldPct": 18.8, "type": "서울 자치구"}, {"name": "강남구", "total": 79274, "youngPct": 48.6, "oldPct": 18.4, "type": "서울 자치구"}, {"name": "송파구", "total": 89720, "youngPct": 48.4, "oldPct": 19.7, "type": "서울 자치구"}, {"name": "강동구", "total": 65601, "youngPct": 40.5, "oldPct": 25.3, "type": "서울 자치구"}, {"name": "중구", "total": 12056, "youngPct": 34.8, "oldPct": 32.9, "type": "서울 자치구"}, {"name": "서구", "total": 21181, "youngPct": 29.1, "oldPct": 39.5, "type": "광역시·수도권 구"}, {"name": "동구", "total": 18899, "youngPct": 27.1, "oldPct": 39.0, "type": "광역시·수도권 구"}, {"name": "영도구", "total": 20492, "youngPct": 16.9, "oldPct": 47.0, "type": "광역시·수도권 구"}, {"name": "부산진구", "total": 73424, "youngPct": 42.6, "oldPct": 27.6, "type": "광역시·수도권 구"}, {"name": "동래구", "total": 36125, "youngPct": 27.4, "oldPct": 37.0, "type": "광역시·수도권 구"}, {"name": "남구", "total": 42133, "youngPct": 38.5, "oldPct": 31.3, "type": "광역시·수도권 구"}, {"name": "북구", "total": 37910, "youngPct": 19.5, "oldPct": 42.1, "type": "광역시·수도권 구"}, {"name": "해운대구", "total": 51816, "youngPct": 24.6, "oldPct": 37.1, "type": "광역시·수도권 구"}, {"name": "사하구", "total": 47771, "youngPct": 25.3, "oldPct": 37.0, "type": "광역시·수도권 구"}, {"name": "금정구", "total": 40977, "youngPct": 37.3, "oldPct": 32.2, "type": "광역시·수도권 구"}, {"name": "강서구", "total": 17449, "youngPct": 37.8, "oldPct": 21.7, "type": "서울 자치구"}, {"name": "연제구", "total": 32878, "youngPct": 32.7, "oldPct": 33.5, "type": "광역시·수도권 구"}, {"name": "수영구", "total": 34205, "youngPct": 41.3, "oldPct": 29.0, "type": "광역시·수도권 구"}, {"name": "사상구", "total": 37200, "youngPct": 29.4, "oldPct": 33.3, "type": "광역시·수도권 구"}, {"name": "기장군", "total": 23001, "youngPct": 25.5, "oldPct": 34.1, "type": "군"}, {"name": "중구", "total": 19149, "youngPct": 51.3, "oldPct": 22.5, "type": "서울 자치구"}, {"name": "동구", "total": 56013, "youngPct": 27.5, "oldPct": 35.8, "type": "광역시·수도권 구"}, {"name": "서구", "total": 30363, "youngPct": 18.9, "oldPct": 39.2, "type": "광역시·수도권 구"}, {"name": "남구", "total": 33768, "youngPct": 34.0, "oldPct": 31.1, "type": "광역시·수도권 구"}, {"name": "북구", "total": 67948, "youngPct": 36.4, "oldPct": 26.8, "type": "광역시·수도권 구"}, {"name": "수성구", "total": 48812, "youngPct": 27.8, "oldPct": 34.8, "type": "광역시·수도권 구"}, {"name": "달서구", "total": 79175, "youngPct": 30.5, "oldPct": 30.7, "type": "광역시·수도권 구"}, {"name": "달성군", "total": 31738, "youngPct": 29.7, "oldPct": 27.9, "type": "군"}, {"name": "군위군", "total": 3969, "youngPct": 8.4, "oldPct": 60.8, "type": "군"}, {"name": "중구", "total": 31408, "youngPct": 47.0, "oldPct": 18.9, "type": "서울 자치구"}, {"name": "동구", "total": 8653, "youngPct": 17.1, "oldPct": 44.1, "type": "광역시·수도권 구"}, {"name": "연수구", "total": 40339, "youngPct": 38.5, "oldPct": 22.2, "type": "광역시·수도권 구"}, {"name": "남동구", "total": 71921, "youngPct": 29.3, "oldPct": 29.2, "type": "광역시·수도권 구"}, {"name": "부평구", "total": 67646, "youngPct": 29.5, "oldPct": 29.9, "type": "광역시·수도권 구"}, {"name": "계양구", "total": 37133, "youngPct": 24.7, "oldPct": 29.1, "type": "광역시·수도권 구"}, {"name": "서구", "total": 71412, "youngPct": 34.5, "oldPct": 22.1, "type": "광역시·수도권 구"}, {"name": "미추홀구", "total": 68649, "youngPct": 34.0, "oldPct": 27.5, "type": "광역시·수도권 구"}, {"name": "강화군", "total": 9578, "youngPct": 9.8, "oldPct": 53.8, "type": "시"}, {"name": "옹진군", "total": 4793, "youngPct": 25.3, "oldPct": 34.3, "type": "시"}, {"name": "동구", "total": 23228, "youngPct": 44.8, "oldPct": 25.6, "type": "광역시·수도권 구"}, {"name": "서구", "total": 49178, "youngPct": 36.1, "oldPct": 25.0, "type": "광역시·수도권 구"}, {"name": "남구", "total": 30302, "youngPct": 30.9, "oldPct": 33.3, "type": "광역시·수도권 구"}, {"name": "북구", "total": 73844, "youngPct": 33.4, "oldPct": 27.8, "type": "광역시·수도권 구"}, {"name": "광산구", "total": 55658, "youngPct": 38.1, "oldPct": 20.1, "type": "광역시·수도권 구"}, {"name": "동구", "total": 46823, "youngPct": 39.0, "oldPct": 26.9, "type": "광역시·수도권 구"}, {"name": "중구", "total": 37131, "youngPct": 30.0, "oldPct": 34.0, "type": "서울 자치구"}, {"name": "서구", "total": 83724, "youngPct": 49.4, "oldPct": 18.9, "type": "광역시·수도권 구"}, {"name": "유성구", "total": 65805, "youngPct": 57.6, "oldPct": 13.1, "type": "광역시·수도권 구"}, {"name": "대덕구", "total": 28673, "youngPct": 29.1, "oldPct": 29.8, "type": "광역시·수도권 구"}, {"name": "중구", "total": 28801, "youngPct": 23.6, "oldPct": 34.7, "type": "서울 자치구"}, {"name": "남구", "total": 46720, "youngPct": 36.8, "oldPct": 23.6, "type": "광역시·수도권 구"}, {"name": "동구", "total": 20543, "youngPct": 27.0, "oldPct": 26.9, "type": "광역시·수도권 구"}, {"name": "북구", "total": 21258, "youngPct": 31.6, "oldPct": 22.8, "type": "광역시·수도권 구"}, {"name": "울주군", "total": 28971, "youngPct": 23.2, "oldPct": 31.3, "type": "군"}, {"name": "세종시", "total": 52339, "youngPct": 49.8, "oldPct": 15.9, "type": "시"}, {"name": "수원시", "total": 184111, "youngPct": 45.9, "oldPct": 19.5, "type": "시"}, {"name": "장안구", "total": 38793, "youngPct": 38.5, "oldPct": 25.8, "type": "광역시·수도권 구"}, {"name": "권선구", "total": 54333, "youngPct": 39.3, "oldPct": 20.6, "type": "광역시·수도권 구"}, {"name": "팔달구", "total": 38743, "youngPct": 45.2, "oldPct": 20.9, "type": "광역시·수도권 구"}, {"name": "영통구", "total": 52242, "youngPct": 58.8, "oldPct": 12.6, "type": "광역시·수도권 구"}, {"name": "성남시", "total": 134409, "youngPct": 38.0, "oldPct": 24.7, "type": "시"}, {"name": "수정구", "total": 46305, "youngPct": 35.3, "oldPct": 25.3, "type": "광역시·수도권 구"}, {"name": "중원구", "total": 35931, "youngPct": 34.1, "oldPct": 26.5, "type": "광역시·수도권 구"}, {"name": "분당구", "total": 52173, "youngPct": 43.0, "oldPct": 23.0, "type": "광역시·수도권 구"}, {"name": "의정부시", "total": 63852, "youngPct": 28.9, "oldPct": 30.2, "type": "시"}, {"name": "안양시", "total": 61616, "youngPct": 33.3, "oldPct": 28.6, "type": "시"}, {"name": "만안구", "total": 29968, "youngPct": 29.5, "oldPct": 31.0, "type": "광역시·수도권 구"}, {"name": "동안구", "total": 31648, "youngPct": 36.8, "oldPct": 26.4, "type": "광역시·수도권 구"}, {"name": "부천시", "total": 103159, "youngPct": 27.9, "oldPct": 29.4, "type": "시"}, {"name": "원미구", "total": 54485, "youngPct": 33.8, "oldPct": 25.0, "type": "광역시·수도권 구"}, {"name": "소사구", "total": 27386, "youngPct": 23.4, "oldPct": 34.9, "type": "광역시·수도권 구"}, {"name": "오정구", "total": 21288, "youngPct": 18.4, "oldPct": 33.6, "type": "광역시·수도권 구"}, {"name": "광명시", "total": 27741, "youngPct": 27.1, "oldPct": 33.9, "type": "시"}, {"name": "평택시", "total": 97089, "youngPct": 41.2, "oldPct": 18.3, "type": "시"}, {"name": "동두천시", "total": 14739, "youngPct": 16.6, "oldPct": 41.3, "type": "시"}, {"name": "안산시", "total": 95350, "youngPct": 33.0, "oldPct": 21.6, "type": "시"}, {"name": "상록구", "total": 50947, "youngPct": 31.0, "oldPct": 22.6, "type": "광역시·수도권 구"}, {"name": "단원구", "total": 44403, "youngPct": 35.3, "oldPct": 20.4, "type": "광역시·수도권 구"}, {"name": "고양시", "total": 129653, "youngPct": 30.4, "oldPct": 27.4, "type": "시"}, {"name": "덕양구", "total": 66108, "youngPct": 30.6, "oldPct": 28.5, "type": "광역시·수도권 구"}, {"name": "일산동구", "total": 37647, "youngPct": 33.6, "oldPct": 22.2, "type": "광역시·수도권 구"}, {"name": "일산서구", "total": 25898, "youngPct": 25.5, "oldPct": 32.1, "type": "광역시·수도권 구"}, {"name": "과천시", "total": 5068, "youngPct": 29.9, "oldPct": 34.6, "type": "시"}, {"name": "구리시", "total": 22330, "youngPct": 27.1, "oldPct": 29.3, "type": "시"}, {"name": "남양주시", "total": 72251, "youngPct": 24.4, "oldPct": 32.3, "type": "시"}, {"name": "오산시", "total": 38659, "youngPct": 41.2, "oldPct": 16.4, "type": "시"}, {"name": "시흥시", "total": 69466, "youngPct": 31.4, "oldPct": 20.1, "type": "시"}, {"name": "군포시", "total": 32652, "youngPct": 30.5, "oldPct": 29.9, "type": "시"}, {"name": "의왕시", "total": 14092, "youngPct": 31.7, "oldPct": 31.1, "type": "시"}, {"name": "하남시", "total": 40621, "youngPct": 40.1, "oldPct": 22.2, "type": "시"}, {"name": "용인시", "total": 110585, "youngPct": 39.3, "oldPct": 24.3, "type": "시"}, {"name": "처인구", "total": 37873, "youngPct": 35.9, "oldPct": 22.6, "type": "광역시·수도권 구"}, {"name": "기흥구", "total": 43181, "youngPct": 37.9, "oldPct": 25.6, "type": "광역시·수도권 구"}, {"name": "수지구", "total": 29531, "youngPct": 45.5, "oldPct": 24.6, "type": "광역시·수도권 구"}, {"name": "파주시", "total": 59018, "youngPct": 30.8, "oldPct": 26.5, "type": "시"}, {"name": "이천시", "total": 31518, "youngPct": 36.5, "oldPct": 24.1, "type": "시"}, {"name": "안성시", "total": 32385, "youngPct": 33.8, "oldPct": 25.7, "type": "시"}, {"name": "김포시", "total": 54052, "youngPct": 33.4, "oldPct": 25.0, "type": "시"}, {"name": "화성시", "total": 124878, "youngPct": 47.0, "oldPct": 15.5, "type": "시"}, {"name": "광주시", "total": 44466, "youngPct": 25.8, "oldPct": 24.7, "type": "시"}, {"name": "양주시", "total": 34604, "youngPct": 27.0, "oldPct": 29.4, "type": "시"}, {"name": "포천시", "total": 22914, "youngPct": 21.1, "oldPct": 34.9, "type": "시"}, {"name": "여주시", "total": 17247, "youngPct": 21.9, "oldPct": 35.6, "type": "시"}, {"name": "연천군", "total": 7186, "youngPct": 19.6, "oldPct": 47.4, "type": "군"}, {"name": "가평군", "total": 11004, "youngPct": 16.9, "oldPct": 41.6, "type": "군"}, {"name": "양평군", "total": 18544, "youngPct": 13.3, "oldPct": 43.6, "type": "군"}, {"name": "춘천시", "total": 50484, "youngPct": 38.7, "oldPct": 28.3, "type": "시"}, {"name": "원주시", "total": 63311, "youngPct": 34.2, "oldPct": 26.2, "type": "시"}, {"name": "강릉시", "total": 39796, "youngPct": 29.5, "oldPct": 34.1, "type": "시"}, {"name": "동해시", "total": 14626, "youngPct": 17.8, "oldPct": 40.0, "type": "시"}, {"name": "태백시", "total": 7562, "youngPct": 13.6, "oldPct": 46.9, "type": "시"}, {"name": "속초시", "total": 15008, "youngPct": 19.6, "oldPct": 36.0, "type": "시"}, {"name": "삼척시", "total": 12918, "youngPct": 25.2, "oldPct": 40.4, "type": "시"}, {"name": "홍천군", "total": 12151, "youngPct": 15.2, "oldPct": 46.4, "type": "군"}, {"name": "횡성군", "total": 8105, "youngPct": 9.8, "oldPct": 48.2, "type": "군"}, {"name": "영월군", "total": 7817, "youngPct": 10.1, "oldPct": 48.0, "type": "군"}, {"name": "평창군", "total": 8185, "youngPct": 11.0, "oldPct": 46.1, "type": "군"}, {"name": "정선군", "total": 7122, "youngPct": 10.7, "oldPct": 46.3, "type": "군"}, {"name": "철원군", "total": 6072, "youngPct": 20.1, "oldPct": 44.5, "type": "군"}, {"name": "화천군", "total": 4147, "youngPct": 24.8, "oldPct": 41.0, "type": "군"}, {"name": "양구군", "total": 3267, "youngPct": 25.2, "oldPct": 38.9, "type": "군"}, {"name": "인제군", "total": 5619, "youngPct": 26.2, "oldPct": 34.9, "type": "군"}, {"name": "고성군", "total": 5371, "youngPct": 15.9, "oldPct": 44.7, "type": "군"}, {"name": "양양군", "total": 5548, "youngPct": 12.6, "oldPct": 47.1, "type": "군"}, {"name": "충주시", "total": 39350, "youngPct": 33.6, "oldPct": 30.6, "type": "시"}, {"name": "제천시", "total": 23101, "youngPct": 23.6, "oldPct": 38.8, "type": "시"}, {"name": "청주시", "total": 147442, "youngPct": 40.3, "oldPct": 22.7, "type": "시"}, {"name": "상당구", "total": 26686, "youngPct": 25.3, "oldPct": 33.2, "type": "광역시·수도권 구"}, {"name": "서원구", "total": 34718, "youngPct": 39.1, "oldPct": 25.7, "type": "광역시·수도권 구"}, {"name": "흥덕구", "total": 51891, "youngPct": 47.1, "oldPct": 16.5, "type": "광역시·수도권 구"}, {"name": "청원구", "total": 34147, "youngPct": 43.1, "oldPct": 20.7, "type": "광역시·수도권 구"}, {"name": "보은군", "total": 5528, "youngPct": 8.2, "oldPct": 59.2, "type": "군"}, {"name": "옥천군", "total": 7623, "youngPct": 9.1, "oldPct": 54.5, "type": "군"}, {"name": "영동군", "total": 8397, "youngPct": 12.8, "oldPct": 51.7, "type": "군"}, {"name": "진천군", "total": 14658, "youngPct": 29.3, "oldPct": 26.0, "type": "군"}, {"name": "괴산군", "total": 7900, "youngPct": 12.9, "oldPct": 47.8, "type": "군"}, {"name": "음성군", "total": 17950, "youngPct": 24.3, "oldPct": 31.7, "type": "군"}, {"name": "단양군", "total": 5365, "youngPct": 9.2, "oldPct": 52.2, "type": "군"}, {"name": "증평군", "total": 6876, "youngPct": 30.3, "oldPct": 30.4, "type": "군"}, {"name": "천안시", "total": 114352, "youngPct": 45.3, "oldPct": 17.6, "type": "시"}, {"name": "동남구", "total": 45407, "youngPct": 38.8, "oldPct": 22.8, "type": "광역시·수도권 구"}, {"name": "서북구", "total": 68945, "youngPct": 49.5, "oldPct": 14.3, "type": "광역시·수도권 구"}, {"name": "공주시", "total": 19782, "youngPct": 28.3, "oldPct": 37.2, "type": "시"}, {"name": "보령시", "total": 16573, "youngPct": 17.6, "oldPct": 44.7, "type": "시"}, {"name": "아산시", "total": 57275, "youngPct": 37.9, "oldPct": 22.0, "type": "시"}, {"name": "서산시", "total": 28426, "youngPct": 29.6, "oldPct": 30.6, "type": "시"}, {"name": "논산시", "total": 19515, "youngPct": 20.4, "oldPct": 44.0, "type": "시"}, {"name": "계룡시", "total": 5379, "youngPct": 26.2, "oldPct": 29.1, "type": "시"}, {"name": "당진시", "total": 30221, "youngPct": 26.2, "oldPct": 28.2, "type": "시"}, {"name": "금산군", "total": 9380, "youngPct": 16.0, "oldPct": 46.7, "type": "군"}, {"name": "부여군", "total": 10405, "youngPct": 9.0, "oldPct": 59.0, "type": "군"}, {"name": "서천군", "total": 8832, "youngPct": 8.5, "oldPct": 59.8, "type": "군"}, {"name": "청양군", "total": 5299, "youngPct": 10.2, "oldPct": 55.7, "type": "군"}, {"name": "홍성군", "total": 17415, "youngPct": 26.1, "oldPct": 37.7, "type": "군"}, {"name": "예산군", "total": 13540, "youngPct": 15.1, "oldPct": 48.6, "type": "군"}, {"name": "태안군", "total": 11729, "youngPct": 16.4, "oldPct": 46.3, "type": "군"}, {"name": "전주시", "total": 105982, "youngPct": 36.9, "oldPct": 26.6, "type": "시"}, {"name": "완산구", "total": 55798, "youngPct": 34.7, "oldPct": 28.6, "type": "광역시·수도권 구"}, {"name": "덕진구", "total": 50184, "youngPct": 39.4, "oldPct": 24.4, "type": "광역시·수도권 구"}, {"name": "군산시", "total": 44562, "youngPct": 26.2, "oldPct": 33.3, "type": "시"}, {"name": "익산시", "total": 46643, "youngPct": 30.0, "oldPct": 34.3, "type": "시"}, {"name": "정읍시", "total": 18501, "youngPct": 14.3, "oldPct": 48.9, "type": "시"}, {"name": "남원시", "total": 13482, "youngPct": 13.5, "oldPct": 49.3, "type": "시"}, {"name": "김제시", "total": 14314, "youngPct": 11.3, "oldPct": 53.6, "type": "시"}, {"name": "완주군", "total": 17360, "youngPct": 28.7, "oldPct": 32.4, "type": "군"}, {"name": "진안군", "total": 4287, "youngPct": 7.1, "oldPct": 56.3, "type": "군"}, {"name": "무주군", "total": 4328, "youngPct": 9.9, "oldPct": 54.0, "type": "군"}, {"name": "장수군", "total": 3652, "youngPct": 7.4, "oldPct": 57.4, "type": "군"}, {"name": "임실군", "total": 4852, "youngPct": 13.9, "oldPct": 56.5, "type": "군"}, {"name": "순창군", "total": 4489, "youngPct": 9.1, "oldPct": 58.5, "type": "군"}, {"name": "고창군", "total": 9685, "youngPct": 9.2, "oldPct": 58.7, "type": "군"}, {"name": "부안군", "total": 8848, "youngPct": 9.2, "oldPct": 57.6, "type": "군"}, {"name": "목포시", "total": 37828, "youngPct": 22.7, "oldPct": 33.6, "type": "시"}, {"name": "여수시", "total": 40319, "youngPct": 24.0, "oldPct": 36.9, "type": "시"}, {"name": "순천시", "total": 38970, "youngPct": 28.4, "oldPct": 32.9, "type": "시"}, {"name": "나주시", "total": 21110, "youngPct": 27.3, "oldPct": 36.3, "type": "시"}, {"name": "광양시", "total": 21398, "youngPct": 26.0, "oldPct": 27.5, "type": "시"}, {"name": "담양군", "total": 7017, "youngPct": 10.2, "oldPct": 52.1, "type": "군"}, {"name": "곡성군", "total": 5905, "youngPct": 14.9, "oldPct": 52.3, "type": "군"}, {"name": "구례군", "total": 4627, "youngPct": 7.3, "oldPct": 56.4, "type": "군"}, {"name": "고흥군", "total": 13252, "youngPct": 6.6, "oldPct": 63.8, "type": "군"}, {"name": "보성군", "total": 7693, "youngPct": 6.2, "oldPct": 63.1, "type": "군"}, {"name": "화순군", "total": 10216, "youngPct": 12.2, "oldPct": 52.8, "type": "군"}, {"name": "장흥군", "total": 6894, "youngPct": 9.4, "oldPct": 59.5, "type": "군"}, {"name": "강진군", "total": 6527, "youngPct": 10.5, "oldPct": 58.2, "type": "군"}, {"name": "해남군", "total": 11640, "youngPct": 9.9, "oldPct": 56.8, "type": "군"}, {"name": "영암군", "total": 10852, "youngPct": 16.2, "oldPct": 40.6, "type": "군"}, {"name": "무안군", "total": 14749, "youngPct": 34.4, "oldPct": 31.8, "type": "군"}, {"name": "함평군", "total": 5688, "youngPct": 7.0, "oldPct": 60.7, "type": "군"}, {"name": "영광군", "total": 8929, "youngPct": 14.2, "oldPct": 50.3, "type": "군"}, {"name": "장성군", "total": 6433, "youngPct": 14.6, "oldPct": 51.4, "type": "군"}, {"name": "완도군", "total": 8386, "youngPct": 9.7, "oldPct": 54.6, "type": "군"}, {"name": "진도군", "total": 5804, "youngPct": 10.1, "oldPct": 56.6, "type": "군"}, {"name": "신안군", "total": 7257, "youngPct": 8.4, "oldPct": 51.5, "type": "군"}, {"name": "포항시", "total": 77434, "youngPct": 26.0, "oldPct": 34.2, "type": "시"}, {"name": "남구", "total": 37919, "youngPct": 26.7, "oldPct": 32.5, "type": "광역시·수도권 구"}, {"name": "북구", "total": 39515, "youngPct": 25.4, "oldPct": 35.8, "type": "광역시·수도권 구"}, {"name": "경주시", "total": 44875, "youngPct": 23.9, "oldPct": 38.0, "type": "시"}, {"name": "김천시", "total": 23211, "youngPct": 23.7, "oldPct": 39.9, "type": "시"}, {"name": "안동시", "total": 30172, "youngPct": 26.9, "oldPct": 39.0, "type": "시"}, {"name": "구미시", "total": 67507, "youngPct": 41.8, "oldPct": 17.7, "type": "시"}, {"name": "영주시", "total": 17547, "youngPct": 20.0, "oldPct": 45.4, "type": "시"}, {"name": "영천시", "total": 18978, "youngPct": 13.1, "oldPct": 46.3, "type": "시"}, {"name": "상주시", "total": 17591, "youngPct": 16.5, "oldPct": 50.5, "type": "시"}, {"name": "문경시", "total": 12148, "youngPct": 12.7, "oldPct": 52.9, "type": "시"}, {"name": "경산시", "total": 54789, "youngPct": 42.5, "oldPct": 23.6, "type": "시"}, {"name": "의성군", "total": 10618, "youngPct": 7.9, "oldPct": 61.9, "type": "군"}, {"name": "청송군", "total": 5207, "youngPct": 10.9, "oldPct": 54.4, "type": "군"}, {"name": "영양군", "total": 3322, "youngPct": 8.2, "oldPct": 58.6, "type": "군"}, {"name": "영덕군", "total": 7676, "youngPct": 8.3, "oldPct": 59.3, "type": "군"}, {"name": "청도군", "total": 7770, "youngPct": 6.5, "oldPct": 60.3, "type": "군"}, {"name": "고령군", "total": 5464, "youngPct": 8.9, "oldPct": 53.7, "type": "군"}, {"name": "성주군", "total": 7517, "youngPct": 9.0, "oldPct": 51.2, "type": "군"}, {"name": "칠곡군", "total": 18783, "youngPct": 22.2, "oldPct": 28.0, "type": "군"}, {"name": "예천군", "total": 9349, "youngPct": 15.1, "oldPct": 53.4, "type": "군"}, {"name": "봉화군", "total": 5799, "youngPct": 6.2, "oldPct": 59.0, "type": "군"}, {"name": "울진군", "total": 9303, "youngPct": 16.1, "oldPct": 48.0, "type": "군"}, {"name": "울릉군", "total": 2093, "youngPct": 20.4, "oldPct": 31.1, "type": "군"}, {"name": "진주시", "total": 57549, "youngPct": 34.9, "oldPct": 30.7, "type": "시"}, {"name": "통영시", "total": 20253, "youngPct": 15.1, "oldPct": 39.4, "type": "시"}, {"name": "사천시", "total": 19221, "youngPct": 20.0, "oldPct": 39.4, "type": "시"}, {"name": "김해시", "total": 69026, "youngPct": 26.4, "oldPct": 27.1, "type": "시"}, {"name": "밀양시", "total": 19153, "youngPct": 13.8, "oldPct": 50.7, "type": "시"}, {"name": "거제시", "total": 32956, "youngPct": 21.5, "oldPct": 24.6, "type": "시"}, {"name": "양산시", "total": 50226, "youngPct": 25.5, "oldPct": 30.8, "type": "시"}, {"name": "창원시", "total": 147618, "youngPct": 26.9, "oldPct": 30.7, "type": "시"}, {"name": "의창구", "total": 30867, "youngPct": 27.5, "oldPct": 27.6, "type": "광역시·수도권 구"}, {"name": "성산구", "total": 32336, "youngPct": 38.5, "oldPct": 18.7, "type": "광역시·수도권 구"}, {"name": "마산합포구", "total": 30202, "youngPct": 22.9, "oldPct": 39.5, "type": "광역시·수도권 구"}, {"name": "마산회원구", "total": 26291, "youngPct": 17.8, "oldPct": 39.9, "type": "광역시·수도권 구"}, {"name": "진해구", "total": 27922, "youngPct": 25.5, "oldPct": 30.1, "type": "광역시·수도권 구"}, {"name": "의령군", "total": 5784, "youngPct": 7.5, "oldPct": 59.9, "type": "군"}, {"name": "함안군", "total": 9882, "youngPct": 9.5, "oldPct": 51.5, "type": "군"}, {"name": "창녕군", "total": 11146, "youngPct": 9.1, "oldPct": 54.3, "type": "군"}, {"name": "고성군", "total": 8764, "youngPct": 8.2, "oldPct": 55.2, "type": "군"}, {"name": "남해군", "total": 8152, "youngPct": 8.0, "oldPct": 61.9, "type": "군"}, {"name": "하동군", "total": 7998, "youngPct": 7.1, "oldPct": 56.6, "type": "군"}, {"name": "산청군", "total": 6891, "youngPct": 6.0, "oldPct": 57.3, "type": "군"}, {"name": "함양군", "total": 7316, "youngPct": 8.6, "oldPct": 57.8, "type": "군"}, {"name": "거창군", "total": 10789, "youngPct": 13.6, "oldPct": 49.7, "type": "군"}, {"name": "합천군", "total": 9136, "youngPct": 6.4, "oldPct": 62.9, "type": "군"}, {"name": "제주시", "total": 68668, "youngPct": 29.7, "oldPct": 24.6, "type": "시"}, {"name": "서귀포시", "total": 26312, "youngPct": 19.8, "oldPct": 31.4, "type": "시"}];
+const R_VAL = -0.93;
+const N = 264;
+const SLOPE = -0.9163;
+const INTERCEPT = 60.3727;
+const LABELS = ["마포구", "세종시", "강남구", "남해군", "관악구", "서초구", "유성구", "고흥군", "합천군", "동작구", "울릉군", "과천시", "의성군", "화성시"];
+
+
+const TYPES = [
+  { key: '서울 자치구',      label: '서울 자치구',        color: '#0D3B7A', size: 6.5 },
+  { key: '광역시·수도권 구', label: '광역시·수도권 자치구', color: '#5BA3D9', size: 5.5 },
+  { key: '시',              label: '중소도시·시',         color: '#AAAAAA', size: 4.8 },
+  { key: '군',              label: '군 지역 (농촌)',      color: '#C42B2B', size: 6.0 },
+];
+const colorMap = Object.fromEntries(TYPES.map(t=>[t.key, t.color]));
+const sizeMap  = Object.fromEntries(TYPES.map(t=>[t.key, t.size]));
+const LABEL_SET = new Set(LABELS);
+
+// 활성 타입 상태
+const active = new Set();  // 초기: 선택 없음 = 전부 정지
+
+// 범례 버튼
+const legendEl = document.getElementById('legend');
+TYPES.forEach(t => {
+  const btn = document.createElement('div');
+  btn.className = 'legend-btn inactive';
+  btn.dataset.key = t.key;
+  btn.style.borderColor = t.color;
+  btn.style.color = t.color;
+  btn.innerHTML = `<div class="dot" style="background:${t.color};opacity:0.5"></div>${t.label}`;
+  btn.addEventListener('click', () => toggleType(t.key, btn));
+  legendEl.appendChild(btn);
+});
+
+function toggleType(key, btn) {
+  if (active.has(key)) {
+    active.delete(key);
+    btn.classList.remove('active');
+    btn.classList.add('inactive');
+  } else {
+    active.add(key);
+    btn.classList.remove('inactive');
+    btn.classList.add('active');
+    btn.style.background = colorMap[key];
+    btn.style.borderColor = colorMap[key];
+  }
+  updateChart();
+}
+
+// 차트
+const W = document.getElementById('chart').clientWidth || 860;
+const H = Math.round(W * 0.82);
+const margin = { top: 20, right: 30, bottom: 54, left: 60 };
+const w = W - margin.left - margin.right;
+const h = H - margin.top - margin.bottom;
+
+const svg = d3.select('#chart').append('svg')
+  .attr('width', W).attr('height', H);
+const g = svg.append('g')
+  .attr('transform', `translate(${margin.left},${margin.top})`);
+
+const x = d3.scaleLinear().domain([0,70]).range([0,w]);
+const y = d3.scaleLinear().domain([0,70]).range([h,0]);
+
+// 테두리: 아래·왼쪽만
+g.append('line').attr('x1',0).attr('y1',h).attr('x2',w).attr('y2',h)
+  .attr('stroke','#CCCCCC').attr('stroke-width',0.8);
+g.append('line').attr('x1',0).attr('y1',0).attr('x2',0).attr('y2',h)
+  .attr('stroke','#CCCCCC').attr('stroke-width',0.8);
+
+// 추세선
+g.append('line')
+  .attr('x1',x(0)).attr('y1',y(INTERCEPT))
+  .attr('x2',x(65)).attr('y2',y(SLOPE*65+INTERCEPT))
+  .attr('stroke','#CCCCCC').attr('stroke-width',1.3)
+  .attr('stroke-dasharray','5 4');
+
+// 축
+g.append('g').attr('transform',`translate(0,${h})`)
+  .call(d3.axisBottom(x).ticks(7).tickFormat(d=>d+'%').tickSize(4))
+  .call(g=>g.select('.domain').remove())
+  .call(g=>g.selectAll('text').attr('font-size','10px').attr('fill','#999')
+    .attr('font-family','Noto Sans KR'));
+g.append('g')
+  .call(d3.axisLeft(y).ticks(7).tickFormat(d=>d+'%').tickSize(4))
+  .call(g=>g.select('.domain').remove())
+  .call(g=>g.selectAll('text').attr('font-size','10px').attr('fill','#999')
+    .attr('font-family','Noto Sans KR'));
+
+// 축 레이블
+g.append('text').attr('x',w/2).attr('y',h+44)
+  .attr('text-anchor','middle').attr('font-size','11px').attr('fill','#666')
+  .attr('font-family','Noto Sans KR').text('청년(20–39세) 1인가구 비율 (%)');
+g.append('text').attr('transform','rotate(-90)')
+  .attr('x',-h/2).attr('y',-46)
+  .attr('text-anchor','middle').attr('font-size','11px').attr('fill','#666')
+  .attr('font-family','Noto Sans KR').text('노년(65세 이상) 1인가구 비율 (%)');
+
+// 주석
+g.append('text').attr('x',x(5)).attr('y',y(63.5))
+  .attr('font-size','9.5px').attr('fill','#C42B2B').attr('font-weight','700')
+  .attr('font-family','Noto Sans KR').text('노년 집중');
+g.append('text').attr('x',x(5)).attr('y',y(60.5))
+  .attr('font-size','8.5px').attr('fill','#C42B2B').attr('opacity',0.8)
+  .attr('font-family','Noto Sans KR').text('(농촌·군 지역)');
+g.append('text').attr('x',x(53)).attr('y',y(7.5))
+  .attr('font-size','9.5px').attr('fill','#0D3B7A').attr('font-weight','700')
+  .attr('font-family','Noto Sans KR').text('청년 집중');
+g.append('text').attr('x',x(53)).attr('y',y(4.5))
+  .attr('font-size','8.5px').attr('fill','#0D3B7A').attr('opacity',0.8)
+  .attr('font-family','Noto Sans KR').text('(대학가·도심)');
+
+// 상관계수 박스
+const rbox = document.getElementById('rbox');
+rbox.style.top  = (margin.top+4)+'px';
+rbox.style.right = (margin.right+4)+'px';
+rbox.innerHTML = `상관계수 r = ${R_VAL}<br><span style="font-size:9px;color:#BBB">(${N}개 시군구)</span>`;
+
+// 점 레이어
+const tt = document.getElementById('tt');
+const typeOrder = ['시','광역시·수도권 구','군','서울 자치구'];
+const sorted = [...DATA].sort((a,b)=>typeOrder.indexOf(a.type)-typeOrder.indexOf(b.type));
+
+const circles = g.selectAll('circle').data(sorted).join('circle')
+  .attr('cx', d=>x(d.youngPct))
+  .attr('cy', d=>y(d.oldPct))
+  .attr('r',  d=>sizeMap[d.type])
+  .attr('fill', d=>colorMap[d.type])
+  .attr('stroke','white').attr('stroke-width',0.7)
+  .style('cursor','pointer')
+  .on('mouseover', function(e,d){
+    if(!active.has(d.type)) return;
+    d3.select(this).attr('r', sizeMap[d.type]*1.5).attr('stroke-width',1.5);
+    tt.style.opacity=1;
+    tt.innerHTML=`<strong style="font-size:13px">${d.name}</strong><br>
+      <span style="color:${colorMap[d.type]}">${d.type}</span><br>
+      청년 비율: <strong>${d.youngPct}%</strong><br>
+      노년 비율: <strong>${d.oldPct}%</strong><br>
+      1인가구 총수: <strong>${d.total.toLocaleString()}명</strong>`;
+  })
+  .on('mousemove', e=>{
+    tt.style.left=(e.clientX+14)+'px';
+    tt.style.top=(e.clientY-50)+'px';
+  })
+  .on('mouseout', function(e,d){
+    d3.select(this).attr('r',sizeMap[d.type]).attr('stroke-width',0.7);
+    tt.style.opacity=0;
+  });
+
+// 라벨 레이어
+const labelOffsets = {
+  '관악구':[ 0.8,-3.8],'유성구':[ 0.8,-3.8],'마포구':[-6.0, 0.5],
+  '동작구':[ 0.8, 1.2],'서초구':[-6.0, 0.5],'강남구':[ 0.8,-3.8],
+  '고흥군':[ 0.8, 1.2],'합천군':[-6.5, 0.5],'의성군':[-6.0,-3.8],
+  '남해군':[ 0.8, 1.2],'세종시':[ 0.8, 1.2],'화성시':[ 0.8,-3.8],
+  '과천시':[ 0.8, 1.2],'울릉군':[ 0.8, 1.2],
+};
+
+const labelData = DATA.filter(d=>LABEL_SET.has(d.name));
+
+const labelTexts = g.selectAll('text.lbl').data(labelData).join('text')
+  .attr('class','lbl')
+  .attr('x', d=>{ const [dx]=labelOffsets[d.name]||[0.8]; return x(d.youngPct+dx); })
+  .attr('y', d=>{ const [,dy]=labelOffsets[d.name]||[0,1.2]; return y(d.oldPct+dy); })
+  .attr('font-size','8.5px').attr('font-weight','700')
+  .attr('font-family','Noto Sans KR')
+  .attr('fill', d=>colorMap[d.type])
+  .text(d=>d.name);
+
+function updateChart() {
+  const none = active.size === 0;  // 선택 없음 = 초기 상태
+
+  circles
+    .classed('dot-blink', d => !none && active.has(d.type))
+    .attr('fill-opacity', d => none ? 0.82 : (active.has(d.type) ? 0.85 : 0.08))
+    .attr('stroke-opacity', d => none ? 1 : (active.has(d.type) ? 1 : 0.05));
+
+  labelTexts
+    .attr('fill-opacity', d => none ? 1 : (active.has(d.type) ? 1 : 0.06));
+}
+
+updateChart();
+</script>
+</body>
+</html>
