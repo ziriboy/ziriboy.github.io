@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>전국 시도별 외국인 성별 현황 (2024)</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif; height:100vh; display:flex; flex-direction:column; }
+#header {
+  background:#fff; border-bottom:1px solid #e0dfd8;
+  padding:10px 16px; display:flex; align-items:center; gap:14px;
+  flex-wrap:wrap; z-index:2000; position:relative;
+}
+#header h1 { font-size:14px; font-weight:500; color:#2c2c2a; }
+.sep { width:1px; height:20px; background:#e0dfd8; }
+.ctrl { display:flex; align-items:center; gap:6px; font-size:12px; color:#5f5e5a; }
+select { font-size:12px; padding:4px 8px; border:1px solid #d3d1c7; border-radius:6px; background:#fff; cursor:pointer; color:#2c2c2a; }
+#map-wrap { position:relative; flex:1; }
+#map { height:100%; width:100%; }
+.pie-marker { cursor:pointer; }
+.pie-marker svg { overflow:visible; filter:drop-shadow(0 1px 4px rgba(0,0,0,0.3)); transition:transform .15s; }
+.pie-marker:hover svg { transform:scale(1.1); }
+
+/* 상세 패널 */
+#panel {
+  position:absolute; top:12px; right:12px;
+  background:rgba(255,255,255,0.97);
+  border-radius:12px; border:1px solid #d3d1c7;
+  padding:16px; z-index:1000; width:230px;
+  display:none; font-size:12px;
+  box-shadow:0 2px 12px rgba(0,0,0,0.1);
+}
+#panel h4 { font-size:14px; font-weight:500; margin:0 0 10px; color:#2c2c2a; }
+.pr { display:flex; justify-content:space-between; margin-bottom:5px; color:#5f5e5a; }
+.pv { font-weight:500; color:#2c2c2a; }
+.bar-wrap { height:12px; border-radius:6px; overflow:hidden; display:flex; margin:10px 0 4px; }
+.bar-m { background:#1b6cb5; }
+.bar-f { background:#c44d8a; }
+.bar-labels { display:flex; justify-content:space-between; font-size:11px; }
+.lbl-m { color:#1b6cb5; font-weight:500; }
+.lbl-f { color:#c44d8a; font-weight:500; }
+
+/* 범례 */
+#legend {
+  position:absolute; bottom:24px; left:12px;
+  background:rgba(255,255,255,0.96);
+  border-radius:10px; border:1px solid #d3d1c7;
+  padding:13px 15px; z-index:1000; font-size:11px; color:#5f5e5a;
+  min-width:160px;
+}
+#legend h5 { font-size:11px; font-weight:500; color:#444441; margin:0 0 7px; }
+.lgd-color { display:flex; flex-direction:column; gap:5px; margin-bottom:12px; }
+.lgd-row { display:flex; align-items:center; gap:6px; }
+.lgd-dot { width:13px; height:13px; border-radius:50%; flex-shrink:0; }
+.lgd-divider { height:1px; background:#e8e8e4; margin:10px 0; }
+.sz-bubbles { display:flex; align-items:flex-end; gap:14px; }
+.sz-item { display:flex; flex-direction:column; align-items:center; gap:4px; }
+.sz-circle { border-radius:50%; background:rgba(100,100,180,0.18); border:1.5px solid rgba(100,100,180,0.45); flex-shrink:0; }
+.sz-label { font-size:10px; color:#888; text-align:center; }
+</style>
+</head>
+<body>
+
+<div id="header">
+  <h1>전국 시도별 외국인 성별 현황 (2024)</h1>
+
+</div>
+
+<div id="map-wrap">
+  <div id="map"></div>
+
+  <div id="panel">
+    <h4 id="p-name"></h4>
+    <div class="pr"><span>외국인 총수</span><span class="pv" id="p-t"></span></div>
+    <div class="pr"><span>남성</span><span class="pv" id="p-m" style="color:#1b6cb5"></span></div>
+    <div class="pr"><span>여성</span><span class="pv" id="p-f" style="color:#c44d8a"></span></div>
+    <div class="bar-wrap">
+      <div class="bar-m" id="p-barm"></div>
+      <div class="bar-f" id="p-barf"></div>
+    </div>
+    <div class="bar-labels">
+      <span class="lbl-m" id="p-mr"></span>
+      <span class="lbl-f" id="p-fr"></span>
+    </div>
+  </div>
+
+  <div id="legend">
+    <!-- 색상 범례 -->
+    <h5>색상</h5>
+    <div class="lgd-color">
+      <div class="lgd-row">
+        <div class="lgd-dot" style="background:#1b6cb5"></div>
+        <span>남성</span>
+      </div>
+      <div class="lgd-row">
+        <div class="lgd-dot" style="background:#c44d8a"></div>
+        <span>여성</span>
+      </div>
+    </div>
+
+    <div class="lgd-divider"></div>
+
+    <!-- 크기 범례 -->
+    <h5>크기 (외국인 수)</h5>
+    <div class="sz-bubbles">
+      <div class="sz-item">
+        <div class="sz-circle" style="width:26px; height:26px"></div>
+        <div class="sz-label">~8천명</div>
+      </div>
+      <div class="sz-item">
+        <div class="sz-circle" style="width:44px; height:44px"></div>
+        <div class="sz-label">~13만명</div>
+      </div>
+      <div class="sz-item">
+        <div class="sz-circle" style="width:76px; height:76px"></div>
+        <div class="sz-label">~68만명</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+const DATA = [
+  {"n":"서울특별시","t":367291,"m":165130,"f":202161,"mr":0.4496,"fr":0.5504,"lat":37.5665,"lng":126.978},
+  {"n":"부산광역시","t":67762,"m":38046,"f":29716,"mr":0.5615,"fr":0.4385,"lat":35.1796,"lng":129.0756},
+  {"n":"대구광역시","t":45295,"m":24139,"f":21156,"mr":0.5329,"fr":0.4671,"lat":35.8714,"lng":128.6014},
+  {"n":"인천광역시","t":127960,"m":70571,"f":57389,"mr":0.5515,"fr":0.4485,"lat":37.4563,"lng":126.7052},
+  {"n":"광주광역시","t":35882,"m":19649,"f":16233,"mr":0.5476,"fr":0.4524,"lat":35.1595,"lng":126.8526},
+  {"n":"대전광역시","t":31322,"m":14380,"f":16942,"mr":0.4591,"fr":0.5409,"lat":36.3504,"lng":127.3845},
+  {"n":"울산광역시","t":35193,"m":23713,"f":11480,"mr":0.6738,"fr":0.3262,"lat":35.5384,"lng":129.3114},
+  {"n":"세종특별자치시","t":7992,"m":4893,"f":3099,"mr":0.6122,"fr":0.3878,"lat":36.48,"lng":127.289},
+  {"n":"경기도","t":681201,"m":399066,"f":282135,"mr":0.5858,"fr":0.4142,"lat":37.15,"lng":127.35},
+  {"n":"강원특별자치도","t":36580,"m":20871,"f":15709,"mr":0.5706,"fr":0.4294,"lat":37.8228,"lng":128.1555},
+  {"n":"충청북도","t":78349,"m":49151,"f":29198,"mr":0.6273,"fr":0.3727,"lat":36.6357,"lng":127.4917},
+  {"n":"충청남도","t":139111,"m":83997,"f":55114,"mr":0.6038,"fr":0.3962,"lat":36.6589,"lng":126.6727},
+  {"n":"전북특별자치도","t":57688,"m":32772,"f":24916,"mr":0.5681,"fr":0.4319,"lat":35.7175,"lng":127.153},
+  {"n":"전라남도","t":70936,"m":48297,"f":22639,"mr":0.6809,"fr":0.3191,"lat":34.8679,"lng":126.991},
+  {"n":"경상북도","t":101152,"m":63173,"f":37979,"mr":0.6245,"fr":0.3755,"lat":36.4919,"lng":128.8889},
+  {"n":"경상남도","t":128519,"m":88109,"f":40410,"mr":0.6856,"fr":0.3144,"lat":35.4606,"lng":128.2132},
+  {"n":"제주특별자치도","t":30511,"m":18487,"f":12024,"mr":0.6059,"fr":0.3941,"lat":33.489,"lng":126.4983}
+];
+
+const map = L.map('map', { center:[36.5, 127.8], zoom:7 });
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+  attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
+  subdomains:'abcd',
+  maxZoom:19
+}).addTo(map);
+
+
+const MIN_R = 10, MAX_R = 38;
+const maxT = Math.max(...DATA.map(d=>d.t));
+
+function getRadius(d) {
+  return MIN_R + (Math.sqrt(d.t) / Math.sqrt(maxT)) * (MAX_R - MIN_R);
+}
+
+function pieSlicePath(cx, cy, r, startDeg, endDeg) {
+  const s = startDeg * Math.PI / 180;
+  const e = endDeg   * Math.PI / 180;
+  const x1 = cx + r * Math.cos(s), y1 = cy + r * Math.sin(s);
+  const x2 = cx + r * Math.cos(e), y2 = cy + r * Math.sin(e);
+  const large = (endDeg - startDeg > 180) ? 1 : 0;
+  return "M"+cx+","+cy+" L"+x1+","+y1+" A"+r+","+r+",0,"+large+",1,"+x2+","+y2+" Z";
+}
+
+function makePieSVG(d, r) {
+  const size = r * 2 + 4;
+  const cx = r + 2, cy = r + 2;
+  const mDeg = d.mr * 360;
+  let mPath = '', fPath = '';
+  if (mDeg >= 359.9) {
+    mPath = "<circle cx='"+cx+"' cy='"+cy+"' r='"+r+"' fill='#1b6cb5'/>";
+  } else if (mDeg <= 0.1) {
+    fPath = "<circle cx='"+cx+"' cy='"+cy+"' r='"+r+"' fill='#c44d8a'/>";
+  } else {
+    mPath = "<path d='"+pieSlicePath(cx,cy,r,-90,-90+mDeg)+"' fill='#1b6cb5'/>";
+    fPath = "<path d='"+pieSlicePath(cx,cy,r,-90+mDeg,270)+"' fill='#c44d8a'/>";
+  }
+  return "<svg xmlns='http://www.w3.org/2000/svg' width='"+size+"' height='"+size+"' viewBox='0 0 "+size+" "+size+"'>"
+    + "<circle cx='"+cx+"' cy='"+cy+"' r='"+r+"' fill='#eee'/>"
+    + mPath + fPath
+    + "<circle cx='"+cx+"' cy='"+cy+"' r='"+r+"' fill='none' stroke='white' stroke-width='1.5'/>"
+    + "</svg>";
+}
+
+function fmt(n) { return n.toLocaleString('ko-KR') + '명'; }
+function pct(v) { return (v*100).toFixed(1) + '%'; }
+
+let markers = [];
+function drawMarkers() {
+  markers.forEach(m => m.remove());
+  markers = [];
+  DATA.forEach(d => {
+    const r = Math.round(getRadius(d));
+    const size = r * 2 + 4;
+    const icon = L.divIcon({
+      className: 'pie-marker',
+      html: makePieSVG(d, r),
+      iconSize:   [size, size],
+      iconAnchor: [size/2, size/2],
+    });
+    const marker = L.marker([d.lat, d.lng], { icon }).addTo(map);
+    marker.bindTooltip(
+      '<b>' + d.n + '</b><br>' +
+      '총 ' + fmt(d.t) + '<br>' +
+      '<span style="color:#1b6cb5">■ 남 ' + pct(d.mr) + '</span>&nbsp;&nbsp;' +
+      '<span style="color:#c44d8a">■ 여 ' + pct(d.fr) + '</span>',
+      { direction:'top', offset:[0, -r] }
+    );
+    marker.on('click', () => showPanel(d));
+    markers.push(marker);
+  });
+}
+
+function showPanel(d) {
+  document.getElementById('panel').style.display = 'block';
+  document.getElementById('p-name').textContent = d.n;
+  document.getElementById('p-t').textContent = fmt(d.t);
+  document.getElementById('p-m').textContent = fmt(d.m) + ' (' + pct(d.mr) + ')';
+  document.getElementById('p-f').textContent = fmt(d.f) + ' (' + pct(d.fr) + ')';
+  document.getElementById('p-barm').style.width = pct(d.mr);
+  document.getElementById('p-barf').style.width = pct(d.fr);
+  document.getElementById('p-mr').textContent = '남 ' + pct(d.mr);
+  document.getElementById('p-fr').textContent = '여 ' + pct(d.fr);
+}
+
+map.on('click', () => { document.getElementById('panel').style.display = 'none'; });
+
+
+drawMarkers();
+</script>
+</body>
+</html>
