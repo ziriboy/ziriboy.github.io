@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>고향사랑기부제 기획 프로젝트</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#1a1a14;--ink2:#4a4a42;--ink3:#8a8a80;
+  --line:#dedad2;--bg:#f4f2ed;--w:#fefefe;
+  --g:#1a6b3c;--gl:#e6f4ed;
+  --b:#1a458a;--bl:#e6edf8;
+  --a:#855a18;--al:#f7eedd;
+  --t:#0e6058;--tl:#e0f2ef;
+  --r:#8a1a1a;--rl:#f8e8e8;
+}
+body{font-family:'Noto Sans KR',sans-serif;font-size:14px;line-height:1.65;color:var(--ink);background:var(--bg)}
+
+/* 상태바 */
+#bar{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--ink);color:#fff;display:flex;align-items:center;height:48px;transform:translateY(-100%);transition:transform .3s}
+#bar.show{transform:translateY(0)}
+.bl{padding:0 15px;font-size:11px;font-weight:700;letter-spacing:.08em;color:rgba(255,255,255,.5);white-space:nowrap;border-right:1px solid rgba(255,255,255,.1)}
+.bch{display:flex;gap:7px;padding:0 13px;flex:1;align-items:center}
+.bcp{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:3px 10px;font-size:11px}
+.bcp .lb{font-size:9px;opacity:.6;margin-right:3px;text-transform:uppercase}
+.bpg{display:flex;gap:5px;padding:0 13px;align-items:center}
+.bdt{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.25);cursor:pointer;transition:all .2s}
+.bdt.done{background:rgba(255,255,255,.55)}.bdt.cur{background:#fff;transform:scale(1.35)}
+.bpr{margin-left:auto;padding:0 13px;font-size:11px;font-weight:700;color:rgba(255,255,255,.65);cursor:pointer;border-left:1px solid rgba(255,255,255,.1);height:100%;display:flex;align-items:center;gap:4px}
+.bpr:hover{color:#fff}
+
+/* 섹션 */
+.sec{min-height:100vh;padding:64px 0 52px;display:flex;align-items:flex-start;justify-content:center}
+.sec:first-of-type{padding-top:32px}
+.ww{width:100%;max-width:960px;padding:0 22px}
+
+/* 브리핑 */
+.ey{font-size:10px;font-weight:700;letter-spacing:.15em;color:var(--ink3);text-transform:uppercase;margin-bottom:6px}
+.ht{font-size:29px;font-weight:700;line-height:1.2;margin-bottom:8px}
+.hb{font-size:13.5px;color:var(--ink2);max-width:540px;line-height:1.75;margin-bottom:16px}
+.hb b{color:var(--ink);font-weight:700}
+
+/* 미션 2축 */
+.two-axis{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:20px}
+.ax{border-radius:9px;padding:12px 14px}
+.ax1{background:var(--gl);border:1px solid #a8d8be}
+.ax2{background:var(--bl);border:1px solid #a8c0e8}
+.ax-tag{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
+.ax1 .ax-tag{color:var(--g)}.ax2 .ax-tag{color:var(--b)}
+.ax-title{font-size:12px;font-weight:700;color:var(--ink);margin-bottom:3px}
+.ax-desc{font-size:10.5px;color:var(--ink2)}
+
+/* 흐름도 */
+.flow{display:flex;align-items:center;gap:10px;margin-bottom:24px;background:var(--w);border:1.5px solid var(--line);border-radius:10px;padding:11px 17px;flex-wrap:wrap}
+.fs{display:flex;align-items:center;gap:7px}
+.fd{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.d0{background:var(--ink)}.d1{background:var(--g)}.d2{background:var(--b)}.d3{background:var(--a)}
+.ft .fn{font-size:9px;font-weight:700;color:var(--ink3);letter-spacing:.08em;text-transform:uppercase}
+.ft .ftl{font-size:12px;font-weight:700;color:var(--ink)}
+.fa{font-size:14px;color:var(--line);flex-shrink:0}
+
+/* 지역 선택 */
+.stl{font-size:12px;font-weight:700;color:var(--ink2);margin-bottom:9px;display:flex;align-items:center;gap:7px}
+.stl::before{content:'';display:block;width:13px;height:2px;background:var(--ink);border-radius:1px}
+.guided-note{font-size:11px;color:var(--ink3);background:#f0ede6;border-radius:7px;padding:8px 12px;margin-bottom:12px;line-height:1.6}
+.guided-note b{color:var(--ink2);font-weight:700}
+.rgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
+.rc{border:2px solid var(--line);border-radius:10px;overflow:hidden;cursor:pointer;background:var(--w);transition:all .18s}
+.rc:hover{border-color:var(--ink2);transform:translateY(-1px)}
+.rc.sel{border-color:var(--ink)}
+.rc-h{padding:10px 13px 5px;display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.rc-n{font-size:13.5px;font-weight:700;color:var(--ink)}
+.rc-bg{font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;white-space:nowrap}
+.br{background:var(--bl);color:var(--b);border:.5px solid #a8c0e8}
+.bg{background:var(--gl);color:var(--g);border:.5px solid #a8d8be}
+.rc-b{padding:0 13px 10px}
+.rc-geo{font-size:10px;color:var(--t);font-weight:700;margin-bottom:3px}
+.rc-as{font-size:10.5px;color:var(--ink2);margin-bottom:2px}
+.rc-is{font-size:10px;color:var(--ink3);margin-bottom:5px}
+.rc-q{font-size:10px;color:var(--ink2);font-style:italic;border-left:2px solid var(--line);padding-left:7px}
+/* 직접 제안 폼 */
+.rc-fm{padding:10px 13px;display:none;flex-direction:column;gap:7px;border-top:1px solid var(--line)}
+.rc.sel .rc-fm{display:flex}
+.rf-lb{font-size:9.5px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px}
+.rf-in{border:1.5px solid var(--line);border-radius:6px;padding:6px 9px;font-size:12px;color:var(--ink);font-family:'Noto Sans KR',sans-serif;background:var(--bg);width:100%;transition:border-color .15s}
+.rf-in:focus{outline:none;border-color:var(--ink);background:var(--w)}
+/* 직접 제안 링크 박스 */
+.rc-links{padding:10px 13px;display:none;flex-direction:column;gap:6px;border-top:1px solid var(--line);background:#fafaf6}
+.rc.sel .rc-links{display:flex}
+.rc-links-title{font-size:10px;font-weight:700;color:var(--ink3);margin-bottom:2px}
+.rc-lnk{display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--w);border:1px solid var(--line);border-radius:7px;text-decoration:none;transition:all .15s}
+.rc-lnk:hover{border-color:var(--b);background:var(--bl)}
+.rc-lnk-icon{font-size:15px;flex-shrink:0}
+.rc-lnk-text{}
+.rc-lnk-name{font-size:11px;font-weight:700;color:var(--ink)}
+.rc-lnk-desc{font-size:9.5px;color:var(--ink3)}
+
+.sbtn{display:inline-flex;align-items:center;gap:7px;background:var(--ink);color:#fff;border:none;border-radius:10px;padding:12px 24px;font-size:14px;font-weight:700;cursor:pointer;margin-top:16px;font-family:'Noto Sans KR',sans-serif;transition:all .18s}
+.sbtn:hover{background:#2a2a20;transform:translateY(-1px)}
+.sbtn:disabled{background:var(--line);color:var(--ink3);cursor:not-allowed;transform:none}
+#smsg{font-size:11px;color:var(--ink3);margin-top:7px}
+
+/* 작업 헤더 */
+.wh{margin-bottom:18px}
+.wn{font-size:10px;font-weight:700;color:var(--ink3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px}
+.wt{font-size:21px;font-weight:700;line-height:1.2;margin-bottom:4px}
+.wd{font-size:13px;color:var(--ink2)}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+
+/* 가이드 패널 */
+.gp{background:var(--w);border:1.5px solid var(--line);border-radius:12px;overflow:hidden;position:sticky;top:56px}
+.gph{background:var(--ink);color:#fff;padding:10px 14px}
+.gph1{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;opacity:.6;margin-bottom:1px}
+.gph2{font-size:13px;font-weight:700}
+.gpb{padding:13px}
+.gpb-hint{font-size:11px;color:var(--ink2);line-height:1.7;padding-bottom:10px;margin-bottom:10px;border-bottom:1px solid var(--line)}
+.gpb-hint b{font-weight:700;color:var(--ink)}
+
+/* 현재 답례품 */
+.cur-box{border:1.5px solid var(--t);border-radius:10px;overflow:hidden;margin-bottom:13px}
+.cur-h{background:var(--tl);padding:8px 13px;display:flex;align-items:center;justify-content:space-between}
+.cur-ht{font-size:11px;font-weight:700;color:var(--t)}
+.cur-lnk{font-size:10px;color:var(--t);text-decoration:none;opacity:.8}
+.cur-lnk:hover{opacity:1;text-decoration:underline}
+.cur-bd{padding:9px 13px;display:flex;flex-direction:column;gap:6px}
+.cur-it{display:flex;gap:7px;align-items:flex-start}
+.cur-dot{width:5px;height:5px;border-radius:50%;background:var(--t);flex-shrink:0;margin-top:5px}
+.cur-nm{font-size:11.5px;font-weight:700;color:var(--ink)}
+.cur-dc{font-size:10px;color:var(--ink3);line-height:1.5}
+.cur-nt{font-size:10px;color:var(--t);font-style:italic;padding:6px 13px;background:#f0faf8;border-top:1px solid #b8e4de}
+
+/* 결핍 박스 */
+.def-box{border:1.5px solid #d8a0a0;border-radius:10px;overflow:hidden;margin-bottom:13px}
+.def-h{background:var(--rl);padding:8px 13px}
+.def-ht{font-size:11px;font-weight:700;color:var(--r)}
+.def-bd{padding:9px 13px;display:flex;flex-direction:column;gap:5px}
+.def-it{display:flex;gap:6px;font-size:10.5px}
+.def-cat{font-weight:700;color:var(--r);flex-shrink:0;width:42px;font-size:10px}
+.def-ct{color:var(--ink2)}.def-ct b{font-weight:700;color:var(--ink)}
+.def-lnk{font-size:10px;color:var(--b);text-decoration:none;padding:5px 13px;border-top:1px solid #f0d0d0;display:block}
+.def-lnk:hover{text-decoration:underline}
+
+/* 사례 카드 */
+.case{border:1px solid var(--line);border-radius:9px;overflow:hidden;margin-bottom:9px}
+.case:last-of-type{margin-bottom:0}
+.ch{background:#eeeae0}
+.ch-hk{font-size:11.5px;font-weight:700;color:var(--ink);padding:8px 12px 3px;line-height:1.4}
+.ch-mt{display:flex;align-items:center;gap:6px;padding:0 12px 7px}
+.ch-nm{font-size:9.5px;color:var(--ink3);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ch-tp{font-size:9px;font-weight:700;padding:2px 12px;border-radius:20px;white-space:nowrap;flex-shrink:0;display:inline-block;line-height:1.5}
+.tg{background:var(--gl);color:var(--g);border:.5px solid #a8d8be}
+.ta{background:var(--al);color:var(--a);border:.5px solid #d8b870}
+.tb{background:var(--bl);color:var(--b);border:.5px solid #a8c0e8}
+.tt{background:var(--tl);color:var(--t);border:.5px solid #88c8c0}
+.cb{padding:10px 12px}
+.cb-st{font-size:11px;color:var(--ink2);line-height:1.7;margin-bottom:7px}
+.cb-st b{font-weight:700;color:var(--ink)}
+.cb-fs{display:flex;flex-direction:column;gap:3px;margin-bottom:7px}
+.cf{display:flex;gap:5px;font-size:10px}
+.cfl{font-weight:700;color:var(--ink3);flex-shrink:0;width:50px}
+.cfv{color:var(--ink2)}.cfv b{font-weight:700;color:var(--ink)}
+.cb-wy{background:var(--al);border-radius:5px;padding:5px 9px;font-size:10px;color:var(--a)}
+.cb-wy b{font-weight:700}
+.cmedia{display:block;padding-bottom:37%;position:relative;text-decoration:none}
+.cmi{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;gap:4px;padding:12px;text-align:center}
+.cmi .pl{font-size:22px}
+.cmi .ct{font-size:11px;font-weight:700}
+.cmi .cs{font-size:9.5px;opacity:.7}
+.cmi .cb2{border:1px solid rgba(255,255,255,.3);border-radius:10px;padding:2px 9px;font-size:9px;margin-top:3px;background:rgba(255,255,255,.12)}
+.gp-link{display:flex;align-items:center;gap:5px;padding:8px 12px;border-top:1px solid var(--line);font-size:10.5px;font-weight:700;color:var(--b);text-decoration:none}
+.gp-link:hover{background:var(--bl)}
+
+/* 입력 패널 */
+.ip{background:var(--w);border:1.5px solid var(--line);border-radius:12px;overflow:hidden}
+.iph{padding:11px 14px;border-bottom:1.5px solid var(--line);display:flex;align-items:center;gap:8px}
+.ipic{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0}
+.ic1{background:var(--g)}.ic2{background:var(--b)}
+.ipht{font-size:13px;font-weight:700;color:var(--ink)}
+.iphs{font-size:10px;color:var(--ink3)}
+.ipb{padding:14px}
+.fg{margin-bottom:12px}
+.fgl{font-size:11px;font-weight:700;color:var(--ink2);margin-bottom:3px;display:flex;align-items:center;gap:5px}
+.geo-t{font-size:9px;font-weight:700;color:var(--t);background:var(--tl);padding:1px 6px;border-radius:8px}
+.fgh{font-size:10px;color:var(--ink3);margin-bottom:3px;font-style:italic}
+.fgi{width:100%;border:1.5px solid var(--line);border-radius:7px;padding:8px 10px;font-size:13px;color:var(--ink);font-family:'Noto Sans KR',sans-serif;background:var(--bg);resize:none;transition:border-color .15s}
+.fgi:focus{outline:none;border-color:var(--ink);background:var(--w)}
+.ta{min-height:64px}.tsm{min-height:48px}
+.formula{background:var(--al);border:1px solid #d8b870;border-radius:7px;padding:8px 11px;margin-bottom:11px;font-size:11px;color:var(--a)}
+.formula b{font-weight:700}
+.ipnext{width:100%;padding:11px;background:var(--ink);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .18s;display:flex;align-items:center;justify-content:center;gap:5px;margin-top:2px}
+.ipnext:hover{background:#2a2a20}
+
+/* 평가 */
+.eval-intro{background:var(--w);border:1.5px solid var(--line);border-radius:10px;padding:13px 15px;margin-bottom:14px;font-size:13px;color:var(--ink2);line-height:1.75}
+.eval-intro b{font-weight:700;color:var(--ink)}
+.chklist{border:1.5px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:16px}
+.ckh{background:var(--ink);color:#fff;padding:9px 14px;font-size:12px;font-weight:700}
+.ckgrp{border-bottom:1px solid var(--line)}
+.ckgrp:last-of-type{border-bottom:none}
+.ckgh{background:#eeeae0;padding:7px 12px;font-size:10.5px;font-weight:700;color:var(--ink2);display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--line)}
+.ckgd{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.cki{display:flex;align-items:flex-start;gap:7px;padding:8px 12px;border-bottom:1px solid #eeeae0;font-size:11.5px;color:var(--ink2);cursor:pointer;transition:background .1s}
+.cki:last-child{border-bottom:none}
+.cki:hover{background:#fafaf6}
+.stars{display:flex;gap:3px;flex-shrink:0;margin-top:1px}
+.star{font-size:18px;cursor:pointer;color:#ddd;transition:color .1s;line-height:1;user-select:none}
+.star.on{color:#e0a020}
+.ckt{flex:1}
+.cksub{font-size:10px;color:var(--ink3)}
+.ckr{padding:10px 14px;background:#fafaf6;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.ckrs{font-size:13px;color:var(--ink)}.ckrs b{font-size:15px;font-weight:700}
+.ckrm{font-size:11px;color:var(--ink2)}
+.discb{background:var(--w);border:1.5px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:18px}
+.disct{font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+.di{display:flex;gap:7px;font-size:13px;color:var(--ink2);margin-bottom:6px}
+.di:last-child{margin-bottom:0}
+.din{font-weight:700;color:var(--ink);flex-shrink:0}
+.pbtn{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;background:var(--ink);color:#fff;border:none;border-radius:10px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .18s}
+.pbtn:hover{background:#2a2a20}
+.hidden{display:none}
+/* 타겟 카드 */
+.tgt-card{border:1.5px solid var(--line);border-radius:8px;padding:8px 10px;cursor:pointer;background:var(--w);transition:all .15s}
+.tgt-card:hover{border-color:var(--ink2)}
+.tgt-card.sel{border-color:var(--g);background:var(--gl)}
+.dp-links{border:1.5px solid var(--b);border-radius:10px;overflow:hidden;margin-bottom:13px;display:none}
+.dp-links.show{display:block}
+.dp-lh{background:var(--bl);padding:8px 13px;font-size:11px;font-weight:700;color:var(--b)}
+.dp-lb{padding:8px 13px;display:flex;flex-direction:column;gap:6px}
+.dp-lnk{display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--w);border:1px solid var(--line);border-radius:7px;text-decoration:none;transition:all .15s}
+.dp-lnk:hover{border-color:var(--b);background:var(--bl)}
+.dp-lic{font-size:15px;flex-shrink:0}
+.dp-lnm{font-size:11px;font-weight:700;color:var(--ink)}
+.dp-ldc{font-size:9.5px;color:var(--ink3)}
+@media print{
+  #bar,.sbtn,.ipnext,.pbtn,#s0,#s3 .discb{display:none!important}
+  body{background:#fff}
+  .sec{min-height:auto;padding:14px 0;page-break-inside:avoid}
+  .gp{position:static}
+}
+</style>
+</head>
+<body>
+
+<!-- 상태바 -->
+<div id="bar">
+  <div class="bl">고향사랑기부제 기획</div>
+  <div class="bch"><div class="bcp"><span class="lb">지역</span><span id="srv">—</span></div></div>
+  <div class="bpg">
+    <div class="bdt cur" onclick="gs('s0')"></div>
+    <div class="bdt" onclick="gs('s1')"></div>
+    <div class="bdt" onclick="gs('s2')"></div>
+    <div class="bdt" onclick="gs('s3')"></div>
+  </div>
+  <div class="bpr" onclick="window.print()">🖨 인쇄</div>
+</div>
+
+<!-- ══ 섹션 0 ══ -->
+<div class="sec" id="s0">
+<div class="ww">
+  <div class="ey">국토균형발전 · 고향사랑기부제 기획 프로젝트</div>
+  <div class="ht">고향사랑기부제<br>기획 프로젝트</div>
+  <div class="hb">고향사랑기부제는 두 바퀴로 굴러간다.<br><b>기부자를 끌어들이는 답례품</b>과 <b>모인 기부금으로 지역을 바꾸는 사업</b>.<br>두 미션을 설계해 기부제의 완전한 한 사이클을 완성하라.</div>
+
+  <!-- 두 미션 축 -->
+  <div class="two-axis">
+    <div class="ax ax1">
+      <div class="ax-tag">미션 1 — 이 지역에 뭐가 있는가?</div>
+      <div class="ax-title">답례품 디자인</div>
+      <div class="ax-desc">지역 자산(자연·문화·사람)을 경험으로 전환해 기부자를 연결하는 첫 번째 고리</div>
+    </div>
+    <div class="ax ax2">
+      <div class="ax-tag">미션 2 — 이 지역에 뭐가 부족한가?</div>
+      <div class="ax-title">기금사업 제안</div>
+      <div class="ax-desc">생활SOC 결핍을 진단하고, 기부금으로 지역 문제를 실제로 해결하는 두 번째 고리</div>
+    </div>
+  </div>
+
+  <!-- 흐름도 -->
+  <div class="flow">
+    <div class="fs"><div class="fd d0"></div><div class="ft"><div class="fn">지금</div><div class="ftl">지역 선택</div></div></div>
+    <div class="fa">→</div>
+    <div class="fs"><div class="fd d1"></div><div class="ft"><div class="fn">미션 1</div><div class="ftl">답례품 디자인</div></div></div>
+    <div class="fa">→</div>
+    <div class="fs"><div class="fd d2"></div><div class="ft"><div class="fn">미션 2</div><div class="ftl">기금사업 제안</div></div></div>
+    <div class="fa">→</div>
+    <div class="fs"><div class="fd d3"></div><div class="ft"><div class="fn">마무리</div><div class="ftl">자기 평가</div></div></div>
+  </div>
+
+  <!-- 지역 선택 -->
+  <div style="margin-bottom:20px">
+    <div class="stl">지역 선택</div>
+    <div class="guided-note">
+      <b>통영·공주</b>는 데이터가 미리 준비되어 있는 안내된 탐구 방식입니다. 시간이 부족하거나 낯선 지역이면 이 중 하나를 선택하세요.<br>
+      <b>직접 제안</b>은 우리 지역이나 관심 있는 지역을 스스로 조사해 기획합니다. 링크를 통해 실제 데이터를 직접 찾아야 합니다.
+    </div>
+    <div class="rgrid">
+
+      <!-- 통영 -->
+      <div class="rc" id="rc0" onclick="selR(0,'경남 통영')">
+        <div class="rc-h"><div class="rc-n">경남 통영</div><div class="rc-bg br">소도시 · 안내됨</div></div>
+        <div class="rc-b">
+          <div class="rc-geo">🗺 남해 다도해 · 리아스식 해안 · 섬 570개</div>
+          <div class="rc-as">굴·멍게 수산업 · 나전칠기 공예 · 예술·음악 도시</div>
+          <div class="rc-is">조선업 붕괴 → 청년 유출 심화 · 출산율 0.76 · 10년 인구 14% 감소</div>
+          <div class="rc-q">"바다와 예술이 있다. 청년이 떠나고 있다"</div>
+        </div>
+      </div>
+
+      <!-- 공주 -->
+      <div class="rc" id="rc1" onclick="selR(1,'충남 공주')">
+        <div class="rc-h"><div class="rc-n">충남 공주</div><div class="rc-bg bg">소도시 · 안내됨</div></div>
+        <div class="rc-b">
+          <div class="rc-geo">🗺 금강 중류 · 차령산맥 구릉지 · 충청 내륙</div>
+          <div class="rc-as">공주 알밤 · 백제 역사 유적 · 제민천 감성 골목</div>
+          <div class="rc-is">1932년 충남도청 이전 후 90년 쇠락 · 인구 10만 붕괴 · 원도심 공동화</div>
+          <div class="rc-q">"역사가 있다. 사람이 없다"</div>
+        </div>
+      </div>
+
+      <!-- 직접 제안 -->
+      <div class="rc" id="rc2" onclick="selR(2,'직접 제안')">
+        <div class="rc-h">
+          <div class="rc-n">우리 지역 직접 제안</div>
+          <div class="rc-bg" style="background:#f0ede4;color:var(--ink3);border:.5px solid var(--line)">자기 주도</div>
+        </div>
+        <div class="rc-b">
+          <div class="rc-q" style="border:none;padding:0;color:var(--ink3)">아래 링크로 우리 지역 데이터를 직접 찾아보고 기획합니다.</div>
+        </div>
+        <div class="rc-links" id="rclinks">
+          <div class="rc-links-title">📎 데이터 찾기 — 아래 링크를 활용하세요</div>
+          <a class="rc-lnk" href="https://www.ilovegohyang.go.kr" target="_blank">
+            <div class="rc-lnk-icon">🎁</div>
+            <div class="rc-lnk-text">
+              <div class="rc-lnk-name">고향사랑e음 — 우리 지역 답례품 검색</div>
+              <div class="rc-lnk-desc">지역명으로 검색하면 현재 등록된 답례품 확인 가능</div>
+            </div>
+          </a>
+          <a class="rc-lnk" href="https://www.lgicp.re.kr" target="_blank">
+            <div class="rc-lnk-icon">📊</div>
+            <div class="rc-lnk-text">
+              <div class="rc-lnk-name">국토연구원 생활인프라 결핍지수</div>
+              <div class="rc-lnk-desc">건강·보육·교육·안전·여가 분야 결핍 수준 확인</div>
+            </div>
+          </a>
+          <a class="rc-lnk" href="https://pb.lofin365.go.kr" target="_blank">
+            <div class="rc-lnk-icon">🏛</div>
+            <div class="rc-lnk-text">
+              <div class="rc-lnk-name">주민e참여 — 우리 지역 주민참여예산 확인</div>
+              <div class="rc-lnk-desc">주민들이 요구하는 사업 유형 파악 가능</div>
+            </div>
+          </a>
+        </div>
+        <div class="rc-fm" id="rcfm">
+          <div><div class="rf-lb">지역명</div><input class="rf-in" type="text" placeholder="예) 전북 완주군" oninput="updateCust()"></div>
+          <div><div class="rf-lb">지리적 특성</div><input class="rf-in" type="text" placeholder="예) 전주 인접 내륙 평야지역"></div>
+          <div><div class="rf-lb">핵심 자산</div><input class="rf-in" type="text" placeholder="예) 로컬푸드, 발효 음식"></div>
+          <div><div class="rf-lb">주요 결핍</div><input class="rf-in" type="text" placeholder="예) 청년 일자리 부족, 노인 돌봄 시설 미흡"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div>
+    <div style="font-size:11.5px;color:var(--ink2);margin-bottom:5px">모둠명: <input type="text" placeholder="모둠 이름" style="border:none;border-bottom:1.5px solid var(--line);padding:2px 8px;font-size:12px;font-family:'Noto Sans KR',sans-serif;color:var(--ink);background:transparent;width:160px;margin-left:4px"></div>
+    <button class="sbtn" id="sbtn" onclick="start()" disabled>기획 시작하기 →</button>
+    <div id="smsg">지역을 선택하면 시작할 수 있습니다.</div>
+  </div>
+</div>
+</div>
+
+<!-- ══ 섹션 1: 답례품 ══ -->
+<div class="sec hidden" id="s1">
+<div class="ww">
+  <div class="wh">
+    <div class="wn">미션 1 / 답례품 기획</div>
+    <div class="wt">고향사랑기부제<br><span style="font-size:26px;font-weight:700;color:var(--g)">답례품 기획</span></div>
+  </div>
+  <div class="split">
+
+    <!-- 왼쪽 -->
+    <div>
+      <!-- 직접 제안: 답례품 탐색 링크 -->
+      <div class="dp-links" id="dp-s1">
+        <div class="dp-lh">📎 직접 제안 — 우리 지역 답례품 데이터 찾기</div>
+        <div class="dp-lb">
+          <a class="dp-lnk" href="https://www.ilovegohyang.go.kr" target="_blank">
+            <span class="dp-lic">🎁</span><div><div class="dp-lnm">고향사랑e음 — 우리 지역 답례품 검색</div><div class="dp-ldc">지역명으로 검색하면 현재 등록된 답례품 확인 가능</div></div>
+          </a>
+        </div>
+      </div>
+
+      <!-- 통영 현재 답례품 -->
+      <div class="cur-box" id="cur-통영" style="display:none">
+        <div class="cur-h"><div class="cur-ht">📦 경남 통영 — 현재 등록된 대표 답례품</div><a href="https://www.ilovegohyang.go.kr" target="_blank" class="cur-lnk">e음에서 전체 보기 →</a></div>
+        <div class="cur-bd">
+          <div class="cur-it"><div class="cur-dot"></div><div><div class="cur-nm">통영 굴 세트</div><div class="cur-dc">남해 다도해 리아스식 해안의 청정 내만이 만드는 최적 굴 양식 환경. 국내 굴 생산량 70% 이상이 이 지역에서 나온다.</div></div></div>
+          <div class="cur-it"><div class="cur-dot"></div><div><div class="cur-nm">통영 나전칠기 보석함</div><div class="cur-dc">고려시대부터 이어온 통영 전통 공예. 2025년 경남도 고향사랑기부제 신규 답례품으로 선정.</div></div></div>
+          <div class="cur-it"><div class="cur-dot"></div><div><div class="cur-nm">충무김밥 밀키트</div><div class="cur-dc">통영 항구 어업 문화에서 비롯된 향토 음식. 작은 김밥 + 꼴뚜기무침 구성.</div></div></div>
+        </div>
+        <div class="cur-nt">💡 이 상품들이 통영의 어떤 지리적 조건(다도해·리아스식 해안·항구 문화)에서 비롯됐는지 생각해보자. 그리고 이보다 더 통영다운 것을 만들 수 있는가?</div>
+      </div>
+
+      <!-- 공주 현재 답례품 -->
+      <div class="cur-box" id="cur-공주" style="display:none">
+        <div class="cur-h"><div class="cur-ht">📦 충남 공주 — 현재 등록된 대표 답례품</div><a href="https://www.ilovegohyang.go.kr" target="_blank" class="cur-lnk">e음에서 전체 보기 →</a></div>
+        <div class="cur-bd">
+          <div class="cur-it"><div class="cur-dot"></div><div><div class="cur-nm">공주 알밤 · 생맛밤</div><div class="cur-dc">차령산맥 구릉지의 사질 토양이 밤 재배에 최적. 공주는 국내 최대 밤 산지. 총 51개 품목 중 가장 대표적인 특산물.</div></div></div>
+          <div class="cur-it"><div class="cur-dot"></div><div><div class="cur-nm">백제왕밤파이 세트</div><div class="cur-dc">지역 특산물(밤)과 백제 역사 이미지를 결합한 가공식품. 공주 밤의 경험을 선물로 전환.</div></div></div>
+          <div class="cur-it"><div class="cur-dot"></div><div><div class="cur-nm">자연염색 스카프</div><div class="cur-dc">공주 지역 장인의 전통 자연염색 기법 활용 공예품.</div></div></div>
+        </div>
+        <div class="cur-nt">💡 이 상품들이 공주의 어떤 지리적·역사적 조건(금강 중류·차령산맥·백제 역사)에서 비롯됐는지 생각해보자. 그리고 이보다 더 공주다운 것을 만들 수 있는가?</div>
+      </div>
+
+      <!-- 사례 패널 -->
+      <div class="gp" style="position:static">
+        <div class="gph"><div class="gph1">참조 사례</div><div class="gph2">지역 자산을 어떻게 전환했는가</div></div>
+        <div class="gpb">
+          <div class="gpb-hint">아래 사례들은 지역 자산을 답례품으로 만든 방식을 보여준다. <b>원물 그대로도 훌륭한 답례품이 될 수 있다.</b> 더 나아가 경험·희소성·이야기로 전환하면 기부자에게 더 강한 인상을 남긴다. 어떤 방식이 우리 지역에 맞는지 판단하라.</div>
+
+          <div class="case">
+            <div class="ch"><div class="ch-hk">"논산 딸기는 왜 이렇게 달까 — 충남 평야와 일교차의 합작"</div><div class="ch-mt"><span class="ch-nm">충남 논산 — 킹스베리 딸기 세트</span><span class="ch-tp tg">농산물 원물</span></div></div>
+            <div class="cb" style="padding-top:10px">
+              <div class="cb-st">논산은 국내 최대 딸기 산지다. 금강 하류 충적 평야의 토양, 충청 내륙의 일교차가 당도 높은 딸기를 만든다. <b>킹스베리 딸기 세트는 원물 그대로 기부제 인기 상위권에 올랐다.</b></div>
+              <div class="cb-wy"><b>핵심:</b> 지리가 만든 품질이 뚜렷할 때 → 원물 그대로가 경쟁력</div>
+            </div>
+          </div>
+
+          <div class="case">
+            <div class="ch"><div class="ch-hk">"동해안 고등어가 왜 안동에서 짜게 익혀지는가"</div><div class="ch-mt"><span class="ch-nm">경북 안동 — 간고등어</span><span class="ch-tp tb">특산물 가공품</span></div></div>
+            <div class="cb" style="padding-top:10px">
+              <div class="cb-st">동해안 고등어가 경북 내륙 안동까지 유통되면서 소금에 절여지기 시작했다. <b>내륙 위치라는 지리적 조건이 가공법을 만들었고, 그 가공법이 특산품이 됐다.</b></div>
+              <div class="cb-wy"><b>핵심:</b> 지리 조건 → 독특한 가공법 → 같은 재료라도 이 지역만의 맛</div>
+            </div>
+          </div>
+
+          <div class="case">
+            <div class="ch"><div class="ch-hk">"예매 시작 1분에 5만 9천 명이 접속했다"</div><div class="ch-mt"><span class="ch-nm">경남 함안 — 낙화놀이 명당 좌석권</span></div></div>
+            <a class="cmedia" href="https://www.youtube.com/results?search_query=함안+낙화놀이" target="_blank" style="background:linear-gradient(135deg,#100804,#2a1008)">
+              <div class="cmi"><div class="pl">🔥</div><div class="ct">함안 낙화놀이 영상 보기</div><div class="cs">2,500개 숯가루 불꽃이 2시간 동안 꽃비처럼</div><div class="cb2">YouTube 검색 →</div></div>
+            </a>
+            <div class="cb">
+              <div class="cb-st">조선 때부터 이어온 전통 민속놀이. 무진정 연못 위에서 연 1회만 열린다. <b>기부자 전용 명당 좌석 1,000매 → 2026년 처음 기부제와 연계 → 1분 완판.</b></div>
+              <div class="cb-fs">
+                <div class="cf"><span class="cfl">지역 자산</span><span class="cfv">낙동강 중류 농경 문화에서 이어온 무형문화재</span></div>
+                <div class="cf"><span class="cfl">전환 방식</span><span class="cfv">문화 자산 → 기부자 전용 우선권 → 희소성</span></div>
+              </div>
+              <div class="cb-wy"><b>핵심:</b> 무형 문화 자산도 답례품이 된다 — 희소성을 설계하면</div>
+            </div>
+          </div>
+
+          <div class="case">
+            <div class="ch"><div class="ch-hk">"쌀을 팔지 않았다. 반려견 간식을 팔았다"</div><div class="ch-mt"><span class="ch-nm">충남 청양 — 반려동물 수제 간식</span><span class="ch-tp tb">타겟 재정의</span></div></div>
+            <div class="cb" style="padding-top:10px">
+              <div class="cb-st">구기자·고추 등 청양 농산물로 반려동물 수제 간식을 만들었다. 청양과 무관한 사람도 "우리 강아지를 위해" 선택했다. <b>소비 대상을 사람 → 반려동물로 재정의하자 기부금이 2배가 됐다.</b></div>
+              <div class="cb-wy"><b>핵심:</b> 같은 농산물이라도 타겟을 바꾸면 새로운 기부자층이 생긴다</div>
+            </div>
+          </div>
+
+          <div class="case">
+            <div class="ch"><div class="ch-hk">"UNESCO 무형문화유산 해녀의 바다 — 직접 들어가 볼 수 있다"</div><div class="ch-mt"><span class="ch-nm">제주 — 해녀 체험 + 해산물 도시락</span></div></div>
+            <a class="cmedia" href="https://www.youtube.com/results?search_query=제주+해녀+체험" target="_blank" style="background:linear-gradient(135deg,#082040,#0a4060)">
+              <div class="cmi"><div class="pl">🤿</div><div class="ct">제주 해녀 체험 영상 보기</div><div class="cs">UNESCO 인류무형문화유산 · 현직 해녀와 함께</div><div class="cb2">YouTube 검색 →</div></div>
+            </a>
+            <div class="cb">
+              <div class="cb-st">제주 현무암 해안과 청정 해류가 만드는 해녀 문화는 2016년 UNESCO 인류무형문화유산으로 등재됐다. <b>현직 해녀에게 물질 기초를 배우고 직접 채취한 해산물로 도시락을 만드는 체험권. 제주에서만 가능한 하루가 답례품이 된다.</b></div>
+              <div class="cb-fs">
+                <div class="cf"><span class="cfl">지역 자산</span><span class="cfv">제주 현무암 해안 + UNESCO 해녀 문화</span></div>
+                <div class="cf"><span class="cfl">전환 방식</span><span class="cfv">문화 자산 + 체험 → 이 지역에서만 받을 수 있는 하루</span></div>
+              </div>
+              <div class="cb-wy"><b>핵심:</b> 지역 고유 문화를 경험으로 전환하면 대체 불가능해진다</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 입력 -->
+    <div class="ip">
+      <div class="iph"><div class="ipic ic1">1</div><div><div class="ipht">우리 지역 답례품 디자인</div><div class="iphs">10만원 기부 시 30% = 3만원 상당 답례품</div></div></div>
+      <div class="ipb">
+        <div class="formula"><b>설계 공식:</b> [이 지역의 지리·문화 자산] + [상품화 방식] = 이 지역이 아니면 받을 수 없는 것</div>
+
+        <div class="fg">
+          <div class="fgl">① 이 지역의 지리·문화 자산 <span class="geo-t">지리</span></div>
+          <div class="fgh">지형·해안·기후·역사가 만들어낸 것 — "왜 이 자산이 이 지역에 있는가"</div>
+          <input class="fgi" id="assetInput" type="text" placeholder="지형·해안·기후·역사가 만들어낸 것">
+        </div>
+
+        <div class="fg">
+          <div class="fgl">② 내가 타겟으로 한 대상</div>
+          <div class="fgh">이 답례품을 가장 원할 사람 — 한 가지 선택</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:2px">
+            <div class="tgt-card" data-val="20대 사회초년생 — 첫 연말정산, 실용적 답례품 선호" onclick="selTgt(this)">
+              <div style="font-size:9px;font-weight:700;color:var(--ink3);margin-bottom:2px">A</div>
+              <div style="font-size:11px;font-weight:700;color:var(--ink)">20대 사회초년생</div>
+              <div style="font-size:10px;color:var(--ink2)">첫 연말정산 · 실용적 선물 선호</div>
+            </div>
+            <div class="tgt-card" data-val="30대 반려견 키우는 커플 — 자연 체험, 펫 친화 선물 선호" onclick="selTgt(this)">
+              <div style="font-size:9px;font-weight:700;color:var(--ink3);margin-bottom:2px">B</div>
+              <div style="font-size:11px;font-weight:700;color:var(--ink)">반려견 키우는 30대 커플</div>
+              <div style="font-size:10px;color:var(--ink2)">자연 체험 · 펫 친화 선물 선호</div>
+            </div>
+            <div class="tgt-card" data-val="40대 귀촌 준비 부부 — 지역 탐색, 체험형 답례품 선호" onclick="selTgt(this)">
+              <div style="font-size:9px;font-weight:700;color:var(--ink3);margin-bottom:2px">C</div>
+              <div style="font-size:11px;font-weight:700;color:var(--ink)">귀촌 준비 중인 40대 부부</div>
+              <div style="font-size:10px;color:var(--ink2)">지역 탐색 · 체험형 선물 선호</div>
+            </div>
+            <div class="tgt-card" data-val="50~60대 고향 연고자 — 고향 그리움, 지역 특산물·전통 선호" onclick="selTgt(this)">
+              <div style="font-size:9px;font-weight:700;color:var(--ink3);margin-bottom:2px">D</div>
+              <div style="font-size:11px;font-weight:700;color:var(--ink)">50~60대 고향 연고자</div>
+              <div style="font-size:10px;color:var(--ink2)">고향 그리움 · 지역 특산물 선호</div>
+            </div>
+          </div>
+          <input type="hidden" id="targetInput">
+        </div>
+
+        <div class="fg">
+          <div class="fgl">③ 답례품 이름 · 구성 (3만원 상당)</div>
+          <textarea class="fgi" id="giftInput" style="min-height:90px" placeholder="이름과 구성을 구체적으로"></textarea>
+          <button onclick="makeCard()" style="margin-top:6px;width:100%;padding:9px;background:var(--al);border:1.5px solid #d8b870;border-radius:7px;font-size:12px;font-weight:700;color:var(--a);cursor:pointer;font-family:'Noto Sans KR',sans-serif;display:flex;align-items:center;justify-content:center;gap:5px;transition:all .15s" id="aibtn">🎨 AI로 답례품 카드 디자인하기</button>
+          <div id="airesult" style="display:none;margin-top:8px;border:1px solid var(--line);border-radius:8px;overflow:hidden"></div>
+        </div>
+
+        <div class="fg">
+          <div class="fgl">④ 현재 답례품과 비교해 더 나은 점</div>
+          <input class="fgi" type="text" placeholder="현재 답례품 대비 이 지역의 자산을 더 잘 담은 이유">
+        </div>
+
+        <button class="ipnext" onclick="goS2()">다음 → 기금사업 제안</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══ 섹션 2: 기금사업 ══ -->
+<div class="sec hidden" id="s2">
+<div class="ww">
+  <div class="wh">
+    <div class="wn">미션 2 / 기금사업 제안</div>
+    <div class="wt">고향사랑 기부금을 활용한<br><span style="font-size:22px;font-weight:700;color:var(--b)">지역사업 아이디어 제안</span></div>
+  </div>
+  <div class="split">
+
+    <!-- 왼쪽 -->
+    <div>
+      <!-- 직접 제안: 결핍 탐색 링크 -->
+      <div class="dp-links" id="dp-s2">
+        <div class="dp-lh">📎 직접 제안 — 우리 지역 결핍 데이터 찾기</div>
+        <div class="dp-lb">
+          <a class="dp-lnk" href="https://interactive.krihs.re.kr/interactive/multipleDeprivationIndex?lang=ko" target="_blank">
+            <span class="dp-lic">📊</span><div><div class="dp-lnm">국토연구원 생활인프라 결핍지수</div><div class="dp-ldc">건강·보육·교육·안전·여가 분야 결핍 수준 확인</div></div>
+          </a>
+          <a class="dp-lnk" href="https://pb.lofin365.go.kr" target="_blank">
+            <span class="dp-lic">🏛</span><div><div class="dp-lnm">주민e참여 — 우리 지역 주민참여예산 확인</div><div class="dp-ldc">주민들이 요구하는 사업 유형 파악 가능</div></div>
+          </a>
+        </div>
+      </div>
+
+      <!-- 통영 결핍 -->
+      <div class="def-box" id="def-통영" style="display:none">
+        <div class="def-h"><div class="def-ht">⚠️ 경남 통영 — 생활SOC 결핍 현황</div></div>
+        <div class="def-bd">
+          <div class="def-it"><span class="def-cat">👨‍💼 일자리</span><span class="def-ct"><b>조선업 붕괴 후 1만 명 이상 실직.</b> 6개 조선소 중 1곳만 남음. 20~39세 청년 유출 급심화.</span></div>
+          <div class="def-it"><span class="def-cat">🏠 주거</span><span class="def-ct">청년 정착 주거 지원 부족. 1인 가구 44% — 소규모 가구 지원 체계 미흡.</span></div>
+          <div class="def-it"><span class="def-cat">👶 보육</span><span class="def-ct">출산율 0.76 (전국 평균 이하). 육아 인프라 부족으로 젊은 부부 정착 기피.</span></div>
+          <div class="def-it"><span class="def-cat">🎭 문화</span><span class="def-ct">예술도시 이미지와 달리 청년이 일상에서 즐길 문화 인프라 취약. 청년 문화 공간 부족.</span></div>
+        </div>
+        <a href="https://interactive.krihs.re.kr/interactive/multipleDeprivationIndex?lang=ko" target="_blank" class="def-lnk">🔗 국토연구원 생활인프라 결핍지수 — 통영시 직접 조회하기</a>
+      </div>
+
+      <!-- 공주 결핍 -->
+      <div class="def-box" id="def-공주" style="display:none">
+        <div class="def-h"><div class="def-ht">⚠️ 충남 공주 — 생활SOC 결핍 현황</div></div>
+        <div class="def-bd">
+          <div class="def-it"><span class="def-cat">🏙 원도심</span><span class="def-ct"><b>1932년 충남도청 대전 이전 후 90년간 쇠락.</b> 도심 공동화, 빈 점포·빈집 증가. 인구 10만 붕괴 진행.</span></div>
+          <div class="def-it"><span class="def-cat">👴 고령화</span><span class="def-ct">노인 인구 비율 급증. 독거 노인 돌봄 수요 높지만 돌봄 인력·시설 부족.</span></div>
+          <div class="def-it"><span class="def-cat">👨‍🎓 교육</span><span class="def-ct">학령 인구 감소로 학교 통폐합. 방과 후 돌봄·청소년 문화공간 취약.</span></div>
+          <div class="def-it"><span class="def-cat">🚌 교통</span><span class="def-ct">농촌·산간 마을 대중교통 취약. 차 없는 어르신의 이동권 결핍.</span></div>
+        </div>
+        <a href="https://interactive.krihs.re.kr/interactive/multipleDeprivationIndex?lang=ko" target="_blank" class="def-lnk">🔗 국토연구원 생활인프라 결핍지수 — 공주시 직접 조회하기</a>
+      </div>
+
+      <!-- 사례 -->
+      <div class="gp" style="position:static">
+        <div class="gph"><div class="gph1">참조 사례</div><div class="gph2">기금사업이 지역을 어떻게 바꿨는가</div></div>
+        <div class="gpb">
+          <div class="gpb-hint">경남 하동군의 사례를 보며 <b>어떤 결핍을 어떤 사업으로 해결했는지</b> 파악하라. 사업의 스케일보다 <b>필요한 사람과의 연결</b>이 핵심이다.</div>
+
+          <div class="case">
+            <div class="ch"><div class="ch-hk">"20년 만에 소아과 의사가 돌아왔다"</div><div class="ch-mt"><span class="ch-nm">전남 영암 — 기부금으로 소아과 유치</span><span class="ch-tp tt">의료 결핍 해결</span></div></div>
+            <div class="cb" style="padding-top:10px">
+              <div class="cb-st">2004년 영암에서 마지막 소아과가 폐원. 어린이 6천 명이 목포·광주로 원정. <b>2024년 고향사랑기부금으로 소아과 의사 초빙 성공. 20년 만이다.</b></div>
+              <div class="cb-fs">
+                <div class="cf"><span class="cfl">결핍 원인</span><span class="cfv">인구 소멸 → 소아과 수익성 없음 → 시장 실패 → 의사 없음</span></div>
+                <div class="cf"><span class="cfl">해결 방식</span><span class="cfv">기부금으로 의사 초빙 비용 + 의료장비 지원 → 시장 실패를 공공 기부로 보완</span></div>
+              </div>
+              <div class="cb-wy"><b>핵심:</b> 시장이 해결 못 하는 것 → 기부금이 채운다</div>
+            </div>
+          </div>
+
+          <div class="case">
+            <div class="ch"><div class="ch-hk">"목욕 이용권 하나가 어르신들의 유일한 외출이 됐다"</div><div class="ch-mt"><span class="ch-nm">경남 하동 — 사랑의 효도쿠폰 (목욕 이용권)</span><span class="ch-tp tg">돌봄·복지</span></div></div>
+            <div class="cb" style="padding-top:10px">
+              <div class="cb-st">농촌 어르신에게 목욕은 청결 이상이다. 이웃과 담소하고 고립감을 벗어나는 유일한 일상. 취약계층(어르신·장애인·한부모 가족)에게 목욕탕 이용권을 지원. <b>몸의 건강과 사회적 연결을 동시에.</b></div>
+              <div class="cb-wy"><b>핵심:</b> 작은 지원 → 일상의 존엄 + 사회적 연결 회복</div>
+            </div>
+          </div>
+
+          <div class="case">
+            <div class="ch"><div class="ch-hk">"농번기엔 밥 먹을 시간도 없다 — 함께 먹는 밥상이 생겼다"</div><div class="ch-mt"><span class="ch-nm">경남 하동 — 농번기 급식사업</span><span class="ch-tp tg">생활·농업</span></div></div>
+            <div class="cb" style="padding-top:10px">
+              <div class="cb-st">농번기 고령 농업인의 식사 준비 어려움 + 일손 부족을 동시에 해결. <b>함께 밥 먹는 자리가 정보 교환과 유대감 형성의 장이 됐다.</b></div>
+              <div class="cb-wy"><b>핵심:</b> 물질 지원(식사)이 사회적 연결(소통)로 이어지는 설계</div>
+            </div>
+          </div>
+
+          <div class="case">
+            <div class="ch"><div class="ch-hk">"공공병원 개원 예정 — 기부금으로 의료 장비를 채운다"</div><div class="ch-mt"><span class="ch-nm">경남 하동 — 공공병원 의료장비 확보</span><span class="ch-tp tt">의료 결핍</span></div></div>
+            <div class="cb" style="padding-top:10px">
+              <div class="cb-st">의료 인력·시설 부족으로 만성질환·치매 등 건강 악화. 2026년 준공 예정인 하동 공공병원에 응급·재활 의료장비 구입을 기부금으로 지원. <b>의료 취약계층에게 양질의 서비스를.</b></div>
+              <div class="cb-wy"><b>핵심:</b> 지자체 예산만으로 부족한 장비 → 기부금으로 보완</div>
+            </div>
+          </div>
+
+          <div class="case">
+            <div class="ch"><div class="ch-hk">"가위 하나면 충분하다 — 미용봉사단 장비를 지원한다"</div><div class="ch-mt"><span class="ch-nm">경남 하동 — 미용봉사단 장비 지원</span><span class="ch-tp tg">돌봄·자존감</span></div></div>
+            <div class="cb" style="padding-top:10px">
+              <div class="cb-st">요양시설·벽지마을 어르신은 미용 서비스 접근이 어렵다. <b>미용봉사단에게 가위 등 장비를 지원해 정기 봉사를 가능하게.</b> 외모 관리는 자존감과 삶의 희망과 연결된다.</div>
+              <div class="cb-wy"><b>핵심:</b> 소액 장비 지원 → 정기 봉사 지속 → 어르신 삶의 질 향상</div>
+            </div>
+          </div>
+
+          <div class="case">
+            <div class="ch"><div class="ch-hk">"병원 가는 길이 험하다 — 돌봄이가 함께 간다"</div><div class="ch-mt"><span class="ch-nm">경남 하동 — 어르신 동행 돌봄</span><span class="ch-tp tt">교통·의료 접근성</span></div></div>
+            <div class="cb" style="padding-top:10px">
+              <div class="cb-st">홀로 계시거나 보행이 어려운 어르신의 병원·약국 방문에 돌봄이가 동행. 진료 안내부터 투약 요령까지 함께. <b>이동권이 없으면 의료 접근권도 없다.</b></div>
+              <div class="cb-wy"><b>핵심:</b> 이동 지원 → 의료 접근성 회복 → 건강 악화 예방</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 입력 -->
+    <div class="ip">
+      <div class="iph"><div class="ipic ic2">2</div><div><div class="ipht">우리 지역 기금사업 제안</div><div class="iphs">결핍을 진단하고 · 사업을 설계하라</div></div></div>
+      <div class="ipb">
+
+        <div class="fg">
+          <div class="fgl">이 지역에서 가장 시급한 결핍은? <span class="geo-t">진단</span></div>
+          <div class="fgh">위 결핍 현황을 참고하고, 생활인프라 결핍지수를 직접 조회해도 좋다</div>
+          <textarea class="fgi tsm" placeholder="어떤 결핍이 가장 시급한가"></textarea>
+        </div>
+
+        <div class="fg">
+          <div class="fgl">사업명</div>
+          <input class="fgi" type="text" placeholder="사업 이름">
+        </div>
+
+        <div class="fg">
+          <div class="fgl">사업의 목적 및 내용</div>
+          <div class="fgh">누구를 대상으로 · 무엇을 하는 사업인가. 하동군 사례처럼 구체적으로.</div>
+          <textarea class="fgi" style="min-height:110px" placeholder="대상, 내용, 방식을 구체적으로"></textarea>
+        </div>
+
+        <button class="ipnext" onclick="goS3()">다음 → 자기 평가</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══ 섹션 3: 자기 평가 ══ -->
+<div class="sec hidden" id="s3">
+<div class="ww">
+  <div class="wh" style="text-align:center">
+    <div class="wn">마무리 / 자기 평가</div>
+    <div class="wt" style="font-size:21px">우리 기획을<br>스스로 평가하라</div>
+  </div>
+
+  <div class="eval-intro">
+    각 항목에 별점(★ 1~3점)을 매겨라. <b>1점 = 미흡 · 2점 = 보통 · 3점 = 충분</b>. 총 18점 만점.
+  </div>
+
+  <div class="chklist">
+    <div class="ckh">자기 평가 — 항목별 별점 (★ 1~3점, 총 18점 만점)</div>
+
+    <div class="ckgrp">
+      <div class="ckgh"><div class="ckgd" style="background:var(--g)"></div><b>미션 1 — 답례품 디자인</b></div>
+      <div class="cki">
+        <div class="stars" data-id="0" onclick="rateStar(this,event)"><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
+        <div class="ckt">이 지역의 지리·문화 자산이 답례품에 담겼다
+          <div class="cksub">지형·해안·기후·역사가 만들어낸 것 — "왜 이 자산이 이 지역에 있는가"에 답할 수 있는가</div>
+        </div>
+      </div>
+      <div class="cki">
+        <div class="stars" data-id="1" onclick="rateStar(this,event)"><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
+        <div class="ckt">이 지역이 아니면 받을 수 없는 것이다
+          <div class="cksub">다른 지역 답례품으로 대체할 수 없는 이유가 있는가</div>
+        </div>
+      </div>
+      <div class="cki">
+        <div class="stars" data-id="2" onclick="rateStar(this,event)"><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
+        <div class="ckt">현재 답례품보다 더 지역다운 이유를 설명할 수 있다
+          <div class="cksub">기존 상품 대비 이 지역의 지리·문화 정체성을 어떻게 더 담았는가</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ckgrp">
+      <div class="ckgh"><div class="ckgd" style="background:var(--b)"></div><b>미션 2 — 기금사업 제안</b></div>
+      <div class="cki">
+        <div class="stars" data-id="3" onclick="rateStar(this,event)"><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
+        <div class="ckt">이 지역의 가장 시급한 생활SOC 결핍을 구체적으로 짚었다
+          <div class="cksub">막연한 "의료 부족"이 아닌 수치·상황을 근거로 진단했는가</div>
+        </div>
+      </div>
+      <div class="cki">
+        <div class="stars" data-id="4" onclick="rateStar(this,event)"><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
+        <div class="ckt">사업의 수혜 대상이 구체적으로 특정됐다
+          <div class="cksub">"누구를, 무엇으로" — 하동군 사례처럼 대상과 내용이 명확한가</div>
+        </div>
+      </div>
+      <div class="cki">
+        <div class="stars" data-id="5" onclick="rateStar(this,event)"><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
+        <div class="ckt">이 사업은 시장이 해결하지 못하는 문제를 다룬다
+          <div class="cksub">수익성이 없어 민간이 들어오지 않는 영역 — 기부금이 채워야 하는 자리인가</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ckr">
+      <div class="ckrs">총점: <b id="ckc">0</b> / 18점</div>
+      <div class="ckrm" id="ckm">별점을 매기면 평가가 나타납니다.</div>
+    </div>
+  </div>
+
+  <button class="pbtn" onclick="window.print()">🖨 기획안 인쇄 / PDF 저장</button>
+</div>
+</div>
+
+<script>
+let idx=-1, name='';
+const DATA = {
+  '경남 통영': {cur:'cur-통영', def:'def-통영'},
+  '충남 공주': {cur:'cur-공주', def:'def-공주'}
+};
+
+// AI 답례품 제안
+async function askAI() {
+  const asset = document.getElementById('assetInput').value.trim();
+  const btn = document.getElementById('aibtn');
+  const result = document.getElementById('airesult');
+  if(!asset) { result.style.display='block'; result.textContent='지역 자산을 먼저 입력해주세요.'; return; }
+  btn.textContent = '⏳ AI가 아이디어를 생각하는 중...';
+  btn.disabled = true;
+  result.style.display='block';
+  result.textContent = '';
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514', max_tokens:800,
+        system:'당신은 한국 고등학교 지리 수업에서 고향사랑기부제 답례품 아이디어를 제안하는 조수입니다. 학생이 입력한 지역 자산을 바탕으로 답례품 아이디어 3개를 제안하세요. 반드시 JSON만 출력하고 다른 텍스트는 절대 없이: {"ideas":[{"name":"이름","contents":"구성(3만원 상당)","reason":"이 지역다운 이유 한 줄"}]}',
+        messages:[{role:'user', content:`지역: ${name}\n지역 자산: ${asset}\n\n이 자산을 활용한 고향사랑기부제 답례품 아이디어 3개를 JSON으로만 제안하세요.`}]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.[0]?.text || '';
+    const clean = text.replace(/```json|```/g,'').trim();
+    const parsed = JSON.parse(clean);
+    let html = '<div style="font-weight:700;color:var(--a);margin-bottom:6px">✨ AI 제안 아이디어 3가지</div>';
+    parsed.ideas.forEach((idea,i)=>{
+      html += `<div style="margin-bottom:7px;padding-bottom:7px;border-bottom:1px solid #e8d8a0">
+        <div style="font-weight:700;color:var(--ink)">${i+1}. ${idea.name}</div>
+        <div style="color:var(--ink2)">${idea.contents}</div>
+        <div style="color:var(--a);font-size:10px;margin-top:2px">→ ${idea.reason}</div>
+      </div>`;
+    });
+    html += '<div style="font-size:10px;color:var(--ink3)">이 중 하나를 참고하거나, 우리만의 아이디어를 만들어도 좋습니다.</div>';
+    result.innerHTML = html;
+  } catch(e) {
+    result.textContent = 'AI 제안을 불러오지 못했습니다. 직접 작성해주세요.';
+  }
+  btn.textContent = '✨ AI에게 아이디어 제안받기';
+  btn.disabled = false;
+}
+
+function selR(i, n) {
+  [0,1,2].forEach(j => document.getElementById('rc'+j).classList.remove('sel'));
+  document.getElementById('rc'+i).classList.add('sel');
+  idx = i;
+  // 직접 제안 폼/링크 토글
+  document.getElementById('rclinks').style.display = i===2 ? 'flex' : 'none';
+  document.getElementById('rcfm').style.display = i===2 ? 'flex' : 'none';
+  if(i !== 2) { name = n; document.getElementById('srv').textContent = n; chk(); }
+}
+
+function updateCust() {
+  const v = document.querySelector('#rcfm input').value.trim();
+  if(v) { name = v; document.getElementById('srv').textContent = v; chk(); }
+}
+
+function chk() {
+  const btn = document.getElementById('sbtn'), msg = document.getElementById('smsg');
+  if(idx >= 0 && name) {
+    btn.disabled = false;
+    msg.textContent = '✓ ' + name + ' — 준비 완료';
+    msg.style.color = 'var(--g)';
+  }
+}
+
+function start() {
+  document.getElementById('s1').classList.remove('hidden');
+  document.getElementById('bar').classList.add('show');
+  ['cur-통영','cur-공주'].forEach(id => document.getElementById(id).style.display='none');
+  const d = DATA[name];
+  if(d) document.getElementById(d.cur).style.display = 'block';
+  // 직접 제안이면 s1 링크 표시
+  document.getElementById('dp-s1').classList.toggle('show', idx===2);
+  updD(1);
+  setTimeout(()=>document.getElementById('s1').scrollIntoView({behavior:'smooth',block:'start'}),100);
+}
+
+function goS2() {
+  document.getElementById('s2').classList.remove('hidden');
+  ['def-통영','def-공주'].forEach(id => document.getElementById(id).style.display='none');
+  const d = DATA[name];
+  if(d) document.getElementById(d.def).style.display = 'block';
+  // 직접 제안이면 s2 링크 표시
+  document.getElementById('dp-s2').classList.toggle('show', idx===2);
+  updD(2);
+  setTimeout(()=>document.getElementById('s2').scrollIntoView({behavior:'smooth',block:'start'}),100);
+}
+
+function goS3() {
+  document.getElementById('s3').classList.remove('hidden');
+  updD(3);
+  setTimeout(()=>document.getElementById('s3').scrollIntoView({behavior:'smooth',block:'start'}),100);
+}
+
+function gs(id) { document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'}); }
+
+function updD(c) {
+  document.querySelectorAll('.bdt').forEach((d,i)=>{
+    d.classList.remove('cur','done');
+    if(i<c) d.classList.add('done');
+    if(i===c) d.classList.add('cur');
+  });
+}
+
+const scores = [0,0,0,0,0,0];
+const starMsgs = {0:'별점을 매기면 평가가 나타납니다.',3:'시작했습니다.',6:'방향이 잡히고 있습니다.',9:'절반입니다.',12:'꽤 탄탄합니다.',15:'좋습니다.',18:'완성도 높은 기획입니다!'};
+function getMsg(t){const keys=Object.keys(starMsgs).map(Number).sort((a,b)=>b-a);for(const k of keys){if(t>=k) return starMsgs[k];}return starMsgs[0];}
+
+function selTgt(el){
+  document.querySelectorAll('.tgt-card').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+  document.getElementById('targetInput').value=el.dataset.val;
+}
+
+function makeCard(){
+  const asset=document.getElementById('assetInput').value.trim();
+  const gift=document.getElementById('giftInput').value.trim();
+  const target=document.getElementById('targetInput').value.trim();
+  const result=document.getElementById('airesult');
+  const btn=document.getElementById('aibtn');
+  if(!gift){result.style.display='block';result.innerHTML='<div style="padding:10px;color:#8a1a1a;font-size:11px">답례품 이름과 구성을 먼저 입력해주세요.</div>';return;}
+
+  // 지역 특성에 따라 색상 자동 결정
+  const n = name||'';
+  let bg='#1a458a', bg2='#0e2a5a', emoji='🎁', textCol='#fff';
+  if(n.includes('통영')||n.includes('여수')||n.includes('완도')||n.includes('제주')||asset.includes('바다')||asset.includes('해안')||asset.includes('수산')){bg='#0a3858';bg2='#062040';emoji='🌊';}
+  else if(n.includes('공주')||n.includes('경주')||n.includes('안동')||asset.includes('역사')||asset.includes('백제')||asset.includes('문화재')){bg='#5a3010';bg2='#3a1808';emoji='🏛';}
+  else if(asset.includes('산')||asset.includes('숲')||asset.includes('버섯')||asset.includes('녹차')){bg='#1a4a1a';bg2='#0a2a0a';emoji='🌿';}
+  else if(asset.includes('딸기')||asset.includes('과일')||asset.includes('밤')){bg='#6a1a30';bg2='#4a0a18';emoji='🍓';}
+
+  const giftLines = gift.split('\n').filter(Boolean);
+  const giftName = giftLines[0]||gift;
+  const giftContents = giftLines.slice(1).join(' ') || '';
+
+  const targetShort = target ? target.split('—')[0].trim() : '';
+
+  result.style.display='block';
+  result.innerHTML=`
+<div style="padding:7px 10px;background:#f4f2ed;border-bottom:1px solid var(--line);font-size:10px;color:var(--ink3)">🎨 답례품 카드 — 우클릭 후 '이미지로 저장' 가능</div>
+<div style="padding:14px;display:flex;justify-content:center;background:#f4f2ed">
+  <div style="width:320px;height:200px;border-radius:12px;overflow:hidden;background:linear-gradient(135deg,${bg},${bg2});color:${textCol};display:flex;flex-direction:column;justify-content:space-between;padding:20px;font-family:'Noto Sans KR',sans-serif;position:relative;box-shadow:0 4px 20px rgba(0,0,0,.25)">
+    <div style="position:absolute;right:16px;top:16px;font-size:32px;opacity:.3">${emoji}</div>
+    <div>
+      <div style="font-size:10px;font-weight:700;opacity:.65;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px">고향사랑기부제 답례품 · ${n}</div>
+      <div style="font-size:18px;font-weight:700;line-height:1.3;margin-bottom:5px">${giftName}</div>
+      ${giftContents?`<div style="font-size:10.5px;opacity:.8;line-height:1.5">${giftContents}</div>`:''}
+    </div>
+    <div style="display:flex;align-items:flex-end;justify-content:space-between">
+      <div>
+        ${asset?`<div style="font-size:9.5px;opacity:.65;margin-bottom:2px">📍 ${asset.length>30?asset.slice(0,30)+'…':asset}</div>`:''}
+        ${targetShort?`<div style="font-size:9px;background:rgba(255,255,255,.2);display:inline-block;padding:2px 8px;border-radius:10px">${targetShort}</div>`:''}
+      </div>
+      <div style="font-size:9px;opacity:.5;text-align:right">10만원 기부<br>답례품 3만원 상당</div>
+    </div>
+  </div>
+</div>`;
+  btn.textContent='🎨 AI로 답례품 카드 디자인하기';
+}
+
+function rateStar(el, e) {
+  const stars = el.querySelectorAll('.star');
+  const rect = el.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const w = rect.width / 3;
+  const rating = Math.min(3, Math.max(1, Math.ceil(x / w)));
+  const id = parseInt(el.dataset.id);
+  scores[id] = rating;
+  stars.forEach((s,i) => s.classList.toggle('on', i < rating));
+  const total = scores.reduce((a,b)=>a+b,0);
+  document.getElementById('ckc').textContent = total;
+  document.getElementById('ckm').textContent = getMsg(total);
+}
+
+window.addEventListener('scroll',()=>{
+  if(!document.getElementById('s1').classList.contains('hidden'))
+    document.getElementById('bar').classList.add('show');
+});
+</script>
+</body>
+</html>
