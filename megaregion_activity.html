@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5극 3특 전문가 카드</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#1a1a14;--ink2:#4a4a42;--ink3:#8a8a80;
+  --line:#dedad2;--bg:#f4f2ed;--w:#fefefe;
+  --b:#1a458a;--bl:#e6edf8;
+  --r:#8a1a1a;--rl:#f8e8e8;
+  --g:#1a6b3c;--gl:#e6f4ed;
+  --a:#855a18;--al:#f7eedd;
+  --t:#0e6058;--tl:#e0f2ef;
+}
+body{font-family:'Noto Sans KR',sans-serif;font-size:14px;line-height:1.75;color:var(--ink);background:var(--bg);padding:32px 24px 60px}
+.page{max-width:860px;margin:0 auto}
+
+/* 헤더 */
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.14em;color:var(--ink3);text-transform:uppercase;margin-bottom:6px}
+.main-title{font-size:26px;font-weight:700;line-height:1.25;margin-bottom:6px}
+.main-q{font-size:16px;font-weight:700;color:var(--b);border-left:4px solid var(--b);padding-left:12px;margin-bottom:24px;line-height:1.5}
+hr.thin{border:none;border-top:1.5px solid var(--line);margin:28px 0}
+
+/* 아코디언 카드 */
+.acard{border-radius:12px;overflow:hidden;margin-bottom:12px;cursor:pointer;transition:box-shadow .2s}
+.acard:hover .acard-head{opacity:.92}
+
+.acard-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;user-select:none;transition:opacity .15s}
+.acard-head-left{}
+.acard-num{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+.acard-title{font-size:17px;font-weight:700;line-height:1.3;color:var(--ink)}
+.acard-subtitle{font-size:12.5px;line-height:1.55;margin-top:3px}
+.acard-arrow{font-size:18px;color:var(--ink3);flex-shrink:0;margin-left:12px;transition:transform .25s}
+.acard.open .acard-arrow{transform:rotate(180deg)}
+
+.acard-body{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.acard.open .acard-body{max-height:2000px}
+.acard-inner{padding:2px 20px 20px;font-size:13.5px;color:var(--ink2);line-height:1.8;border-top:1px solid rgba(0,0,0,.08)}
+.acard-inner p+p{margin-top:10px}
+.acard-inner b{font-weight:700;color:var(--ink)}
+
+/* 카드 색상 */
+.acard-1{background:#f0ede6;border:1.5px solid #c8c4bc}
+.acard-1 .acard-num{color:var(--ink3)}
+.acard-1 .acard-subtitle{color:var(--ink2)}
+
+.acard-2{background:#eaf0e6;border:1.5px solid #a8c8a0}
+.acard-2 .acard-num{color:var(--g)}
+.acard-2 .acard-subtitle{color:#2a5a22}
+
+.acard-3{background:var(--bl);border:1.5px solid #a8c0e8}
+.acard-3 .acard-num{color:var(--b)}
+.acard-3 .acard-subtitle{color:#2a4a8a}
+
+.acard-4{background:var(--rl);border:1.5px solid #d8a0a0}
+.acard-4 .acard-num{color:var(--r)}
+.acard-4 .acard-subtitle{color:#6a1a1a}
+
+/* 개념 정의 */
+.term{background:rgba(255,255,255,.7);border-radius:8px;padding:10px 13px;margin:10px 0}
+.term-row{display:flex;gap:10px;align-items:flex-start;margin-bottom:6px;font-size:13px}
+.term-row:last-child{margin-bottom:0}
+.term-word{font-weight:700;color:var(--ink);flex-shrink:0;min-width:90px;font-size:12px;padding-top:1px}
+.term-def{color:var(--ink2);line-height:1.6}
+
+/* 데이터 블록 */
+.data{background:rgba(255,255,255,.6);border-radius:8px;padding:11px 14px;margin:10px 0}
+.dr{display:flex;gap:10px;margin-bottom:6px;align-items:flex-start;font-size:13px}
+.dr:last-child{margin-bottom:0}
+.dl{font-weight:700;color:var(--ink);flex-shrink:0;min-width:80px;font-size:12px;padding-top:1px}
+.dv{color:var(--ink2);line-height:1.6}
+
+/* 표 */
+.tbl{width:100%;border-collapse:collapse;font-size:12.5px;margin:10px 0}
+.tbl th{padding:6px 10px;font-weight:700;color:var(--ink2);border-bottom:1.5px solid rgba(0,0,0,.1);text-align:left;font-size:11px;background:rgba(255,255,255,.5)}
+.tbl td{padding:7px 10px;border-bottom:1px solid rgba(0,0,0,.07);color:var(--ink2);vertical-align:top;line-height:1.6}
+.tbl tr:last-child td{border-bottom:none}
+.tbl td b{color:var(--ink);font-weight:700}
+.tbl td.ng{color:var(--r)}
+.tbl td.ok{color:var(--g);font-weight:700}
+
+/* 인포 */
+.info{border-left:3px solid;border-radius:0 7px 7px 0;padding:9px 13px;margin:12px 0;font-size:13px;line-height:1.7;background:rgba(255,255,255,.5)}
+.info b{font-weight:700}
+.info-gray{border-color:var(--ink3);color:var(--ink2)}
+.info-g{border-color:var(--g);color:#1a4a14}
+.info-b{border-color:var(--b);color:#1a3570}
+.info-r{border-color:var(--r);color:#5a1010}
+
+/* 지시문 */
+.mission{border-radius:8px;padding:11px 14px;margin-top:14px;font-size:13px;line-height:1.7}
+.mission-1{background:#e0dcd4;border:1px solid #b8b4ac;color:var(--ink)}
+.mission-2{background:#d4e8d0;border:1px solid #90c088;color:#1a3a14}
+.mission-3{background:#d8e4f4;border:1px solid #90b0d8;color:#1a2a5a}
+.mission-4{background:#f0d8d8;border:1px solid #d09090;color:#4a1010}
+.mission b{font-weight:700}
+
+/* 섹션 레이블 */
+.sec-head{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.sec-badge{border-radius:6px;padding:4px 12px;font-size:11px;font-weight:700;white-space:nowrap}
+.sec-b1{background:var(--ink);color:#fff}
+.sec-b2{background:var(--bl);border:1.5px solid #a8c0e8;color:var(--b)}
+.sec-b3{background:var(--al);border:1.5px solid #d8b870;color:var(--a)}
+.sec-title{font-size:15px;font-weight:700;color:var(--ink)}
+.sec-desc{font-size:12.5px;color:var(--ink3);margin-bottom:14px}
+
+/* 선택형 */
+.q-card{background:var(--w);border:1.5px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:12px}
+.q-card-head{background:#eeeae0;padding:8px 14px;display:flex;align-items:center;gap:8px}
+.q-card-tag{font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.05em}
+.q-card-num{font-size:12px;font-weight:700;color:var(--ink)}
+.q-card-body{padding:11px 14px 13px}
+.q-text{font-size:13.5px;color:var(--ink);font-weight:700;margin-bottom:10px;line-height:1.6}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.opt{display:flex;align-items:center;gap:8px;padding:8px 11px;background:#f8f6f0;border:1.5px solid var(--line);border-radius:7px;cursor:pointer;transition:all .15s;font-size:13px;color:var(--ink2)}
+.opt:hover{border-color:var(--ink2);background:#f0ede6}
+.opt.sel{border-color:var(--ink);background:var(--ink);color:#fff}
+.opt-mark{width:18px;height:18px;border-radius:50%;border:2px solid currentColor;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;font-weight:700}
+.opt.sel .opt-mark::after{content:'✓'}
+
+/* 리커트 */
+.likert-wrap{background:var(--w);border:1.5px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:12px}
+.likert-head{background:#eeeae0;padding:8px 14px;font-size:12px;font-weight:700;color:var(--ink)}
+.likert-item{padding:12px 14px;border-bottom:1px solid var(--line)}
+.likert-item:last-child{border-bottom:none}
+.likert-q{font-size:13.5px;color:var(--ink);font-weight:700;margin-bottom:10px;line-height:1.6}
+.likert-scale{display:flex;align-items:center;gap:0}
+.likert-label{font-size:11px;color:var(--ink3);flex-shrink:0;width:72px;line-height:1.4}
+.likert-label.right{text-align:right}
+.likert-dots{display:flex;gap:8px;flex:1;justify-content:center;padding:0 8px}
+.ldot{width:36px;height:36px;border-radius:50%;border:2px solid var(--line);background:#f8f6f0;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--ink3);transition:all .15s;flex-shrink:0}
+.ldot:hover{border-color:var(--ink2);background:#f0ede6;color:var(--ink)}
+.ldot.sel{border-color:var(--b);background:var(--b);color:#fff}
+.likert-reason{margin-top:8px;display:flex;gap:6px;align-items:flex-start;font-size:12px;color:var(--ink3)}
+.likert-reason-line{flex:1;border-bottom:1px solid var(--line);height:18px}
+
+/* 서술형 */
+.essay-wrap{background:var(--w);border:1.5px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:12px}
+.essay-head{background:#eeeae0;padding:8px 14px;font-size:12px;font-weight:700;color:var(--ink)}
+.essay-body{padding:12px 14px}
+.essay-q{font-size:13.5px;color:var(--ink);font-weight:700;margin-bottom:6px;line-height:1.6}
+.essay-hint{font-size:12px;color:var(--ink3);margin-bottom:10px;font-style:italic;line-height:1.6}
+.essay-line{border-bottom:1px solid var(--line);height:28px;margin-bottom:10px}
+.essay-line:last-child{margin-bottom:0}
+
+/* 자기 평가 */
+.eval{background:var(--w);border:1.5px solid var(--line);border-radius:11px;overflow:hidden}
+.eval-head{background:var(--ink);color:#fff;padding:10px 16px;font-size:12px;font-weight:700}
+.eval-body{padding:14px 16px}
+.eval-intro{font-size:13px;color:var(--ink2);line-height:1.7;margin-bottom:14px}
+.eval-group{margin-bottom:14px}
+.eval-group-title{font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid var(--line)}
+.eval-item{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid #eeeae0}
+.eval-item:last-child{border-bottom:none;padding-bottom:0}
+.eval-text{flex:1;font-size:13px;color:var(--ink2);line-height:1.55}
+.eval-text span{font-size:11px;color:var(--ink3);display:block;margin-top:2px}
+.stars{display:flex;gap:4px;flex-shrink:0}
+.star{font-size:22px;cursor:pointer;color:#dedad2;transition:color .1s;user-select:none;line-height:1}
+.star.on{color:#e0a020}
+.eval-total{display:flex;align-items:center;padding:10px 14px;background:#f0ede6;border-radius:8px;margin-top:6px;gap:12px}
+.score-num{font-size:16px;font-weight:700;color:var(--ink)}
+.score-num span{font-size:13px;font-weight:400;color:var(--ink3)}
+.eval-msg{font-size:12px;color:var(--ink3)}
+
+.opt.correct{border-color:var(--g)!important;background:var(--gl)!important;color:var(--g)!important}
+.opt.wrong{border-color:var(--r)!important;background:var(--rl)!important;color:var(--r)!important}
+@media(max-width:600px){
+  .options{grid-template-columns:1fr}
+  .likert-label{width:52px;font-size:10px}
+}
+.opt.correct{border-color:var(--g)!important;background:var(--gl)!important;color:var(--g)!important}
+.opt.wrong{border-color:var(--r)!important;background:var(--rl)!important;color:var(--r)!important}
+.q-feedback.correct{background:var(--gl);color:var(--g);border:1px solid #90c888;font-weight:700}
+.q-feedback.wrong{background:var(--rl);color:var(--r);border:1px solid #d8a0a0}
+@media print{
+  body{background:#fff;padding:12px}
+  .acard-body{max-height:none!important}
+  .acard-arrow{display:none}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- 헤더 -->
+<div class="eyebrow">한국지리 탐구 · 4단원 · 모둠 활동</div>
+<div class="main-title">5극 3특, 이번엔 다를 것인가?</div>
+<div class="main-q">수도권 집중에 맞서는 국가 전략 — 네 가지 정보를 모아 모둠의 판단을 내려라</div>
+
+<!-- 도입 영상 -->
+<div style="margin-bottom:24px">
+  <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:8px">도입 영상 — 먼저 보고 시작하자</div>
+  <a href="https://youtu.be/x18NbdC-cG4" target="_blank" style="display:flex;align-items:center;gap:16px;background:#1a1a14;border-radius:10px;padding:18px 22px;text-decoration:none;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
+    <div style="width:48px;height:48px;background:#ff0000;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+    </div>
+    <div>
+      <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:3px">영상 보기 → YouTube</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.55)">클릭하면 새 탭에서 열립니다 · 약 2분</div>
+    </div>
+  </a>
+</div>
+
+<!-- 전문가 카드 4개 (아코디언) -->
+<div class="eyebrow" style="margin-bottom:10px">전문가 카드 — 제목을 클릭하면 내용이 열린다</div>
+
+<!-- 카드 1 -->
+<div class="acard acard-1" onclick="toggle(this)">
+  <div class="acard-head">
+    <div class="acard-head-left">
+      <div class="acard-num">전문가 카드 1</div>
+      <div class="acard-title">5극 3특이란 무엇인가</div>
+      <div class="acard-subtitle">2025년 확정된 국가균형성장 전략의 내용</div>
+    </div>
+    <div class="acard-arrow">▼</div>
+  </div>
+  <div class="acard-body">
+    <div class="acard-inner">
+      <p>지금 한국의 인구와 기업 절반이 수도권에 몰려 있다. 정부는 이 문제를 해결하기 위해 2025년 9월, 새로운 전략을 발표했다. 핵심은 간단하다. <b>서울 하나가 아니라 전국에 여러 개의 중심을 만들자</b>는 것이다.</p>
+      <p>그 구조가 바로 <b>5극 3특</b>이다.</p>
+      <div class="data">
+        <div class="dr"><span class="dl">5극</span><span class="dv">전국을 5개 권역으로 묶는다<br>수도권 · 부울경(부산·울산·경남) · 대구·경북 · 세종·충청 · 호남</span></div>
+        <div class="dr"><span class="dl">3특</span><span class="dv">강원 · 전북 · 제주 — 특별자치도로서 스스로 정책을 결정할 수 있는 권한을 더 많이 갖는다</span></div>
+      </div>
+      <p>이 전략은 세 가지를 동시에 추진한다.</p>
+      <div class="data">
+        <div class="dr"><span class="dl">① 일자리</span><span class="dv">각 권역마다 특화 산업을 키운다. 예를 들어 부울경은 제조 AI, 호남은 에너지 산업을 집중 육성한다.</span></div>
+        <div class="dr"><span class="dl">② 교통</span><span class="dv">권역 안 어디서든 중심 도시까지 60분 안에 갈 수 있는 교통망을 만든다.</span></div>
+        <div class="dr"><span class="dl">③ 돈·권한</span><span class="dv">지역이 스스로 쓸 수 있는 예산을 대폭 늘린다. 중앙정부가 정해주던 방식에서 지역이 직접 계획하는 방식으로 바꾼다.</span></div>
+      </div>
+      <p>정부의 목표는 지금 수도권이 차지하는 경제 규모(52%)를 50% 아래로 낮추는 것, 즉 <b>지방이 전국 경제의 절반 이상을 만들어내는 구조</b>를 만드는 것이다.</p>
+      <div class="mission mission-1"><b>모둠에서 설명할 것:</b> 5극 3특이 무엇인지, 세 가지 추진 방향이 각각 무엇인지 설명하라.</div>
+    </div>
+  </div>
+</div>
+
+<!-- 카드 2 -->
+<div class="acard acard-2" onclick="toggle(this)">
+  <div class="acard-head">
+    <div class="acard-head-left">
+      <div class="acard-num">전문가 카드 2</div>
+      <div class="acard-title">이전에도 비슷한 정책이 있었다</div>
+      <div class="acard-subtitle">2003년부터 지금까지 — 무엇이 반복됐는가</div>
+    </div>
+    <div class="acard-arrow">▼</div>
+  </div>
+  <div class="acard-body">
+    <div class="acard-inner">
+      <p>5극 3특은 갑자기 나온 정책이 아니다. 한국은 오래전부터 수도권 집중 문제를 알고 있었고, 정부가 바뀔 때마다 비슷한 시도를 반복해왔다.</p>
+      <table class="tbl">
+        <thead><tr><th>시기</th><th>정책</th><th>핵심 아이디어</th><th>결과</th></tr></thead>
+        <tbody>
+          <tr><td>2003~</td><td>혁신도시 + 공공기관 지방 이전</td><td>정부 기관을 지방으로 옮기면 사람도 따라온다</td><td class="ng">직원들은 이전했지만 가족은 수도권에 남음. 지역 정착 미흡</td></tr>
+          <tr><td>2004~</td><td>세종시 — 행정중심복합도시</td><td>수도 기능 일부를 지방으로 옮기자</td><td class="ng">행정 효율은 떨어지고, 서울 집중은 지속</td></tr>
+          <tr><td>2025~</td><td><b>5극 3특</b></td><td>전국을 5개 권역으로 재편해 각자 성장 거점을 만들자</td><td>진행 중</td></tr>
+        </tbody>
+      </table>
+      <p>공통점이 있다. <b>모든 정책이 "지방에 뭔가를 옮기거나 만들면 된다"는 생각에 기반했다.</b> 그런데 수도권 집중은 멈추지 않았다. 이유는 하나다. 기업은 인재가 있는 곳에 투자하고, 인재는 일자리가 있는 곳으로 간다. 이 순환이 계속되는 한, 예산을 쏟아붓는 것만으로는 흐름을 바꾸기 어렵다.</p>
+      <div class="info info-g"><b>핵심 질문:</b> 5극 3특은 이전 정책과 무엇이 다른가? 아니면 같은 시도의 반복인가?</div>
+      <div class="mission mission-2"><b>모둠에서 설명할 것:</b> 균형발전 정책의 흐름을 설명하고, 왜 효과가 제한됐는지 이야기하라.</div>
+    </div>
+  </div>
+</div>
+
+<!-- 카드 3 -->
+<div class="acard acard-3" onclick="toggle(this)">
+  <div class="acard-head">
+    <div class="acard-head-left">
+      <div class="acard-num">전문가 카드 3</div>
+      <div class="acard-title">이번엔 다르다</div>
+      <div class="acard-subtitle">5극 3특이 이전 정책과 결정적으로 다른 이유</div>
+    </div>
+    <div class="acard-arrow">▼</div>
+  </div>
+  <div class="acard-body">
+    <div class="acard-inner">
+      <p>5극 3특의 핵심 논리는 간단하다. <b>수도권에 맞서려면 지방도 그에 맞는 규모를 가져야 한다</b>는 것이다.</p>
+      <p>지금 서울·경기·인천을 합친 수도권 인구는 약 2,600만 명이다. 반면 부산은 330만, 대구는 240만, 광주는 140만이다. 각자 따로 있으면 상대가 되지 않는다. 그런데 부산·울산·경남을 합치면 인구 약 800만 명의 권역이 된다. 이 정도 규모라야 대기업 유치도, 대형 병원·대학 유지도 가능해진다.</p>
+      <div class="data">
+        <div class="dr"><span class="dl">부울경</span><span class="dv">부산·울산·경남 합산 — 인구 약 800만. 조선·자동차·화학 산업 집중</span></div>
+        <div class="dr"><span class="dl">대구·경북</span><span class="dv">통합 추진 중. 대구(의료·서비스) + 경북(제조·소재)으로 역할 분담</span></div>
+        <div class="dr"><span class="dl">충청권</span><span class="dv">세종·대전·충남·충북. 행정수도 세종을 중심으로 묶기</span></div>
+      </div>
+      <p>5극 3특은 여기에 한 가지를 더한다. <b>각 권역마다 특화 산업을 키운다.</b> 부울경은 AI·제조 혁신, 호남은 에너지, 충청권은 바이오를 집중 육성한다. 서로 같은 산업을 놓고 경쟁하는 게 아니라 역할을 나누는 구조다.</p>
+      <div class="info info-b"><b>찬성 논거:</b> 수도권에 맞서는 거점이 없으면 분산도 없다. 규모가 되어야 기업도 오고 청년도 남는다.</div>
+      <div class="mission mission-3"><b>모둠에서 설명할 것:</b> 5극 3특이 왜 규모를 강조하는지, 각 권역이 어떤 역할을 맡는지 설명하라.</div>
+    </div>
+  </div>
+</div>
+
+<!-- 카드 4 -->
+<div class="acard acard-4" onclick="toggle(this)">
+  <div class="acard-head">
+    <div class="acard-head-left">
+      <div class="acard-num">전문가 카드 4</div>
+      <div class="acard-title">이번에도 같을 것이다</div>
+      <div class="acard-subtitle">구조적 한계와 현장에서 본 통합의 실제</div>
+    </div>
+    <div class="acard-arrow">▼</div>
+  </div>
+  <div class="acard-body">
+    <div class="acard-inner">
+      <p>5극 3특은 지방소멸을 막는 전략이라고 한다. 그런데 정말 그럴까?</p>
+      <p>지금 수도권이 전국의 자원을 빨아들이는 구조가 문제다. 그런데 5극 3특이 만드는 구조를 보면, <b>각 권역 안에서 같은 일이 반복될 가능성이 크다.</b> 부산, 대구, 광주 같은 거점 도시에 기업과 일자리가 집중되면, 권역 안의 농촌과 소도시는 이 거점 도시에 자원을 빼앗기게 된다. 수도권이 전국을 빨아들이듯, 거점 도시가 권역 안을 빨아들이는 구조다.</p>
+      <p>실제로 일어난 일이 있다. 1995년 정부는 "농촌을 살리겠다"며 전국 40여 개 시·군을 통합했다. 결과는?</p>
+      <table class="tbl">
+        <thead><tr><th>통합의 목표</th><th>실제로 일어난 일</th></tr></thead>
+        <tbody>
+          <tr><td>농촌 서비스 강화</td><td class="ng">예산이 도시 지역으로 집중됨. 농촌 병원·약국은 계속 문을 닫음</td></tr>
+          <tr><td>농촌 주민 목소리 키우기</td><td class="ng">농촌 출신 의원 수가 오히려 줄어듦</td></tr>
+          <tr><td>인구 감소 막기</td><td class="ng">통합 후에도 농촌 인구 감소 지속</td></tr>
+        </tbody>
+      </table>
+      <p>전주와 완주도 마찬가지다. 완주 주민의 30% 이상이 전주로 출퇴근하며 생활권은 이미 하나다. 그런데 완주 주민들은 통합 투표에서 두 번 거부했다. 이유는 단순하다. <b>"합치면 우리 농업 예산이 전주 도심 개발에 쓰일 것"</b>이라는 걱정 때문이었다.</p>
+      <div class="info info-r"><b>반대 논거:</b> 5극 3특은 전국 단위의 불균형을 권역 단위로 옮기는 것에 불과할 수 있다. 거점이 살아나도 권역 안의 농촌은 더 빠르게 소멸할 수 있다.</div>
+      <div class="mission mission-4"><b>모둠에서 설명할 것:</b> 1995년 사례와 전주·완주 사례를 들어, 거점을 키우는 전략이 왜 농촌에 불리할 수 있는지 설명하라.</div>
+    </div>
+  </div>
+</div>
+
+<hr class="thin">
+
+<!-- 1단계: 선택형 -->
+<div class="sec-head">
+  <div class="sec-badge sec-b1">1단계</div>
+  <div class="sec-title">선택형 — 카드 내용을 제대로 읽었는가 (개인)</div>
+</div>
+<div class="sec-desc">자기 카드에서 답을 찾아 선택하라. 모둠원이 서로 설명한 뒤 다른 카드의 문제도 함께 확인한다.</div>
+
+<div class="q-card">
+  <div class="q-card-head"><span class="q-card-tag">지도</span><span class="q-card-num">Q1</span></div>
+  <div class="q-card-body">
+    <div class="q-text">위 지도에서 5극에 해당하지 않는 것은?</div>
+    <div class="options" data-answer="3">
+      <div class="opt" onclick="selQ(this,1)"><div class="opt-mark">①</div>동남권 (부산·울산·경남)</div>
+      <div class="opt" onclick="selQ(this,2)"><div class="opt-mark">②</div>호남권 (광주·전남)</div>
+      <div class="opt" onclick="selQ(this,3)"><div class="opt-mark">③</div>강원권</div>
+      <div class="opt" onclick="selQ(this,4)"><div class="opt-mark">④</div>대경권 (대구·경북)</div>
+    </div>
+    <div class="q-feedback" style="display:none;margin-top:8px;font-size:12.5px;padding:7px 11px;border-radius:6px"></div>
+  </div>
+</div>
+
+<div class="q-card">
+  <div class="q-card-head"><span class="q-card-tag">카드 1</span><span class="q-card-num">Q2</span></div>
+  <div class="q-card-body">
+    <div class="q-text">5극 3특에서 '3특'에 해당하지 않는 지역은?</div>
+    <div class="options" data-answer="3">
+      <div class="opt" onclick="selQ(this,1)"><div class="opt-mark">①</div>강원특별자치도</div>
+      <div class="opt" onclick="selQ(this,2)"><div class="opt-mark">②</div>전북특별자치도</div>
+      <div class="opt" onclick="selQ(this,3)"><div class="opt-mark">③</div>경북특별자치도</div>
+      <div class="opt" onclick="selQ(this,4)"><div class="opt-mark">④</div>제주특별자치도</div>
+    </div>
+    <div class="q-feedback" style="display:none;margin-top:8px;font-size:12.5px;padding:7px 11px;border-radius:6px"></div>
+  </div>
+</div>
+
+<div class="q-card">
+  <div class="q-card-head"><span class="q-card-tag">카드 1</span><span class="q-card-num">Q3</span></div>
+  <div class="q-card-body">
+    <div class="q-text">5극 3특 전략의 세 가지 추진 방향이 아닌 것은?</div>
+    <div class="options" data-answer="3">
+      <div class="opt" onclick="selQ(this,1)"><div class="opt-mark">①</div>권역별 성장엔진 육성 (경제)</div>
+      <div class="opt" onclick="selQ(this,2)"><div class="opt-mark">②</div>60분 교통체계 구축 (생활)</div>
+      <div class="opt" onclick="selQ(this,3)"><div class="opt-mark">③</div>수도권 기업 강제 이전 (규제)</div>
+      <div class="opt" onclick="selQ(this,4)"><div class="opt-mark">④</div>지자체 예산 자율성 확대 (행재정)</div>
+    </div>
+    <div class="q-feedback" style="display:none;margin-top:8px;font-size:12.5px;padding:7px 11px;border-radius:6px"></div>
+  </div>
+</div>
+
+<div class="q-card">
+  <div class="q-card-head"><span class="q-card-tag">카드 2</span><span class="q-card-num">Q4</span></div>
+  <div class="q-card-body">
+    <div class="q-text">2015년 수도권과 비수도권 사이에 일어난 변화는?</div>
+    <div class="options" data-answer="2">
+      <div class="opt" onclick="selQ(this,1)"><div class="opt-mark">①</div>수도권 인구가 처음으로 50%를 넘었다</div>
+      <div class="opt" onclick="selQ(this,2)"><div class="opt-mark">②</div>수도권 경제 규모가 처음으로 비수도권을 추월했다</div>
+      <div class="opt" onclick="selQ(this,3)"><div class="opt-mark">③</div>수도권 청년 유출이 처음으로 시작됐다</div>
+      <div class="opt" onclick="selQ(this,4)"><div class="opt-mark">④</div>수도권 대기업 본사 비중이 처음으로 줄었다</div>
+    </div>
+    <div class="q-feedback" style="display:none;margin-top:8px;font-size:12.5px;padding:7px 11px;border-radius:6px"></div>
+  </div>
+</div>
+
+<div class="q-card">
+  <div class="q-card-head"><span class="q-card-tag">카드 4</span><span class="q-card-num">Q5</span></div>
+  <div class="q-card-body">
+    <div class="q-text">전주·완주 주민들이 통합 투표에서 반대한 핵심 이유는?</div>
+    <div class="options" data-answer="2">
+      <div class="opt" onclick="selQ(this,1)"><div class="opt-mark">①</div>전주와 완주는 생활권이 전혀 다르기 때문에</div>
+      <div class="opt" onclick="selQ(this,2)"><div class="opt-mark">②</div>완주의 농업 예산이 전주 도심 개발에 흡수될 것을 우려했기 때문에</div>
+      <div class="opt" onclick="selQ(this,3)"><div class="opt-mark">③</div>전주시장이 통합에 반대했기 때문에</div>
+      <div class="opt" onclick="selQ(this,4)"><div class="opt-mark">④</div>완주에 더 많은 공장이 들어오길 원했기 때문에</div>
+    </div>
+    <div class="q-feedback" style="display:none;margin-top:8px;font-size:12.5px;padding:7px 11px;border-radius:6px"></div>
+  </div>
+</div>
+
+<hr class="thin">
+
+<!-- 2단계: 리커트 -->
+<div class="sec-head">
+  <div class="sec-badge sec-b2">2단계</div>
+  <div class="sec-title">리커트 — 모둠의 의견을 조율하라 (모둠)</div>
+</div>
+<div class="sec-desc">각자 먼저 숫자를 고른다. 모둠원의 숫자가 다르면 이유를 말하고 조율한다. 조율이 안 되면 그 자체가 토론이다.</div>
+
+<div class="likert-wrap">
+  <div class="likert-head">1 = 전혀 그렇지 않다 &nbsp;·&nbsp; 3 = 보통 &nbsp;·&nbsp; 5 = 매우 그렇다</div>
+
+  <div class="likert-item">
+    <div class="likert-q">L1. 내가 사는 지역은 수도권 집중으로 피해를 보고 있다.</div>
+    <div class="likert-scale">
+      <div class="likert-label">전혀<br>그렇지 않다</div>
+      <div class="likert-dots">
+        <div class="ldot" onclick="lsel(this,'l1')">1</div>
+        <div class="ldot" onclick="lsel(this,'l1')">2</div>
+        <div class="ldot" onclick="lsel(this,'l1')">3</div>
+        <div class="ldot" onclick="lsel(this,'l1')">4</div>
+        <div class="ldot" onclick="lsel(this,'l1')">5</div>
+      </div>
+      <div class="likert-label right">매우<br>그렇다</div>
+    </div>
+  </div>
+
+  <div class="likert-item">
+    <div class="likert-q">L2. 5극 3특은 실제로 지방소멸을 막는 데 효과가 있을 것이다.</div>
+    <div class="likert-scale">
+      <div class="likert-label">전혀<br>그렇지 않다</div>
+      <div class="likert-dots">
+        <div class="ldot" onclick="lsel(this,'l2')">1</div>
+        <div class="ldot" onclick="lsel(this,'l2')">2</div>
+        <div class="ldot" onclick="lsel(this,'l2')">3</div>
+        <div class="ldot" onclick="lsel(this,'l2')">4</div>
+        <div class="ldot" onclick="lsel(this,'l2')">5</div>
+      </div>
+      <div class="likert-label right">매우<br>그렇다</div>
+    </div>
+  </div>
+</div>
+
+<hr class="thin">
+
+<!-- 3단계: 서술형 -->
+<div class="sec-head">
+  <div class="sec-badge sec-b3">3단계</div>
+  <div class="sec-title">서술형 — 판단의 근거를 써라 (모둠)</div>
+</div>
+
+<div class="essay-wrap">
+  <div class="essay-head">S1 — 판단의 근거</div>
+  <div class="essay-body">
+    <div class="essay-q">L2에서 그렇게 판단한 이유는 무엇인가? 카드에서 본 내용을 근거로 써라.</div>
+    <div class="essay-hint">모둠원마다 점수가 다르다면, 의견 차이가 생긴 이유부터 써도 좋다.</div>
+    <textarea style="width:100%;min-height:100px;border:1.5px solid var(--line);border-radius:7px;padding:10px 12px;font-size:13px;font-family:'Noto Sans KR',sans-serif;color:var(--ink);background:var(--bg);resize:vertical;line-height:1.7" placeholder="여기에 써라"></textarea>
+  </div>
+</div>
+
+<hr class="thin">
+
+<!-- 자기 평가 -->
+<div class="eval">
+  <div class="eval-head">자기 평가 — 별점 (★ 1~3점, 총 18점 만점)</div>
+  <div class="eval-body">
+    <div class="eval-intro">각 항목에 별점을 매겨라. &nbsp;★ 미흡 &nbsp; ★★ 보통 &nbsp; ★★★ 충분</div>
+    <div class="eval-group">
+      <div class="eval-group-title">내용 이해</div>
+      <div class="eval-item">
+        <div class="eval-text">5극 3특 전략의 핵심 내용을 설명할 수 있다<span>5극·3특 구조, 세 가지 추진 방향</span></div>
+        <div class="stars" data-id="0" onclick="rate(this,event)"><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
+      </div>
+      <div class="eval-item">
+        <div class="eval-text">이전 균형발전 정책의 흐름과 한계를 설명할 수 있다<span>혁신도시, 세종시 등 반복된 시도와 그 결과</span></div>
+        <div class="stars" data-id="1" onclick="rate(this,event)"><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
+      </div>
+      <div class="eval-item">
+        <div class="eval-text">거점을 키우는 전략이 권역 안의 농촌에 어떤 영향을 줄 수 있는지 설명할 수 있다<span>수도권-비수도권 구조가 권역 단위에서 반복될 가능성</span></div>
+        <div class="stars" data-id="2" onclick="rate(this,event)"><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
+      </div>
+    </div>
+    <div class="eval-group">
+      <div class="eval-group-title">모둠 참여</div>
+      <div class="eval-item">
+        <div class="eval-text">내 카드 내용을 나의 언어로 모둠에 설명했다<span>카드를 그대로 읽지 않고 핵심을 재구성해서 전달했는가</span></div>
+        <div class="stars" data-id="3" onclick="rate(this,event)"><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
+      </div>
+      <div class="eval-item">
+        <div class="eval-text">다른 모둠원의 설명을 경청하고 궁금한 것을 질문했다<span>설명을 듣는 동안 얼마나 집중하고 반응했는가</span></div>
+        <div class="stars" data-id="4" onclick="rate(this,event)"><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
+      </div>
+      <div class="eval-item">
+        <div class="eval-text">의견이 다를 때 내 생각을 말하고 상대방 의견과 조율했다<span>모둠 활동 전반에서 의견 차이를 어떻게 다뤘는가</span></div>
+        <div class="stars" data-id="5" onclick="rate(this,event)"><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
+      </div>
+    </div>
+    <div class="eval-total">
+      <div class="score-num">총점: <b id="score">0</b><span> / 18점</span></div>
+      <div class="eval-msg" id="msg">별점을 매기면 평가가 나타납니다.</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+function toggle(card){
+  card.classList.toggle('open');
+}
+function selQ(el,num){
+  const opts=el.closest('.options');
+  if(opts.dataset.answered) return;
+  opts.dataset.answered=1;
+  const correct=parseInt(opts.dataset.answer);
+  const fb=opts.nextElementSibling;
+  opts.querySelectorAll('.opt').forEach((o,i)=>{
+    o.style.pointerEvents='none';
+    if(i+1===correct) o.classList.add('correct');
+  });
+  if(num===correct){
+    el.classList.add('correct');
+    fb.textContent='✓ 정답입니다!';
+    fb.className='q-feedback correct';
+  } else {
+    el.classList.add('wrong');
+    fb.textContent='✗ 틀렸습니다. 카드에서 다시 확인해보세요.';
+    fb.className='q-feedback wrong';
+  }
+  fb.style.display='block';
+}
+function sel(el){
+  el.closest('.options').querySelectorAll('.opt').forEach(o=>o.classList.remove('sel'));
+  el.classList.add('sel');
+}
+function lsel(el,group){
+  el.closest('.likert-dots').querySelectorAll('.ldot').forEach(d=>d.classList.remove('sel'));
+  el.classList.add('sel');
+}
+const scores=[0,0,0,0,0,0];
+const msgs={0:'별점을 매기면 평가가 나타납니다.',3:'시작했습니다.',6:'방향이 잡히고 있습니다.',9:'탄탄합니다.',12:'좋습니다.',15:'훌륭합니다.',18:'완성도 높은 참여입니다!'};
+function getMsg(t){const keys=Object.keys(msgs).map(Number).sort((a,b)=>b-a);for(const k of keys){if(t>=k)return msgs[k];}return msgs[0];}
+function rate(el,e){
+  const stars=el.querySelectorAll('.star');
+  const rect=el.getBoundingClientRect();
+  const x=e.clientX-rect.left;
+  const w=rect.width/3;
+  const r=Math.min(3,Math.max(1,Math.ceil(x/w)));
+  const id=parseInt(el.dataset.id);
+  scores[id]=r;
+  stars.forEach((s,i)=>s.classList.toggle('on',i<r));
+  const total=scores.reduce((a,b)=>a+b,0);
+  document.getElementById('score').textContent=total;
+  document.getElementById('msg').textContent=getMsg(total);
+}
+</script>
+</body>
+</html>
