@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>동심원 이론 — Concentric Zone Model</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif;
+  background: #f2f1ed; color: #1a1a1a;
+  line-height: 1.7;
+  padding: 2.5rem 1rem 4rem;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.page { max-width: 800px; margin: 0 auto; }
+
+/* ─── header ─── */
+.page-header { margin-bottom: 1.5rem; }
+.page-tag {
+  font-size: 11px; color: #888; letter-spacing: .08em;
+  text-transform: uppercase; margin-bottom: 8px;
+}
+.page-title {
+  font-size: 26px; font-weight: 700; color: #111;
+  line-height: 1.3; margin-bottom: 4px;
+}
+.page-sub {
+  font-size: 13.5px; color: #666; line-height: 1.6;
+}
+
+/* ─── theory intro card ─── */
+.intro-card {
+  background: #fff;
+  border: 0.5px solid rgba(0,0,0,0.1);
+  border-left: 3px solid #b88030;
+  border-radius: 0 10px 10px 0;
+  padding: 18px 22px 16px;
+  margin-bottom: 14px;
+}
+.intro-meta {
+  font-size: 11px; color: #999;
+  text-transform: uppercase; letter-spacing: .05em;
+  font-weight: 600; margin-bottom: 6px;
+}
+.intro-scholar {
+  font-size: 16px; font-weight: 700; color: #111;
+  margin-bottom: 2px;
+}
+.intro-pub {
+  font-size: 12.5px; color: #888;
+  margin-bottom: 12px;
+}
+.intro-pub em { font-style: italic; }
+.intro-idea {
+  font-size: 13.5px; color: #333;
+  line-height: 1.75;
+}
+
+/* ─── viz section ─── */
+.viz-section {
+  background: #fff;
+  border: 0.5px solid rgba(0,0,0,0.1);
+  border-radius: 12px;
+  padding: 24px 22px 20px;
+  margin-bottom: 14px;
+}
+.viz-caption {
+  font-size: 11px; color: #999;
+  letter-spacing: .08em; font-weight: 600;
+  text-align: center; margin-bottom: 16px;
+  text-transform: uppercase;
+}
+
+.viz-layout {
+  display: grid;
+  grid-template-columns: 1fr 220px;
+  gap: 24px;
+  align-items: start;
+}
+
+.diagram {
+  display: block;
+  width: 100%;
+  max-width: 480px;
+  height: auto;
+  margin: 0 auto;
+}
+.diagram .zone-shape {
+  cursor: pointer;
+  transition: filter .15s, opacity .15s;
+}
+.diagram .zone-shape:hover { filter: brightness(0.92); }
+.diagram .zone-shape.dim { opacity: 0.22; }
+.diagram .zone-shape.selected {
+  stroke: #1a1a1a;
+  stroke-width: 3;
+}
+.diagram .zone-num {
+  font-family: inherit;
+  font-size: 14px; font-weight: 700;
+  text-anchor: middle; pointer-events: none;
+  fill: #1a1a1a;
+}
+.diagram .zone-num.light { fill: #fff; }
+
+/* ─── legend (right side) ─── */
+.legend-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.legend-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  cursor: pointer;
+  padding: 8px 10px;
+  border: 0.5px solid rgba(0,0,0,0.08);
+  border-radius: 6px;
+  background: #fafaf7;
+  transition: background .15s, border-color .15s;
+}
+.legend-item:hover {
+  background: #f0eee8;
+  border-color: rgba(0,0,0,0.18);
+}
+.legend-item.selected {
+  background: #f0eee8;
+  border-color: rgba(0,0,0,0.3);
+}
+.legend-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px;
+  font-size: 12px; font-weight: 700;
+  border-radius: 4px;
+  border: 0.5px solid rgba(0,0,0,0.2);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.legend-text {
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: #1a1a1a;
+  font-weight: 600;
+}
+.legend-text .en {
+  display: block;
+  font-size: 11px; color: #888;
+  font-weight: 400; font-style: italic;
+  margin-top: 1px;
+}
+
+/* ─── zone detail ─── */
+.zone-detail {
+  background: #fafaf7;
+  border: 0.5px solid rgba(0,0,0,0.08);
+  border-radius: 10px;
+  padding: 18px 22px;
+  margin-bottom: 14px;
+  min-height: 110px;
+}
+.zone-empty {
+  color: #aaa;
+  font-size: 12.5px;
+  text-align: center;
+  padding: 22px 0;
+  font-style: italic;
+}
+.zone-detail-content { }
+.zone-detail-head {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 4px;
+}
+.zone-num-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px;
+  font-size: 13px; font-weight: 700;
+  border-radius: 5px;
+  border: 0.5px solid rgba(0,0,0,0.2);
+  flex-shrink: 0;
+}
+.zone-detail h3 {
+  font-size: 17px; font-weight: 700; color: #111;
+}
+.zone-detail .zone-en {
+  font-size: 12px; color: #888;
+  font-style: italic;
+  margin-bottom: 14px;
+  margin-left: 38px;
+}
+.zone-detail .field {
+  margin-bottom: 10px;
+}
+.zone-detail .field:last-child { margin-bottom: 0; }
+.zone-detail .field-label {
+  font-size: 10.5px; color: #999;
+  text-transform: uppercase; letter-spacing: .05em;
+  font-weight: 600;
+  margin-bottom: 3px;
+}
+.zone-detail .field-text {
+  font-size: 13px; color: #333;
+  line-height: 1.65;
+}
+
+/* ─── about section (assumptions + limits) ─── */
+.about-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+.about-card {
+  background: #fff;
+  border: 0.5px solid rgba(0,0,0,0.1);
+  border-radius: 10px;
+  padding: 18px 20px 16px;
+}
+.about-card-title {
+  font-size: 11px; color: #999;
+  text-transform: uppercase; letter-spacing: .05em;
+  font-weight: 600; margin-bottom: 10px;
+}
+.about-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.about-list li {
+  font-size: 12.5px; color: #444;
+  line-height: 1.7;
+  padding: 4px 0 4px 14px;
+  position: relative;
+}
+.about-list li::before {
+  content: '–';
+  position: absolute; left: 0; color: #bbb;
+}
+.about-list li strong {
+  color: #1a1a1a; font-weight: 700;
+}
+
+/* ─── footer ─── */
+.colophon {
+  font-size: 11px; color: #999;
+  line-height: 1.7;
+  margin-top: 20px; padding-top: 14px;
+  border-top: 0.5px solid rgba(0,0,0,0.08);
+}
+.colophon strong { color: #444; }
+.colophon em { font-style: italic; color: #666; }
+footer {
+  text-align: center;
+  font-size: 11px; color: #bbb;
+  margin-top: 20px;
+}
+
+@media (max-width: 640px) {
+  .viz-layout { grid-template-columns: 1fr; }
+  .about-section { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="page-header">
+    <div class="page-tag">생활과 지리 · 도시 내부 구조</div>
+    <h1 class="page-title">동심원 이론</h1>
+    <p class="page-sub">Concentric Zone Model — 도시는 중심에서 외곽으로 다섯 개의 띠를 이루며 자란다</p>
+  </header>
+
+  <section class="intro-card">
+    <div class="intro-meta">학자와 출판</div>
+    <div class="intro-scholar">Ernest W. Burgess (1886–1966)</div>
+    <div class="intro-pub">시카고 대학 사회학과 · 시카고 학파<br>"The Growth of the City" in <em>The City</em> (Park &amp; Burgess, eds., 1925)</div>
+    <p class="intro-idea">
+      도시는 중심업무지구(CBD)에서 외곽으로 다섯 개의 동심원을 이루며 확장된다. 사회·경제적 지위가 높을수록 외곽으로 이동하며, 토지 가격은 중심에서 외곽으로 갈수록 낮아진다. 도심 인근에는 슬럼·이민자 거주지가 형성되고, 외곽으로 갈수록 더 좋은 주거 환경이 펼쳐진다는 것이 이 모델의 핵심이다.
+    </p>
+  </section>
+
+  <section class="viz-section">
+    <div class="viz-caption">Concentric Zone Model · After Burgess (1925)</div>
+    <div class="viz-layout">
+      <div>
+        <svg class="diagram" id="diagram" viewBox="0 0 480 480" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
+      <div class="legend-list" id="legend-list"></div>
+    </div>
+  </section>
+
+  <section class="zone-detail" id="zone-detail">
+    <div class="zone-empty">다이어그램이나 우측 범례에서 영역을 클릭하면 상세 설명이 여기에 표시됩니다</div>
+  </section>
+
+  <section class="about-section">
+    <div class="about-card">
+      <div class="about-card-title">핵심 가정</div>
+      <ul class="about-list">
+        <li><strong>단핵 도시</strong> — 도시는 하나의 압도적 중심(CBD)에서 출발해 외곽으로 자란다.</li>
+        <li><strong>거리-지가 관계</strong> — 토지 가격은 도심에서 외곽으로 갈수록 낮아진다.</li>
+        <li><strong>침입과 계승</strong> — 한 띠의 토지 이용이 안쪽 띠로 점차 잠식된다(invasion–succession).</li>
+        <li><strong>등질 평면</strong> — 지형, 교통망, 정치적 경계의 영향을 무시한다.</li>
+      </ul>
+    </div>
+    <div class="about-card">
+      <div class="about-card-title">이론의 한계</div>
+      <ul class="about-list">
+        <li><strong>자동차 시대 이전</strong>의 도보·전차 의존 도시를 가정해, 교외화 이후의 다핵화를 설명하지 못한다.</li>
+        <li><strong>단핵 도시 가정</strong>이 깨지면 모델 전체가 무너진다 — 두 번째 도심의 등장은 설명 불가.</li>
+        <li><strong>지형의 영향</strong>을 무시 — 호수·강·산이 도시를 막으면 동심원은 반쪽으로만 가능하다.</li>
+        <li><strong>사회적 차별 구조</strong>를 자연스러운 현상으로 묘사한다는 비판 — 인종·계급 분화는 정책의 결과.</li>
+      </ul>
+    </div>
+  </section>
+
+  <p class="colophon">
+    <strong>출처</strong> — Burgess, E. W. (1925). The growth of the city: An introduction to a research project. In R. Park, E. Burgess, &amp; R. McKenzie (Eds.), <em>The City</em> (pp. 47–62). University of Chicago Press.<br>
+    도해 색상은 표준 도시지리학 교과서의 통용 색상을 따랐다.
+  </p>
+
+  <footer>kgeography.tistory.com · 동심원 이론 인터랙티브 강의 도구</footer>
+</div>
+
+<script>
+/* ════════════════════════════════════════════════════════════════
+   ZONE DATA
+   ════════════════════════════════════════════════════════════════ */
+
+const ZONES = [
+  {
+    id: 1,
+    ko: '중심업무지구',
+    en: 'Central Business District (CBD)',
+    color: '#F5DD58',
+    light: false,
+    desc: '도시의 핵심 업무지구. 상업·금융·행정 기능이 집중되며 토지 가격이 가장 높은 곳. 보행 통행량과 접근성이 도시 전체에서 가장 크다.',
+    landUse: '백화점, 은행 본사, 시청·행정 청사, 호텔, 극장, 본사 사무실 등 도시 전체를 대상으로 하는 고차 서비스 시설.',
+    process: 'CBD는 끊임없이 외곽으로 영역을 확장하면서 인접한 전이지대(2번 띠)의 토지를 잠식한다. 이 잠식 압력 때문에 전이지대는 항상 불안정한 상태에 놓인다.'
+  },
+  {
+    id: 2,
+    ko: '전이지대',
+    en: 'Zone of Transition',
+    color: '#EE9080',
+    light: false,
+    desc: '오래된 주거지가 산업·상업으로 잠식되는 불안정한 지대. 슬럼화·이민자 거주지·경공업이 혼재한다. 도심 확장의 압력 때문에 토지 소유자는 장기 투자를 꺼리고, 그 결과 노후 건물이 그대로 남게 된다.',
+    landUse: '낡은 임대주택, 게스트하우스, 창고, 경공업 작업장, 이민자·소수자 거주지, 비공식 부문 활동.',
+    process: '여기서 자리 잡은 이민자·노동자 가족은 시간이 지나며 조금씩 자산을 모아 더 외곽의 3번 띠로 이주한다. 그 자리는 새로 도착한 이주민이 채운다 — 이것이 Burgess가 말한 침입과 계승(invasion–succession) 과정의 핵심 무대다.'
+  },
+  {
+    id: 3,
+    ko: '근로자 주거지',
+    en: "Zone of Independent Workers' Homes",
+    color: '#D8B5D5',
+    light: false,
+    desc: '전이지대를 빠져나온 노동자 가족이 정착하는 안정적 거주 지대. 단독주택·다세대주택이 혼재하며, 가족 단위의 정주성이 높다. 도심으로의 통근이 가능한 거리.',
+    landUse: '소규모 단독주택, 연립주택, 가족 단위 임대 아파트, 동네 상점, 초등학교, 작은 교회.',
+    process: '이 띠의 주민들은 더 나은 환경을 찾아 외곽의 4번 띠로 이주하려는 욕구가 있으나, 경제적 여건의 제약을 받는다. 시간이 지나면 일부 주택이 노후화되어 다음 세대의 이민자에게 임대된다.'
+  },
+  {
+    id: 4,
+    ko: '중상층 주거지',
+    en: 'Zone of Better Residences',
+    color: '#B485B0',
+    light: true,
+    desc: '중산층·상류층의 단독주택 거주 지대. 학교·교회·공원 같은 부속 시설이 함께 입지하며, 주거 환경의 질이 분명하게 좋아진다. 통근 시간을 감당할 수 있는 경제력이 있는 계층의 거주지.',
+    landUse: '단독주택, 중상류층 아파트, 좋은 학군의 학교, 공원, 부속 상업시설(슈퍼마켓·세탁소·약국), 종교 시설.',
+    process: '이 지대의 일부는 시간이 지나며 더 외곽의 통근자 지대로 영역을 확장한다. 동시에 안쪽 경계는 3번 띠 거주자들의 상향 이동 압력을 받는다.'
+  },
+  {
+    id: 5,
+    ko: '통근자 지대',
+    en: "Commuters' Zone",
+    color: '#4A6890',
+    light: true,
+    desc: '도시 외곽의 베드타운. 도심으로 통근 철도·간선 도로로 연결되는 저밀도 주거 지대. 일과 거주가 공간적으로 가장 분리된 형태로, 자녀 양육 환경을 우선하는 가족이 주로 거주한다.',
+    landUse: '교외 단독주택, 저밀도 신흥 주거단지, 외곽의 작은 도시들, 농지에서 전환된 신규 개발지.',
+    process: '도시 전체의 인구 증가에 따라 통근자 지대는 점진적으로 더 멀리 확장된다. 이 외곽 확장이 다시 안쪽 모든 띠의 외곽 이동을 유발하며, 도시 전체가 동심원적으로 자라는 것이 Burgess의 핵심 주장이다.'
+  }
+];
+
+/* ════════════════════════════════════════════════════════════════
+   DIAGRAM
+   ════════════════════════════════════════════════════════════════ */
+
+const SVG_NS = 'http://www.w3.org/2000/svg';
+const VB = 480;
+const CX = 240, CY = 240;
+
+function el(tag, attrs, parent) {
+  const node = document.createElementNS(SVG_NS, tag);
+  for (const k in attrs) node.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(node);
+  return node;
+}
+
+function buildDiagram() {
+  const svg = document.getElementById('diagram');
+
+  // Five concentric circles drawn from outermost to innermost
+  const radii = [
+    { r: 220, idx: 4 },  // Commuters
+    { r: 178, idx: 3 },  // Better residences
+    { r: 134, idx: 2 },  // Workers
+    { r: 90,  idx: 1 },  // Transition
+    { r: 44,  idx: 0 }   // CBD
+  ];
+
+  radii.forEach(item => {
+    const z = ZONES[item.idx];
+    const c = el('circle', {
+      cx: CX, cy: CY, r: item.r,
+      fill: z.color,
+      stroke: '#1a1a1a',
+      'stroke-width': 1.3,
+      class: 'zone-shape',
+      'data-zone-id': z.id
+    }, svg);
+    c.addEventListener('click', () => handleZoneClick(z));
+  });
+
+  // Number labels — placed along the right side at the midpoint of each ring
+  // Ring midpoints (in radius units):
+  //   Zone 1: 0 (center) -> show at 0
+  //   Zone 2: 22 + 45 = 67
+  //   Zone 3: 90 + 22 = 112
+  //   Zone 4: 134 + 22 = 156
+  //   Zone 5: 178 + 21 = 199
+  const labelOffsets = [0, 67, 112, 156, 199];
+
+  ZONES.forEach((z, i) => {
+    el('text', {
+      x: CX + labelOffsets[i],
+      y: CY + 5,
+      class: 'zone-num' + (z.light ? ' light' : '')
+    }, svg).textContent = z.id;
+  });
+}
+
+/* ════════════════════════════════════════════════════════════════
+   LEGEND
+   ════════════════════════════════════════════════════════════════ */
+
+function buildLegend() {
+  const list = document.getElementById('legend-list');
+  list.innerHTML = ZONES.map(z => `
+    <div class="legend-item" data-zone-id="${z.id}">
+      <div class="legend-num" style="background:${z.color}; color:${z.light ? '#fff' : '#1a1a1a'};">${z.id}</div>
+      <div class="legend-text">
+        ${z.ko}
+        <span class="en">${z.en}</span>
+      </div>
+    </div>
+  `).join('');
+
+  list.querySelectorAll('.legend-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const zid = parseInt(item.dataset.zoneId);
+      handleZoneClick(ZONES.find(z => z.id === zid));
+    });
+    item.addEventListener('mouseover', () => {
+      const zid = parseInt(item.dataset.zoneId);
+      document.querySelectorAll('.zone-shape').forEach(s => {
+        if (parseInt(s.dataset.zoneId) === zid) s.classList.remove('dim');
+        else s.classList.add('dim');
+      });
+    });
+    item.addEventListener('mouseleave', () => {
+      document.querySelectorAll('.zone-shape').forEach(s => s.classList.remove('dim'));
+    });
+  });
+}
+
+/* ════════════════════════════════════════════════════════════════
+   ZONE DETAIL
+   ════════════════════════════════════════════════════════════════ */
+
+function renderZoneDetail(zone) {
+  const detail = document.getElementById('zone-detail');
+  if (!zone) {
+    detail.innerHTML = `<div class="zone-empty">다이어그램이나 우측 범례에서 영역을 클릭하면 상세 설명이 여기에 표시됩니다</div>`;
+    return;
+  }
+  detail.innerHTML = `
+    <div class="zone-detail-content">
+      <div class="zone-detail-head">
+        <div class="zone-num-badge" style="background:${zone.color}; color:${zone.light ? '#fff' : '#1a1a1a'};">${zone.id}</div>
+        <h3>${zone.ko}</h3>
+      </div>
+      <div class="zone-en">${zone.en}</div>
+      <div class="field">
+        <div class="field-label">정의</div>
+        <div class="field-text">${zone.desc}</div>
+      </div>
+      <div class="field">
+        <div class="field-label">전형적 토지 이용</div>
+        <div class="field-text">${zone.landUse}</div>
+      </div>
+      <div class="field">
+        <div class="field-label">동학 — 어떻게 변하는가</div>
+        <div class="field-text">${zone.process}</div>
+      </div>
+    </div>
+  `;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   INTERACTION
+   ════════════════════════════════════════════════════════════════ */
+
+function handleZoneClick(zone) {
+  if (!zone) return;
+  // clear previous selections
+  document.querySelectorAll('.zone-shape.selected').forEach(s => s.classList.remove('selected'));
+  document.querySelectorAll('.legend-item.selected').forEach(s => s.classList.remove('selected'));
+  // apply new selection
+  document.querySelector(`.zone-shape[data-zone-id="${zone.id}"]`)?.classList.add('selected');
+  document.querySelector(`.legend-item[data-zone-id="${zone.id}"]`)?.classList.add('selected');
+  renderZoneDetail(zone);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   INIT
+   ════════════════════════════════════════════════════════════════ */
+
+buildDiagram();
+buildLegend();
+</script>
+</body>
+</html>
