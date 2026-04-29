@@ -350,6 +350,91 @@ body {
   line-height: 1.6;
 }
 
+.timeline-section {
+  background: #fff;
+  border: 0.5px solid rgba(0,0,0,0.1);
+  border-radius: 12px;
+  padding: 22px 24px 20px;
+  margin-bottom: 14px;
+}
+.timeline-title {
+  font-size: 11px; color: #999;
+  text-transform: uppercase; letter-spacing: .05em;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.timeline-heading {
+  font-size: 17px; font-weight: 700; color: #111;
+  margin-bottom: 10px;
+}
+.timeline-intro {
+  font-size: 12.5px; color: #555;
+  line-height: 1.7;
+  margin-bottom: 16px;
+}
+.timeline-intro strong { color: #1a1a1a; font-weight: 700; }
+
+.timeline-graphs {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 18px;
+  margin-bottom: 14px;
+}
+.timeline-graph-wrap {
+  border: 0.5px solid rgba(0,0,0,0.06);
+  border-radius: 8px;
+  padding: 12px 14px 8px;
+  background: #fafaf7;
+}
+.timeline-graph-label {
+  font-size: 10.5px; color: #888;
+  text-transform: uppercase; letter-spacing: .04em;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.timeline-legend {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 6px;
+  font-size: 11px;
+}
+.timeline-legend-item {
+  display: flex; align-items: center; gap: 4px;
+  color: #555;
+  font-variant-numeric: tabular-nums;
+}
+.timeline-legend-line {
+  width: 14px; height: 2px;
+  border-radius: 1px;
+}
+
+.paradox-note {
+  font-size: 12px;
+  color: #444;
+  line-height: 1.7;
+  padding: 12px 16px;
+  background: linear-gradient(to right, #fcf6f3 0%, #fafaf2 100%);
+  border-left: 3px solid #c44a4a;
+  border-radius: 0 6px 6px 0;
+}
+.paradox-note strong { color: #1a1a1a; font-weight: 700; }
+.paradox-note em { font-style: italic; color: #1a1a1a; }
+.paradox-note .key {
+  display: inline-block;
+  padding: 1px 7px;
+  background: #fff;
+  border: 0.5px solid rgba(0,0,0,0.12);
+  border-radius: 3px;
+  font-family: 'Georgia', serif;
+  font-size: 11.5px;
+  color: #c44a4a;
+  font-weight: 700;
+  margin: 0 1px;
+}
+
 .about-section { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
 .about-card {
   background: #fff;
@@ -388,6 +473,7 @@ footer { text-align: center; font-size: 11px; color: #bbb; margin-top: 20px; }
 @media (max-width: 640px) {
   .about-section { grid-template-columns: 1fr; gap: 12px; }
   .primacy-grid { grid-template-columns: 1fr; }
+  .timeline-graphs { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -451,29 +537,30 @@ footer { text-align: center; font-size: 11px; color: #bbb; margin-top: 20px; }
     <div class="data-note" id="data-note" style="display:none"></div>
   </section>
 
-  <section class="about-section">
-    <div class="about-card">
-      <div class="about-card-title">왜 이 패턴이 나타나는가</div>
-      <ul class="about-list">
-        <li><strong>최소 노력의 원리</strong> — Zipf는 인간의 모든 활동이 노력을 최소화하는 방향으로 분포한다고 보았다. 도시 분포도 그 결과 중 하나.</li>
-        <li><strong>비례 효과 (Gibrat's law)</strong> — 도시 성장률이 도시 크기와 무관할 때, 충분한 시간이 지나면 자연스럽게 Zipf 분포에 수렴한다는 수학적 증명이 있다.</li>
-        <li><strong>분산형 도시 체계</strong> — 여러 도시가 동시에 자생적으로 성장한 국가(독일·미국 등)에서 잘 나타난다. 신성로마제국 시대부터 분권적이었던 독일이 대표 사례.</li>
-        <li><strong>종주도시 패턴</strong> — 정치·경제 권력이 한 도시에 집중된 국가(한국·멕시코·프랑스)에서는 1위가 압도적이고 이론에서 어긋난다. 특히 식민지 경험이 있는 개도국에서 더 극단적으로 나타나는 경향.</li>
-      </ul>
+  <section class="timeline-section">
+    <div class="timeline-title">한국 사례 심화</div>
+    <h2 class="timeline-heading">한국 종주도시의 시기별 변화 (1980–2025)</h2>
+    <p class="timeline-intro">
+      한국은 1960년대 이후 산업화·도시화 과정에서 서울 집중이 빠르게 진행되었다. 그러나 2000년대 이후 <strong>행정 도시(city proper) 기준 종주성은 오히려 약화</strong>되는 모습을 보인다 — 서울 인구가 감소하고 인천·경기 도시들이 빠르게 성장했기 때문이다. 시기별 변화를 살펴보자.
+    </p>
+    <div class="timeline-graphs">
+      <div class="timeline-graph-wrap">
+        <div class="timeline-graph-label">시기별 정규화 곡선 (P<sub>1</sub>=1)</div>
+        <svg id="timeline-graph" viewBox="0 0 440 280" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto;"></svg>
+        <div class="timeline-legend" id="timeline-legend"></div>
+      </div>
+      <div class="timeline-graph-wrap">
+        <div class="timeline-graph-label">종주도시 지수 시계열</div>
+        <svg id="primacy-timeline-graph" viewBox="0 0 280 280" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto;"></svg>
+      </div>
     </div>
-    <div class="about-card">
-      <div class="about-card-title">법칙의 한계</div>
-      <ul class="about-list">
-        <li><strong>도시의 정의</strong>에 따라 결과가 크게 달라진다 — 행정 도시(city proper)와 광역도시권(metropolitan area)은 매우 다른 분포를 보인다. 멕시코시티가 대표적 사례 (행정 도시 920만 vs 광역권 2,200만).</li>
-        <li><strong>경험 법칙</strong>일 뿐 인과를 설명하지 않는다 — "왜 그렇게 분포해야 하는가"에 대한 강한 이론적 근거는 약하다.</li>
-        <li><strong>국가 단위에 의존</strong> — 도시 체계의 경계가 국가 경계와 일치한다는 가정. EU처럼 통합된 도시 체계에는 적용이 어색하다.</li>
-        <li><strong>최상위 일부에서만 잘 맞음</strong> — 중·소도시까지 포함하면 데이터의 꼬리(tail)가 이론에서 점점 멀어지는 경향이 있다.</li>
-      </ul>
+    <div class="paradox-note">
+      <strong>역설(paradox)</strong> — 행정 도시 기준으로 종주도시 지수는 <span class="key">1980년 1.32</span> → <span class="key">2025년 1.08</span>로 약화된 것처럼 보인다. 그러나 <strong>수도권(서울+인천+경기) 인구 비중</strong>은 같은 기간 <span class="key">35.5%</span> → <span class="key">50.8%</span>로 오히려 증가했다. 서울에서 빠져나간 인구가 사라진 것이 아니라 <em>분당·일산·판교·송도·김포 등 주변으로 이동</em>한 것이다. 즉, 도시 정의를 어떻게 잡느냐에 따라 종주성의 강도가 정반대로 보인다 — 이론과 실제 사이의 흥미로운 간극.
     </div>
   </section>
 
   <p class="colophon">
-    <strong>출처</strong> — Zipf, G. K. (1949). <em>Human Behavior and the Principle of Least Effort</em>. Addison-Wesley. · 도시 인구 데이터: 통계청 KOSIS (한국, 2024) · INEGI 2020 Mexican National Census (멕시코) · Destatis (독일, 2024년 12월). 모든 데이터는 행정 도시(city proper / municipality) 인구 기준이며, 광역도시권 데이터와는 다르다.
+    <strong>출처</strong> — Zipf, G. K. (1949). <em>Human Behavior and the Principle of Least Effort</em>. Addison-Wesley. · 도시 인구 데이터: 통계청 KOSIS (한국 최신, 2024) · INEGI 2020 Mexican National Census (멕시코) · Destatis (독일, 2024년 12월). 한국 시계열 데이터: 1980-2000은 「인구총조사」(2010년 행정구역 기준 재집계), 2010-2025는 행정안전부 주민등록인구. 광역시는 자치구·군 합산. 모든 데이터는 행정 도시(city proper / municipality) 인구 기준이며, 광역도시권 데이터와는 다르다.
   </p>
 
   <footer>kgeography.tistory.com · 도시순위규모법칙 인터랙티브 강의 도구</footer>
@@ -641,7 +728,7 @@ function buildNormalized(svg) {
     });
 
     el('text', {
-      x: xScale(1) + 6, y: yScale(1) - 8,
+      x: xScale(2) + 8, y: yScale(c.cities[1].pop / c.cities[0].pop) + 4,
       class: 'legend-text', fill: c.color
     }, svg).textContent = c.ko;
   });
@@ -735,7 +822,7 @@ function buildLogLog(svg) {
     });
 
     el('text', {
-      x: xScale(1) + 6, y: yScale(c.cities[0].pop) - 6,
+      x: xScale(4) + 8, y: yScale(c.cities[3].pop) + 4,
       class: 'legend-text', fill: c.color
     }, svg).textContent = c.ko;
   });
@@ -907,6 +994,154 @@ function renderDataTable() {
   });
 }
 
+/* ════════════════════════════════════════════════════════════════
+   KOREA TIMELINE — 1980-2025 광역시 인구 시계열
+   출처: 1980-2000 인구총조사 (2010년 행정구역 기준 재집계)
+        2010-2025 행정안전부 주민등록인구
+   ════════════════════════════════════════════════════════════════ */
+const KOREA_TIMELINE = [
+  { year: 1980, color: '#7a2828',
+    cities: [['서울', 8364379], ['부산', 3248232], ['대구', 1852499], ['인천', 1230101], ['광주', 856545], ['대전', 803954], ['울산', 544290]] },
+  { year: 1990, color: '#963838',
+    cities: [['서울', 10612577], ['부산', 3854960], ['대구', 2322838], ['인천', 1922608], ['광주', 1139003], ['대전', 1049578], ['울산', 805355]] },
+  { year: 2000, color: '#b04848',
+    cities: [['서울', 9895217], ['부산', 3662884], ['대구', 2480578], ['인천', 2475139], ['대전', 1368207], ['광주', 1352797], ['울산', 1014428]] },
+  { year: 2010, color: '#c44a4a',
+    cities: [['서울', 10312545], ['부산', 3567910], ['인천', 2758296], ['대구', 2511676], ['대전', 1503664], ['광주', 1454636], ['울산', 1126298]] },
+  { year: 2020, color: '#d97070',
+    cities: [['서울', 9668465], ['부산', 3391946], ['인천', 2942828], ['대구', 2418346], ['대전', 1463882], ['광주', 1450062], ['울산', 1136017]] },
+  { year: 2025, color: '#e89595',
+    cities: [['서울', 9299548], ['부산', 3241600], ['인천', 3051961], ['대구', 2353032], ['대전', 1440729], ['광주', 1392013], ['울산', 1091948]] }
+];
+
+function buildTimelineGraph() {
+  const svg = document.getElementById('timeline-graph');
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+  const VW = 440, VH = 280;
+  const M = { l: 38, r: 14, t: 14, b: 32 };
+  const W = VW - M.l - M.r;
+  const H = VH - M.t - M.b;
+  const N_MAX = 7;
+
+  const xScale = n => M.l + ((n - 1) / (N_MAX - 1)) * W;
+  const yScale = r => M.t + (1 - r / 1.05) * H;
+
+  // 격자
+  for (let v = 0; v <= 1.0; v += 0.2) {
+    const y = yScale(v);
+    el('line', { x1: M.l, x2: M.l + W, y1: y, y2: y, stroke: '#e5e2dc', 'stroke-width': 0.5 }, svg);
+    el('text', { x: M.l - 5, y: y + 3, 'text-anchor': 'end',
+      'font-family': 'inherit', 'font-size': 9.5, fill: '#888' },
+      svg).textContent = v.toFixed(1);
+  }
+  for (let n = 1; n <= N_MAX; n++) {
+    const x = xScale(n);
+    el('text', { x: x, y: M.t + H + 14, 'text-anchor': 'middle',
+      'font-family': 'inherit', 'font-size': 9.5, fill: '#888' },
+      svg).textContent = n;
+  }
+  el('text', { x: M.l + W / 2, y: M.t + H + 28, 'text-anchor': 'middle',
+    'font-family': 'inherit', 'font-size': 10, fill: '#666', 'font-weight': 600 },
+    svg).textContent = '도시 순위';
+
+  // 이상 곡선 (1/n)
+  const idealPts = [];
+  for (let n = 1; n <= N_MAX; n++) idealPts.push(`${xScale(n)},${yScale(1/n)}`);
+  el('polyline', { points: idealPts.join(' '),
+    stroke: '#aaa', 'stroke-width': 1, fill: 'none', 'stroke-dasharray': '3,2' }, svg);
+
+  // 시점별 곡선
+  KOREA_TIMELINE.forEach(t => {
+    const p1 = t.cities[0][1];
+    const points = t.cities.map((c, i) => `${xScale(i+1)},${yScale(c[1]/p1)}`).join(' ');
+    el('polyline', { points, stroke: t.color, 'stroke-width': 1.6, fill: 'none', opacity: 0.85 }, svg);
+    t.cities.forEach((c, i) => {
+      el('circle', { cx: xScale(i+1), cy: yScale(c[1]/p1), r: 2.5,
+        fill: t.color, stroke: '#fff', 'stroke-width': 0.8 }, svg);
+    });
+  });
+
+  // 범례
+  const legend = document.getElementById('timeline-legend');
+  legend.innerHTML = KOREA_TIMELINE.map(t => `
+    <span class="timeline-legend-item">
+      <span class="timeline-legend-line" style="background:${t.color}"></span>${t.year}
+    </span>
+  `).join('');
+}
+
+function buildPrimacyTimeline() {
+  const svg = document.getElementById('primacy-timeline-graph');
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+  const VW = 280, VH = 280;
+  const M = { l: 32, r: 12, t: 18, b: 50 };
+  const W = VW - M.l - M.r;
+  const H = VH - M.t - M.b;
+
+  // 종주도시 지수 계산
+  const data = KOREA_TIMELINE.map(t => {
+    const p1 = t.cities[0][1];
+    const p234 = t.cities[1][1] + t.cities[2][1] + t.cities[3][1];
+    return { year: t.year, idx: p1/p234, color: t.color };
+  });
+
+  const yMax = 1.5;
+  const xStep = W / data.length;
+  const barW = xStep * 0.62;
+  const yScale = v => M.t + (1 - v / yMax) * H;
+
+  // Y축 격자
+  [0, 0.5, 1.0, 1.5].forEach(v => {
+    const y = yScale(v);
+    el('line', { x1: M.l, x2: M.l + W, y1: y, y2: y,
+      stroke: '#e5e2dc', 'stroke-width': 0.5 }, svg);
+    el('text', { x: M.l - 4, y: y + 3, 'text-anchor': 'end',
+      'font-family': 'inherit', 'font-size': 9.5, fill: '#888' },
+      svg).textContent = v.toFixed(1);
+  });
+
+  // Zipf 기준선 (~0.55)
+  const zipfY = yScale(0.55);
+  el('line', { x1: M.l, x2: M.l + W, y1: zipfY, y2: zipfY,
+    stroke: '#888', 'stroke-width': 0.8, 'stroke-dasharray': '2,2' }, svg);
+  el('text', { x: M.l + W - 3, y: zipfY - 3, 'text-anchor': 'end',
+    'font-family': 'inherit', 'font-size': 8.5, fill: '#888', 'font-style': 'italic' },
+    svg).textContent = 'Zipf 기준 0.55';
+
+  // 1.0 기준선
+  const oneY = yScale(1.0);
+  el('line', { x1: M.l, x2: M.l + W, y1: oneY, y2: oneY,
+    stroke: '#bbb', 'stroke-width': 0.6 }, svg);
+
+  // 막대
+  data.forEach((d, i) => {
+    const x = M.l + xStep * i + (xStep - barW) / 2;
+    const y = yScale(d.idx);
+    const h = M.t + H - y;
+    el('rect', { x, y, width: barW, height: h, fill: d.color, opacity: 0.92,
+      rx: 2, ry: 2 }, svg);
+    // 값 라벨
+    el('text', { x: x + barW/2, y: y - 4, 'text-anchor': 'middle',
+      'font-family': 'inherit', 'font-size': 9.5, fill: '#1a1a1a', 'font-weight': 700 },
+      svg).textContent = d.idx.toFixed(2);
+    // 연도 라벨
+    el('text', { x: x + barW/2, y: M.t + H + 14, 'text-anchor': 'middle',
+      'font-family': 'inherit', 'font-size': 9.5, fill: '#666' },
+      svg).textContent = d.year;
+  });
+
+  el('text', { x: M.l + W/2, y: M.t + H + 30, 'text-anchor': 'middle',
+    'font-family': 'inherit', 'font-size': 10, fill: '#666', 'font-weight': 600 },
+    svg).textContent = '시점';
+  el('text', { x: 8, y: M.t + H/2,
+    'text-anchor': 'middle',
+    'font-family': 'inherit', 'font-size': 10, fill: '#666', 'font-weight': 600,
+    transform: `rotate(-90, 8, ${M.t + H/2})` },
+    svg).textContent = 'P₁ / (P₂+P₃+P₄)';
+}
+
 document.querySelectorAll('#scale-toggle .toggle-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('#scale-toggle .toggle-btn').forEach(b => b.classList.remove('active'));
@@ -921,6 +1156,8 @@ buildPrimacyGrid();
 renderDataTabs();
 renderDataTable();
 buildGraph();
+buildTimelineGraph();
+buildPrimacyTimeline();
 </script>
 </body>
 </html>
