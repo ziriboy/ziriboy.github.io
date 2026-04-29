@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>도시순위규모법칙 — Rank-Size Rule</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif;
+  background: #f2f1ed; color: #1a1a1a;
+  line-height: 1.7;
+  padding: 2.5rem 1rem 4rem;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.page { max-width: 800px; margin: 0 auto; }
+
+.page-header { margin-bottom: 1.5rem; }
+.page-tag {
+  font-size: 11px; color: #888; letter-spacing: .08em;
+  text-transform: uppercase; margin-bottom: 8px;
+}
+.page-title { font-size: 26px; font-weight: 700; color: #111; line-height: 1.3; margin-bottom: 4px; }
+.page-sub { font-size: 13.5px; color: #666; line-height: 1.6; }
+
+.intro-card {
+  background: #fff;
+  border: 0.5px solid rgba(0,0,0,0.1);
+  border-left: 3px solid #5a7ec4;
+  border-radius: 0 10px 10px 0;
+  padding: 18px 22px 16px;
+  margin-bottom: 14px;
+}
+.intro-meta {
+  font-size: 11px; color: #999;
+  text-transform: uppercase; letter-spacing: .05em;
+  font-weight: 600; margin-bottom: 6px;
+}
+.intro-scholar { font-size: 16px; font-weight: 700; color: #111; margin-bottom: 2px; }
+.intro-pub { font-size: 12.5px; color: #888; margin-bottom: 12px; }
+.intro-pub em { font-style: italic; }
+.intro-idea { font-size: 13.5px; color: #333; line-height: 1.75; }
+.intro-idea strong { color: #1a1a1a; font-weight: 700; }
+.intro-idea em { font-style: italic; color: #1a1a1a; }
+.intro-formula {
+  margin: 10px 0 4px;
+  padding: 9px 14px;
+  background: #fafaf2;
+  border: 0.5px solid rgba(0,0,0,0.08);
+  border-radius: 6px;
+  font-family: 'Georgia', serif;
+  font-size: 14.5px;
+  color: #1a1a1a;
+  text-align: center;
+}
+.intro-formula .var { font-style: italic; color: #5a7ec4; }
+.intro-formula .small { font-size: 11px; color: #888; font-family: inherit; margin-left: 8px; font-style: italic; }
+
+.viz-section {
+  background: #fff;
+  border: 0.5px solid rgba(0,0,0,0.1);
+  border-radius: 12px;
+  padding: 22px 24px 18px;
+  margin-bottom: 14px;
+}
+.viz-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px 18px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+  padding-bottom: 14px;
+  border-bottom: 0.5px solid rgba(0,0,0,0.07);
+}
+.control-group { display: flex; align-items: center; gap: 8px; }
+.control-label {
+  font-size: 11px; color: #999;
+  text-transform: uppercase; letter-spacing: .05em;
+  font-weight: 600;
+}
+.toggle-group {
+  display: flex;
+  border: 0.5px solid rgba(0,0,0,0.15);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.toggle-btn {
+  background: #fff; border: none;
+  padding: 5px 11px;
+  font-size: 12px; font-family: inherit;
+  color: #666; cursor: pointer;
+  transition: all .15s;
+  border-right: 0.5px solid rgba(0,0,0,0.1);
+}
+.toggle-btn:last-child { border-right: none; }
+.toggle-btn:hover { background: #f5f4f0; }
+.toggle-btn.active { background: #1a1a1a; color: #fff; }
+
+.country-toggles { display: flex; gap: 6px; flex-wrap: wrap; }
+.country-btn {
+  display: flex; align-items: center; gap: 6px;
+  padding: 5px 10px 5px 8px;
+  background: #fff;
+  border: 0.5px solid rgba(0,0,0,0.15);
+  border-radius: 6px;
+  font-size: 12px; font-family: inherit;
+  color: #666; cursor: pointer;
+  transition: all .15s;
+}
+.country-btn:hover { background: #f5f4f0; }
+.country-btn.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+.country-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  border: 1px solid rgba(0,0,0,0.2);
+}
+
+.graph-wrap { position: relative; }
+.graph { display: block; width: 100%; height: auto; }
+.graph .grid-line { stroke: #e5e2dc; stroke-width: 0.6; }
+.graph .axis-line { stroke: #888; stroke-width: 0.8; }
+.graph .axis-text {
+  font-family: inherit;
+  font-size: 10.5px;
+  fill: #666;
+  pointer-events: none;
+}
+.graph .axis-label {
+  font-family: inherit;
+  font-size: 11px;
+  fill: #444;
+  font-weight: 600;
+  pointer-events: none;
+}
+.graph .ideal-line {
+  stroke: #999;
+  stroke-width: 1.4;
+  fill: none;
+  stroke-dasharray: 4, 3;
+  pointer-events: none;
+}
+.graph .country-line {
+  stroke-width: 1.8;
+  fill: none;
+  pointer-events: none;
+  transition: opacity .15s, stroke-width .15s;
+}
+.graph .country-line.dim { opacity: 0.18; }
+.graph .country-line.hi { stroke-width: 2.6; }
+.graph .data-point {
+  cursor: pointer;
+  transition: r .15s, opacity .15s;
+}
+.graph .data-point.dim { opacity: 0.18; }
+.graph .data-point.hi { r: 5.5; }
+.graph .ideal-text {
+  font-family: inherit;
+  font-size: 10px;
+  fill: #888;
+  font-style: italic;
+  pointer-events: none;
+}
+.graph .legend-text {
+  font-family: inherit;
+  font-size: 11px;
+  pointer-events: none;
+  font-weight: 600;
+}
+
+.hover-info {
+  margin-top: 6px;
+  padding: 10px 14px;
+  background: #fafaf7;
+  border: 0.5px solid rgba(0,0,0,0.08);
+  border-radius: 6px;
+  font-size: 12.5px;
+  color: #444;
+  line-height: 1.5;
+  min-height: 56px;
+}
+.hover-info .empty { color: #aaa; font-style: italic; font-size: 12px; }
+.hover-info-row { display: flex; align-items: center; gap: 8px; margin-bottom: 3px; }
+.hover-info .country-name { font-weight: 700; color: #1a1a1a; }
+.hover-info .city-name { font-weight: 700; color: #1a1a1a; font-size: 13.5px; }
+.hover-info .city-rank {
+  display: inline-block;
+  width: 22px; text-align: center;
+  font-size: 11px; font-weight: 700;
+  background: #1a1a1a; color: #fff;
+  border-radius: 3px;
+}
+.hover-info .city-pop { color: #555; font-size: 12.5px; }
+.hover-info .city-ratio { color: #888; font-size: 12px; }
+
+.primacy-card {
+  background: #fff;
+  border: 0.5px solid rgba(0,0,0,0.1);
+  border-radius: 10px;
+  padding: 18px 22px 16px;
+  margin-bottom: 14px;
+}
+.primacy-title {
+  font-size: 11px; color: #999;
+  text-transform: uppercase; letter-spacing: .05em;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.primacy-explain {
+  font-size: 12px; color: #666;
+  margin-bottom: 14px;
+  line-height: 1.65;
+}
+.primacy-explain code {
+  font-family: 'Georgia', serif;
+  font-style: italic;
+  background: #fafaf2;
+  padding: 1px 6px;
+  border-radius: 3px;
+  color: #1a1a1a;
+}
+.primacy-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.primacy-cell {
+  padding: 12px 10px 10px;
+  border: 0.5px solid rgba(0,0,0,0.08);
+  border-radius: 8px;
+  background: #fafaf7;
+  text-align: center;
+}
+.primacy-cell .country {
+  font-size: 12px; font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 6px;
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+}
+.primacy-cell .country .dot {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  border: 1px solid rgba(0,0,0,0.2);
+}
+.primacy-cell .value {
+  font-size: 24px; font-weight: 700;
+  color: #1a1a1a;
+  line-height: 1.1;
+  margin-bottom: 4px;
+  font-family: 'Georgia', serif;
+}
+.primacy-cell .interp {
+  font-size: 10.5px; color: #777;
+  line-height: 1.4;
+}
+
+.data-section {
+  background: #fff;
+  border: 0.5px solid rgba(0,0,0,0.1);
+  border-radius: 10px;
+  padding: 18px 20px;
+  margin-bottom: 14px;
+}
+.data-title {
+  font-size: 11px; color: #999;
+  text-transform: uppercase; letter-spacing: .05em;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.data-tabs {
+  display: flex; gap: 6px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.data-tab {
+  display: flex; align-items: center; gap: 6px;
+  padding: 5px 10px 5px 8px;
+  background: #fff;
+  border: 0.5px solid rgba(0,0,0,0.15);
+  border-radius: 5px;
+  font-size: 12px;
+  font-family: inherit;
+  color: #666;
+  cursor: pointer;
+  transition: all .15s;
+}
+.data-tab:hover { background: #f5f4f0; }
+.data-tab.active {
+  background: #fafaf7;
+  border-color: rgba(0,0,0,0.3);
+  color: #1a1a1a;
+  font-weight: 600;
+}
+.data-tab .dot {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  border: 1px solid rgba(0,0,0,0.2);
+}
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+.data-table th {
+  text-align: left;
+  padding: 6px 8px;
+  font-weight: 600;
+  color: #888;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+.data-table th.right { text-align: right; }
+.data-table td {
+  padding: 7px 8px;
+  border-bottom: 0.5px solid rgba(0,0,0,0.05);
+  color: #333;
+}
+.data-table td.right { text-align: right; font-variant-numeric: tabular-nums; }
+.data-table td.rank {
+  font-weight: 700; color: #888;
+  width: 32px; text-align: center;
+}
+.data-table td.city { font-weight: 600; color: #1a1a1a; }
+.data-table td.city .en {
+  color: #999; font-weight: 400;
+  font-size: 11px;
+  font-style: italic;
+  margin-left: 5px;
+}
+.data-table td.delta { font-size: 11.5px; }
+.data-table td.delta.over { color: #4a8050; }
+.data-table td.delta.under { color: #c44a4a; }
+.data-source {
+  font-size: 10.5px; color: #aaa;
+  margin-top: 8px;
+  font-style: italic;
+}
+.data-note {
+  font-size: 11px; color: #888;
+  margin-top: 6px;
+  padding: 8px 12px;
+  background: #fafaf2;
+  border-left: 2px solid #d4843a;
+  border-radius: 0 4px 4px 0;
+  line-height: 1.6;
+}
+
+.about-section { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.about-card {
+  background: #fff;
+  border: 0.5px solid rgba(0,0,0,0.1);
+  border-radius: 10px;
+  padding: 18px 20px 16px;
+}
+.about-card-title {
+  font-size: 11px; color: #999;
+  text-transform: uppercase; letter-spacing: .05em;
+  font-weight: 600; margin-bottom: 10px;
+}
+.about-list { list-style: none; padding: 0; margin: 0; }
+.about-list li {
+  font-size: 12.5px; color: #444;
+  line-height: 1.7;
+  padding: 4px 0 4px 14px;
+  position: relative;
+}
+.about-list li::before {
+  content: '–';
+  position: absolute; left: 0; color: #bbb;
+}
+.about-list li strong { color: #1a1a1a; font-weight: 700; }
+
+.colophon {
+  font-size: 11px; color: #999;
+  line-height: 1.7;
+  margin-top: 20px; padding-top: 14px;
+  border-top: 0.5px solid rgba(0,0,0,0.08);
+}
+.colophon strong { color: #444; }
+.colophon em { font-style: italic; color: #666; }
+footer { text-align: center; font-size: 11px; color: #bbb; margin-top: 20px; }
+
+@media (max-width: 640px) {
+  .about-section { grid-template-columns: 1fr; gap: 12px; }
+  .primacy-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="page-header">
+    <div class="page-tag">생활과 지리 · 도시 체계</div>
+    <h1 class="page-title">도시순위규모법칙</h1>
+    <p class="page-sub">Rank-Size Rule — 한 나라 안에서 도시 인구는 순위에 따라 어떻게 분포하는가</p>
+  </header>
+
+  <section class="intro-card">
+    <div class="intro-meta">학자와 출판</div>
+    <div class="intro-scholar">George Kingsley Zipf (1902–1950)</div>
+    <div class="intro-pub"><em>Human Behavior and the Principle of Least Effort</em> (Addison-Wesley, 1949)</div>
+    <p class="intro-idea">
+      한 나라의 도시들을 인구 규모 순으로 정렬했을 때, <strong><em>n</em>위 도시의 인구는 1위 도시 인구의 1/<em>n</em>에 가까운 값을 갖는다</strong>는 경험 법칙. Zipf는 도시뿐 아니라 단어 빈도, 회사 규모 등 인간 활동 곳곳에서 같은 패턴을 발견했다.
+    </p>
+    <div class="intro-formula">
+      <span class="var">P<sub>n</sub></span> = <span class="var">P<sub>1</sub></span> / <span class="var">n</span>
+      <span class="small">P<sub>n</sub> = n위 도시 인구 · P<sub>1</sub> = 1위 도시 인구</span>
+    </div>
+  </section>
+
+  <section class="viz-section">
+    <div class="viz-controls">
+      <div class="control-group">
+        <span class="control-label">그래프</span>
+        <div class="toggle-group" id="scale-toggle">
+          <button class="toggle-btn active" data-scale="normalized">정규화 (P<sub>1</sub>=1)</button>
+          <button class="toggle-btn" data-scale="loglog">로그-로그</button>
+        </div>
+      </div>
+      <div class="control-group">
+        <span class="control-label">국가</span>
+        <div class="country-toggles" id="country-toggles"></div>
+      </div>
+    </div>
+    <div class="graph-wrap">
+      <svg class="graph" id="graph" viewBox="0 0 740 420" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+    <div class="hover-info" id="hover-info">
+      <div class="empty">그래프의 점이나 데이터 표의 행 위에 마우스를 올리면 상세 정보가 표시됩니다</div>
+    </div>
+  </section>
+
+  <section class="primacy-card">
+    <div class="primacy-title">종주도시 지수 — Primacy Index</div>
+    <p class="primacy-explain">
+      <code>P<sub>1</sub> / (P<sub>2</sub>+P<sub>3</sub>+P<sub>4</sub>)</code> — 1위 도시가 2~4위 도시 인구 합과 비교해 얼마나 큰지의 지표. <strong>1.0보다 크면 1위 도시가 압도적</strong>인 종주도시(primate city) 패턴, 이상적인 도시순위규모법칙(Zipf)을 따르면 약 0.55가 된다.
+    </p>
+    <div class="primacy-grid" id="primacy-grid"></div>
+  </section>
+
+  <section class="data-section">
+    <div class="data-title">국가별 도시 인구 데이터 — Top 10 Cities</div>
+    <div class="data-tabs" id="data-tabs"></div>
+    <table class="data-table" id="data-table"></table>
+    <div class="data-source" id="data-source"></div>
+    <div class="data-note" id="data-note" style="display:none"></div>
+  </section>
+
+  <section class="about-section">
+    <div class="about-card">
+      <div class="about-card-title">왜 이 패턴이 나타나는가</div>
+      <ul class="about-list">
+        <li><strong>최소 노력의 원리</strong> — Zipf는 인간의 모든 활동이 노력을 최소화하는 방향으로 분포한다고 보았다. 도시 분포도 그 결과 중 하나.</li>
+        <li><strong>비례 효과 (Gibrat's law)</strong> — 도시 성장률이 도시 크기와 무관할 때, 충분한 시간이 지나면 자연스럽게 Zipf 분포에 수렴한다는 수학적 증명이 있다.</li>
+        <li><strong>분산형 도시 체계</strong> — 여러 도시가 동시에 자생적으로 성장한 국가(독일·미국 등)에서 잘 나타난다. 신성로마제국 시대부터 분권적이었던 독일이 대표 사례.</li>
+        <li><strong>종주도시 패턴</strong> — 정치·경제 권력이 한 도시에 집중된 국가(한국·멕시코·프랑스)에서는 1위가 압도적이고 이론에서 어긋난다. 특히 식민지 경험이 있는 개도국에서 더 극단적으로 나타나는 경향.</li>
+      </ul>
+    </div>
+    <div class="about-card">
+      <div class="about-card-title">법칙의 한계</div>
+      <ul class="about-list">
+        <li><strong>도시의 정의</strong>에 따라 결과가 크게 달라진다 — 행정 도시(city proper)와 광역도시권(metropolitan area)은 매우 다른 분포를 보인다. 멕시코시티가 대표적 사례 (행정 도시 920만 vs 광역권 2,200만).</li>
+        <li><strong>경험 법칙</strong>일 뿐 인과를 설명하지 않는다 — "왜 그렇게 분포해야 하는가"에 대한 강한 이론적 근거는 약하다.</li>
+        <li><strong>국가 단위에 의존</strong> — 도시 체계의 경계가 국가 경계와 일치한다는 가정. EU처럼 통합된 도시 체계에는 적용이 어색하다.</li>
+        <li><strong>최상위 일부에서만 잘 맞음</strong> — 중·소도시까지 포함하면 데이터의 꼬리(tail)가 이론에서 점점 멀어지는 경향이 있다.</li>
+      </ul>
+    </div>
+  </section>
+
+  <p class="colophon">
+    <strong>출처</strong> — Zipf, G. K. (1949). <em>Human Behavior and the Principle of Least Effort</em>. Addison-Wesley. · 도시 인구 데이터: 통계청 KOSIS (한국, 2024) · INEGI 2020 Mexican National Census (멕시코) · Destatis (독일, 2024년 12월). 모든 데이터는 행정 도시(city proper / municipality) 인구 기준이며, 광역도시권 데이터와는 다르다.
+  </p>
+
+  <footer>kgeography.tistory.com · 도시순위규모법칙 인터랙티브 강의 도구</footer>
+</div>
+
+<script>
+/* ════════════════════════════════════════════════════════════════
+   COUNTRY DATA — 행정 도시(city proper / municipality)
+   ════════════════════════════════════════════════════════════════ */
+const COUNTRIES = [
+  {
+    id: 'kr', ko: '한국', en: 'South Korea',
+    color: '#c44a4a',
+    cities: [
+      { name: '서울특별시',     en: 'Seoul',     pop: 9392000 },
+      { name: '부산광역시',     en: 'Busan',     pop: 3261000 },
+      { name: '인천광역시',     en: 'Incheon',   pop: 3015000 },
+      { name: '대구광역시',     en: 'Daegu',     pop: 2371000 },
+      { name: '대전광역시',     en: 'Daejeon',   pop: 1442000 },
+      { name: '광주광역시',     en: 'Gwangju',   pop: 1415000 },
+      { name: '수원시',         en: 'Suwon',     pop: 1189000 },
+      { name: '울산광역시',     en: 'Ulsan',     pop: 1103000 },
+      { name: '용인시',         en: 'Yongin',    pop: 1077000 },
+      { name: '고양시',         en: 'Goyang',    pop: 1068000 }
+    ],
+    source: '통계청 KOSIS, 2024'
+  },
+  {
+    id: 'mx', ko: '멕시코', en: 'Mexico',
+    color: '#d4843a',
+    cities: [
+      { name: '멕시코시티',     en: 'Mexico City',      pop: 9210000 },
+      { name: '티후아나',       en: 'Tijuana',          pop: 1923000 },
+      { name: '레온',           en: 'León',             pop: 1721000 },
+      { name: '푸에블라',       en: 'Puebla',           pop: 1692000 },
+      { name: '에카테펙',       en: 'Ecatepec',         pop: 1645000 },
+      { name: '시우다드후아레스', en: 'Ciudad Juárez',  pop: 1512000 },
+      { name: '사포판',         en: 'Zapopan',          pop: 1476000 },
+      { name: '과달라하라',     en: 'Guadalajara',      pop: 1386000 },
+      { name: '몬테레이',       en: 'Monterrey',        pop: 1143000 },
+      { name: '네사후알코요틀', en: 'Nezahualcóyotl',   pop: 1077000 }
+    ],
+    source: 'INEGI Mexican National Census, 2020',
+    note: '※ 멕시코시티(Ciudad de México)는 단일 federal entity로 약 920만 명. 그러나 5위 에카테펙·10위 네사후알코요틀 등은 모두 멕시코시티 광역권의 일부다. <strong>광역 멕시코시티(Greater Mexico City)는 약 2,200만 명</strong>으로, 행정 도시(920만)와 광역권 사이의 격차가 매우 크다 — 도시 정의에 따라 종주도시 강도가 다르게 나타나는 사례.'
+  },
+  {
+    id: 'de', ko: '독일', en: 'Germany',
+    color: '#5a9c4a',
+    cities: [
+      { name: '베를린',         en: 'Berlin',     pop: 3685000 },
+      { name: '함부르크',       en: 'Hamburg',    pop: 1863000 },
+      { name: '뮌헨',           en: 'Munich',     pop: 1505000 },
+      { name: '쾰른',           en: 'Cologne',    pop: 1084000 },
+      { name: '프랑크푸르트',   en: 'Frankfurt',  pop: 766000 },
+      { name: '슈투트가르트',   en: 'Stuttgart',  pop: 633000 },
+      { name: '뒤셀도르프',     en: 'Düsseldorf', pop: 631000 },
+      { name: '라이프치히',     en: 'Leipzig',    pop: 627000 },
+      { name: '도르트문트',     en: 'Dortmund',   pop: 588000 },
+      { name: '에센',           en: 'Essen',      pop: 580000 }
+    ],
+    source: 'Destatis, 2024년 12월',
+    note: '※ 독일은 도시순위규모법칙이 가장 잘 맞는 사례 중 하나. 베를린(369만) ÷ 2 = 184만이라는 이상값과 함부르크의 실제 인구(186만)가 거의 정확히 일치한다 — Zipf 법칙의 교과서적 검증.'
+  }
+];
+
+/* ════════════════════════════════════════════════════════════════
+   STATE
+   ════════════════════════════════════════════════════════════════ */
+const state = {
+  scale: 'normalized',
+  visible: { kr: true, mx: true, de: true },
+  activeTable: 'kr',
+  hover: null
+};
+
+/* ════════════════════════════════════════════════════════════════
+   GRAPH
+   ════════════════════════════════════════════════════════════════ */
+const SVG_NS = 'http://www.w3.org/2000/svg';
+const VW = 740, VH = 420;
+const M = { l: 60, r: 30, t: 30, b: 50 };
+const W = VW - M.l - M.r;
+const H = VH - M.t - M.b;
+const N_MAX = 10;
+
+function el(tag, attrs, parent) {
+  const node = document.createElementNS(SVG_NS, tag);
+  for (const k in attrs) node.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(node);
+  return node;
+}
+
+function clearGraph() {
+  const g = document.getElementById('graph');
+  while (g.firstChild) g.removeChild(g.firstChild);
+}
+
+function buildGraph() {
+  clearGraph();
+  const svg = document.getElementById('graph');
+  if (state.scale === 'normalized') buildNormalized(svg);
+  else buildLogLog(svg);
+}
+
+function buildNormalized(svg) {
+  const xMin = 1, xMax = N_MAX;
+  const yMin = 0, yMax = 1.05;
+  const xScale = n => M.l + ((n - xMin) / (xMax - xMin)) * W;
+  const yScale = r => M.t + (1 - (r - yMin) / (yMax - yMin)) * H;
+
+  for (let v = 0; v <= 1.0; v += 0.2) {
+    const y = yScale(v);
+    el('line', { x1: M.l, x2: M.l + W, y1: y, y2: y, class: 'grid-line' }, svg);
+    el('text', { x: M.l - 6, y: y + 3.5, 'text-anchor': 'end', class: 'axis-text' },
+       svg).textContent = v.toFixed(1);
+  }
+  for (let n = 1; n <= N_MAX; n++) {
+    const x = xScale(n);
+    el('line', { x1: x, x2: x, y1: M.t, y2: M.t + H, class: 'grid-line' }, svg);
+    el('text', { x: x, y: M.t + H + 16, 'text-anchor': 'middle', class: 'axis-text' },
+       svg).textContent = n;
+  }
+
+  el('text', { x: M.l + W / 2, y: M.t + H + 36, 'text-anchor': 'middle', class: 'axis-label' },
+     svg).textContent = '도시 순위 (n)';
+  el('text', {
+    x: 18, y: M.t + H / 2,
+    'text-anchor': 'middle', class: 'axis-label',
+    transform: `rotate(-90, 18, ${M.t + H / 2})`
+  }, svg).textContent = '1위 대비 인구 비율 (Pₙ / P₁)';
+
+  const idealPts = [];
+  for (let n = 1; n <= N_MAX; n++) idealPts.push(`${xScale(n)},${yScale(1 / n)}`);
+  el('polyline', { points: idealPts.join(' '), class: 'ideal-line' }, svg);
+  const idealLastX = xScale(N_MAX);
+  const idealLastY = yScale(1 / N_MAX);
+  el('text', {
+    x: idealLastX - 4, y: idealLastY - 8,
+    'text-anchor': 'end', class: 'ideal-text'
+  }, svg).textContent = '이상 곡선  P₁/n';
+
+  COUNTRIES.forEach(c => {
+    if (!state.visible[c.id]) return;
+    const p1 = c.cities[0].pop;
+    const pts = c.cities.map((city, i) =>
+      ({ n: i + 1, ratio: city.pop / p1 }));
+    const polyPts = pts.map(p => `${xScale(p.n)},${yScale(p.ratio)}`).join(' ');
+    el('polyline', {
+      points: polyPts,
+      class: 'country-line' + (state.hover && state.hover.country !== c.id ? ' dim' : ''),
+      stroke: c.color,
+      'data-country': c.id
+    }, svg);
+    pts.forEach((p, i) => {
+      const circle = el('circle', {
+        cx: xScale(p.n), cy: yScale(p.ratio),
+        r: 4, fill: c.color,
+        stroke: '#fff', 'stroke-width': 1.5,
+        class: 'data-point' + (state.hover && state.hover.country !== c.id ? ' dim' : ''),
+        'data-country': c.id, 'data-city-idx': i
+      }, svg);
+      circle.addEventListener('mouseover', () => setHover(c.id, i));
+      circle.addEventListener('mouseleave', () => setHover(null));
+      circle.addEventListener('click', () => { state.activeTable = c.id; renderDataTable(); renderDataTabs(); });
+    });
+
+    el('text', {
+      x: xScale(1) + 6, y: yScale(1) - 8,
+      class: 'legend-text', fill: c.color
+    }, svg).textContent = c.ko;
+  });
+}
+
+function buildLogLog(svg) {
+  const xValues = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  const xMin = Math.log10(1), xMax = Math.log10(10);
+  const yMin = Math.log10(400000), yMax = Math.log10(11000000);
+
+  const xScale = n => M.l + ((Math.log10(n) - xMin) / (xMax - xMin)) * W;
+  const yScale = pop => M.t + (1 - (Math.log10(pop) - yMin) / (yMax - yMin)) * H;
+
+  const yTicks = [
+    { v: 500000,    label: '50만' },
+    { v: 1000000,   label: '100만' },
+    { v: 2000000,   label: '200만' },
+    { v: 5000000,   label: '500만' },
+    { v: 10000000,  label: '1000만' }
+  ];
+  yTicks.forEach(t => {
+    const y = yScale(t.v);
+    if (y < M.t || y > M.t + H) return;
+    el('line', { x1: M.l, x2: M.l + W, y1: y, y2: y, class: 'grid-line' }, svg);
+    el('text', { x: M.l - 6, y: y + 3.5, 'text-anchor': 'end', class: 'axis-text' },
+       svg).textContent = t.label;
+  });
+
+  const xTicks = [1, 2, 3, 5, 10];
+  xValues.forEach(n => {
+    const x = xScale(n);
+    if (xTicks.includes(n)) {
+      el('line', { x1: x, x2: x, y1: M.t, y2: M.t + H, class: 'grid-line' }, svg);
+      el('text', { x: x, y: M.t + H + 16, 'text-anchor': 'middle', class: 'axis-text' },
+         svg).textContent = n;
+    } else {
+      el('line', { x1: x, x2: x, y1: M.t + H, y2: M.t + H + 4, stroke: '#bbb', 'stroke-width': 0.5 }, svg);
+    }
+  });
+
+  el('text', { x: M.l + W / 2, y: M.t + H + 36, 'text-anchor': 'middle', class: 'axis-label' },
+     svg).textContent = '도시 순위 (n) — 로그 스케일';
+  el('text', {
+    x: 18, y: M.t + H / 2,
+    'text-anchor': 'middle', class: 'axis-label',
+    transform: `rotate(-90, 18, ${M.t + H / 2})`
+  }, svg).textContent = '도시 인구 — 로그 스케일';
+
+  COUNTRIES.forEach(c => {
+    if (!state.visible[c.id]) return;
+    const p1 = c.cities[0].pop;
+    const idealPts = [];
+    for (let n = 1; n <= N_MAX; n++) {
+      const idealPop = p1 / n;
+      idealPts.push(`${xScale(n)},${yScale(idealPop)}`);
+    }
+    el('polyline', {
+      points: idealPts.join(' '),
+      stroke: c.color, 'stroke-width': 1,
+      'stroke-dasharray': '3,3',
+      fill: 'none', opacity: 0.4
+    }, svg);
+  });
+
+  el('text', {
+    x: M.l + W - 8, y: M.t + 16,
+    'text-anchor': 'end', class: 'ideal-text'
+  }, svg).textContent = '점선 = P₁/n (이상)  ·  실선 = 실제';
+
+  COUNTRIES.forEach(c => {
+    if (!state.visible[c.id]) return;
+    const pts = c.cities.map((city, i) => ({ n: i + 1, pop: city.pop }));
+    const polyPts = pts.map(p => `${xScale(p.n)},${yScale(p.pop)}`).join(' ');
+    el('polyline', {
+      points: polyPts,
+      class: 'country-line' + (state.hover && state.hover.country !== c.id ? ' dim' : ''),
+      stroke: c.color,
+      'data-country': c.id
+    }, svg);
+    pts.forEach((p, i) => {
+      const circle = el('circle', {
+        cx: xScale(p.n), cy: yScale(p.pop),
+        r: 4, fill: c.color,
+        stroke: '#fff', 'stroke-width': 1.5,
+        class: 'data-point' + (state.hover && state.hover.country !== c.id ? ' dim' : ''),
+        'data-country': c.id, 'data-city-idx': i
+      }, svg);
+      circle.addEventListener('mouseover', () => setHover(c.id, i));
+      circle.addEventListener('mouseleave', () => setHover(null));
+      circle.addEventListener('click', () => { state.activeTable = c.id; renderDataTable(); renderDataTabs(); });
+    });
+
+    el('text', {
+      x: xScale(1) + 6, y: yScale(c.cities[0].pop) - 6,
+      class: 'legend-text', fill: c.color
+    }, svg).textContent = c.ko;
+  });
+}
+
+function setHover(countryId, cityIdx) {
+  if (countryId == null) state.hover = null;
+  else state.hover = { country: countryId, cityIdx };
+  buildGraph();
+  renderHoverInfo();
+}
+
+function fmtPop(n) {
+  const man = Math.round(n / 10000);
+  return `${man.toLocaleString('ko-KR')}만`;
+}
+
+function renderHoverInfo() {
+  const elInfo = document.getElementById('hover-info');
+  if (!state.hover) {
+    elInfo.innerHTML = `<div class="empty">그래프의 점이나 데이터 표의 행 위에 마우스를 올리면 상세 정보가 표시됩니다</div>`;
+    return;
+  }
+  const c = COUNTRIES.find(x => x.id === state.hover.country);
+  const city = c.cities[state.hover.cityIdx];
+  const rank = state.hover.cityIdx + 1;
+  const p1 = c.cities[0].pop;
+  const ratio = city.pop / p1;
+  const idealRatio = 1 / rank;
+  const delta = ratio - idealRatio;
+  const deltaPct = (delta / idealRatio) * 100;
+  const deltaText = rank === 1 ? '— (1위 도시 기준)' :
+    `이상값 대비 ${delta >= 0 ? '+' : ''}${deltaPct.toFixed(0)}% (실제 ${(ratio * 100).toFixed(1)}%, 이상 ${(idealRatio * 100).toFixed(1)}%)`;
+
+  elInfo.innerHTML = `
+    <div class="hover-info-row">
+      <span class="country-name" style="color:${c.color}">${c.ko}</span>
+      <span style="color:#888; font-size:12px;">${rank}위 도시</span>
+    </div>
+    <div class="hover-info-row">
+      <span class="city-rank" style="background:${c.color}">${rank}</span>
+      <span class="city-name">${city.name}</span>
+      <span style="font-size:11px; color:#999; font-style:italic;">${city.en}</span>
+    </div>
+    <div class="hover-info-row">
+      <span class="city-pop"><strong style="color:#1a1a1a">${fmtPop(city.pop)}</strong> (${(city.pop).toLocaleString('ko-KR')}명)</span>
+      <span class="city-ratio">· ${deltaText}</span>
+    </div>
+  `;
+}
+
+function buildCountryToggles() {
+  const container = document.getElementById('country-toggles');
+  container.innerHTML = COUNTRIES.map(c => `
+    <button class="country-btn ${state.visible[c.id] ? 'active' : ''}" data-id="${c.id}">
+      <span class="country-dot" style="background:${c.color}"></span>${c.ko}
+    </button>
+  `).join('');
+
+  container.querySelectorAll('.country-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.id;
+      state.visible[id] = !state.visible[id];
+      if (Object.values(state.visible).every(v => !v)) {
+        state.visible[id] = true;
+        return;
+      }
+      buildCountryToggles();
+      buildGraph();
+    });
+  });
+}
+
+function buildPrimacyGrid() {
+  const container = document.getElementById('primacy-grid');
+  container.innerHTML = COUNTRIES.map(c => {
+    const p1 = c.cities[0].pop;
+    const p234 = c.cities[1].pop + c.cities[2].pop + c.cities[3].pop;
+    const idx = p1 / p234;
+    let interp;
+    if (idx >= 5.0) interp = '극단적 종주도시';
+    else if (idx >= 1.5) interp = '강한 종주도시';
+    else if (idx >= 1.0) interp = '종주도시';
+    else if (idx >= 0.7) interp = '약한 종주도시';
+    else if (idx >= 0.6) interp = 'Zipf보다 약간 높음';
+    else if (idx >= 0.5) interp = 'Zipf 법칙에 가까움';
+    else interp = '분산형 도시 체계';
+    return `
+      <div class="primacy-cell">
+        <div class="country">
+          <span class="dot" style="background:${c.color}"></span>${c.ko}
+        </div>
+        <div class="value" style="color:${c.color}">${idx.toFixed(2)}</div>
+        <div class="interp">${interp}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderDataTabs() {
+  const container = document.getElementById('data-tabs');
+  container.innerHTML = COUNTRIES.map(c => `
+    <button class="data-tab ${state.activeTable === c.id ? 'active' : ''}" data-id="${c.id}">
+      <span class="dot" style="background:${c.color}"></span>${c.ko}
+    </button>
+  `).join('');
+
+  container.querySelectorAll('.data-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.activeTable = btn.dataset.id;
+      renderDataTabs();
+      renderDataTable();
+    });
+  });
+}
+
+function renderDataTable() {
+  const c = COUNTRIES.find(x => x.id === state.activeTable);
+  const table = document.getElementById('data-table');
+  const p1 = c.cities[0].pop;
+  table.innerHTML = `
+    <thead>
+      <tr>
+        <th class="rank">#</th>
+        <th>도시</th>
+        <th class="right">인구</th>
+        <th class="right">P<sub>n</sub>/P<sub>1</sub></th>
+        <th class="right">이상값 1/n</th>
+        <th class="right">차이</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${c.cities.map((city, i) => {
+        const rank = i + 1;
+        const ratio = city.pop / p1;
+        const ideal = 1 / rank;
+        const delta = (ratio - ideal) / ideal * 100;
+        const deltaCls = rank === 1 ? '' : (delta >= 0 ? 'over' : 'under');
+        const deltaTxt = rank === 1 ? '—' : `${delta >= 0 ? '+' : ''}${delta.toFixed(0)}%`;
+        return `
+          <tr data-country="${c.id}" data-city-idx="${i}" class="row-data">
+            <td class="rank">${rank}</td>
+            <td class="city">${city.name}<span class="en">${city.en}</span></td>
+            <td class="right">${city.pop.toLocaleString('ko-KR')}</td>
+            <td class="right">${ratio.toFixed(3)}</td>
+            <td class="right">${ideal.toFixed(3)}</td>
+            <td class="right delta ${deltaCls}">${deltaTxt}</td>
+          </tr>
+        `;
+      }).join('')}
+    </tbody>
+  `;
+  document.getElementById('data-source').textContent = '출처: ' + c.source + ' · 행정 도시 (city proper / municipality) 인구 기준';
+
+  const noteEl = document.getElementById('data-note');
+  if (c.note) {
+    noteEl.style.display = '';
+    noteEl.style.borderLeftColor = c.color;
+    noteEl.innerHTML = c.note;
+  } else {
+    noteEl.style.display = 'none';
+  }
+
+  table.querySelectorAll('.row-data').forEach(row => {
+    row.addEventListener('mouseover', () => {
+      setHover(row.dataset.country, parseInt(row.dataset.cityIdx));
+    });
+    row.addEventListener('mouseleave', () => setHover(null));
+  });
+}
+
+document.querySelectorAll('#scale-toggle .toggle-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#scale-toggle .toggle-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.scale = btn.dataset.scale;
+    buildGraph();
+  });
+});
+
+buildCountryToggles();
+buildPrimacyGrid();
+renderDataTabs();
+renderDataTable();
+buildGraph();
+</script>
+</body>
+</html>
