@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>우리나라의 식량 생산과 수입</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ffffff;
+    --ink: #111111;
+    --ink-soft: #555555;
+    --line: #cccccc;
+    --line-soft: #e8e8e8;
+
+    /* 자급 그룹 (녹색) */
+    --c-rice:    #2d7a4a;   /* 쌀 - 진한 녹 */
+    --c-potato:  #88b896;   /* 서류 - 옅은 녹 */
+
+    /* 중간 그룹 (호박) */
+    --c-bean:    #c2782a;   /* 두류 - 진한 호박 */
+    --c-barley:  #dba968;   /* 보리쌀 - 옅은 호박 */
+
+    /* 수입 의존 그룹 (적갈) */
+    --c-corn:    #b85431;   /* 옥수수 - 진한 적갈 */
+    --c-wheat:   #d28471;   /* 밀 - 옅은 적갈 */
+
+    /* 두 기준 비교 */
+    --c-food:    #2d7a4a;   /* 식량자급률 - 녹색 */
+    --c-grain:   #b85431;   /* 곡물자급률 - 적갈 */
+
+    /* 1인당 쌀 */
+    --c-riceUse: #c9a236;   /* 황금 */
+
+    /* 수입국 지도 */
+    --m-wheat:   #c9986b;
+    --m-corn:    #e8a90a;
+    --m-bean:    #4a7c4e;
+    --m-korea:   #c25b3f;
+  }
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 24px 16px;
+    line-height: 1.6;
+    font-weight: 400;
+  }
+
+  /* 헤더 */
+  .header {
+    border-top: 2px solid var(--ink);
+    border-bottom: 1px solid var(--line);
+    padding: 18px 0 14px;
+    margin-bottom: 18px;
+  }
+
+  .header h1 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 4px;
+    letter-spacing: -0.4px;
+  }
+
+  .header .subtitle {
+    font-size: 13px;
+    color: var(--ink-soft);
+    font-weight: 300;
+  }
+
+  .header .standard {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 3px 10px;
+    border: 1px solid var(--ink);
+    font-size: 11px;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--ink);
+  }
+
+  /* 도입부 안내문 */
+  .intro {
+    background: #f9f7f3;
+    border: 1px solid var(--line);
+    padding: 18px 20px;
+    margin-bottom: 24px;
+    font-size: 14px;
+    line-height: 1.75;
+    color: #2a2a2a;
+  }
+
+  .intro p { margin-bottom: 10px; }
+  .intro p:last-child { margin-bottom: 0; }
+  .intro strong { color: var(--ink); font-weight: 700; }
+  .intro .lead {
+    font-weight: 500;
+    color: var(--ink);
+    font-size: 14.5px;
+  }
+
+  /* 섹션 */
+  .section-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 28px 0 6px;
+    letter-spacing: -0.3px;
+  }
+
+  .section-title .num {
+    display: inline-block;
+    width: 26px;
+    height: 26px;
+    background: var(--ink);
+    color: white;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 26px;
+    font-size: 13px;
+    margin-right: 8px;
+    vertical-align: 2px;
+  }
+
+  .section-sub {
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-bottom: 14px;
+    padding-left: 34px;
+  }
+
+  /* 컨트롤 */
+  .controls {
+    display: flex;
+    gap: 0;
+    margin-bottom: 12px;
+    border: 1px solid var(--line);
+  }
+
+  .chip {
+    flex: 1;
+    background: white;
+    border: none;
+    border-right: 1px solid var(--line);
+    padding: 10px 12px;
+    cursor: pointer;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 13px;
+    color: var(--ink-soft);
+    transition: background 0.15s;
+    font-weight: 400;
+  }
+
+  .chip:last-child { border-right: none; }
+  .chip:hover { background: #f5f5f5; }
+  .chip.active {
+    background: var(--ink);
+    color: white;
+    font-weight: 500;
+  }
+
+  .chart-wrap {
+    position: relative;
+    height: 360px;
+    margin: 8px 0 14px;
+    padding: 12px;
+    border: 1px solid var(--line);
+    background: white;
+  }
+
+  .help-text {
+    font-size: 13px;
+    color: var(--ink-soft);
+    padding: 11px 14px;
+    border-left: 2px solid var(--ink);
+    background: #fafafa;
+    margin: 10px 0 22px;
+    line-height: 1.65;
+  }
+
+  .help-text strong {
+    color: var(--ink);
+    font-weight: 700;
+  }
+
+  /* 표 */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    margin: 14px 0;
+  }
+
+  .data-table th {
+    background: var(--ink);
+    color: white;
+    padding: 9px 8px;
+    font-weight: 500;
+    text-align: center;
+    font-size: 11px;
+    letter-spacing: 0.3px;
+  }
+
+  .data-table th.left { text-align: left; padding-left: 12px; }
+
+  .data-table td {
+    padding: 8px;
+    border-bottom: 1px solid var(--line-soft);
+    text-align: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+  }
+
+  .data-table td.item {
+    text-align: left;
+    padding-left: 12px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 500;
+    background: #fafafa;
+  }
+
+  .data-table tr:hover td:not(.item) { background: #f8f8f8; }
+
+  .data-table .total td { background: #f0f0f0; font-weight: 700; border-top: 1px solid var(--ink); }
+  .data-table .total td.item { background: #f0f0f0; }
+
+  /* 차이 막대 */
+  .diff-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: flex-start;
+    padding-left: 8px;
+  }
+
+  .diff-num {
+    min-width: 38px;
+    text-align: right;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--c-grain);
+    font-weight: 500;
+  }
+
+  .diff-bar-wrap {
+    flex: 1;
+    height: 8px;
+    background: #f0f0f0;
+    position: relative;
+  }
+
+  .diff-bar {
+    height: 100%;
+    background: var(--c-grain);
+    opacity: 0.75;
+  }
+
+  /* 지도 */
+  #importMap {
+    height: 420px;
+    border: 1px solid var(--line);
+    background: #f5f5f5;
+  }
+
+  .meta-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 11px;
+    color: var(--ink-soft);
+    font-family: 'IBM Plex Mono', monospace;
+    margin: 4px 0 10px;
+  }
+
+  .meta-line strong {
+    font-family: 'Noto Sans KR', sans-serif;
+    color: var(--ink);
+    font-weight: 500;
+    font-size: 12px;
+  }
+
+  /* Leaflet 라벨 */
+  .country-label {
+    background: white !important;
+    border: 1px solid #333 !important;
+    border-radius: 2px !important;
+    padding: 2px 6px !important;
+    font-family: 'Noto Sans KR', sans-serif !important;
+    font-size: 11px !important;
+    font-weight: 500 !important;
+    color: #111 !important;
+    box-shadow: 1px 1px 0 rgba(0,0,0,0.08) !important;
+    white-space: nowrap !important;
+  }
+  .country-label::before { display: none !important; }
+
+  .korea-label {
+    background: var(--m-korea) !important;
+    border: 1px solid var(--m-korea) !important;
+    color: white !important;
+  }
+
+  .leaflet-control-attribution {
+    font-size: 9px !important;
+    background: rgba(255,255,255,0.7) !important;
+  }
+
+  .footer {
+    margin-top: 30px;
+    padding: 14px 0;
+    border-top: 1px solid var(--line);
+    font-size: 10.5px;
+    color: var(--ink-soft);
+    font-family: 'IBM Plex Mono', monospace;
+    line-height: 1.65;
+  }
+
+  @media (max-width: 600px) {
+    .controls { flex-wrap: wrap; }
+    .chip { flex: 1 1 50%; border-bottom: 1px solid var(--line); }
+    .chip:nth-last-child(-n+2) { border-bottom: none; }
+    .header h1 { font-size: 19px; }
+    .section-title { font-size: 16px; }
+    .chart-wrap { height: 320px; padding: 8px; }
+    #importMap { height: 360px; }
+    .country-label { font-size: 10px !important; padding: 1px 4px !important; }
+    .intro { padding: 14px; font-size: 13px; }
+    .data-table { font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>우리나라의 식량 생산과 수입</h1>
+  <div class="subtitle">자급률 변화와 주요 곡물 수입국 분포 (1970–2024)</div>
+  <span class="standard">[9사(지리)12-01]</span>
+</div>
+
+<!-- ========== 도입부 ========== -->
+<div class="intro">
+  <p class="lead">우리가 매일 먹는 쌀, 빵, 고기, 두부의 원료는 어디에서 올까요? 우리나라는 얼마나 자급하고 있으며, 부족한 부분은 어느 나라에서 수입하고 있을까요?</p>
+  <p>이를 보여주는 지표가 <strong>자급률</strong>입니다. 자급률에는 두 가지 기준이 있는데, <strong>식량자급률</strong>은 사람이 먹는 곡물만 대상으로 하고, <strong>곡물자급률</strong>은 가축 사료까지 포함합니다. 우리가 먹는 고기·계란·우유는 결국 가축 사료(주로 옥수수와 콩)에서 나오기 때문에, 두 기준의 차이는 곧 <strong>"수입 사료에 의존하는 정도"</strong>를 의미합니다.</p>
+</div>
+
+<!-- ========== 섹션 1 ========== -->
+<div class="section-title"><span class="num">1</span>얼마나 자급하는가?</div>
+<div class="section-sub">시간에 따라 자급률이 어떻게 변해왔는지, 어떤 곡물이 자급되고 어떤 곡물이 수입에 의존하는지 살펴봅니다.</div>
+
+<div class="controls" id="trendChips">
+  <button class="chip active" data-mode="compare">두 기준 비교</button>
+  <button class="chip" data-mode="byitem">품목별 식량자급률</button>
+  <button class="chip" data-mode="rice">1인당 쌀 소비량</button>
+</div>
+
+<div class="chart-wrap">
+  <canvas id="trendChart"></canvas>
+</div>
+
+<div class="help-text" id="trendHelp"></div>
+
+<table class="data-table">
+  <thead>
+    <tr>
+      <th class="left">품목 (2024)</th>
+      <th>곡물자급률<br>(사료 포함)</th>
+      <th>식량자급률<br>(사료 제외)</th>
+      <th class="left" style="padding-left:18px">차이 (사료용 의존)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="item">쌀</td><td>96.0</td><td>96.0</td>
+      <td><div class="diff-cell"><span class="diff-num" style="color:var(--ink-soft)">—</span></div></td>
+    </tr>
+    <tr>
+      <td class="item">서류 (감자·고구마)</td><td>93.2</td><td>102.8</td>
+      <td><div class="diff-cell"><span class="diff-num">+9.6</span><div class="diff-bar-wrap"><div class="diff-bar" style="width:36%"></div></div></div></td>
+    </tr>
+    <tr>
+      <td class="item">두류 (콩)</td><td>10.8</td><td>37.4</td>
+      <td><div class="diff-cell"><span class="diff-num" style="font-weight:700">+26.6</span><div class="diff-bar-wrap"><div class="diff-bar" style="width:100%"></div></div></div></td>
+    </tr>
+    <tr>
+      <td class="item">보리쌀</td><td>20.0</td><td>22.0</td>
+      <td><div class="diff-cell"><span class="diff-num">+2.0</span><div class="diff-bar-wrap"><div class="diff-bar" style="width:8%"></div></div></div></td>
+    </tr>
+    <tr>
+      <td class="item">옥수수</td><td>0.8</td><td>4.3</td>
+      <td><div class="diff-cell"><span class="diff-num">+3.5</span><div class="diff-bar-wrap"><div class="diff-bar" style="width:13%"></div></div></div></td>
+    </tr>
+    <tr>
+      <td class="item">밀</td><td>0.8</td><td>1.5</td>
+      <td><div class="diff-cell"><span class="diff-num">+0.7</span><div class="diff-bar-wrap"><div class="diff-bar" style="width:3%"></div></div></div></td>
+    </tr>
+    <tr class="total">
+      <td class="item">전체</td><td>21.6</td><td>47.9</td>
+      <td><div class="diff-cell"><span class="diff-num" style="font-weight:700">+26.3</span><div class="diff-bar-wrap"><div class="diff-bar" style="width:99%"></div></div></div></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="help-text">
+  <strong>두 기준의 차이가 의미하는 것:</strong> 두류(콩)는 식량자급률이 37.4%이지만, 사료용을 포함한 곡물자급률은 10.8%로 떨어집니다. 이 26.6%p의 차이가 곧 우리가 먹는 고기·계란·우유를 만들기 위한 수입 사료 곡물의 양입니다.
+</div>
+
+<!-- ========== 섹션 2 ========== -->
+<div class="section-title"><span class="num">2</span>어디에서 수입하는가?</div>
+<div class="section-sub">자급되지 않는 곡물은 주로 어느 나라에서 들여올까요? 곡물별로 수입국 분포를 지도에서 확인해 봅시다.</div>
+
+<div class="controls" id="importChips">
+  <button class="chip active" data-grain="wheat">밀</button>
+  <button class="chip" data-grain="corn">옥수수</button>
+  <button class="chip" data-grain="soybean">콩(대두)</button>
+</div>
+
+<div class="meta-line">
+  <strong id="importTitle">밀 (HS 1001)</strong>
+  <span id="importMeta">총 수입액: 약 14억 달러 (2024)</span>
+</div>
+
+<div id="importMap"></div>
+
+<div class="help-text" id="importHelp"></div>
+
+<div class="help-text" style="background:#fff8e8; border-left-color:#a87a2a;">
+  ⚠ <strong>정밀도 주의:</strong> 위 비중은 ITC Trade Map(옥수수)·USDA 「Korea Grain &amp; Feed Annual」(밀·콩) 자료에 기반한 <strong>2024년 추정 평균</strong>입니다. 정확한 연도별·세부 품목별(식용/사료용) 수치는 한국무역협회 K-stat의 HS코드별 통계로 확인이 필요합니다.
+</div>
+
+<div class="footer">
+  자료 1: 농림축산식품부 「농림축산식품주요통계」 양곡의 자급률 (1970–2024)<br>
+  자료 2: 통계청 양곡소비량조사 (1인당 쌀 소비량)<br>
+  자료 3: ITC Trade Map · OEC.world (옥수수 HS 1005, 2024)<br>
+  자료 4: USDA FAS Seoul, Grain &amp; Feed Annual Reports (밀·콩 시장점유율 추정)<br>
+  지도 타일: © OpenStreetMap, © CARTO
+</div>
+
+<script>
+// ============== 자급률 시계열 데이터 ==============
+const YEARS = [1970, 1975, 1980, 1985, 1990, 1995, 2000, 2005, 2010, 2015, 2020, 2024];
+const GRAIN_TOTAL = [80.5, 73.0, 56.0, 48.4, 43.1, 29.1, 29.7, 29.3, 27.6, 26.3, 22.4, 21.6];
+const FOOD_TOTAL  = [86.2, 79.1, 69.6, 71.6, 70.3, 55.7, 55.6, 53.4, 54.1, 53.5, 49.3, 47.9];
+
+const FOOD_BY_ITEM = {
+  '쌀':              [93.1, 94.6, 95.1, 103.3, 108.3, 91.4, 102.9, 99.4, 104.5, 101.0, 92.9, 96.0],
+  '서류 (감자·고구마)': [122.7, 133.1, 111.2, 111.1, 101.2, 108.6, 110.8, 110.0, 109.4, 103.3, 104.5, 102.8],
+  '두류 (콩)':        [92.3,  97.8, 64.3, 62.7, 64.9, 37.0, 28.2, 30.9, 32.4, 32.1, 30.4, 37.4],
+  '보리쌀':           [115.1, 96.3, 62.2, 89.6, 97.4, 67.6, 49.7, 63.2, 25.9, 23.0, 38.2, 22.0],
+  '옥수수':           [82.9,  25.7, 27.1, 15.5, 8.2,  5.0,  3.7,  3.0,  3.8,  4.1,  3.6,  4.3],
+  '밀':              [15.9,  5.8,  4.8,  0.5,  0.05, 0.5,  0.1,  0.4,  1.7,  1.2,  0.8,  1.5]
+};
+
+// 색상: 자급도 그룹 (자급↑ → 수입의존↑)
+const ITEM_COLOR = {
+  '쌀':              '#2d7a4a',  // 자급 - 진한 녹
+  '서류 (감자·고구마)': '#88b896',  // 자급 - 옅은 녹
+  '두류 (콩)':        '#c2782a',  // 중간 - 진한 호박
+  '보리쌀':           '#dba968',  // 중간 - 옅은 호박
+  '옥수수':           '#b85431',  // 수입 의존 - 진한 적갈
+  '밀':              '#d28471'   // 수입 의존 - 옅은 적갈
+};
+
+const ITEM_WIDTH = {
+  '쌀': 2.5, '서류 (감자·고구마)': 1.8,
+  '두류 (콩)': 2.5, '보리쌀': 1.8,
+  '옥수수': 2.5, '밀': 1.8
+};
+
+const trendModes = {
+  compare: {
+    multi: true, years: YEARS,
+    datasets: [
+      { label: '식량자급률 (사료 제외)', data: FOOD_TOTAL, color: '#2d7a4a', dash: [], width: 3 },
+      { label: '곡물자급률 (사료 포함)', data: GRAIN_TOTAL, color: '#b85431', dash: [6, 4], width: 3 }
+    ],
+    yLabel: '자급률 (%)',
+    fill: true,
+    help: '두 자급률 모두 1970년 이후 크게 하락했습니다. 두 선의 <strong>벌어지는 간격</strong>이 곧 사료용으로 쓰이는 수입 곡물의 비중입니다. 1970년에는 약 5%p 차이였으나 2024년에는 26%p로 벌어졌습니다.'
+  },
+  byitem: {
+    multi: true, years: YEARS,
+    datasets: Object.keys(FOOD_BY_ITEM).map(k => ({
+      label: k, data: FOOD_BY_ITEM[k],
+      color: ITEM_COLOR[k], dash: [], width: ITEM_WIDTH[k]
+    })),
+    yLabel: '식량자급률 (%)',
+    help: '색깔로 그룹을 구분했습니다. <strong style="color:#2d7a4a">녹색은 자급되는 곡물(쌀·서류)</strong>, <strong style="color:#c2782a">호박색은 부분 자급(두류·보리쌀)</strong>, <strong style="color:#b85431">적갈색은 거의 전량 수입(옥수수·밀)</strong>입니다. 두류(콩)는 1970년 92%에서 2024년 37%로 가장 극적으로 떨어졌습니다.'
+  },
+  rice: {
+    label: '1인당 쌀 소비량 (kg/년)',
+    years: [1980, 1990, 2000, 2010, 2014, 2018, 2020, 2022, 2024],
+    values: [132.4, 119.6, 93.6, 72.8, 65.1, 61.0, 57.7, 56.7, 55.8],
+    color: '#c9a236',
+    yLabel: 'kg/년',
+    help: '40여 년 사이 1인당 쌀 소비량이 절반 이하로 줄었습니다. 그 자리를 밀(빵·면)과 육류·가공식품이 채웠고, 자연스럽게 수입 곡물·수입 사료에 대한 의존이 높아졌습니다.'
+  }
+};
+
+Chart.defaults.font.family = "'Noto Sans KR', sans-serif";
+Chart.defaults.font.size = 11;
+Chart.defaults.color = '#333333';
+
+let trendChart = null;
+function renderTrendChart(mode) {
+  const d = trendModes[mode];
+  if (trendChart) trendChart.destroy();
+  let config;
+  if (d.multi) {
+    config = {
+      type: 'line',
+      data: {
+        labels: d.years,
+        datasets: d.datasets.map(ds => ({
+          label: ds.label, data: ds.data,
+          borderColor: ds.color,
+          backgroundColor: d.fill ? ds.color + '15' : 'transparent',
+          borderDash: ds.dash || [], borderWidth: ds.width || 2,
+          tension: 0, pointRadius: 3, pointHoverRadius: 6,
+          pointBackgroundColor: ds.color, pointBorderColor: ds.color, pointBorderWidth: 1,
+          fill: d.fill || false
+        }))
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { position: 'bottom', labels: { font: { size: 11, weight: '500' }, padding: 10, boxWidth: 28, boxHeight: 2 } },
+          tooltip: { backgroundColor: '#000', titleFont: { size: 11, weight: '700' }, bodyFont: { size: 11 }, padding: 8, cornerRadius: 0 }
+        },
+        scales: {
+          y: { beginAtZero: true, title: { display: true, text: d.yLabel, font: { size: 11, weight: '500' } }, grid: { color: '#eeeeee', drawTicks: false }, border: { color: '#000' } },
+          x: { title: { display: true, text: '연도', font: { size: 11, weight: '500' } }, grid: { display: false }, border: { color: '#000' } }
+        }
+      }
+    };
+  } else {
+    config = {
+      type: 'line',
+      data: {
+        labels: d.years,
+        datasets: [{
+          label: d.label, data: d.values,
+          borderColor: d.color, backgroundColor: d.color + '20',
+          borderWidth: 3, tension: 0,
+          pointRadius: 4, pointHoverRadius: 7,
+          pointBackgroundColor: d.color, pointBorderColor: d.color, fill: true
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { display: true, position: 'bottom', labels: { font: { size: 11, weight: '500' }, boxWidth: 28, boxHeight: 2 } },
+          tooltip: { backgroundColor: '#000', cornerRadius: 0, padding: 8 }
+        },
+        scales: {
+          y: { beginAtZero: true, title: { display: true, text: d.yLabel, font: { size: 11, weight: '500' } }, grid: { color: '#eeeeee', drawTicks: false }, border: { color: '#000' } },
+          x: { title: { display: true, text: '연도', font: { size: 11, weight: '500' } }, grid: { display: false }, border: { color: '#000' } }
+        }
+      }
+    };
+  }
+  trendChart = new Chart(document.getElementById('trendChart'), config);
+  document.getElementById('trendHelp').innerHTML = d.help;
+}
+
+document.querySelectorAll('#trendChips .chip').forEach(c => {
+  c.addEventListener('click', () => {
+    document.querySelectorAll('#trendChips .chip').forEach(x => x.classList.remove('active'));
+    c.classList.add('active');
+    renderTrendChart(c.dataset.mode);
+  });
+});
+renderTrendChart('compare');
+
+// ============== 수입국 지도 ==============
+const importData = {
+  wheat: {
+    title: '밀 (HS 1001) — 식용 + 사료용',
+    total: '약 14억 달러 (2024)',
+    color: '#c9986b',
+    countries: [
+      { name: '호주',       lat: -25.3, lng: 133.8, pct: 42 },
+      { name: '미국',       lat: 39.8,  lng: -98.6, pct: 30 },
+      { name: '우크라이나',  lat: 48.4,  lng: 31.2,  pct: 8 },
+      { name: '캐나다',     lat: 56.1,  lng: -106.3, pct: 7 },
+      { name: '불가리아',   lat: 42.7,  lng: 25.5,  pct: 6 },
+      { name: '러시아',     lat: 56.0,  lng: 60.0,  pct: 3 }
+    ],
+    help: '<strong>호주와 미국</strong>이 한국 밀 수입의 약 70%를 차지합니다. 식용 밀(빵·국수)은 미국·호주·캐나다, 사료용 밀은 호주·우크라이나·불가리아 의존도가 높습니다.'
+  },
+  corn: {
+    title: '옥수수 (HS 1005)',
+    total: '약 29억 달러 (2024)',
+    color: '#e8a90a',
+    countries: [
+      { name: '브라질',     lat: -14.2, lng: -51.9, pct: 28 },
+      { name: '아르헨티나',  lat: -38.4, lng: -63.6, pct: 25 },
+      { name: '미국',       lat: 39.8,  lng: -98.6, pct: 22 },
+      { name: '우크라이나',  lat: 48.4,  lng: 31.2,  pct: 9 },
+      { name: '세르비아',   lat: 44.0,  lng: 21.0,  pct: 5 },
+      { name: '루마니아',   lat: 45.9,  lng: 24.9,  pct: 4 },
+      { name: '파라과이',   lat: -23.4, lng: -58.4, pct: 3 }
+    ],
+    help: '<strong>남미 3국</strong>(브라질·아르헨티나·파라과이)이 절반 이상을 공급합니다. <strong>흑해 지역</strong>(우크라이나·세르비아·루마니아)도 중요한 공급원으로, 우크라이나 전쟁 등 지역 정세에 민감합니다.'
+  },
+  soybean: {
+    title: '콩 (HS 1201) — 식용 + 사료용 + 착유용',
+    total: '약 13억 달러 (2024)',
+    color: '#4a7c4e',
+    countries: [
+      { name: '미국',     lat: 39.8,  lng: -98.6, pct: 52 },
+      { name: '브라질',   lat: -14.2, lng: -51.9, pct: 33 },
+      { name: '캐나다',   lat: 56.1,  lng: -106.3, pct: 8 },
+      { name: '중국',     lat: 35.9,  lng: 104.2, pct: 4 }
+    ],
+    help: '<strong>미국과 브라질 두 나라가 85%</strong>를 공급합니다. 식용 콩(두부·된장)은 캐나다·중국 비중이 상대적으로 큰 편이며, 사료용 콩은 미국·브라질이 절대적입니다.'
+  }
+};
+
+const importMap = L.map('importMap', {
+  zoomControl: true, scrollWheelZoom: false, worldCopyJump: true
+}).setView([20, 30], 2);
+
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+  attribution: '© OpenStreetMap contributors © CARTO',
+  subdomains: 'abcd',
+  maxZoom: 6, minZoom: 1
+}).addTo(importMap);
+
+let mapMarkers = [];
+
+function renderMap(grain) {
+  mapMarkers.forEach(m => importMap.removeLayer(m));
+  mapMarkers = [];
+
+  const data = importData[grain];
+
+  // 한국 마커
+  const koreaMarker = L.circleMarker([37.5, 127.5], {
+    radius: 8, color: '#c25b3f', fillColor: '#c25b3f',
+    fillOpacity: 0.9, weight: 2
+  }).addTo(importMap);
+  koreaMarker.bindTooltip('대한민국 (수입)', {
+    permanent: true, direction: 'right', offset: [10, 0],
+    className: 'country-label korea-label'
+  });
+  mapMarkers.push(koreaMarker);
+
+  // 수출국 마커
+  data.countries.forEach(c => {
+    const radius = Math.sqrt(c.pct) * 4 + 4;
+    const marker = L.circleMarker([c.lat, c.lng], {
+      radius: radius, color: data.color, fillColor: data.color,
+      fillOpacity: 0.55, weight: 2
+    }).addTo(importMap);
+
+    marker.bindTooltip(`${c.name} ${c.pct}%`, {
+      permanent: true, direction: 'top',
+      offset: [0, -radius + 2], className: 'country-label'
+    });
+
+    marker.on('mouseover', function() { this.setStyle({ fillOpacity: 0.85, weight: 3 }); });
+    marker.on('mouseout', function() { this.setStyle({ fillOpacity: 0.55, weight: 2 }); });
+
+    mapMarkers.push(marker);
+  });
+
+  document.getElementById('importTitle').textContent = data.title;
+  document.getElementById('importMeta').textContent = '총 수입액: ' + data.total;
+  document.getElementById('importHelp').innerHTML = data.help;
+}
+
+document.querySelectorAll('#importChips .chip').forEach(c => {
+  c.addEventListener('click', () => {
+    document.querySelectorAll('#importChips .chip').forEach(x => x.classList.remove('active'));
+    c.classList.add('active');
+    renderMap(c.dataset.grain);
+  });
+});
+
+setTimeout(() => {
+  importMap.invalidateSize();
+  renderMap('wheat');
+}, 100);
+</script>
+
+</body>
+</html>
