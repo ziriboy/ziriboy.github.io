@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>한국의 주요 발전소 분포</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --coal:#3D3D3B;     --coal-l:#E8E8E6;
+  --nuc:#7F77DD;      --nuc-l:#EEEDFE;
+  --lng:#378ADD;      --lng-l:#E6F1FB;
+  --sol:#F59E0B;      --sol-l:#FEF3C7;
+  --wind:#639922;     --wind-l:#EAF3DE;
+  --bg:#F1F4F9; --card:#FFF; --border:#DDE3EE;
+  --text:#18243A; --muted:#6B7A99;
+}
+html,body{height:100%;overflow:hidden;font-family:'Noto Sans KR',sans-serif;color:var(--text);}
+body{background:var(--bg);display:flex;flex-direction:column;}
+
+/* HEADER */
+#hd{height:58px;flex-shrink:0;
+  background:linear-gradient(110deg,#0B2550 0%,#1255A0 55%,#1A6EC0 100%);
+  display:flex;align-items:center;padding:0 18px;gap:14px;
+  position:relative;overflow:hidden;}
+#hd::before{content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(45deg,transparent,transparent 26px,rgba(255,255,255,.025) 26px,rgba(255,255,255,.025) 27px);}
+#hd-t{font-size:15px;font-weight:900;color:#fff;position:relative;letter-spacing:-.3px;}
+#hd-s{font-size:10.5px;color:rgba(255,255,255,.6);position:relative;margin-top:1px;}
+.hbadge{font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px;position:relative;
+  border:1px solid rgba(255,255,255,.3);color:rgba(255,255,255,.85);white-space:nowrap;}
+.ml-auto{margin-left:auto;display:flex;gap:6px;flex-shrink:0;}
+
+#body{flex:1;display:flex;overflow:hidden;}
+
+/* LEFT PANEL */
+#left{width:200px;flex-shrink:0;background:var(--card);border-right:1px solid var(--border);
+  overflow-y:auto;display:flex;flex-direction:column;padding:14px 12px;}
+.panel-head{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--muted);padding:0 4px 10px;flex-shrink:0;}
+
+.fbtn{
+  width:100%;
+  padding:11px 13px;
+  border-radius:9px;
+  border:2px solid var(--border);
+  background:var(--card);
+  cursor:pointer;
+  display:flex;align-items:center;gap:10px;
+  transition:all .15s;
+  margin-bottom:7px;
+  text-align:left;
+}
+.fbtn:hover{background:#F4F7FC;}
+.fbtn.active{box-shadow:0 2px 10px rgba(18,85,160,.12);}
+.fbtn .fdot{width:14px;height:14px;border-radius:50%;flex-shrink:0;}
+.fbtn .ftext{flex:1;}
+.fbtn .ftitle{font-size:12.5px;font-weight:700;color:var(--text);line-height:1.2;}
+.fbtn .fsub{font-size:10px;color:var(--muted);margin-top:2px;}
+.fbtn.active .ftitle{color:var(--text);}
+
+/* 전체 버튼 */
+.fbtn-all{background:linear-gradient(135deg,#F4F7FC 0%,#EBF2FA 100%);}
+.fbtn-all.active{border-color:#1255A0;background:linear-gradient(135deg,#E6F0FF 0%,#D8E7FA 100%);}
+.fbtn-all .ficon{font-size:18px;}
+
+.fbtn-coal.active{border-color:var(--coal);background:var(--coal-l);}
+.fbtn-nuc.active{border-color:var(--nuc);background:var(--nuc-l);}
+.fbtn-lng.active{border-color:var(--lng);background:var(--lng-l);}
+.fbtn-sol.active{border-color:var(--sol);background:var(--sol-l);}
+.fbtn-wind.active{border-color:var(--wind);background:var(--wind-l);}
+
+.left-divider{border:none;border-top:1px solid var(--border);margin:8px 0;}
+
+.info-box{
+  margin-top:auto;
+  padding:11px 12px;
+  background:#F6F8FC;
+  border-radius:8px;
+  border-left:3px solid #1255A0;
+  font-size:10.5px;
+  line-height:1.6;
+  color:var(--muted);
+}
+.info-box strong{color:var(--text);display:block;margin-bottom:4px;font-size:11px;}
+
+/* MAP */
+#map-wrap{flex:1;position:relative;}
+#map{width:100%;height:100%;}
+
+#mo{position:absolute;top:11px;left:50%;transform:translateX(-50%);
+  background:rgba(255,255,255,.95);border-radius:10px;padding:8px 20px;
+  z-index:400;text-align:center;pointer-events:none;
+  box-shadow:0 2px 12px rgba(0,0,0,.13);white-space:nowrap;}
+#mo-main{font-size:13px;font-weight:700;}
+#mo-sub{font-size:10px;color:var(--muted);margin-top:1px;}
+
+/* 범례 */
+#mleg{position:absolute;bottom:22px;left:12px;z-index:400;
+  background:rgba(255,255,255,.95);border-radius:10px;padding:12px 16px;
+  box-shadow:0 2px 10px rgba(0,0,0,.12);font-size:10px;min-width:175px;}
+#mleg .leg-title{font-weight:700;color:var(--muted);margin-bottom:9px;
+  text-transform:uppercase;letter-spacing:.05em;font-size:10px;}
+.leg-row{display:flex;align-items:center;gap:9px;margin-bottom:6px;}
+.leg-dot{border-radius:50%;flex-shrink:0;}
+.leg-label{font-size:11px;color:var(--text);line-height:1.4;}
+.leg-size-note{font-size:9.5px;color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px solid var(--border);line-height:1.5;}
+
+#msrc{position:absolute;bottom:8px;right:10px;z-index:400;
+  font-size:9px;color:rgba(0,0,0,.4);}
+
+/* 입지 논리 배너 */
+#info-banner{
+  position:absolute;
+  top:14px;
+  left:50%;
+  transform:translateX(-50%);
+  background:rgba(255,255,255,.97);
+  border-radius:10px;
+  padding:12px 18px;
+  z-index:400;
+  box-shadow:0 2px 12px rgba(0,0,0,.13);
+  max-width:560px;
+  width:calc(100% - 60px);
+  border-left:4px solid #ccc;
+  display:none;
+}
+#info-banner.show{display:block;}
+.ib-name{
+  font-size:13px;
+  font-weight:700;
+  margin-bottom:5px;
+  color:var(--text);
+}
+.ib-desc{
+  font-size:12.5px;
+  line-height:1.6;
+  color:#444;
+  word-break:keep-all;
+}
+.leaflet-container{background:#E8EFF8;}
+.leaflet-control-zoom{border:1px solid var(--border)!important;border-radius:8px!important;overflow:hidden;}
+.leaflet-tooltip{border-radius:9px!important;border:none!important;
+  box-shadow:0 4px 16px rgba(0,0,0,.18)!important;
+  font-family:'Noto Sans KR',sans-serif!important;
+  font-size:12px!important;padding:9px 13px!important;
+  max-width:240px;line-height:1.6;}
+.tt-name{font-weight:700;font-size:13px;}
+.tt-meta{color:#666;font-size:11px;margin-top:3px;}
+.tt-cap{color:#1255A0;font-weight:700;margin-top:3px;}
+</style>
+</head>
+<body>
+
+<div id="hd">
+  <div>
+    <div id="hd-t">한국의 주요 발전소 분포</div>
+    <div id="hd-s">설비용량 100MW 이상 · 단지 단위</div>
+  </div>
+  <div class="ml-auto">
+    <span class="hbadge">31개 발전소</span>
+  </div>
+</div>
+
+<div id="body">
+  <div id="left">
+    <div class="panel-head">발전원 선택</div>
+    
+    <button class="fbtn fbtn-all active" data-type="all">
+      <span class="ficon">🌐</span>
+      <span class="ftext">
+        <span class="ftitle">전체 보기</span>
+        <span class="fsub">모든 발전소</span>
+      </span>
+    </button>
+    
+    <hr class="left-divider">
+    
+    <button class="fbtn fbtn-coal" data-type="coal">
+      <span class="fdot" style="background:#3D3D3B"></span>
+      <span class="ftext">
+        <span class="ftitle">석탄화력</span>
+        <span class="fsub">충남·강원·인천·경남</span>
+      </span>
+    </button>
+    
+    <button class="fbtn fbtn-nuc" data-type="nuc">
+      <span class="fdot" style="background:#7F77DD"></span>
+      <span class="ftext">
+        <span class="ftitle">원자력</span>
+        <span class="fsub">동남해안·전남 영광</span>
+      </span>
+    </button>
+    
+    <button class="fbtn fbtn-lng" data-type="lng">
+      <span class="fdot" style="background:#378ADD"></span>
+      <span class="ftext">
+        <span class="ftitle">LNG 복합화력</span>
+        <span class="fsub">수도권 인근</span>
+      </span>
+    </button>
+    
+    <button class="fbtn fbtn-sol" data-type="sol">
+      <span class="fdot" style="background:#F59E0B"></span>
+      <span class="ftext">
+        <span class="ftitle">태양광</span>
+        <span class="fsub">호남·새만금</span>
+      </span>
+    </button>
+    
+    <button class="fbtn fbtn-wind" data-type="wind">
+      <span class="fdot" style="background:#639922"></span>
+      <span class="ftext">
+        <span class="ftitle">풍력</span>
+        <span class="fsub">서남해·강원·제주</span>
+      </span>
+    </button>
+    
+  </div>
+  
+  <div id="map-wrap">
+    <div id="map"></div>
+    
+    <div id="info-banner">
+      <div class="ib-name"></div>
+      <div class="ib-desc"></div>
+    </div>
+    
+    <div id="mleg">
+      <div class="leg-title">범례</div>
+      <div class="leg-row">
+        <span class="leg-dot" style="width:12px;height:12px;background:#3D3D3B"></span>
+        <span class="leg-label">석탄화력</span>
+      </div>
+      <div class="leg-row">
+        <span class="leg-dot" style="width:12px;height:12px;background:#7F77DD"></span>
+        <span class="leg-label">원자력</span>
+      </div>
+      <div class="leg-row">
+        <span class="leg-dot" style="width:12px;height:12px;background:#378ADD"></span>
+        <span class="leg-label">LNG 복합화력</span>
+      </div>
+      <div class="leg-row">
+        <span class="leg-dot" style="width:12px;height:12px;background:#F59E0B"></span>
+        <span class="leg-label">태양광</span>
+      </div>
+      <div class="leg-row">
+        <span class="leg-dot" style="width:12px;height:12px;background:#639922"></span>
+        <span class="leg-label">풍력</span>
+      </div>
+      <div class="leg-size-note">
+        원 크기는 설비용량에<br>비례합니다.
+      </div>
+    </div>
+    
+    <div id="msrc">자료: 한국전력공사, 한국수력원자력, 환경운동연합 (2024~2025)</div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   발전소 데이터 (500MW 이상, 신재생은 100MW 이상)
+   ============================================================ */
+const plants = [
+  // 석탄 (9개)
+  {type:"coal", name:"태안화력",          loc:"충남 태안", lat:36.910, lng:126.230, mw:6100, op:"한국서부발전"},
+  {type:"coal", name:"당진화력",          loc:"충남 당진", lat:37.052, lng:126.521, mw:6040, op:"한국동서발전"},
+  {type:"coal", name:"보령화력",          loc:"충남 보령", lat:36.408, lng:126.488, mw:4000, op:"한국중부발전"},
+  {type:"coal", name:"신서천화력",        loc:"충남 서천", lat:36.073, lng:126.625, mw:1000, op:"한국중부발전"},
+  {type:"coal", name:"영흥화력",          loc:"인천 옹진", lat:37.245, lng:126.485, mw:5080, op:"한국남동발전"},
+  {type:"coal", name:"삼척화력",          loc:"강원 삼척", lat:37.405, lng:129.198, mw:2100, op:"삼척블루파워"},
+  {type:"coal", name:"강릉안인화력",      loc:"강원 강릉", lat:37.738, lng:129.022, mw:2080, op:"강릉에코파워"},
+  {type:"coal", name:"하동화력",          loc:"경남 하동", lat:35.001, lng:127.829, mw:4000, op:"한국남부발전"},
+  {type:"coal", name:"삼천포화력",        loc:"경남 고성", lat:34.945, lng:128.115, mw:3240, op:"한국남동발전"},
+  
+  // 원자력 (4개)
+  {type:"nuc",  name:"고리·새울원전",     loc:"부산 기장 / 울산 울주", lat:35.322, lng:129.291, mw:7570, op:"한국수력원자력"},
+  {type:"nuc",  name:"월성원전",          loc:"경북 경주", lat:35.713, lng:129.475, mw:4779, op:"한국수력원자력"},
+  {type:"nuc",  name:"한울원전",          loc:"경북 울진", lat:37.094, lng:129.385, mw:6910, op:"한국수력원자력"},
+  {type:"nuc",  name:"한빛원전",          loc:"전남 영광", lat:35.413, lng:126.418, mw:5899, op:"한국수력원자력"},
+  
+  // LNG (10개)
+  {type:"lng",  name:"인천복합",          loc:"인천 서구", lat:37.503, lng:126.626, mw:4500, op:"한국중부발전·포스코"},
+  {type:"lng",  name:"신인천복합",        loc:"인천 연수", lat:37.387, lng:126.628, mw:1800, op:"한국남부발전"},
+  {type:"lng",  name:"평택복합",          loc:"경기 평택", lat:36.967, lng:126.842, mw:2300, op:"한국서부발전"},
+  {type:"lng",  name:"분당복합",          loc:"경기 성남", lat:37.376, lng:127.124, mw:922,  op:"한국남부발전"},
+  {type:"lng",  name:"일산복합",          loc:"경기 고양", lat:37.673, lng:126.752, mw:900,  op:"한국지역난방공사"},
+  {type:"lng",  name:"안산복합",          loc:"경기 안산", lat:37.295, lng:126.792, mw:850,  op:"민간"},
+  {type:"lng",  name:"광양복합",          loc:"전남 광양", lat:34.928, lng:127.700, mw:1000, op:"포스코에너지"},
+  {type:"lng",  name:"군산복합",          loc:"전북 군산", lat:35.992, lng:126.711, mw:720,  op:"한국서부발전"},
+  {type:"lng",  name:"보령복합",          loc:"충남 보령", lat:36.413, lng:126.490, mw:1000, op:"한국중부발전"},
+  {type:"lng",  name:"율촌복합",          loc:"전남 여수", lat:34.866, lng:127.616, mw:528,  op:"민간"},
+  
+  // 태양광 (3개)
+  {type:"sol",  name:"새만금 태양광",      loc:"전북 군산", lat:35.806, lng:126.557, mw:800, op:"다수 사업자"},
+  {type:"sol",  name:"솔라시도",          loc:"전남 해남", lat:34.524, lng:126.591, mw:98,  op:"민간"},
+  {type:"sol",  name:"영암 태양광",       loc:"전남 영암", lat:34.831, lng:126.690, mw:100, op:"민간"},
+  
+  // 풍력 (5개)
+  {type:"wind", name:"영양풍력",          loc:"경북 영양", lat:36.667, lng:129.135, mw:62,  op:"민간"},
+  {type:"wind", name:"영광풍력",          loc:"전남 영광", lat:35.296, lng:126.401, mw:80,  op:"민간"},
+  {type:"wind", name:"탐라해상풍력",      loc:"제주 한경", lat:33.319, lng:126.176, mw:30,  op:"한국남동발전"},
+  {type:"wind", name:"서남해 해상풍력",    loc:"전북 부안", lat:35.660, lng:126.346, mw:60,  op:"다수(시범단지)"},
+  {type:"wind", name:"강원풍력",          loc:"강원 평창", lat:37.563, lng:128.586, mw:98,  op:"민간"},
+];
+
+const colorMap = {
+  coal: '#3D3D3B',
+  nuc:  '#7F77DD',
+  lng:  '#378ADD',
+  sol:  '#F59E0B',
+  wind: '#639922',
+};
+
+const typeLabel = {
+  coal: '석탄화력',
+  nuc:  '원자력',
+  lng:  'LNG 복합화력',
+  sol:  '태양광',
+  wind: '풍력',
+};
+
+const locationLogic = {
+  coal: '막대한 냉각수가 필요해 해안에 입지하고, 수입 석탄을 받을 항만이 가까워야 한다. 대기오염 우려로 인구 적은 지역을 선호하지만, 수도권 송전 거리도 고려된다.',
+  nuc:  '냉각수를 위해 해안에 입지하고, 사고 시 영향을 줄이기 위해 인구 밀도가 낮은 곳을 선택한다. 비상 대피 계획이 가능한 지역이어야 한다.',
+  lng:  '도시의 전력 수요지 가까이에 배치되어 송전 손실을 줄인다. 빠르게 켜고 끌 수 있어 전기 사용이 갑자기 늘 때 보조 발전 역할을 한다.',
+  sol:  '일조량이 많고 넓은 부지가 필요해 호남·새만금 등에 대규모 단지가 들어선다. 송전망이 닿는 곳이어야 한다.',
+  wind: '강한 바람이 부는 곳을 찾는다. 서남해 해상, 강원 산지, 제주가 대표적이며, 최근에는 해상 풍력으로 확장 중이다.',
+};
+
+/* ============================================================
+   LEAFLET
+   ============================================================ */
+const map = L.map('map', {
+  center: [36.3, 127.9],
+  zoom: 7,
+  zoomControl: true,
+  attributionControl: false,
+  minZoom: 6,
+  maxZoom: 11
+});
+
+L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+  subdomains: 'abcd',
+  maxZoom: 19
+}).addTo(map);
+
+// 마커 그룹
+const markerLayers = {
+  coal: L.layerGroup(),
+  nuc:  L.layerGroup(),
+  lng:  L.layerGroup(),
+  sol:  L.layerGroup(),
+  wind: L.layerGroup(),
+};
+
+// 반지름 계산 (설비용량에 비례)
+function radius(mw) {
+  return 5 + Math.sqrt(mw) / 5;
+}
+
+// 마커 생성
+plants.forEach(p => {
+  const marker = L.circleMarker([p.lat, p.lng], {
+    radius: radius(p.mw),
+    fillColor: colorMap[p.type],
+    color: '#fff',
+    weight: 1.5,
+    fillOpacity: 0.85,
+  });
+  
+  // 툴팁
+  marker.bindTooltip(`
+    <div class="tt-name">${p.name}</div>
+    <div class="tt-meta">${p.loc}</div>
+    <div class="tt-cap">${p.mw.toLocaleString()} MW</div>
+    <div class="tt-meta">${p.op}</div>
+  `, {
+    direction: 'top',
+    offset: [0, -radius(p.mw)],
+    sticky: false
+  });
+  
+  markerLayers[p.type].addLayer(marker);
+});
+
+// 초기 상태: 모든 발전원 표시
+Object.values(markerLayers).forEach(layer => layer.addTo(map));
+
+/* ============================================================
+   필터 토글
+   ============================================================ */
+const buttons = document.querySelectorAll('.fbtn');
+const banner = document.getElementById('info-banner');
+
+buttons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const type = btn.dataset.type;
+    
+    // 모든 버튼 비활성화
+    buttons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    
+    // 모든 레이어 제거
+    Object.values(markerLayers).forEach(layer => {
+      if (map.hasLayer(layer)) map.removeLayer(layer);
+    });
+    
+    if (type === 'all') {
+      // 전체 표시
+      Object.values(markerLayers).forEach(layer => layer.addTo(map));
+      banner.classList.remove('show');
+    } else {
+      // 특정 발전원만 표시
+      markerLayers[type].addTo(map);
+      
+      // 입지 논리 배너 표시
+      banner.classList.add('show');
+      banner.style.borderLeftColor = colorMap[type];
+      banner.querySelector('.ib-name').textContent = typeLabel[type];
+      banner.querySelector('.ib-desc').textContent = locationLogic[type];
+    }
+  });
+});
+</script>
+
+</body>
+</html>
