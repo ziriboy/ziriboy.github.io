@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2050 한국 에너지 믹스 설계</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #fcfcfd;
+    --surface: #ffffff;
+    --border: #e6e8eb;
+    --border-strong: #d0d4d9;
+    --text: #0a0a0a;
+    --text-2: #4a5159;
+    --text-3: #8a9099;
+    --accent: #0a0a0a;
+    --accent-light: #f4f5f6;
+    --ok: #1a7f4f;
+    --ok-bg: #e8f5ee;
+    --warn: #b06820;
+    --warn-bg: #faf0e1;
+    --danger: #b42f2f;
+    --danger-bg: #fbeaea;
+    --coal: #1a1a1a;
+    --lng: #3b6ea8;
+    --nuclear: #7c5ab6;
+    --solar: #d97f3a;
+    --wind: #4a8a4a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Pretendard', 'Noto Sans KR', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.55;
+    padding: 32px 16px;
+    -webkit-font-smoothing: antialiased;
+    font-size: 14px;
+  }
+
+  .container { max-width: 920px; margin: 0 auto; }
+
+  header {
+    margin-bottom: 18px;
+    padding: 26px 28px;
+    background: var(--text);
+    color: white;
+    border-radius: 8px;
+  }
+  header h1 {
+    font-size: 1.85rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 6px;
+    line-height: 1.2;
+  }
+  header .sub {
+    color: rgba(255,255,255,0.78);
+    font-size: 0.95rem;
+  }
+
+  /* 활동 개요 */
+  .overview {
+    background: var(--surface);
+    padding: 18px 20px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin-bottom: 16px;
+  }
+  .overview-block {
+    margin-bottom: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.88rem;
+    color: var(--text-2);
+    line-height: 1.6;
+  }
+  .overview-block:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+  .overview-block strong { color: var(--text); font-weight: 700; }
+  .overview-label {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--text-3);
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+  }
+  .source-table {
+    width: 100%;
+    margin-top: 8px;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+  }
+  .source-table th {
+    text-align: left;
+    padding: 6px 8px;
+    background: var(--accent-light);
+    font-weight: 600;
+    color: var(--text-3);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+  }
+  .source-table td {
+    padding: 7px 8px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .source-table tr:last-child td { border-bottom: none; }
+  .source-table .src-name {
+    font-weight: 700;
+    color: var(--text);
+    white-space: nowrap;
+  }
+  .source-table .src-dot {
+    display: inline-block;
+    width: 9px; height: 9px;
+    border-radius: 2px;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+  .source-table .src-pros { color: #1a7f4f; font-size: 0.8rem; }
+  .source-table .src-cons { color: #b42f2f; font-size: 0.8rem; }
+
+  .challenge {
+    background: var(--surface);
+    padding: 14px 18px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin-bottom: 16px;
+    font-size: 0.9rem;
+    color: var(--text-2);
+    line-height: 1.6;
+  }
+  .challenge strong { color: var(--text); font-weight: 600; }
+
+  .section {
+    background: var(--surface);
+    padding: 18px 20px;
+    margin-bottom: 16px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+
+  /* STEP 2 강조 */
+  .section.section-primary {
+    border: 1.5px solid var(--text);
+    background: linear-gradient(180deg, #fafafa 0%, #ffffff 100%);
+    padding: 22px 22px 20px;
+  }
+  .section.section-primary .section-num {
+    color: var(--text);
+  }
+  .section.section-primary .section-title {
+    font-size: 1.1rem;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .section-num {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--text-3);
+    letter-spacing: 0.08em;
+  }
+  .section-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+  .section-sub {
+    color: var(--text-3);
+    font-size: 0.82rem;
+    margin-left: auto;
+  }
+
+  /* 설계 영역 */
+  .design-area {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  @media (max-width: 768px) {
+    .design-area { grid-template-columns: 1fr; }
+  }
+
+  .slider-row { margin-bottom: 10px; }
+  .slider-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+  }
+  .slider-name {
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.88rem;
+  }
+  .slider-name .dot {
+    width: 10px; height: 10px;
+    border-radius: 2px;
+    display: inline-block;
+  }
+  .slider-value {
+    font-weight: 700;
+    font-size: 0.95rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .slider-row input[type="range"] {
+    width: 100%;
+    height: 4px;
+    border-radius: 2px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: var(--border);
+    outline: none;
+  }
+  .slider-row input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: 0 0 0 1px var(--border-strong);
+  }
+  .slider-row input[type="range"]::-moz-range-thumb {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    border: 2px solid white;
+  }
+  .slider-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.72rem;
+    color: var(--text-3);
+    margin-top: 3px;
+    font-variant-numeric: tabular-nums;
+  }
+  .slider-warning {
+    font-size: 0.75rem;
+    color: var(--warn);
+    margin-top: 4px;
+    padding: 4px 8px;
+    background: var(--warn-bg);
+    border-radius: 3px;
+    border-left: 2px solid var(--warn);
+  }
+  .slider-warning.danger {
+    color: var(--danger);
+    background: var(--danger-bg);
+    border-left-color: var(--danger);
+  }
+
+  .auto-balance-note {
+    margin-top: 10px;
+    padding: 8px 12px;
+    background: var(--accent-light);
+    border-radius: 4px;
+    font-size: 0.78rem;
+    color: var(--text-3);
+    text-align: center;
+  }
+
+  /* === Step 2 우측 미니 도넛 === */
+  .mini-donut {
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    margin-bottom: 10px;
+    background: white;
+  }
+  .mini-donut-title {
+    font-size: 0.78rem;
+    color: var(--text-3);
+    font-weight: 600;
+    margin-bottom: 6px;
+    letter-spacing: 0.02em;
+  }
+  .mini-donut-canvas-wrap {
+    height: 180px;
+    position: relative;
+  }
+
+  /* === 지표 위계 재배치 === */
+  /* Tier 1: 최우선 (탄소·경제) — 큰 카드 */
+  .indicator-tier-1 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .indicator.primary {
+    padding: 12px 14px;
+    border: 1.5px solid var(--text);
+    border-radius: 5px;
+    background: white;
+  }
+  .indicator.primary .indicator-title {
+    font-size: 0.8rem;
+    color: var(--text);
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .indicator.primary .indicator-value {
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.05;
+    margin-bottom: 3px;
+  }
+  .indicator.primary .indicator-value .unit {
+    font-size: 0.5em;
+    color: var(--text-3);
+    font-weight: 500;
+  }
+
+  /* Tier 2: 보조 (안정성) — 보통 카드 */
+  .indicator.secondary {
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    margin-bottom: 8px;
+  }
+  .indicator.secondary .indicator-title {
+    font-size: 0.75rem;
+    color: var(--text-2);
+    font-weight: 600;
+    margin-bottom: 3px;
+  }
+  .indicator.secondary .indicator-value {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.1;
+    margin-bottom: 2px;
+  }
+  .indicator.secondary .indicator-value .unit {
+    font-size: 0.55em;
+    color: var(--text-3);
+    font-weight: 500;
+  }
+
+  /* Tier 3: 참고 (재생에너지) — 작은 카드 */
+  .indicator.tertiary {
+    padding: 8px 12px;
+    border: 1px dashed var(--border-strong);
+    border-radius: 4px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .indicator.tertiary .indicator-title {
+    font-size: 0.72rem;
+    color: var(--text-3);
+    font-weight: 600;
+  }
+  .indicator.tertiary .indicator-value {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-2);
+    font-variant-numeric: tabular-nums;
+  }
+  .indicator.tertiary .indicator-value .unit {
+    font-size: 0.7em;
+    color: var(--text-3);
+    font-weight: 500;
+  }
+
+  /* 공통 */
+  .indicator-target { font-size: 0.72rem; color: var(--text-3); }
+  .indicator-bar {
+    background: var(--border);
+    height: 3px;
+    border-radius: 2px;
+    margin-top: 6px;
+    overflow: hidden;
+  }
+  .indicator-bar-fill {
+    height: 100%;
+    background: var(--ok);
+    transition: width 0.3s;
+  }
+  .indicator-bar-fill.warn { background: var(--warn); }
+  .indicator-bar-fill.danger { background: var(--danger); }
+  .indicator-status { font-size: 0.72rem; margin-top: 4px; font-weight: 600; }
+  .indicator-status.ok { color: var(--ok); }
+  .indicator-status.warn { color: var(--warn); }
+  .indicator-status.danger { color: var(--danger); }
+
+  .reference {
+    margin-top: 12px;
+    padding: 10px 12px;
+    background: var(--accent-light);
+    border-radius: 4px;
+    font-size: 0.8rem;
+  }
+  .reference h4 {
+    margin-bottom: 3px;
+    color: var(--text);
+    font-size: 0.78rem;
+    font-weight: 600;
+  }
+  .reference .note { color: var(--text-3); margin-bottom: 6px; font-size: 0.72rem; }
+  .reference-mode {
+    background: #fff8e1;
+    border: 1px solid #f5d76e;
+    padding: 6px 10px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  .mode-badge {
+    font-size: 0.78rem;
+    color: #7c5800;
+    font-weight: 600;
+  }
+  .ref-btn {
+    background: white;
+    border: 1px solid var(--border-strong);
+    padding: 4px 9px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 0.75rem;
+    margin-right: 3px;
+    margin-top: 3px;
+    color: var(--text-2);
+    font-weight: 500;
+    transition: all 0.1s;
+  }
+  .ref-btn:hover:not(:disabled) {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+  }
+  .ref-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  .ref-btn-gov {
+    background: var(--text);
+    color: white;
+    border-color: var(--text);
+  }
+  .ref-btn-gov:hover:not(:disabled) {
+    background: #2c2c2c;
+  }
+  .ref-btn-mine:not(:disabled) {
+    background: #1a7f4f;
+    color: white;
+    border-color: #1a7f4f;
+    font-weight: 600;
+  }
+  .ref-btn-mine:not(:disabled):hover {
+    background: #166642;
+  }
+
+  /* 탐구 질문 */
+  .reflection-q { margin-bottom: 12px; }
+  .reflection-q label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: var(--text);
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+  .reflection-help {
+    font-size: 0.78rem;
+    color: var(--text-2);
+    background: var(--accent-light);
+    padding: 7px 10px;
+    border-radius: 4px;
+    margin-bottom: 6px;
+    line-height: 1.6;
+  }
+  .reflection-help strong {
+    color: var(--text);
+    font-weight: 700;
+  }
+  .reflection-q textarea {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 0.85rem;
+    resize: vertical;
+    min-height: 50px;
+    background: var(--bg);
+    line-height: 1.5;
+    color: var(--text);
+  }
+  .reflection-q textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: white;
+  }
+
+  .btn {
+    padding: 8px 18px;
+    border: 1px solid var(--accent);
+    border-radius: 4px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    font-weight: 600;
+    background: var(--accent);
+    color: white;
+    font-family: inherit;
+  }
+  .btn:hover { background: var(--text); }
+  .btn-row { margin-top: 14px; text-align: center; }
+
+  .color-coal { background: var(--coal); }
+  .color-lng { background: var(--lng); }
+  .color-nuclear { background: var(--nuclear); }
+  .color-solar { background: var(--solar); }
+  .color-wind { background: var(--wind); }
+
+  @media print {
+    body { background: white; padding: 0; font-size: 12pt; }
+    .btn-row, .reference { display: none; }
+
+    /* 섹션 전체는 페이지 넘김 허용 (답안이 길어질 수 있음) */
+    .section { break-inside: auto; border: 1px solid var(--border); }
+
+    /* 개별 질문 단위로는 잘리지 않게 */
+    .reflection-q {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    /* 답안 textarea: 내용 전체가 보이도록 */
+    .reflection-q textarea {
+      height: auto !important;
+      min-height: auto !important;
+      overflow: visible !important;
+      white-space: pre-wrap !important;
+      word-wrap: break-word !important;
+      border: 1px solid #999 !important;
+      background: white !important;
+      color: black !important;
+      page-break-inside: avoid;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1>2050 한국 에너지 믹스 설계</h1>
+    <p class="sub">당신이 한국의 에너지 정책 결정권자라면, 어떤 에너지 믹스를 선택할 것인가?</p>
+  </header>
+
+  <!-- 활동 개요 -->
+  <div class="overview">
+
+    <div class="overview-block">
+      <div class="overview-label">🎯 목표</div>
+      한국은 <strong>2050년까지 탄소중립</strong>을 달성해야 한다. 발전 부문의 탄소 배출을 0에 가깝게(50 g/kWh 이하로) 줄이는 것이 핵심이다. 그러나 AI·반도체·전기차로 인해 <strong>전력 수요는 현재의 약 2배(1,200 TWh)</strong>로 늘어날 전망이다.
+    </div>
+
+    <div class="overview-block">
+      <div class="overview-label">👤 당신의 역할</div>
+      당신은 한국의 에너지 정책 결정권자다. 아래 5가지 발전 방식의 비율을 조정해, <strong>탄소를 적게 배출하고(친환경)</strong>, <strong>경제적으로 운영하며(요금 안정)</strong>, <strong>안정적으로 전력을 공급하는(정전 없음)</strong> 2050년 에너지 믹스를 설계해 보자.
+    </div>
+
+    <div class="overview-block">
+      <div class="overview-label">⚡ 발전 방식 5가지</div>
+      <table class="source-table">
+        <thead>
+          <tr>
+            <th>방식</th>
+            <th>특징</th>
+            <th>장점</th>
+            <th>단점</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="src-name"><span class="src-dot color-coal"></span>석탄</td>
+            <td>화력 (연료 연소)</td>
+            <td class="src-pros">24시간 안정 공급</td>
+            <td class="src-cons">탄소 배출 최대</td>
+          </tr>
+          <tr>
+            <td class="src-name"><span class="src-dot color-lng"></span>LNG</td>
+            <td>화력 (가스)</td>
+            <td class="src-pros">출력 조절 빠름</td>
+            <td class="src-cons">탄소 배출, 연료 가격 변동</td>
+          </tr>
+          <tr>
+            <td class="src-name"><span class="src-dot color-nuclear"></span>원자력</td>
+            <td>핵분열</td>
+            <td class="src-pros">저탄소·저비용·안정</td>
+            <td class="src-cons">사고·폐기물 부담</td>
+          </tr>
+          <tr>
+            <td class="src-name"><span class="src-dot color-solar"></span>태양광</td>
+            <td>재생 (햇빛)</td>
+            <td class="src-pros">무탄소·연료비 없음</td>
+            <td class="src-cons">간헐성·넓은 부지</td>
+          </tr>
+          <tr>
+            <td class="src-name"><span class="src-dot color-wind"></span>풍력</td>
+            <td>재생 (바람)</td>
+            <td class="src-pros">무탄소·연료비 없음</td>
+            <td class="src-cons">간헐성·소음·갈등</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="overview-block">
+      <div class="overview-label">📊 활동 방식</div>
+      아래 슬라이더는 <strong>2050년 한국이 생산해야 할 전체 전력(1,200 TWh)</strong>을 기준으로 한다. 각 발전 방식의 <strong>비율(%)</strong>을 조정하면, 다른 발전원은 자동으로 조정되어 <strong>합계가 항상 100%</strong>를 유지한다. 슬라이더를 움직이면 우측 패널에서 탄소 배출량·평균 단가·전력 안정성이 실시간으로 변한다.
+    </div>
+
+  </div>
+
+  <!-- 메인 활동: 에너지 믹스 설계 -->
+  <div class="section section-primary">
+    <div class="section-header">
+      <span class="section-title">⚡ 에너지 믹스 설계</span>
+      <span class="section-sub">합계 항상 100% 자동 유지</span>
+    </div>
+
+    <div class="design-area">
+      <div class="sliders">
+        <div class="slider-row">
+          <div class="slider-header">
+            <span class="slider-name"><span class="dot color-coal"></span> 석탄</span>
+            <span class="slider-value"><span id="val-coal">29</span>%</span>
+          </div>
+          <input type="range" min="0" max="100" value="29" id="slider-coal" oninput="onSliderChangeWithModeReset('coal')">
+          <div class="slider-info">
+            <span>현재 29%</span><span>118원 · 820g</span>
+          </div>
+          <div class="slider-warning" id="warn-coal" style="display:none;"></div>
+        </div>
+
+        <div class="slider-row">
+          <div class="slider-header">
+            <span class="slider-name"><span class="dot color-lng"></span> LNG</span>
+            <span class="slider-value"><span id="val-lng">27</span>%</span>
+          </div>
+          <input type="range" min="0" max="100" value="27" id="slider-lng" oninput="onSliderChangeWithModeReset('lng')">
+          <div class="slider-info">
+            <span>현재 27%</span><span>136원 · 490g</span>
+          </div>
+          <div class="slider-warning" id="warn-lng" style="display:none;"></div>
+        </div>
+
+        <div class="slider-row">
+          <div class="slider-header">
+            <span class="slider-name"><span class="dot color-nuclear"></span> 원자력</span>
+            <span class="slider-value"><span id="val-nuclear">31</span>%</span>
+          </div>
+          <input type="range" min="0" max="100" value="31" id="slider-nuclear" oninput="onSliderChangeWithModeReset('nuclear')">
+          <div class="slider-info">
+            <span>현재 31%</span><span>66원 · 12g</span>
+          </div>
+          <div class="slider-warning" id="warn-nuclear" style="display:none;"></div>
+        </div>
+
+        <div class="slider-row">
+          <div class="slider-header">
+            <span class="slider-name"><span class="dot color-solar"></span> 태양광</span>
+            <span class="slider-value"><span id="val-solar">11</span>%</span>
+          </div>
+          <input type="range" min="0" max="100" value="11" id="slider-solar" oninput="onSliderChangeWithModeReset('solar')">
+          <div class="slider-info">
+            <span>현재 11%</span><span>96원 · 41g</span>
+          </div>
+          <div class="slider-warning" id="warn-solar" style="display:none;"></div>
+        </div>
+
+        <div class="slider-row">
+          <div class="slider-header">
+            <span class="slider-name"><span class="dot color-wind"></span> 풍력</span>
+            <span class="slider-value"><span id="val-wind">2</span>%</span>
+          </div>
+          <input type="range" min="0" max="100" value="2" id="slider-wind" oninput="onSliderChangeWithModeReset('wind')">
+          <div class="slider-info">
+            <span>현재 2%</span><span>93원 · 11g</span>
+          </div>
+          <div class="slider-warning" id="warn-wind" style="display:none;"></div>
+        </div>
+
+        <div class="auto-balance-note">
+          한 슬라이더를 움직이면 다른 발전원이 자동으로 조정되어 합계 100%를 유지합니다.
+        </div>
+
+        <div class="reference">
+          <div class="reference-mode" id="referenceMode" style="display:none;">
+            <span class="mode-badge">📋 정부 2050 시나리오 (A안) 보기 중</span>
+          </div>
+          <h4>시나리오 비교</h4>
+          <div class="note">정부안 버튼을 누르면 내 안은 자동으로 저장됩니다. "내 안으로 돌아가기"로 복원할 수 있습니다.</div>
+          <button class="ref-btn ref-btn-gov" onclick="loadGovScenario()">📋 정부 2050 시나리오 보기</button>
+          <button class="ref-btn ref-btn-mine" id="restoreBtn" onclick="restoreMyScenario()" disabled>↩ 내 안으로 돌아가기</button>
+          <button class="ref-btn" onclick="loadScenario('current')">2024 현재</button>
+        </div>
+      </div>
+
+      <!-- 지표 패널 — 도넛 + 위계 재배치 -->
+      <div class="indicators">
+
+        <!-- 미니 도넛 차트 — 내가 만든 믹스 -->
+        <div class="mini-donut">
+          <div class="mini-donut-title">나의 에너지 믹스</div>
+          <div class="mini-donut-canvas-wrap">
+            <canvas id="miniDonut"></canvas>
+          </div>
+        </div>
+
+        <!-- Tier 1: 탄소 + 경제 (가장 크게) -->
+        <div class="indicator-tier-1">
+          <div class="indicator primary">
+            <div class="indicator-title">📉 탄소 배출</div>
+            <div class="indicator-value"><span id="ind-carbon">0</span> <span class="unit">g/kWh</span></div>
+            <div class="indicator-target">목표 50 이하 · 현재 ≈ 400</div>
+            <div class="indicator-bar"><div class="indicator-bar-fill" id="bar-carbon"></div></div>
+            <div class="indicator-status" id="status-carbon"></div>
+          </div>
+          <div class="indicator primary">
+            <div class="indicator-title">💰 평균 단가</div>
+            <div class="indicator-value"><span id="ind-cost">0</span> <span class="unit">원/kWh</span></div>
+            <div class="indicator-target">현재 ≈ 95원</div>
+            <div class="indicator-bar"><div class="indicator-bar-fill" id="bar-cost"></div></div>
+            <div class="indicator-status" id="status-cost"></div>
+          </div>
+        </div>
+
+        <!-- Tier 2: 안정성 (중간) -->
+        <div class="indicator secondary">
+          <div class="indicator-title">📊 전력 안정성</div>
+          <div class="indicator-value"><span id="ind-stability">0</span><span class="unit">%</span></div>
+          <div class="indicator-target">기저부하+조절전원 ≥ 30%</div>
+          <div class="indicator-bar"><div class="indicator-bar-fill" id="bar-stability"></div></div>
+          <div class="indicator-status" id="status-stability"></div>
+        </div>
+
+        <!-- Tier 3: 재생에너지 (참고, 작게) -->
+        <div class="indicator tertiary">
+          <div>
+            <div class="indicator-title">🌱 재생에너지 비중</div>
+            <div class="indicator-target" style="margin-top:2px;">정부 2050안 60~70%</div>
+          </div>
+          <div class="indicator-value"><span id="ind-renewable">0</span><span class="unit">%</span></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 탐구 질문 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">🔍 탐구 질문</span>
+    </div>
+
+    <div class="reflection-q">
+      <label>1. 나의 시나리오는 탄소중립 목표(50 g/kWh 이하)를 달성했는가? 그렇지 못했다면 그 이유는 무엇인가?</label>
+      <textarea placeholder="자신의 탄소 배출량을 보고 답해 보자."></textarea>
+    </div>
+
+    <div class="reflection-q">
+      <label>2. 지금(2024년)과 비교했을 때, 나의 시나리오에서 가장 크게 변화한 부분은 무엇인가?</label>
+      <textarea placeholder="어떤 발전원이 크게 늘었고, 어떤 발전원이 크게 줄었는가?"></textarea>
+    </div>
+
+    <div class="reflection-q">
+      <label>3. 나의 시나리오에서 가장 중요하게 고려한 가치는 무엇이며, 그 이유는?</label>
+      <div class="reflection-help">
+        <strong>환경</strong> — 탄소 배출을 줄여 기후 위기에 대응 ·
+        <strong>안정</strong> — 24시간 정전 없는 전력 공급 ·
+        <strong>경제</strong> — 전기 요금 안정 (가정·산업 부담) ·
+        <strong>사회</strong> — 발전소 입지로 인한 주민 갈등 최소화
+      </div>
+      <textarea placeholder="네 가지 가치 중 우선시한 것과 그 이유를 적어 보자."></textarea>
+    </div>
+
+    <div class="reflection-q">
+      <label>4. 나의 안을 추진하면 어떤 문제가 예상되는가?</label>
+      <textarea placeholder="기술적·경제적·사회적 측면에서 자유롭게 적어 보자."></textarea>
+    </div>
+
+    <div class="reflection-q">
+      <label>5. <strong>정부 2050 시나리오</strong> 버튼을 눌러 비교해 보자. 나의 시나리오와 정부안의 가장 큰 차이는 무엇인가? 어느 안이 더 합리적이라고 생각하는가?</label>
+      <textarea placeholder="비중·지표·실현 가능성 등의 측면에서 비교해 보자."></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn" onclick="window.print()">인쇄하기</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const SOURCES = ['coal', 'lng', 'nuclear', 'solar', 'wind'];
+const SOURCE_NAMES = { coal: '석탄', lng: 'LNG', nuclear: '원자력', solar: '태양광', wind: '풍력' };
+const SOURCE_COLORS = {
+  coal: '#1a1a1a', lng: '#3b6ea8', nuclear: '#7c5ab6',
+  solar: '#d97f3a', wind: '#4a8a4a'
+};
+const COST = { coal: 118, lng: 136, nuclear: 66, solar: 96, wind: 93 };
+const CARBON = { coal: 820, lng: 490, nuclear: 12, solar: 41, wind: 11 };
+const LIMITS = { coal: 28.7, lng: 30, nuclear: 25, solar: 50, wind: 30 };
+const SCENARIOS = {
+  government: { coal: 0, lng: 0, nuclear: 7, solar: 48, wind: 45 },
+  current: { coal: 29, lng: 27, nuclear: 31, solar: 11, wind: 2 }
+};
+
+let miniDonutChart = null;
+let isBalancing = false; // 자동 조정 중 재귀 방지
+
+// === 슬라이더 자동 조정 (합계 100% 유지) ===
+function onSliderChange(changedSource) {
+  if (isBalancing) return;
+  isBalancing = true;
+
+  const newVal = parseInt(document.getElementById(`slider-${changedSource}`).value);
+
+  // 다른 발전원들의 현재 값
+  const others = SOURCES.filter(s => s !== changedSource);
+  const otherVals = {};
+  others.forEach(s => { otherVals[s] = parseInt(document.getElementById(`slider-${s}`).value); });
+  const otherTotal = others.reduce((sum, s) => sum + otherVals[s], 0);
+
+  // 변경된 슬라이더 외의 합계가 (100 - newVal) 이 되어야 함
+  const targetOtherTotal = 100 - newVal;
+
+  if (otherTotal === 0) {
+    // 다른 슬라이더가 모두 0인 경우 — 균등 분배
+    const each = Math.floor(targetOtherTotal / others.length);
+    let remainder = targetOtherTotal - each * others.length;
+    others.forEach((s, i) => {
+      document.getElementById(`slider-${s}`).value = each + (i < remainder ? 1 : 0);
+    });
+  } else {
+    // 비례적으로 조정
+    let adjustedTotal = 0;
+    const adjustedVals = {};
+    others.forEach(s => {
+      const adjusted = Math.round((otherVals[s] / otherTotal) * targetOtherTotal);
+      adjustedVals[s] = adjusted;
+      adjustedTotal += adjusted;
+    });
+    // 반올림 오차 보정
+    let diff = targetOtherTotal - adjustedTotal;
+    if (diff !== 0) {
+      // 가장 큰 값에 차이를 더해줌
+      const largest = others.reduce((a, b) => adjustedVals[a] > adjustedVals[b] ? a : b);
+      adjustedVals[largest] += diff;
+    }
+    // 음수 방지
+    others.forEach(s => {
+      if (adjustedVals[s] < 0) adjustedVals[s] = 0;
+      document.getElementById(`slider-${s}`).value = adjustedVals[s];
+    });
+  }
+
+  isBalancing = false;
+  updateAll();
+}
+
+// === 슬라이더 값 ===
+function getValues() {
+  const vals = {};
+  SOURCES.forEach(s => { vals[s] = parseInt(document.getElementById(`slider-${s}`).value); });
+  return vals;
+}
+
+function setValues(vals) {
+  isBalancing = true;
+  SOURCES.forEach(s => {
+    document.getElementById(`slider-${s}`).value = vals[s];
+    document.getElementById(`val-${s}`).textContent = vals[s];
+  });
+  isBalancing = false;
+  updateAll();
+}
+
+function updateAll() {
+  const vals = getValues();
+  SOURCES.forEach(s => {
+    document.getElementById(`val-${s}`).textContent = vals[s];
+  });
+
+  const total = SOURCES.reduce((sum, s) => sum + vals[s], 0);
+  // 항상 100이지만 안전을 위해 분모 계산
+  const denom = total > 0 ? total : 100;
+
+  let carbon = 0, cost = 0;
+  SOURCES.forEach(s => {
+    carbon += vals[s] * CARBON[s];
+    cost += vals[s] * COST[s];
+  });
+  carbon = carbon / denom;
+  cost = cost / denom;
+  const stability = vals.coal + vals.nuclear + vals.lng;
+  const renewable = vals.solar + vals.wind;
+
+  setIndicator('carbon', carbon.toFixed(0), carbon, 50, 400, 'low');
+  setIndicator('cost', cost.toFixed(0), cost, 95, 150, 'mid');
+  setIndicator('stability', stability, stability, 30, 0, 'high');
+  // 재생에너지는 단순 표시 (참고용)
+  document.getElementById('ind-renewable').textContent = renewable;
+
+  checkWarnings(vals);
+  updateResultChart(vals);
+}
+
+function setIndicator(name, displayVal, val, target, max, direction) {
+  document.getElementById(`ind-${name}`).textContent = displayVal;
+  const bar = document.getElementById(`bar-${name}`);
+  const status = document.getElementById(`status-${name}`);
+
+  let pct, statusClass, statusText;
+  if (direction === 'low') {
+    // 낮을수록 좋음 (탄소)
+    pct = Math.max(0, Math.min(100, (1 - val / max) * 100));
+    if (val <= target) { statusClass = 'ok'; statusText = '✓ 탄소중립 달성'; }
+    else if (val <= target * 3) { statusClass = 'warn'; statusText = '⚠ 목표 근접 (감축 필요)'; }
+    else { statusClass = 'danger'; statusText = '✗ 탄소 과다'; }
+  } else if (direction === 'high') {
+    // 높을수록 좋음 (안정성)
+    pct = Math.min(100, (val / target) * 100);
+    if (val >= target) { statusClass = 'ok'; statusText = '✓ 안정 확보'; }
+    else if (val >= target * 0.6) { statusClass = 'warn'; statusText = '⚠ 안정 부족'; }
+    else { statusClass = 'danger'; statusText = '✗ 정전 위험'; }
+  } else {
+    // 적정 범위 (단가)
+    pct = Math.max(0, Math.min(100, ((max - val) / (max - target)) * 100));
+    if (val <= target * 1.2) { statusClass = 'ok'; statusText = '✓ 요금 안정'; }
+    else if (val <= max) { statusClass = 'warn'; statusText = '⚠ 요금 인상 압력'; }
+    else { statusClass = 'danger'; statusText = '✗ 요금 부담 큼'; }
+  }
+  bar.style.width = pct + '%';
+  bar.className = 'indicator-bar-fill' + (statusClass === 'ok' ? '' : ' ' + statusClass);
+  status.className = 'indicator-status ' + statusClass;
+  status.textContent = statusText;
+}
+
+function checkWarnings(vals) {
+  setWarn('coal', vals.coal > 28.7, '석탄은 현재(28.7%) 이상 늘릴 수 없습니다. 탄소중립에 역행.', 'danger');
+  setWarn('lng', vals.lng > LIMITS.lng, `LNG ${LIMITS.lng}% 초과: 가스관 인프라 한계, 탄소 배출 증가`);
+  setWarn('nuclear', vals.nuclear > LIMITS.nuclear, `원자력 ${LIMITS.nuclear}% 초과: 신규 부지 한계, 폐기물 처분장 문제`);
+  setWarn('solar', vals.solar > LIMITS.solar, `태양광 ${LIMITS.solar}% 초과: 농지 전용·산림 훼손 필요`);
+  setWarn('wind', vals.wind > LIMITS.wind, `풍력 ${LIMITS.wind}% 초과: 해상풍력 대폭 확대, 어민·환경 갈등`);
+}
+
+function setWarn(name, condition, msg, level) {
+  const el = document.getElementById(`warn-${name}`);
+  if (condition) {
+    el.style.display = 'block';
+    el.textContent = msg;
+    el.className = 'slider-warning' + (level === 'danger' ? ' danger' : '');
+  } else {
+    el.style.display = 'none';
+  }
+}
+
+function loadScenario(name) { setValues({ ...SCENARIOS[name] }); }
+
+// === 정부안 보기 / 내 안 복원 (자동 백업) ===
+let savedMyScenario = null;
+let isGovMode = false;
+
+function loadGovScenario() {
+  if (!isGovMode) {
+    // 현재 슬라이더 값을 자동 저장
+    savedMyScenario = getValues();
+    isGovMode = true;
+    // 정부안 적용
+    setValues({ ...SCENARIOS.government });
+    // UI 업데이트
+    document.getElementById('referenceMode').style.display = 'block';
+    document.getElementById('restoreBtn').disabled = false;
+  } else {
+    // 이미 정부안 보기 중이면 다시 누르면 그대로 유지 (또는 다시 적용)
+    setValues({ ...SCENARIOS.government });
+  }
+}
+
+function restoreMyScenario() {
+  if (savedMyScenario) {
+    setValues({ ...savedMyScenario });
+    isGovMode = false;
+    document.getElementById('referenceMode').style.display = 'none';
+    document.getElementById('restoreBtn').disabled = true;
+  }
+}
+
+// 슬라이더를 직접 움직이면 정부안 모드 해제
+function onSliderChangeWithModeReset(changedSource) {
+  if (isGovMode) {
+    // 사용자가 슬라이더를 직접 만지면 정부안 모드를 해제
+    isGovMode = false;
+    savedMyScenario = null; // 새 시나리오를 만드는 것으로 간주
+    document.getElementById('referenceMode').style.display = 'none';
+    document.getElementById('restoreBtn').disabled = true;
+  }
+  onSliderChange(changedSource);
+}
+
+function updateResultChart(vals) {
+  const ctx = document.getElementById('miniDonut').getContext('2d');
+  const labels = SOURCES.map(s => SOURCE_NAMES[s]);
+  const data = SOURCES.map(s => vals[s]);
+  const bg = SOURCES.map(s => SOURCE_COLORS[s]);
+
+  if (miniDonutChart) {
+    miniDonutChart.data.datasets[0].data = data;
+    miniDonutChart.update();
+  } else {
+    miniDonutChart = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: labels,
+        datasets: [{ data: data, backgroundColor: bg, borderWidth: 1.5, borderColor: '#fff' }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'right',
+            labels: {
+              font: { size: 11 },
+              padding: 6,
+              color: '#0a0a0a',
+              boxWidth: 10,
+              generateLabels: function(chart) {
+                const data = chart.data;
+                return data.labels.map((label, i) => ({
+                  text: `${label} ${data.datasets[0].data[i]}%`,
+                  fillStyle: data.datasets[0].backgroundColor[i],
+                  strokeStyle: data.datasets[0].backgroundColor[i],
+                  hidden: false,
+                  index: i
+                }));
+              }
+            }
+          },
+          tooltip: {
+            callbacks: { label: (ctx) => `${ctx.label}: ${ctx.raw}%` }
+          }
+        }
+      }
+    });
+  }
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  updateAll();
+
+  // === 답안 textarea 자동 높이 조정 ===
+  // 화면에서는 입력 내용에 맞춰 박스가 자동으로 늘어나고,
+  // 인쇄/PDF 저장 시에도 내용이 잘리지 않도록 함.
+  const autoResize = (el) => {
+    el.style.height = 'auto';
+    el.style.height = (el.scrollHeight + 2) + 'px';
+  };
+
+  document.querySelectorAll('.reflection-q textarea').forEach(t => {
+    t.addEventListener('input', () => autoResize(t));
+    // 페이지 로드 시 초기 높이 조정 (저장된 값이 있는 경우 대비)
+    autoResize(t);
+  });
+
+  // 인쇄 직전에 모든 textarea 높이를 다시 조정 (안전장치)
+  window.addEventListener('beforeprint', () => {
+    document.querySelectorAll('.reflection-q textarea').forEach(autoResize);
+  });
+});
+</script>
+</body>
+</html>
