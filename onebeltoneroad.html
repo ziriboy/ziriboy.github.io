@@ -1,0 +1,2704 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>동아시아 지정학 — 일대일로와 쿼드</title>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-polylinedecorator@1.6.0/dist/leaflet.polylineDecorator.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #f4f1ea;
+  --panel-bg: #fbfaf6;
+  --text: #2a2825;
+  --text-muted: #6b6660;
+  --border: #d8d2c4;
+  --border-strong: #b8b0a0;
+  --accent: #8b1c2b;
+  --accent-light: #fef0f0;
+
+  /* Existing — very muted, single tonal family */
+  --ex-line:   #aaa49b;
+  --ex-rail:   #aaa49b;
+  --ex-road:   #b5a995;
+  --ex-gas:    #92a5b8;
+  --ex-oil:    #b09a85;
+  --ex-port:   #8a8480;
+
+  /* BRI additions — saturated */
+  --new-rail: #c8102e;
+  --new-road: #d97757;
+  --new-gas:  #d4a017;
+  --new-oil:  #6b5020;
+  --bri-port: #8b1c2b;
+  --maritime: #4a7a5c;
+  --pearl: #7a3a8b;
+
+  --gasfield: #c89010;
+  --oilfield: #5a3a1a;
+  --chokepoint: #c54a25;
+
+  --c-cmrec:  #a8784e;
+  --c-nelb:   #c8102e;
+  --c-ccwaec: #c54a25;
+  --c-cpec:   #8b1c2b;
+  --c-bcim:   #6a4a8b;
+  --c-cicpec: #4a8a4a;
+  --c-maritime: #4a7a5c;
+  --c-pearls: #7a3a8b;
+
+  --target-color: #c8102e;
+  --visited-color: #4a8a4a;
+
+  --shadow: 0 1px 2px rgba(0,0,0,.04), 0 4px 14px rgba(0,0,0,.06);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+
+body {
+  font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  overflow: hidden;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.app { display: grid; grid-template-rows: auto auto 1fr; height: 100vh; }
+
+.header {
+  background: var(--panel-bg);
+  border-bottom: 1px solid var(--border);
+  padding: 13px 28px 11px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand h1 {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.header-meta { font-size: 11px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
+.header-right { display: flex; align-items: center; gap: 12px; }
+.btn-header {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 7px 14px;
+  background: var(--accent);
+  color: white;
+  border: 1px solid var(--accent);
+  border-radius: 3px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all .12s;
+}
+.btn-header:hover { background: #6b0c1c; border-color: #6b0c1c; }
+
+.main {
+  display: grid;
+  grid-template-columns: 280px 1fr 400px;
+  height: 100%;
+  overflow: hidden;
+}
+
+.panel {
+  background: var(--panel-bg);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  padding: 16px 16px 24px;
+}
+
+.panel.right { border-right: none; border-left: 1px solid var(--border); }
+
+#map { height: 100%; background: #eeeae0; }
+
+.panel-title {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 9px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+
+.panel-section { margin-bottom: 20px; }
+
+/* ─── Route cards ─── */
+.route-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--c-color);
+  border-radius: 0 3px 3px 0;
+  padding: 9px 11px 10px;
+  cursor: pointer;
+  margin-bottom: 6px;
+  transition: all .12s;
+  user-select: none;
+  position: relative;
+}
+.route-card:hover { border-color: var(--border-strong); border-left-color: var(--c-color); }
+.route-card.on {
+  background: var(--c-bg);
+  border-color: var(--c-color);
+  border-left-color: var(--c-color);
+  box-shadow: inset 0 0 0 1px var(--c-color);
+}
+.route-card.completed {
+  background: var(--c-bg);
+}
+.route-card.completed::after {
+  content: '✓';
+  position: absolute;
+  top: 6px;
+  right: 30px;
+  font-size: 10px;
+  color: var(--visited-color);
+  font-weight: 700;
+}
+.rc-head { display: flex; align-items: center; gap: 7px; }
+.rc-icon { font-size: 13px; width: 18px; text-align: center; flex-shrink: 0; }
+.rc-name {
+  font-family: 'Noto Serif KR', serif;
+  font-weight: 700;
+  font-size: 12.5px;
+  color: var(--text);
+  line-height: 1.25;
+  flex: 1;
+}
+.rc-inquiry-badge {
+  font-size: 9px;
+  background: #d4a017;
+  color: white;
+  padding: 1.5px 5px;
+  border-radius: 8px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+.rc-build-badge {
+  font-size: 9px;
+  background: var(--accent);
+  color: white;
+  padding: 1.5px 5px;
+  border-radius: 8px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  flex-shrink: 0;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+.rc-toggle {
+  width: 22px; height: 12px;
+  background: var(--border-strong);
+  border-radius: 6px;
+  position: relative;
+  flex-shrink: 0;
+  transition: background .15s;
+}
+.rc-toggle::after {
+  content: ''; position: absolute; top: 2px; left: 2px;
+  width: 8px; height: 8px; background: white; border-radius: 50%;
+  transition: left .15s;
+}
+.route-card.on .rc-toggle { background: var(--c-color); }
+.route-card.on .rc-toggle::after { left: 12px; }
+.rc-short {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  margin-top: 3px;
+  margin-left: 25px;
+  line-height: 1.35;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.route-card[data-id="cmrec"]    { --c-color: var(--c-cmrec);    --c-bg: #f6efe7; }
+.route-card[data-id="nelb"]     { --c-color: var(--c-nelb);     --c-bg: #fdf0f3; }
+.route-card[data-id="ccwaec"]   { --c-color: var(--c-ccwaec);   --c-bg: #fbeee8; }
+.route-card[data-id="cpec"]     { --c-color: var(--c-cpec);     --c-bg: #fbeef0; }
+.route-card[data-id="bcim"]     { --c-color: var(--c-bcim);     --c-bg: #f1edf4; }
+.route-card[data-id="cicpec"]   { --c-color: var(--c-cicpec);   --c-bg: #eef5ee; }
+.route-card[data-id="maritime"] { --c-color: var(--c-maritime); --c-bg: #eaf3ee; }
+.route-card[data-id="pearls"]   { --c-color: var(--c-pearls);   --c-bg: #f4edf6; }
+
+.divider { height: 1px; background: var(--border); margin: 9px 0; }
+
+/* ─── Sub-toggle buttons ─── */
+.sub-toggles { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 5px; }
+
+.sub-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 9px;
+  background: white;
+  border: 1px solid var(--border-strong);
+  border-radius: 14px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 11px;
+  color: var(--text-muted);
+  transition: all .12s;
+  user-select: none;
+}
+.sub-toggle-btn:hover { background: var(--bg); }
+.sub-toggle-btn.on {
+  background: var(--sub-color);
+  border-color: var(--sub-color);
+  color: white;
+}
+.sub-toggle-btn[data-type="rail"]   { --sub-color: var(--new-rail); }
+.sub-toggle-btn[data-type="road"]   { --sub-color: var(--new-road); }
+.sub-toggle-btn[data-type="gas"]    { --sub-color: #b88a0a; }
+.sub-toggle-btn[data-type="oil"]    { --sub-color: var(--new-oil); }
+.sub-toggle-btn[data-type="ports"]  { --sub-color: var(--bri-port); }
+
+.sub-count {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px;
+  opacity: 0.8;
+}
+
+.no-additions {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-style: italic;
+  background: var(--bg);
+  padding: 6px 9px;
+  border-radius: 3px;
+  line-height: 1.5;
+}
+
+/* ─── Build mode UI ─── */
+.task-banner {
+  background: linear-gradient(135deg, #fef0f0, #fce0e3);
+  border: 1px solid var(--target-color);
+  border-radius: 3px;
+  padding: 9px 11px;
+  margin-bottom: 11px;
+  font-size: 11.5px;
+  color: var(--text);
+  line-height: 1.55;
+}
+.task-banner strong { color: var(--target-color); }
+
+.build-progress {
+  margin: 8px 0 11px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.bp-bar {
+  flex: 1;
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.bp-fill {
+  height: 100%;
+  background: linear-gradient(to right, var(--target-color), var(--visited-color));
+  transition: width 0.3s ease-out;
+}
+.bp-text {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.city-list { padding: 0; }
+.city-step {
+  padding: 5px 9px;
+  border-radius: 3px;
+  margin: 2px 0;
+  font-size: 11.5px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid transparent;
+  transition: all 0.15s;
+}
+.city-step .cs-num {
+  display: inline-block;
+  min-width: 18px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-align: center;
+  color: var(--text-muted);
+}
+.city-step .cs-name { flex: 1; }
+.city-step .cs-en { font-size: 9.5px; color: var(--text-muted); opacity: 0.7; margin-left: 4px; }
+
+.city-step.done {
+  color: var(--visited-color);
+  opacity: 0.7;
+}
+.city-step.done .cs-num { color: var(--visited-color); font-weight: 700; }
+.city-step.done .cs-name { text-decoration: line-through; }
+
+.city-step.current {
+  background: #fef0f0;
+  color: var(--target-color);
+  font-weight: 700;
+  border-color: var(--target-color);
+  animation: step-pulse 1.4s ease-in-out infinite;
+}
+.city-step.current .cs-num { color: var(--target-color); }
+.city-step.current .cs-en { color: var(--target-color); opacity: 0.7; }
+@keyframes step-pulse {
+  0%, 100% { background: #fef0f0; }
+  50% { background: #fbd8de; }
+}
+
+.build-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--border);
+}
+.btn-small {
+  flex: 1;
+  padding: 6px 9px;
+  font-size: 11px;
+  background: white;
+  border: 1px solid var(--border-strong);
+  border-radius: 2px;
+  cursor: pointer;
+  font-family: inherit;
+  color: var(--text-muted);
+  transition: all 0.12s;
+}
+.btn-small:hover { background: var(--bg); color: var(--text); }
+
+.complete-banner {
+  background: linear-gradient(135deg, #eaf5ec, #d4ebd7);
+  border: 1px solid var(--visited-color);
+  border-radius: 3px;
+  padding: 8px 11px;
+  margin-bottom: 11px;
+  font-size: 11.5px;
+  color: var(--visited-color);
+  font-weight: 600;
+}
+
+/* Inquiry question box */
+.inquiry-q-box {
+  background: #fff8ed;
+  border-left: 3px solid #d4a017;
+  padding: 9px 11px;
+  font-size: 11.5px;
+  line-height: 1.65;
+  color: var(--text);
+  border-radius: 0 2px 2px 0;
+}
+.inquiry-q-box em { color: #8a6a0a; font-style: normal; font-weight: 700; }
+.inquiry-q-box strong { color: #8a6a0a; }
+
+/* ─── Markers ─── */
+.node-icon { background: transparent !important; border: none !important; overflow: visible !important; }
+
+.port-square {
+  width: 7px; height: 7px;
+  background: var(--ex-port);
+  border: 1px solid white;
+  border-radius: 1px;
+  box-shadow: 0 1px 1px rgba(0,0,0,.2);
+  cursor: pointer;
+  transition: transform .15s;
+  position: absolute;
+  top: 50%; left: 50%;
+  margin: -4.5px 0 0 -4.5px;
+}
+.port-square:hover { transform: scale(1.6); z-index: 1000; }
+
+.city-dot {
+  width: 4px; height: 4px;
+  background: #888580;
+  border: 1px solid white;
+  border-radius: 50%;
+  box-shadow: 0 1px 1px rgba(0,0,0,.2);
+  cursor: pointer;
+  opacity: 0.55;
+  transition: transform 0.15s, opacity 0.15s;
+  position: absolute;
+  top: 50%; left: 50%;
+  margin: -3px 0 0 -3px;
+}
+.city-dot:hover { transform: scale(2.4); opacity: 1; }
+.city-dot.prominent {
+  width: 5px; height: 5px;
+  margin: -3.5px 0 0 -3.5px;
+  opacity: 0.75;
+}
+
+.pearl-mark {
+  width: 12px; height: 12px;
+  background: var(--pearl);
+  border: 2px solid white;
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 2px var(--pearl),
+    0 0 0 3.5px white,
+    0 0 0 5px rgba(122, 58, 139, 0.35),
+    0 1px 3px rgba(0,0,0,.35);
+  cursor: pointer;
+  position: absolute;
+  top: 50%; left: 50%;
+  margin: -8px 0 0 -8px;
+}
+
+.node-icon > svg {
+  position: absolute;
+  top: 50%; left: 50%;
+  margin: -6.5px 0 0 -6.5px;
+}
+
+.marker-label {
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translateY(-50%);
+  margin-left: 9px;
+  white-space: nowrap;
+  font-size: 9.5px;
+  color: #4a4540;
+  font-weight: 400;
+  font-family: 'Noto Sans KR', sans-serif;
+  text-shadow:
+    -1px 0 0 rgba(244,241,234,0.9), 1px 0 0 rgba(244,241,234,0.9),
+    0 -1px 0 rgba(244,241,234,0.9), 0  1px 0 rgba(244,241,234,0.9);
+  pointer-events: none;
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+.marker-label.port-label { font-weight: 500; color: #4a5a72; font-size: 10px; }
+.marker-label.resource-label { color: #8a7a4a; font-size: 9px; font-style: italic; font-weight: 300; }
+.marker-label.choke-label { color: var(--chokepoint); font-weight: 600; font-size: 9px; text-transform: uppercase; letter-spacing: 0.04em; }
+.marker-label.pearl-label { color: var(--pearl); font-weight: 600; font-size: 10px; font-style: italic; }
+
+/* ─── Target / visited overlays (build mode) ─── */
+.target-overlay {
+  position: relative;
+  width: 1px; height: 1px;
+}
+.target-ring {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  border: 2.5px solid var(--target-color);
+  background: rgba(200,16,46,0.18);
+  animation: ping 1.4s cubic-bezier(0.2,0,0.4,1) infinite;
+  pointer-events: none;
+}
+.target-ring.delay { animation-delay: 0.5s; }
+@keyframes ping {
+  0% { transform: translate(-50%,-50%) scale(0.4); opacity: 1; }
+  80%, 100% { transform: translate(-50%,-50%) scale(2.8); opacity: 0; }
+}
+
+.visited-overlay {
+  position: relative;
+  width: 1px; height: 1px;
+}
+.visited-ring {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  border: 2.5px solid var(--visited-color);
+  background: rgba(74,138,74,0.12);
+  transform: translate(-50%,-50%);
+  pointer-events: none;
+}
+
+/* ─── Legend ─── */
+.map-wrap { position: relative; height: 100%; }
+
+.map-legend {
+  position: absolute;
+  top: 12px; right: 12px;
+  background: var(--panel-bg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 9px 12px;
+  font-size: 10.5px;
+  z-index: 500;
+  box-shadow: var(--shadow);
+  max-width: 220px;
+}
+
+.legend-section-title {
+  font-family: 'Noto Serif KR', serif;
+  font-weight: 700;
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin-top: 7px;
+  margin-bottom: 4px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid var(--border);
+}
+.legend-section-title:first-child { margin-top: 0; }
+.legend-row { display: flex; align-items: center; gap: 7px; margin: 3px 0; }
+.legend-sample { width: 30px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+
+.ls-line {
+  height: 1px;
+  width: 100%;
+  border-top: 1.2px var(--ls-style, dashed) var(--ls-color, var(--ex-line));
+  opacity: var(--ls-opacity, 0.7);
+}
+.ls-line.thick {
+  border-top-width: 2.5px;
+  opacity: 1;
+}
+
+/* BRI additions with decorators in legend */
+.ls-bri-rail {
+  position: relative;
+  height: 8px;
+  display: flex; align-items: center;
+  width: 100%;
+}
+.ls-bri-rail::before {
+  content: ''; position: absolute; left: 0; right: 0; top: 50%;
+  height: 1.6px; background: var(--new-rail);
+  transform: translateY(-50%);
+}
+.ls-bri-rail::after {
+  content: ''; position: absolute; left: 0; right: 0; top: 50%;
+  height: 7px; transform: translateY(-50%);
+  background-image: linear-gradient(to right, var(--new-rail) 1.5px, transparent 1.5px);
+  background-size: 5px 100%;
+  background-repeat: repeat-x;
+}
+.ls-bri-road {
+  height: 3px;
+  background: var(--new-road);
+  border-radius: 1.5px;
+  width: 100%;
+}
+.ls-bri-gas, .ls-bri-oil {
+  height: 8px;
+  display: flex; align-items: center;
+  position: relative;
+  width: 100%;
+}
+.ls-bri-gas::before, .ls-bri-oil::before {
+  content: ''; position: absolute; left: 0; right: 0; top: 50%;
+  height: 1.6px; transform: translateY(-50%);
+}
+.ls-bri-gas::before { background: var(--new-gas); }
+.ls-bri-oil::before { background: var(--new-oil); }
+.ls-bri-gas::after {
+  content: '';
+  width: 5px; height: 5px;
+  background: var(--new-gas);
+  border: 1px solid white;
+  border-radius: 50%;
+  position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%,-50%);
+}
+.ls-bri-oil::after {
+  content: '';
+  width: 0; height: 0;
+  border-left: 4px solid var(--new-oil);
+  border-top: 3px solid transparent;
+  border-bottom: 3px solid transparent;
+  position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%,-50%);
+}
+
+/* ─── Right panel ─── */
+.empty-card {
+  background: white;
+  border: 1px dashed var(--border-strong);
+  border-radius: 3px;
+  padding: 16px 14px;
+  font-size: 12px;
+  color: var(--text-muted);
+  text-align: center;
+  font-style: italic;
+  line-height: 1.65;
+}
+
+.route-detail {
+  background: white;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--cd-color);
+  border-radius: 0 3px 3px 0;
+  padding: 13px 15px 12px;
+  margin-bottom: 12px;
+}
+
+.cd-header { display: flex; align-items: baseline; gap: 7px; margin-bottom: 1px; }
+.cd-icon { font-size: 14px; flex-shrink: 0; }
+.cd-name {
+  font-family: 'Noto Serif KR', serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.25;
+  flex: 1;
+}
+.cd-check { font-size: 12px; color: var(--visited-color); }
+.cd-en {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  font-family: 'JetBrains Mono', monospace;
+  margin-bottom: 11px;
+}
+
+.cd-section { margin-bottom: 11px; }
+
+.cd-label {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--cd-color);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 5px;
+}
+
+.cd-text { font-size: 12px; color: var(--text); line-height: 1.55; }
+
+.cd-list {
+  font-size: 11.5px;
+  color: var(--text);
+  line-height: 1.55;
+  list-style: none;
+  padding: 0;
+}
+.cd-list li {
+  padding-left: 12px;
+  position: relative;
+  margin-bottom: 2px;
+}
+.cd-list li::before {
+  content: '·';
+  position: absolute;
+  left: 4px;
+  font-weight: 700;
+  color: var(--cd-color);
+}
+
+.cd-strategy {
+  background: var(--bg);
+  border-radius: 2px;
+  padding: 8px 10px;
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: var(--text);
+  font-style: italic;
+}
+
+/* ─── Popup ─── */
+.leaflet-popup-content-wrapper {
+  background: var(--panel-bg);
+  border: 1px solid var(--border-strong);
+  border-radius: 3px;
+  box-shadow: 0 4px 16px rgba(0,0,0,.2);
+}
+.leaflet-popup-content {
+  margin: 11px 13px;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--text);
+  min-width: 180px;
+}
+.popup-title { font-family: 'Noto Serif KR', serif; font-weight: 700; font-size: 13px; margin-bottom: 4px; }
+.popup-meta { font-size: 10px; font-family: 'JetBrains Mono', monospace; color: var(--text-muted); margin-bottom: 5px; }
+.popup-note { font-size: 11.5px; color: var(--text); line-height: 1.5; }
+
+.leaflet-tooltip.node-tt {
+  background: var(--panel-bg);
+  border: 1px solid var(--border-strong);
+  border-radius: 2px;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 10.5px;
+  padding: 3px 7px;
+  color: var(--text);
+  box-shadow: 0 2px 6px rgba(0,0,0,.1);
+}
+.leaflet-tooltip.node-tt::before { display: none; }
+
+.leaflet-tooltip.line-label-ex {
+  background: transparent;
+  border: none;
+  font-size: 8.5px;
+  font-style: italic;
+  font-weight: 400;
+  color: #7a746a;
+  padding: 0 4px;
+  border-radius: 1px;
+  box-shadow: none;
+  pointer-events: none;
+  text-shadow:
+    -1px 0 0 rgba(244,241,234,0.95), 1px 0 0 rgba(244,241,234,0.95),
+    0 -1px 0 rgba(244,241,234,0.95), 0  1px 0 rgba(244,241,234,0.95);
+}
+.leaflet-tooltip.line-label-ex::before { display: none; }
+
+.leaflet-tooltip.line-label-bri {
+  background: rgba(255,255,255,0.93);
+  border: 1px solid var(--border);
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--text);
+  padding: 2px 6px;
+  border-radius: 2px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  pointer-events: none;
+}
+.leaflet-tooltip.line-label-bri::before { display: none; }
+
+.cs-country {
+  display: inline-block;
+  font-size: 9.5px;
+  background: rgba(0,0,0,0.06);
+  padding: 1px 6px;
+  border-radius: 8px;
+  color: var(--text-muted);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  margin-left: 2px;
+}
+.city-step.done .cs-country { background: rgba(74,138,74,0.15); color: var(--visited-color); }
+.city-step.current .cs-country { background: rgba(200,16,46,0.12); color: var(--target-color); }
+
+.footer-bar {
+  position: absolute;
+  bottom: 12px; left: 50%;
+  transform: translateX(-50%);
+  background: var(--panel-bg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 5px 6px;
+  display: flex;
+  gap: 4px;
+  box-shadow: var(--shadow);
+  z-index: 500;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  background: white;
+  border: 1px solid var(--border-strong);
+  border-radius: 2px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 11.5px;
+  color: var(--text);
+  transition: all .12s;
+}
+.btn:hover { background: var(--bg); }
+.btn.danger { color: var(--accent); }
+.btn.danger:hover { background: var(--accent-light); border-color: var(--accent); }
+
+/* ──────────── Tabs ──────────── */
+.tabs {
+  background: var(--panel-bg);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  display: flex;
+  gap: 0;
+}
+.tab-btn {
+  padding: 9px 16px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-muted);
+  transition: all 0.15s;
+  letter-spacing: -0.01em;
+}
+.tab-btn:hover { color: var(--text); background: var(--bg); }
+.tab-btn.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  font-weight: 700;
+}
+
+.tab-panel { display: none; height: 100%; overflow: hidden; }
+.tab-panel.active { display: block; }
+.main.tab-panel.active { display: grid; }
+
+.tab-content {
+  height: 100%;
+  overflow-y: auto;
+  padding: 26px 36px 40px;
+  max-width: 1080px;
+  margin: 0 auto;
+}
+.tab-content h2 {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 8px;
+  letter-spacing: -0.02em;
+}
+.tab-content h3 {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  margin-top: 22px;
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+.tab-content p {
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+.tab-content p strong { color: var(--accent); font-weight: 600; }
+.tab-content p em { color: var(--text-muted); font-style: italic; }
+
+/* Background tab */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 14px 0 8px;
+}
+.bg-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--card-c, var(--accent));
+  border-radius: 0 4px 4px 0;
+  padding: 14px 16px;
+}
+.bg-card.belt { --card-c: #a8784e; }
+.bg-card.road { --card-c: #4a7a5c; }
+.bg-card-title {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--card-c);
+  margin-bottom: 1px;
+}
+.bg-card-subtitle {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  font-family: 'JetBrains Mono', monospace;
+  margin-bottom: 7px;
+  letter-spacing: 0.04em;
+}
+.bg-card p { margin-bottom: 0; font-size: 12.5px; line-height: 1.6; }
+
+.bg-goals {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 14px;
+  margin-top: 4px;
+}
+.bg-goals li {
+  background: var(--bg);
+  padding: 8px 12px;
+  border-radius: 3px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.bg-goals li strong { color: var(--accent); font-weight: 600; }
+
+.case-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 6px;
+}
+.case-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--cc, var(--accent));
+  border-radius: 0 4px 4px 0;
+  padding: 13px 15px;
+}
+.case-card.pros { --cc: #4a8a4a; }
+.case-card.cons { --cc: #c54a25; }
+.case-card .case-title {
+  font-weight: 700;
+  font-family: 'Noto Serif KR', serif;
+  font-size: 13.5px;
+  color: var(--cc);
+  margin-bottom: 6px;
+}
+.case-card ul {
+  list-style: none;
+  padding: 0;
+  font-size: 12px;
+  line-height: 1.55;
+}
+.case-card ul li {
+  padding-left: 13px;
+  position: relative;
+  margin-bottom: 3px;
+}
+.case-card ul li::before {
+  content: '·';
+  position: absolute;
+  left: 4px;
+  font-weight: 700;
+  color: var(--cc);
+}
+
+/* QUAD tab */
+.quad-countries {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 11px;
+  margin: 14px 0 16px;
+}
+.quad-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 12px 10px;
+  text-align: center;
+}
+.quad-flag { font-size: 28px; margin-bottom: 4px; }
+.quad-name {
+  font-family: 'Noto Serif KR', serif;
+  font-weight: 700;
+  font-size: 13.5px;
+  color: var(--text);
+}
+.quad-role {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 2px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.activity-desc {
+  background: #fff8ed;
+  border-left: 3px solid #d4a017;
+  padding: 10px 14px;
+  margin: 8px 0 16px;
+  border-radius: 0 3px 3px 0;
+  font-size: 12.5px;
+  line-height: 1.65;
+}
+.activity-desc em { color: #8a6a0a; font-style: italic; }
+
+/* Figures (images with captions) */
+.bg-figure {
+  margin: 14px 0 18px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 8px 8px 4px;
+}
+.bg-figure img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 2px;
+}
+.bg-figure figcaption {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 8px 6px 4px;
+  font-style: italic;
+  line-height: 1.5;
+}
+.video-wrapper {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%;
+  height: 0;
+  border-radius: 2px;
+  overflow: hidden;
+  background: #000;
+}
+.video-wrapper iframe {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  border: 0;
+}
+
+/* Speech bubble container (image-based) */
+.speech-container {
+  position: relative;
+  max-width: 880px;
+  margin: 0 auto;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+.speech-container img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.speech-bubble-input {
+  position: absolute;
+  background: transparent;
+  border: 2px dashed rgba(200,16,46,0.3);
+  border-radius: 50%;
+  outline: none;
+  resize: none;
+  padding: 8px 16px;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: clamp(11px, 1.2vw, 14px);
+  line-height: 1.4;
+  color: #1a1a1a;
+  text-align: center;
+  font-weight: 500;
+  transition: border-color 0.15s, background 0.15s;
+}
+.speech-bubble-input:hover {
+  border-color: rgba(200,16,46,0.6);
+  background: rgba(255,255,255,0.15);
+}
+.speech-bubble-input:focus {
+  border-color: var(--accent);
+  border-style: solid;
+  background: rgba(255,255,255,0.25);
+}
+.speech-bubble-input::placeholder {
+  color: rgba(60,60,60,0.5);
+  font-style: italic;
+  font-weight: 400;
+}
+.speech-bubble-input.xi {
+  left: 7%;
+  top: 3%;
+  width: 30%;
+  height: 22%;
+}
+.speech-bubble-input.trump {
+  left: 51%;
+  top: 5%;
+  width: 32%;
+  height: 22%;
+}
+
+/* Discussion tab */
+.discuss-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 14px 0 8px;
+}
+.discuss-card {
+  background: white;
+  border: 2px solid var(--border);
+  border-radius: 5px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: block;
+}
+.discuss-card:hover {
+  border-color: var(--border-strong);
+  background: var(--bg);
+}
+.discuss-card input[type="radio"] { display: none; }
+.discuss-card.selected {
+  border-color: var(--dcc, var(--accent));
+  background: var(--dcb, #fef0f0);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.discuss-card[data-choice="A"] { --dcc: #c8102e; --dcb: #fef0f0; }
+.discuss-card[data-choice="B"] { --dcc: #1e5aaa; --dcb: #eaf2fa; }
+.discuss-label {
+  font-family: 'Noto Serif KR', serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--dcc, var(--accent));
+  margin-bottom: 5px;
+}
+.discuss-desc {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text);
+}
+
+#discuss-reason {
+  width: 100%;
+  min-height: 160px;
+  padding: 11px 13px;
+  border: 1px solid var(--border-strong);
+  border-radius: 3px;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--text);
+  background: white;
+  resize: vertical;
+  margin-top: 4px;
+  outline: none;
+}
+#discuss-reason:focus { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-light); }
+/* Inquiry question — student answer + model answer */
+.inquiry-answer {
+  width: 100%;
+  min-height: 80px;
+  margin-top: 8px;
+  padding: 8px 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: 3px;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--text);
+  background: white;
+  resize: vertical;
+  outline: none;
+}
+.inquiry-answer:focus {
+  border-color: #d4a017;
+  box-shadow: 0 0 0 2px rgba(212,160,23,0.15);
+}
+.inquiry-answer::placeholder {
+  color: var(--text-muted);
+  font-style: italic;
+  opacity: 0.7;
+}
+.model-answer-details {
+  margin-top: 8px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: var(--bg);
+}
+.model-answer-details summary {
+  cursor: pointer;
+  padding: 7px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #8a6a0a;
+  user-select: none;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.model-answer-details summary::-webkit-details-marker { display: none; }
+.model-answer-details summary::after {
+  content: '▶';
+  margin-left: auto;
+  font-size: 9px;
+  transition: transform 0.15s;
+}
+.model-answer-details[open] summary::after { transform: rotate(90deg); }
+.model-answer-details[open] summary {
+  border-bottom: 1px solid var(--border);
+}
+.model-answer-body {
+  padding: 10px 12px;
+  font-size: 11.5px;
+  line-height: 1.7;
+  color: var(--text);
+}
+.model-answer-body strong { color: #8a6a0a; font-weight: 600; }
+.model-answer-body em { color: var(--accent); font-style: italic; font-weight: 600; }
+
+/* Background card emphasis text */
+.bg-card p.bg-card-emph {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px dashed var(--border);
+  font-size: 12px;
+  color: var(--text);
+}
+
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header class="header">
+    <div class="brand"><h1>동아시아 지정학 — 일대일로와 쿼드</h1></div>
+    <div class="header-right">
+      <button class="btn-header" id="exportBtn" type="button">📥 답안 저장</button>
+      <span class="header-meta">v10 · 학습 활동</span>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab-btn" data-tab="bg">📖 배경</button>
+    <button class="tab-btn active" data-tab="map">🗺️ 회랑 그리기</button>
+    <button class="tab-btn" data-tab="quad">🌐 QUAD 대응 · 한국의 선택</button>
+  </nav>
+
+  <div class="main tab-panel active" id="tab-map">
+    <aside class="panel">
+      <div class="panel-section">
+        <div class="panel-title">경제회랑 (6) + 해상/전략 (2)</div>
+        <div id="routeCards"></div>
+      </div>
+    </aside>
+
+    <div class="map-wrap">
+      <div id="map"></div>
+
+      <div class="map-legend">
+        <div class="legend-section-title">기존 인프라</div>
+        <div class="legend-row"><div class="legend-sample"><div class="ls-line" style="--ls-color:var(--ex-rail);--ls-style:dashed;"></div></div><span>철도</span></div>
+        <div class="legend-row"><div class="legend-sample"><div class="ls-line" style="--ls-color:var(--ex-road);--ls-style:solid;"></div></div><span>도로</span></div>
+        <div class="legend-row"><div class="legend-sample"><div class="ls-line" style="--ls-color:var(--ex-gas);--ls-style:dotted;"></div></div><span>가스관</span></div>
+        <div class="legend-row"><div class="legend-sample"><div class="ls-line" style="--ls-color:var(--ex-oil);--ls-style:double;"></div></div><span>송유관</span></div>
+        <div class="legend-row"><div class="legend-sample"><div style="width:7px;height:7px;background:var(--ex-port);border-radius:1px;"></div></div><span>항구</span></div>
+        <div class="legend-row"><div class="legend-sample"><div style="width:10px;height:10px;background:var(--gasfield);border-radius:50%;"></div></div><span>가스전</span></div>
+        <div class="legend-row"><div class="legend-sample"><svg width="11" height="11" viewBox="0 0 14 14"><polygon points="7,2 12.5,12 1.5,12" fill="var(--oilfield)" stroke="white" stroke-width="1.5"/></svg></div><span>유전</span></div>
+        <div class="legend-row"><div class="legend-sample"><svg width="11" height="11" viewBox="0 0 14 14"><polygon points="7,1 13,7 7,13 1,7" fill="var(--chokepoint)" stroke="white" stroke-width="1.5"/></svg></div><span>해상 요충지</span></div>
+
+        <div class="legend-section-title">BRI 추가</div>
+        <div class="legend-row"><div class="legend-sample"><div style="height:7px;background:var(--c-cpec);opacity:0.28;width:100%;"></div></div><span>회랑 (색별)</span></div>
+        <div class="legend-row"><div class="legend-sample"><div class="ls-bri-rail"></div></div><span>신규 철도</span></div>
+        <div class="legend-row"><div class="legend-sample"><div class="ls-bri-road"></div></div><span>신규 도로</span></div>
+        <div class="legend-row"><div class="legend-sample"><div class="ls-bri-gas"></div></div><span>신규 가스관</span></div>
+        <div class="legend-row"><div class="legend-sample"><div class="ls-bri-oil"></div></div><span>신규 송유관</span></div>
+        <div class="legend-row"><div class="legend-sample"><div style="width:10px;height:10px;background:var(--pearl);border:1.5px solid white;border-radius:50%;box-shadow:0 0 0 1.5px var(--pearl);"></div></div><span>진주목걸이 거점</span></div>
+      </div>
+
+      <div class="footer-bar">
+        <button class="btn danger" id="resetBtn">초기화</button>
+      </div>
+    </div>
+
+    <aside class="panel right">
+      <div class="panel-title">선택한 회랑</div>
+      <div id="routeDetails">
+        <div class="empty-card">왼쪽 카드를 켜면<br>회랑 그리기 과제가 시작됩니다</div>
+      </div>
+    </aside>
+  </div>
+
+  <section class="tab-panel" id="tab-bg">
+    <div class="tab-content">
+      <h2>일대일로(一帶一路, One Belt One Road)란?</h2>
+      <p>중국이 세계 각국과의 경제적·정치적 연결성을 강화하기 위해 추진하는 국제 개발 전략입니다. 과거의 실크로드가 중앙아시아에서 머물렀다면, <strong>현대의 일대일로는 러시아·유럽·아프리카까지 확장된 글로벌 연결망</strong>을 목표로 합니다. 핵심은 고속철도·도로·항만·파이프라인 등 인프라를 구축하여 무역 확대와 함께 <strong>석유·천연가스 등 자원의 안정적 운송망</strong>을 확보하는 데 있습니다.</p>
+
+      <figure class="bg-figure video-figure">
+        <div class="video-wrapper">
+          <iframe src="https://www.youtube.com/embed/iW9NB3NeX8w" title="일대일로 소개 영상" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <figcaption>일대일로 전체 개요 영상 — 일대(육상)와 일로(해상)의 전략적 의미</figcaption>
+      </figure>
+
+      <div class="two-col">
+        <div class="bg-card belt">
+          <div class="bg-card-title">🚆 일대(一帶) · Belt</div>
+          <div class="bg-card-subtitle">육상 실크로드</div>
+          <p><strong>"하나의 지대(Belt)"</strong>를 뜻합니다. 과거 낙타와 마차로 물품을 운송하던 <em>고대 실크로드를 현대적으로 재해석</em>한 것입니다.</p>
+          <p>중국은 육로를 따라 도로·철도·송유관·가스관을 연결하여, 중앙아시아에서 <strong>에너지 자원을 직접 수입</strong>하고, 유럽·중동 시장으로의 진출 통로를 확보합니다.</p>
+          <p class="bg-card-emph">이 경로는 <strong>인도·러시아·미국의 영향력에서 벗어난 독자적 자원 확보 루트</strong>라는 점에서 지정학적 의미가 큽니다.</p>
+        </div>
+        <div class="bg-card road">
+          <div class="bg-card-title">🚢 일로(一路) · Road</div>
+          <div class="bg-card-subtitle">해상 실크로드</div>
+          <p><strong>"하나의 길(Road)"</strong>을 뜻합니다. <em>21세기 해상 실크로드</em>는 남중국해를 출발해 동남아시아·남아시아를 지나 인도양·아프리카·유럽까지 연결됩니다.</p>
+          <p>이 항로를 따라 중국은 <strong>항만·물류망·해군기지 등 전략적 거점</strong>을 확보하고 있습니다.</p>
+          <p class="bg-card-emph">이는 단순한 물류 네트워크를 넘어 <strong>군사적 영향력 확대</strong>라는 목적도 함께 갖고 있습니다.</p>
+        </div>
+      </div>
+
+      <h3>핵심 목표</h3>
+      <ul class="bg-goals">
+        <li><strong>인프라 구축</strong> — 고속철도, 도로, 항만, 파이프라인</li>
+        <li><strong>무역 확대</strong> — 유럽·아프리카·중동 시장 접근</li>
+        <li><strong>자원 안정 확보</strong> — 석유·천연가스 운송망</li>
+        <li><strong>전략적 거점</strong> — 군사·외교 영향력 확장</li>
+      </ul>
+
+      <h3>사례: 파키스탄 — 중국-파키스탄 경제회랑(CPEC)</h3>
+      <p>파키스탄은 오랜 전력 부족과 낙후된 인프라로 경제 성장이 제한되어 있었습니다. 중국과의 협력은 인프라 투자 유치와 동시에 인도·미국과의 외교적 균형을 잡는 수단이 되었습니다. 특히 <strong>과다르항</strong> 개발은 양국 모두에게 지정학적 요충지 확보의 의미를 가집니다.</p>
+
+      <figure class="bg-figure">
+        <img src="cpec_road.png" alt="중국-파키스탄 경제회랑에 새로 생긴 고속도로" />
+        <figcaption>CPEC를 통해 새로 건설된 카라코룸 고속도로 — 험준한 산악 지대를 가로지름</figcaption>
+      </figure>
+
+      <div class="case-grid">
+        <div class="case-card pros">
+          <div class="case-title">✓ 효과</div>
+          <ul>
+            <li>대규모 인프라 투자 유치</li>
+            <li>고속도로·철도·발전소 신설</li>
+            <li>과다르항 개발 → 인도양 진출</li>
+            <li>고용 창출, 전력 안정화</li>
+            <li>도로·병원·학교 등 생활 인프라</li>
+          </ul>
+        </div>
+        <div class="case-card cons">
+          <div class="case-title">⚠ 우려</div>
+          <ul>
+            <li>국가 부채 급증 ("부채 함정 외교")</li>
+            <li>중국 기업·인력 위주 운영</li>
+            <li>현지 일자리 창출 한계</li>
+            <li>전략적 종속 가능성</li>
+            <li>주권·내정 간섭 논란</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="tab-panel" id="tab-quad">
+    <div class="tab-content">
+      <h2>미국의 대응: 쿼드(Quad)</h2>
+      <p>쿼드(Quad)는 미국, 일본, 호주, 인도 4개국이 국제 안보를 주제로 가지는 정기적 정상 회담이자 비공식 전략 협의체입니다. <strong>"자유롭고 열린 인도-태평양(Free and Open Indo-Pacific)"</strong>이 표면적 목표이나, 사실상 중국의 일대일로 전략에 대응하는 성격이 짙습니다.</p>
+
+      <figure class="bg-figure">
+        <img src="quad_map.png" alt="중국의 일대일로와 인도·태평양 4개국 협의체 쿼드" />
+        <figcaption>일대일로(붉은 점선: 육상·해상 실크로드)와 쿼드(파란 띠: 미·일·호·인 4개국 연결) — 두 전략이 인도양과 태평양에서 서로 대응 구도를 형성</figcaption>
+      </figure>
+
+      <div class="quad-countries">
+        <div class="quad-card">
+          <div class="quad-flag">🇺🇸</div>
+          <div class="quad-name">미국</div>
+          <div class="quad-role">주도국</div>
+        </div>
+        <div class="quad-card">
+          <div class="quad-flag">🇯🇵</div>
+          <div class="quad-name">일본</div>
+          <div class="quad-role">핵심 동맹국</div>
+        </div>
+        <div class="quad-card">
+          <div class="quad-flag">🇦🇺</div>
+          <div class="quad-name">호주</div>
+          <div class="quad-role">핵심 동맹국</div>
+        </div>
+        <div class="quad-card">
+          <div class="quad-flag">🇮🇳</div>
+          <div class="quad-name">인도</div>
+          <div class="quad-role">전략적 협력국</div>
+        </div>
+      </div>
+
+      <p>4개국은 정기적으로 합동 군사 훈련을 실시하며, 경제적으로도 중국 의존도를 줄이고자 합니다. <strong>인도</strong>는 정식 동맹국은 아니지만 일부 안보 사안에서 협력하며, 중국의 일대일로(특히 진주목걸이 전략과 CPEC)에 대한 견제 의식이 강합니다.</p>
+
+      <h3>활동: 말풍선 채우기</h3>
+      <div class="activity-desc">
+        시진핑(중국 국가주석)과 트럼프(미국 대통령)가 일대일로 프로젝트를 두고 자신의 입장을 말하고 있습니다. <strong>말풍선 안을 직접 클릭해서</strong> 두 인물의 생각을 작성해 보세요. <em>외교적 언어로 격식 있게 표현하거나, 풍자적·창의적으로 표현해도 좋습니다.</em>
+      </div>
+
+      <div class="speech-container">
+        <img src="speech_bubbles.png" alt="시진핑과 트럼프 말풍선 채우기" />
+        <textarea id="speech-xi" class="speech-bubble-input xi" placeholder="시진핑의 입장을 적어보세요..." spellcheck="false"></textarea>
+        <textarea id="speech-trump" class="speech-bubble-input trump" placeholder="트럼프의 입장을 적어보세요..." spellcheck="false"></textarea>
+      </div>
+
+      <h2 style="margin-top: 32px;">한국의 선택 — 일대일로 vs 쿼드</h2>
+      <p>한국은 지정학적으로 중국과 미국 사이에 놓인 전략적 요충지입니다. <strong>일대일로</strong>에 참여하면 북한을 거쳐 대륙과 연결되어 중앙아시아·유럽과의 교통·물류 연결성이 확대됩니다. 반면 미국이 주도하는 <strong>쿼드</strong>는 인도-태평양 안보 협력으로 중국의 영향력 확대를 견제합니다.</p>
+
+      <h3>당신이 한국의 지도자라면, 어떤 전략을 선택하시겠습니까?</h3>
+      <div class="discuss-options">
+        <label class="discuss-card" data-choice="A">
+          <input type="radio" name="choice" value="A">
+          <div class="discuss-label">A안 · 일대일로 참여</div>
+          <div class="discuss-desc">북한을 거쳐 대륙과 연결되고, 경제적 기회를 넓힌다. 중앙아시아·유럽과의 교통·물류 연결성이 크게 확대되어 한반도 경제 통합과 남북 협력에도 긍정적 영향이 가능하다.</div>
+        </label>
+        <label class="discuss-card" data-choice="B">
+          <input type="radio" name="choice" value="B">
+          <div class="discuss-label">B안 · 쿼드 동참</div>
+          <div class="discuss-desc">미국과 협력하며 안보를 강화하고, 지역 안정을 유지한다. 중국 중심 질서에 대한 균형자 역할을 수행하고, 인도-태평양 동맹 체제에 편입되어 미국의 안보 보장을 받는다.</div>
+        </label>
+      </div>
+
+      <h3>당신의 선택과 그 이유</h3>
+      <textarea id="discuss-reason" placeholder="선택한 안의 장단점과 그 이유를 정리해 보세요. 지정학·경제·안보 측면을 모두 고려해 보세요..."></textarea>
+    </div>
+  </section>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════════
+//  NODES
+// ════════════════════════════════════════════════════════════
+const NODES = {
+  lianyungang:{ name:'롄윈강', name_en:'Lianyungang', lat:34.6, lng:119.2, type:'port' },
+  quanzhou:   { name:'취안저우', name_en:'Quanzhou', lat:24.9, lng:118.6, type:'port' },
+  haikou:     { name:'하이커우', name_en:'Haikou', lat:20.04, lng:110.3, type:'port' },
+  beihai:     { name:'베이하이', name_en:'Beihai', lat:21.5, lng:109.1, type:'port' },
+  shanghai:   { name:'상하이', name_en:'Shanghai', lat:31.2, lng:121.5, type:'port' },
+  guangzhou:  { name:'광저우', name_en:'Guangzhou', lat:23.1, lng:113.3, type:'port' },
+  beijing:    { name:'베이징', name_en:'Beijing', lat:39.9, lng:116.4, type:'city' },
+  zhengzhou:  { name:'정저우', name_en:'Zhengzhou', lat:34.7, lng:113.6, type:'city' },
+  xian:       { name:'시안', name_en:"Xi'an", lat:34.3, lng:108.9, type:'city' },
+  lanzhou:    { name:'란저우', name_en:'Lanzhou', lat:36.0, lng:103.8, type:'city' },
+  urumqi:     { name:'우루무치', name_en:'Ürümqi', lat:43.8, lng:87.6, type:'city' },
+  alashankou: { name:'아라산커우', name_en:'Alashankou', lat:45.2, lng:82.6, type:'city' },
+  kashgar:    { name:'카슈가르', name_en:'Kashgar', lat:39.5, lng:75.9, type:'city' },
+  chongqing:  { name:'충칭', name_en:'Chongqing', lat:29.6, lng:106.5, type:'city' },
+  kunming:    { name:'쿤밍', name_en:'Kunming', lat:25.0, lng:102.7, type:'city' },
+  nanning:    { name:'난닝', name_en:'Nanning', lat:22.8, lng:108.4, type:'city' },
+  hohhot:     { name:'후허하오터', name_en:'Hohhot', lat:40.8, lng:111.7, type:'city' },
+  daqing:     { name:'다칭', name_en:'Daqing', lat:46.6, lng:125.0, type:'city' },
+  harbin:     { name:'하얼빈', name_en:'Harbin', lat:45.8, lng:126.5, type:'city' },
+  ulanbator:  { name:'울란바토르', name_en:'Ulan Bator', lat:47.9, lng:106.9, type:'city' },
+  ulanude:    { name:'울란우데', name_en:'Ulan-Ude', lat:51.8, lng:107.6, type:'city' },
+  irkutsk:    { name:'이르쿠츠크', name_en:'Irkutsk', lat:52.3, lng:104.3, type:'city' },
+  novosibirsk:{ name:'노보시비르스크', name_en:'Novosibirsk', lat:55.0, lng:82.9, type:'city' },
+  yekaterinburg:{name:'예카테린부르크', name_en:'Yekaterinburg', lat:56.8, lng:60.6, type:'city' },
+  kazan:      { name:'카잔', name_en:'Kazan', lat:55.8, lng:49.1, type:'city' },
+  moscow:     { name:'모스크바', name_en:'Moscow', lat:55.8, lng:37.6, type:'city' },
+  bryansk:    { name:'브랸스크', name_en:'Bryansk', lat:53.2, lng:34.4, type:'city' },
+  aris:       { name:'아리스', name_en:'Aris', lat:42.5, lng:68.6, type:'city' },
+  almaty:     { name:'알마티', name_en:'Almaty', lat:43.2, lng:76.9, type:'city' },
+  astana:     { name:'아스타나', name_en:'Astana', lat:51.2, lng:71.4, type:'city' },
+  bishkek:    { name:'비슈케크', name_en:'Bishkek', lat:42.9, lng:74.6, type:'city' },
+  dushanbe:   { name:'두샨베', name_en:'Dushanbe', lat:38.6, lng:68.8, type:'city' },
+  samarkand:  { name:'사마르칸트', name_en:'Samarkand', lat:39.6, lng:66.9, type:'city' },
+  tashkent:   { name:'타슈켄트', name_en:'Tashkent', lat:41.3, lng:69.2, type:'city' },
+  ashgabat:   { name:'아슈하바트', name_en:'Ashgabat', lat:37.9, lng:58.4, type:'city' },
+  tehran:     { name:'테헤란', name_en:'Tehran', lat:35.7, lng:51.4, type:'city' },
+  mashhad:    { name:'마슈하드', name_en:'Mashhad', lat:36.3, lng:59.6, type:'city' },
+  ankara:     { name:'앙카라', name_en:'Ankara', lat:39.9, lng:32.9, type:'city' },
+  istanbul:   { name:'이스탄불', name_en:'Istanbul', lat:41.0, lng:28.9, type:'city' },
+  abudhabi:   { name:'아부다비', name_en:'Abu Dhabi', lat:24.5, lng:54.4, type:'port' },
+  islamabad:  { name:'이슬라마바드', name_en:'Islamabad', lat:33.7, lng:73.1, type:'city' },
+  lahore:     { name:'라호르', name_en:'Lahore', lat:31.5, lng:74.3, type:'city' },
+  karachi:    { name:'카라치', name_en:'Karachi', lat:24.9, lng:67.0, type:'port' },
+  gwadar:     { name:'과다르', name_en:'Gwadar', lat:25.1, lng:62.3, type:'port' },
+  colombo:    { name:'콜롬보', name_en:'Colombo', lat:6.9, lng:79.9, type:'port' },
+  hambantota: { name:'함반토타', name_en:'Hambantota', lat:6.1, lng:81.1, type:'port' },
+  male:       { name:'말레', name_en:'Malé', lat:4.2, lng:73.5, type:'port' },
+  dhaka:      { name:'다카', name_en:'Dhaka', lat:23.8, lng:90.4, type:'city' },
+  calcutta:   { name:'캘커타', name_en:'Calcutta', lat:22.6, lng:88.4, type:'city' },
+  chittagong: { name:'치타공', name_en:'Chittagong', lat:22.3, lng:91.8, type:'port' },
+  payra:      { name:'파이라', name_en:'Payra', lat:21.8, lng:90.2, type:'port' },
+  kyaukphyu:  { name:'차우퓨', name_en:'Kyaukphyu', lat:19.4, lng:93.5, type:'port' },
+  sittwe:     { name:'시트웨', name_en:'Sittwe', lat:20.1, lng:92.9, type:'port' },
+  mandalay:   { name:'만달레이', name_en:'Mandalay', lat:21.95, lng:96.1, type:'city' },
+  hanoi:      { name:'하노이', name_en:'Hanoi', lat:21.0, lng:105.8, type:'city' },
+  vinh:       { name:'빈', name_en:'Vinh', lat:18.7, lng:105.7, type:'city' },
+  bangkok:    { name:'방콕', name_en:'Bangkok', lat:13.7, lng:100.5, type:'city' },
+  laemchabang:{ name:'람차방', name_en:'Laem Chabang', lat:13.1, lng:100.9, type:'port' },
+  songkhla:   { name:'송클라', name_en:'Songkhla', lat:7.2, lng:100.6, type:'port' },
+  kualalumpur:{ name:'쿠알라룸푸르', name_en:'Kuala Lumpur', lat:3.1, lng:101.7, type:'city' },
+  singapore:  { name:'싱가포르', name_en:'Singapore', lat:1.3, lng:103.8, type:'port' },
+  sihanoukville:{ name:'시아누크빌', name_en:'Sihanoukville', lat:10.6, lng:103.5, type:'port' },
+  djibouti:   { name:'지부티', name_en:'Djibouti', lat:11.6, lng:43.1, type:'port' },
+  mombasa:    { name:'몸바사', name_en:'Mombasa', lat:-4.0, lng:39.7, type:'port' },
+  lamu:       { name:'라무', name_en:'Lamu', lat:-2.3, lng:40.9, type:'port' },
+  daressalaam:{ name:'다르에스살람', name_en:'Dar es Salaam', lat:-6.8, lng:39.3, type:'port' },
+  bagamoyo:   { name:'바가모요', name_en:'Bagamoyo', lat:-6.4, lng:38.9, type:'port' },
+  tema:       { name:'테마', name_en:'Tema', lat:5.7, lng:0.02, type:'port' },
+  lome:       { name:'로메', name_en:'Lomé', lat:6.1, lng:1.2, type:'port' },
+  kribi:      { name:'크리비', name_en:'Kribi', lat:2.9, lng:9.9, type:'port' },
+  maputo:     { name:'마푸토', name_en:'Maputo', lat:-25.97, lng:32.6, type:'port' },
+  suez:       { name:'수에즈', name_en:'Suez', lat:29.97, lng:32.55, type:'port' },
+  aden:       { name:'아덴', name_en:'Aden', lat:12.8, lng:45.0, type:'port' },
+  brest:      { name:'브레스트', name_en:'Brest', lat:52.1, lng:23.7, type:'city' },
+  warsaw:     { name:'바르샤바', name_en:'Warsaw', lat:52.2, lng:21.0, type:'city' },
+  berlin:     { name:'베를린', name_en:'Berlin', lat:52.5, lng:13.4, type:'city' },
+  duisburg:   { name:'두이스부르크', name_en:'Duisburg', lat:51.4, lng:6.8, type:'city' },
+  hamburg:    { name:'함부르크', name_en:'Hamburg', lat:53.6, lng:10.0, type:'port' },
+  rotterdam:  { name:'로테르담', name_en:'Rotterdam', lat:51.9, lng:4.5, type:'port' },
+  antwerp:    { name:'안트워프', name_en:'Antwerp', lat:51.2, lng:4.4, type:'port' },
+  athens:     { name:'아테네', name_en:'Athens (Piraeus)', lat:37.97, lng:23.7, type:'port' },
+  venice:     { name:'베네치아', name_en:'Venice', lat:45.4, lng:12.3, type:'port' },
+};
+
+// 도시·항구의 국가
+const COUNTRY = {
+  lianyungang:'중국', quanzhou:'중국', haikou:'중국', beihai:'중국', shanghai:'중국',
+  guangzhou:'중국', beijing:'중국', zhengzhou:'중국', xian:'중국', lanzhou:'중국',
+  urumqi:'중국', alashankou:'중국', kashgar:'중국', chongqing:'중국', kunming:'중국',
+  nanning:'중국', hohhot:'중국', daqing:'중국', harbin:'중국',
+  ulanbator:'몽골',
+  ulanude:'러시아', irkutsk:'러시아', novosibirsk:'러시아', yekaterinburg:'러시아',
+  kazan:'러시아', moscow:'러시아', bryansk:'러시아',
+  aris:'카자흐스탄', almaty:'카자흐스탄', astana:'카자흐스탄',
+  bishkek:'키르기스스탄',
+  dushanbe:'타지키스탄',
+  samarkand:'우즈베키스탄', tashkent:'우즈베키스탄',
+  ashgabat:'투르크메니스탄',
+  tehran:'이란', mashhad:'이란',
+  ankara:'터키', istanbul:'터키',
+  abudhabi:'UAE',
+  islamabad:'파키스탄', lahore:'파키스탄', karachi:'파키스탄', gwadar:'파키스탄',
+  colombo:'스리랑카', hambantota:'스리랑카',
+  male:'몰디브',
+  dhaka:'방글라데시', chittagong:'방글라데시', payra:'방글라데시',
+  calcutta:'인도',
+  kyaukphyu:'미얀마', sittwe:'미얀마', mandalay:'미얀마',
+  hanoi:'베트남', vinh:'베트남',
+  bangkok:'태국', laemchabang:'태국', songkhla:'태국',
+  kualalumpur:'말레이시아',
+  singapore:'싱가포르',
+  sihanoukville:'캄보디아',
+  djibouti:'지부티',
+  mombasa:'케냐', lamu:'케냐',
+  daressalaam:'탄자니아', bagamoyo:'탄자니아',
+  tema:'가나', lome:'토고', kribi:'카메룬', maputo:'모잠비크',
+  suez:'이집트', aden:'예멘',
+  brest:'벨라루스', warsaw:'폴란드',
+  berlin:'독일', duisburg:'독일', hamburg:'독일',
+  rotterdam:'네덜란드', antwerp:'벨기에',
+  athens:'그리스',
+  venice:'이탈리아',
+};
+
+// ════════════════════════════════════════════════════════════
+//  EXISTING infrastructure — clean lines, no decorators
+// ════════════════════════════════════════════════════════════
+const EXISTING = {
+  rail: [
+    { name:'시베리아 횡단철도', pts:['moscow','kazan','yekaterinburg','novosibirsk','irkutsk'] },
+    { name:'몽골 횡단철도', pts:['beijing','hohhot','ulanbator','ulanude','irkutsk'] },
+    { name:'베이징-만저우-치타', pts:['beijing','harbin','irkutsk'] },
+    { name:'룽하이-란신', pts:['lianyungang','zhengzhou','xian','lanzhou','urumqi'] },
+    { name:'시안-쿤밍', pts:['xian','kunming'] },
+    { name:'우루무치-알라산커우-알마티', pts:['urumqi','alashankou','almaty'] },
+    { name:'알마티-아리스-아스타나', pts:['almaty','aris','astana'] },
+    { name:'아스타나-예카테린부르크', pts:['astana','yekaterinburg'] },
+    { name:'예카테린부르크-카잔-모스크바', pts:['yekaterinburg','kazan','moscow'] },
+    { name:'알마티-비슈케크-타슈켄트', pts:['almaty','bishkek','tashkent'] },
+    { name:'타슈켄트-사마르칸트-두샨베', pts:['tashkent','samarkand','dushanbe'] },
+    { name:'사마르칸트-아슈하바트', pts:['samarkand','ashgabat'] },
+    { name:'투르크멘-이란', pts:['ashgabat','mashhad'] },
+    { name:'터키-이란', pts:['istanbul','ankara','tehran','mashhad'] },
+    { name:'모스크바-브랸스크-브레스트', pts:['moscow','bryansk','brest'] },
+    { name:'유럽 간선', pts:['brest','warsaw','berlin','duisburg','rotterdam'] },
+    { name:'난닝-하노이-빈', pts:['nanning','hanoi','vinh'] },
+    { name:'태국-말레이-싱가포르', pts:['bangkok','songkhla','kualalumpur','singapore'] },
+    { name:'파키스탄 ML-1', pts:['islamabad','lahore','karachi'] },
+    { name:'다카-치타공', pts:['dhaka','chittagong'] },
+    { name:'다카-캘커타', pts:['dhaka','calcutta'] },
+  ],
+  road: [
+    { name:'카라코룸 하이웨이', pts:['kashgar','islamabad'] },
+    { name:'쿤밍-만달레이', pts:['kunming','mandalay'] },
+    { name:'중-라오스-베트남', pts:['kunming','vinh'] },
+  ],
+  gas: [
+    { name:'중앙아 가스관 A·B·C라인', pts:['ashgabat','tashkent','almaty','urumqi'] },
+  ],
+  oil: [
+    { name:'ESPO 송유관', pts:['irkutsk','daqing'] },
+  ],
+};
+
+// ════════════════════════════════════════════════════════════
+//  ROUTES — all 8 have build mode (clickStops). 3 have inquiryQuestion.
+// ════════════════════════════════════════════════════════════
+const ROUTES = [
+  {
+    id:'cmrec', kind:'corridor',
+    name:'중-몽-러 회랑', name_en:'CMREC',
+    icon:'🚆', color:'#a8784e',
+    outline: ['beijing','hohhot','ulanbator','ulanude','irkutsk','novosibirsk','yekaterinburg','kazan','moscow'],
+    clickStops: ['beijing','hohhot','ulanbator','ulanude','moscow'],
+    additions: {
+      gas: [{ name:'시베리아의 힘 (2019)', pts:['chayanda_pt','daqing','harbin','beijing','shanghai'] }],
+    },
+    desc: {
+      purpose: '베이징에서 몽골과 러시아를 거쳐 모스크바까지. 러시아 에너지 도입과 동북부 출구 확보가 핵심.',
+      existing: ['몽골 횡단철도','시베리아 횡단철도','ESPO 송유관 (2009)'],
+      strategy: '러시아의 대유럽 가스 수출 위축 → 대중국 수출 가속. 가스관(시베리아의 힘)은 회랑 본선과 달리 <strong>만주(다칭)</strong>를 경유하여 베이징·상하이로 연결됨.',
+    },
+  },
+  {
+    id:'nelb', kind:'corridor',
+    name:'유라시아 대륙교량', name_en:'NELB',
+    icon:'🚆', color:'#c8102e',
+    outline: ['lianyungang','zhengzhou','xian','lanzhou','urumqi','alashankou','almaty','aris','bryansk','brest','warsaw','berlin','duisburg','rotterdam'],
+    clickStops: ['lianyungang','zhengzhou','xian','lanzhou','urumqi','aris','bryansk','brest','warsaw','berlin','rotterdam'],
+    additions: {},
+    desc: {
+      purpose: '롄윈강에서 시안·우루무치를 거쳐 카자흐·러시아·동유럽을 종단해 로테르담까지.',
+      existing: ['룽하이-란신 철도','카자흐 횡단철도','시베리아 횡단철도','유럽 간선'],
+      strategy: 'BRI의 "Belt"는 새 철도를 까는 게 아니라 100년 된 철도망을 통합·표준화·서비스화. 컨테이너 화물열차 ~15일 (해상 35-40일).',
+    },
+  },
+  {
+    id:'ccwaec', kind:'corridor',
+    name:'중앙아-서아시아 회랑', name_en:'CCAWEC',
+    icon:'🚆', color:'#c54a25',
+    outline: ['urumqi','alashankou','almaty','bishkek','tashkent','dushanbe','samarkand','ashgabat','tehran','ankara','istanbul'],
+    clickStops: ['urumqi','almaty','bishkek','dushanbe','samarkand','tehran','ankara','istanbul'],
+    additions: {
+      gas: [{ name:'중앙아 가스관 D라인 (확장)', pts:['galkynysh_pt','ashgabat','tashkent','almaty','urumqi','lanzhou','xian'] }],
+      oil: [{ name:'카자흐-중국 송유관', pts:['kashagan_pt','almaty','urumqi','lanzhou'] }],
+    },
+    desc: {
+      purpose: '중앙아시아의 가스·석유를 육로로 도입하고 이란·터키 시장으로 진출. 호르무즈·말라카 우회.',
+      existing: ['우루무치-알라산커우-알마티 철도','중앙아 5국 기존 철도망','이란·터키 기존 철도'],
+      strategy: '갈키니쉬 가스전(투르크멘, 세계 2위)→중국 서부까지 약 7,000km 직결. 호르무즈 LNG 운송 리스크 회피.',
+    },
+    inquiryQuestion: '이 회랑의 핵심 가스관(D라인)은 갈키니쉬에서 출발해 우루무치를 거쳐 시안까지 갑니다. 똑같이 가스를 수입하는 데 <em>바닷길</em>이 아닌 <em>육상 파이프</em>를 선택한 이유는 무엇일까요?',
+  },
+  {
+    id:'cpec', kind:'corridor',
+    name:'중-파키스탄 회랑 (CPEC)', name_en:'CPEC',
+    icon:'🚧', color:'#8b1c2b',
+    outline: ['urumqi','kashgar','islamabad','lahore','karachi','gwadar'],
+    clickStops: ['urumqi','islamabad','lahore','karachi','gwadar'],
+    additions: {
+      rail: [{ name:'ML-1 본선 업그레이드 (계획)', pts:['islamabad','lahore','karachi'] }],
+      road: [
+        { name:'카라코룸 하이웨이 업그레이드', pts:['kashgar','islamabad'] },
+        { name:'카라치-그와다르 해안 고속도로', pts:['karachi','gwadar'] },
+      ],
+      ports: ['gwadar','karachi'],
+    },
+    desc: {
+      purpose: '신장 카슈가르에서 파키스탄을 종단해 인도양 그와다르까지. 말라카·호르무즈 모두 우회.',
+      existing: ['카라코룸 하이웨이 (도로, 1979)','파키스탄 ML-1 철도'],
+      strategy: '카슈가르→그와다르 약 3,000km. 인도양 직접 접근 + 군사·전략 거점 가능성. 인도 견제.',
+    },
+    inquiryQuestion: '카슈가르와 그와다르를 잇는 이 회랑은, <em>해상로</em>가 아니라 <em>육로</em>로 인도양에 접근하려 합니다. 굳이 험준한 파키스탄을 종단하는 이 선택의 <strong>지정학적 의도</strong>는 무엇일까요?',
+  },
+  {
+    id:'bcim', kind:'corridor',
+    name:'방-중-인-미 회랑 (BCIM)', name_en:'BCIM',
+    icon:'🚆', color:'#6a4a8b',
+    outline: ['kunming','mandalay','dhaka','calcutta'],
+    clickStops: ['kunming','mandalay','dhaka','calcutta'],
+    additions: {
+      road: [{ name:'쿤밍-만달레이-다카 고속도로 (계획)', pts:['kunming','mandalay','dhaka'] }],
+      gas: [{ name:'중-미얀마 가스관 (2013)', pts:['shwe_pt','kyaukphyu','mandalay','kunming'] }],
+      oil: [{ name:'중-미얀마 송유관 (2017)', pts:['kyaukphyu','mandalay','kunming','chongqing'] }],
+      ports: ['kyaukphyu','chittagong'],
+    },
+    desc: {
+      purpose: '남아·동남아 연결 무역·교통 경로. 인도 갈등으로 본선 지연, 미얀마 차우퓨 분기는 활발.',
+      existing: ['다카-캘커타 (Maitree)','윈난-미얀마 기존 도로'],
+      strategy: '<strong>차우퓨 분기</strong>는 "말라카 딜레마" 직접 해결책 — 중동·아프리카산 원유를 차우퓨에서 양륙해 쿤밍·충칭으로 직송.',
+    },
+  },
+  {
+    id:'cicpec', kind:'corridor',
+    name:'중-인도차이나 회랑', name_en:'CICPEC',
+    icon:'🚆', color:'#4a8a4a',
+    outline: ['nanning','hanoi','vinh','bangkok','songkhla','kualalumpur','singapore'],
+    clickStops: ['nanning','hanoi','vinh','bangkok','songkhla','kualalumpur','singapore'],
+    additions: {
+      rail: [
+        { name:'베트남-태국 신규 철도', pts:['hanoi','vinh','bangkok'] },
+        { name:'방콕-쿠알라룸푸르-싱가포르 고속철 (계획)', pts:['bangkok','kualalumpur','singapore'] },
+      ],
+      ports: ['laemchabang','songkhla','sihanoukville'],
+    },
+    desc: {
+      purpose: '난닝에서 베트남·태국·말레이를 종단해 싱가포르까지. ASEAN 시장 통합과 메콩 유역 자원·노동력 접근.',
+      existing: ['중-베트남 국경 철도','베트남 종단 철도','태국-말레이-싱가포르 철도'],
+      strategy: '쿤밍→싱가포르 약 3,000km. 새로 까는 신규 철도 비중이 큰 회랑.',
+    },
+  },
+  {
+    id:'maritime', kind:'maritime',
+    name:'해상 실크로드', name_en:'Maritime Silk Road · 一路',
+    icon:'🚢', color:'#4a7a5c',
+    outline: [
+      'quanzhou',[21,117],[20,114],'haikou',[21,109],'beihai',
+      [18,110],[12,110],[5,107],'singapore',[4,98],[10,87],
+      'calcutta',[18,87],[8,82],'colombo',[0,65],[-3,50],
+      'mombasa',[0,43],[10,51],[12.6,43.3],[22,38],'suez',
+      [32,30],[35,25],'athens',[38,21],[42,17],'venice',
+    ],
+    clickStops: ['quanzhou','haikou','beihai','singapore','calcutta','colombo','mombasa','athens','venice'],
+    waypoints: ['취안저우','하이커우','베이하이','싱가포르','캘커타','콜롬보','몸바사','수에즈','아테네','베니스'],
+    relatedPorts: ['콜롬보 (CICT, 2013)','피레우스 (COSCO, 2016)','지부티 (군사기지, 2017)','함반토타 (99년 임대, 2017)','몸바사·바가모요·테마 등 아프리카 거점'],
+    desc: {
+      purpose: '취안저우에서 동남아·인도양·아프리카·지중해를 거쳐 베니스까지 잇는 해상 무역 네트워크.',
+      strategy: '단순 물류를 넘어 <strong>항만 인수·운영권·해군 기지화</strong> 등 전략 거점 확보. 진주목걸이 전략과 결합.',
+    },
+    inquiryQuestion: '해상 실크로드와 진주목걸이를 함께 켜보세요. 둘이 <em>겹쳐 보이는 항구들</em>은 어디인가요? 이 항구들이 가진 공통 특성은 무엇일까요?',
+  },
+  {
+    id:'pearls', kind:'pearls',
+    name:'진주목걸이 전략', name_en:'String of Pearls',
+    icon:'🔮', color:'#7a3a8b',
+    outline: ['aden','gwadar','male','hambantota','chittagong','sittwe',[8,95],[3,101],[4,104],'sihanoukville'],
+    clickStops: ['aden','gwadar','male','hambantota','chittagong','sittwe','sihanoukville'],
+    bases: [
+      { id:'aden', deal:'예멘 아덴만 접근', note:'홍해 입구. 중국 호위함 정기 기항.' },
+      { id:'gwadar', deal:'파키스탄, 40년 운영권', note:'인도양 진출의 핵심 거점. CPEC 종착점.' },
+      { id:'male', deal:'몰디브 인프라 차관', note:'인도양 중앙. 인도 견제의 지정학적 요지.' },
+      { id:'hambantota', deal:'스리랑카, 99년 임대', note:'인도양 남측 거점. "부채 외교" 대표.' },
+      { id:'chittagong', deal:'방글라데시 항만 확장', note:'벵골만 핵심. 인도 동부 우회 가능성.' },
+      { id:'sittwe', deal:'미얀마 칼라단', note:'벵골만↔미얀마 내륙. 인도 경쟁 투자.' },
+      { id:'sihanoukville', deal:'캄보디아 항만·기지 의혹', note:'남중국해 남측. 중국 해군 사용 의혹.' },
+    ],
+    desc: {
+      purpose: '인도양 해상 회로 위 7개 거점을 잇는 해군·전략 네트워크. 표면상 상업 항만이지만 군사 거점화 잠재.',
+      strategy: '아덴→과다르→말레→함반토타→치타공→시트웨→시한욱빌. 7개 거점이 인도양을 둘러싼 <strong>"진주목걸이"</strong>. 미국·인도의 인도-태평양 전략과 충돌.',
+    },
+  },
+];
+
+// ════════════════════════════════════════════════════════════
+//  Acquired Ports / Resources / Chokepoints
+// ════════════════════════════════════════════════════════════
+const ACQUIRED_PORTS = [
+  { id:'athens', deal:'피레우스 항 (COSCO 67% 인수)', year:2016, note:'아테네의 관문 항구. 유럽 진출의 거점.' },
+  { id:'gwadar', deal:'COPHC 40년 운영권', year:2013, note:'CPEC 종착점, 호르무즈 우회.' },
+  { id:'hambantota', deal:'99년 임대', year:2017, note:'"부채 외교" 논란.' },
+  { id:'djibouti', deal:'해군 군사기지', year:2017, note:'중국 첫 해외 군사기지.' },
+  { id:'kyaukphyu', deal:'심해항 70% 지분', year:2018, note:'미얀마 파이프라인 양륙지.' },
+  { id:'abudhabi', deal:'칼리파 항 35년 운영권', year:2018, note:'페르시아만 거점.' },
+  { id:'colombo', deal:'CICT 35년 운영권', year:2013, note:'인도양 환적 허브.' },
+  { id:'tema', deal:'신항만 건설', year:2019, note:'서아프리카 거점.' },
+  { id:'bagamoyo', deal:'탄자니아 신항만', year:2013, note:'동아프리카 항만 계획.' },
+  { id:'kribi', deal:'카메룬 신항만', year:2014, note:'중부아프리카 심수항.' },
+  { id:'lome', deal:'토고 항만 확장', year:2014, note:'서아프리카 컨테이너 거점.' },
+  { id:'lamu', deal:'케냐 라무 항만', year:2014, note:'LAPSSET 회랑 종착.' },
+  { id:'payra', deal:'방글라데시 심수항', year:2016, note:'벵골만 거점.' },
+];
+const ACQUIRED_SET = new Set(ACQUIRED_PORTS.map(p=>p.id));
+
+const GAS_FIELDS = [
+  { id:'galkynysh_pt', name:'갈키니쉬', name_en:'Galkynysh', lat:37.3, lng:63.2, note:'투르크메니스탄. 세계 2위급 매장.' },
+  { id:'yamal_pt', name:'야말', name_en:'Yamal', lat:68.0, lng:75.0, note:'러시아 북극.' },
+  { id:'urengoy_pt', name:'우렌고이', name_en:'Urengoy', lat:66.0, lng:76.6, note:'러시아 시베리아.' },
+  { id:'chayanda_pt', name:'차얀딘', name_en:'Chayanda', lat:60.7, lng:121.5, note:'"시베리아의 힘" 출발지.' },
+  { id:'southpars_pt', name:'사우스파스', name_en:'South Pars', lat:26.9, lng:52.6, note:'세계 최대 가스전.' },
+  { id:'shwe_pt', name:'슈웨', name_en:'Shwe', lat:19.0, lng:92.5, note:'중-미얀마 가스관 출발지.' },
+];
+
+const OIL_FIELDS = [
+  { id:'kashagan_pt', name:'카샤간', name_en:'Kashagan', lat:46.3, lng:51.5, note:'카자흐스탄 카스피해.' },
+  { id:'tengiz_pt', name:'텡기즈', name_en:'Tengiz', lat:46.1, lng:53.4, note:'카자흐스탄.' },
+  { id:'samotlor_pt', name:'사모틀로르', name_en:'Samotlor', lat:61.0, lng:76.7, note:'러시아 서시베리아.' },
+  { id:'daqing_pt', name:'다칭', name_en:'Daqing', lat:46.6, lng:124.9, note:'중국 최대 유전.' },
+  { id:'ahvaz_pt', name:'아흐와즈', name_en:'Ahvaz', lat:31.3, lng:48.7, note:'이란 후제스탄.' },
+];
+
+const CHOKEPOINTS = [
+  { id:'malacca', name:'말라카', name_en:'Strait of Malacca', lat:2.5, lng:101.5, note:'중국 원유 수입의 ~80% 통과.' },
+  { id:'hormuz', name:'호르무즈', name_en:'Strait of Hormuz', lat:26.5, lng:56.5, note:'세계 해상 석유의 ~20% 통과.' },
+  { id:'babelmandeb', name:'바브엘만데브', name_en:'Bab el-Mandeb', lat:12.6, lng:43.3, note:'아덴만↔홍해.' },
+  { id:'suez_ch', name:'수에즈 운하', name_en:'Suez Canal', lat:30.5, lng:32.3, note:'지중해↔홍해.' },
+  { id:'gibraltar', name:'지브롤터', name_en:'Strait of Gibraltar', lat:35.9, lng:-5.4, note:'대서양↔지중해.' },
+  { id:'bosphorus', name:'보스포러스', name_en:'Bosphorus', lat:41.1, lng:29.1, note:'흑해↔지중해.' },
+];
+
+[...GAS_FIELDS, ...OIL_FIELDS].forEach(f => {
+  NODES[f.id] = { name:f.name, name_en:f.name_en, lat:f.lat, lng:f.lng, type:'field' };
+});
+
+// ════════════════════════════════════════════════════════════
+//  Prominent nodes (cities/ports getting permanent labels)
+// ════════════════════════════════════════════════════════════
+const PROMINENT_NODES = new Set();
+ROUTES.forEach(r => {
+  (r.outline || []).forEach(p => { if (typeof p === 'string') PROMINENT_NODES.add(p); });
+  (r.clickStops || []).forEach(p => PROMINENT_NODES.add(p));
+});
+ACQUIRED_PORTS.forEach(p => PROMINENT_NODES.add(p.id));
+
+// ════════════════════════════════════════════════════════════
+//  Helpers
+// ════════════════════════════════════════════════════════════
+function ptsToLatLngs(pts) {
+  return pts.map(p => {
+    if (Array.isArray(p)) return p;
+    const n = NODES[p];
+    return n ? [n.lat, n.lng] : null;
+  }).filter(Boolean);
+}
+
+function getClickStops(route) {
+  if (route.clickStops) return route.clickStops;
+  return route.outline.filter(p => typeof p === 'string');
+}
+
+function getPartialOutline(route, clickProgress) {
+  if (clickProgress === 0) return [];
+  const stops = getClickStops(route);
+  if (clickProgress >= stops.length) return route.outline;
+  const lastStop = stops[clickProgress - 1];
+  const idx = route.outline.indexOf(lastStop);
+  return route.outline.slice(0, idx + 1);
+}
+
+function isBuildComplete(routeId) {
+  const s = state.buildState[routeId];
+  return s && s.complete;
+}
+
+function isInBuildMode(routeId) {
+  return state.activeRoutes.has(routeId) && !isBuildComplete(routeId);
+}
+
+// ════════════════════════════════════════════════════════════
+//  BRI addition drawing (decorators for foreground)
+// ════════════════════════════════════════════════════════════
+function drawBriRail(coords, opts) {
+  const lg = L.layerGroup();
+  const line = L.polyline(coords, { color:opts.color, weight:1.5, opacity:opts.opacity||0.95, pane:opts.pane });
+  line.addTo(lg);
+  L.polylineDecorator(line, {
+    patterns: [{
+      offset:'2%', endOffset:'2%', repeat:opts.repeat||14,
+      symbol: L.Symbol.dash({
+        pixelSize:opts.tickSize||8,
+        pathOptions:{ color:opts.color, weight:opts.tickWeight||2.6, opacity:opts.opacity||0.95, pane:opts.pane }
+      })
+    }]
+  }).addTo(lg);
+  return { lg, line };
+}
+
+function drawBriRoad(coords, opts) {
+  const lg = L.layerGroup();
+  const line = L.polyline(coords, { color:opts.color, weight:opts.weight||4, opacity:opts.opacity||0.95, lineCap:'round', lineJoin:'round', pane:opts.pane });
+  line.addTo(lg);
+  return { lg, line };
+}
+
+function drawBriGas(coords, opts) {
+  const lg = L.layerGroup();
+  const line = L.polyline(coords, { color:opts.color, weight:opts.weight||2.2, opacity:opts.opacity||0.95, pane:opts.pane });
+  line.addTo(lg);
+  const dotSize = opts.dotSize || 7;
+  L.polylineDecorator(line, {
+    patterns: [{
+      offset:12, repeat:opts.repeat||30,
+      symbol: L.Symbol.marker({
+        rotate:false,
+        markerOptions:{
+          icon: L.divIcon({
+            className:'pipe-mark',
+            html:`<svg width="${dotSize}" height="${dotSize}" viewBox="0 0 ${dotSize} ${dotSize}"><circle cx="${dotSize/2}" cy="${dotSize/2}" r="${dotSize/2-0.8}" fill="${opts.color}" stroke="white" stroke-width="1"/></svg>`,
+            iconSize:[dotSize,dotSize], iconAnchor:[dotSize/2,dotSize/2],
+          })
+        }
+      })
+    }]
+  }).addTo(lg);
+  return { lg, line };
+}
+
+function drawBriOil(coords, opts) {
+  const lg = L.layerGroup();
+  const line = L.polyline(coords, { color:opts.color, weight:opts.weight||2.2, opacity:opts.opacity||0.95, pane:opts.pane });
+  line.addTo(lg);
+  L.polylineDecorator(line, {
+    patterns: [{
+      offset:20, repeat:opts.repeat||50,
+      symbol: L.Symbol.arrowHead({
+        pixelSize:opts.arrowSize||11,
+        pathOptions:{ color:opts.color, weight:0, fillOpacity:opts.opacity||0.85, stroke:false, pane:opts.pane }
+      })
+    }]
+  }).addTo(lg);
+  return { lg, line };
+}
+
+const TYPE_LABEL = { rail:'신규 철도', road:'신규 도로', gas:'신규 가스관', oil:'신규 송유관', ports:'신규 항구' };
+const TYPE_ICON  = { rail:'🚆', road:'🛣️', gas:'⛽', oil:'🛢️', ports:'⚓' };
+
+// ════════════════════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════════════════════
+const STORAGE_KEY = 'bri_explorer_v10';
+const state = {
+  activeRoutes: new Set(),
+  buildState: {},
+  activeSubLayers: new Set(),
+  routeLayers: {},
+  subLayers: {},
+  cityMarkers: {},
+  buildOverlay: null,
+};
+
+// ════════════════════════════════════════════════════════════
+//  MAP
+// ════════════════════════════════════════════════════════════
+const map = L.map('map', {
+  center: [28, 60],
+  zoom: 3,
+  worldCopyJump: true,
+  minZoom: 2, maxZoom: 7,
+});
+map.createPane('baseInfra');     map.getPane('baseInfra').style.zIndex = 410;
+map.createPane('corridorBands'); map.getPane('corridorBands').style.zIndex = 420;
+map.createPane('additions');     map.getPane('additions').style.zIndex = 440;
+map.createPane('buildOverlay');  map.getPane('buildOverlay').style.zIndex = 460;
+
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
+  attribution:'© OpenStreetMap, © CARTO', subdomains:'abcd',
+}).addTo(map);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png', {
+  attribution:'', subdomains:'abcd', opacity:0.45, pane:'shadowPane',
+}).addTo(map);
+
+state.buildOverlay = L.layerGroup().addTo(map);
+
+// ── Existing infra: CLEAN simple lines, no decorators
+EXISTING.rail.forEach(r => {
+  const line = L.polyline(ptsToLatLngs(r.pts), {
+    color:'#aaa49b', weight:0.9, opacity:0.5,
+    dashArray:'5 4', lineCap:'butt', pane:'baseInfra'
+  });
+  line.bindTooltip(r.name, { permanent:true, direction:'center', className:'line-label-ex', sticky:false });
+  line.addTo(map);
+});
+EXISTING.road.forEach(r => {
+  const line = L.polyline(ptsToLatLngs(r.pts), {
+    color:'#b5a995', weight:1.4, opacity:0.5,
+    lineCap:'round', pane:'baseInfra'
+  });
+  line.bindTooltip(r.name, { permanent:true, direction:'center', className:'line-label-ex', sticky:false });
+  line.addTo(map);
+});
+EXISTING.gas.forEach(r => {
+  const line = L.polyline(ptsToLatLngs(r.pts), {
+    color:'#92a5b8', weight:1.2, opacity:0.55,
+    dashArray:'2 4', lineCap:'round', pane:'baseInfra'
+  });
+  line.bindTooltip(r.name, { permanent:true, direction:'center', className:'line-label-ex', sticky:false });
+  line.addTo(map);
+});
+EXISTING.oil.forEach(r => {
+  const line = L.polyline(ptsToLatLngs(r.pts), {
+    color:'#b09a85', weight:1.2, opacity:0.55,
+    dashArray:'8 3 1 3', lineCap:'butt', pane:'baseInfra'
+  });
+  line.bindTooltip(r.name, { permanent:true, direction:'center', className:'line-label-ex', sticky:false });
+  line.addTo(map);
+});
+
+// ── Node markers with conditional labels (prominent vs minor)
+const usedNodeIds = new Set();
+function collectStringIds(list) {
+  list.forEach(r => r.pts.forEach(p => { if (typeof p === 'string') usedNodeIds.add(p); }));
+}
+collectStringIds(EXISTING.rail); collectStringIds(EXISTING.road); collectStringIds(EXISTING.gas); collectStringIds(EXISTING.oil);
+ROUTES.forEach(r => {
+  (r.outline || []).forEach(p => { if (typeof p === 'string') usedNodeIds.add(p); });
+  Object.values(r.additions || {}).forEach(group => {
+    if (Array.isArray(group)) {
+      group.forEach(item => {
+        if (item.pts) item.pts.forEach(p => { if (typeof p === 'string') usedNodeIds.add(p); });
+        else if (typeof item === 'string') usedNodeIds.add(item);
+      });
+    }
+  });
+});
+
+function handleNodeClick(nodeId) {
+  for (const rid of state.activeRoutes) {
+    if (!isInBuildMode(rid)) continue;
+    const route = ROUTES.find(x => x.id === rid);
+    const stops = getClickStops(route);
+    const target = stops[state.buildState[rid].progress];
+    if (nodeId === target) {
+      state.buildState[rid].progress++;
+      updatePartialOutline(rid);
+      updateBuildOverlay();
+      renderRouteDetails();
+      renderRouteCards();
+      if (state.buildState[rid].progress >= stops.length) {
+        completeBuild(rid);
+      }
+      persist();
+      return;
+    }
+  }
+  // Wrong click → silent (blinking ring shows the right one)
+}
+
+Object.entries(NODES).forEach(([id, node]) => {
+  if (node.type === 'field') return;
+  const isProminent = PROMINENT_NODES.has(id);
+  const isAcquired = ACQUIRED_SET.has(id);
+  let html;
+  if (node.type === 'port') {
+    const labelHtml = isProminent ? `<div class="marker-label port-label">${node.name}</div>` : '';
+    html = `<div class="port-square"></div>${labelHtml}`;
+  } else {
+    if (!usedNodeIds.has(id)) return;
+    const prominentCls = isProminent ? ' prominent' : '';
+    const labelHtml = isProminent ? `<div class="marker-label">${node.name}</div>` : '';
+    html = `<div class="city-dot${prominentCls}"></div>${labelHtml}`;
+  }
+  const HIT = 22;
+  const icon = L.divIcon({ className:'node-icon', html, iconSize:[HIT,HIT], iconAnchor:[HIT/2,HIT/2] });
+  const m = L.marker([node.lat, node.lng], { icon });
+  m.bindTooltip(`<strong>${node.name}</strong> <span style="color:#888;">${node.name_en}</span>`,
+    { direction:'top', offset:[0,-8], className:'node-tt' });
+  if (isAcquired) {
+    const ap = ACQUIRED_PORTS.find(p => p.id === id);
+    m.bindPopup(`
+      <div class="popup-title" style="color:var(--bri-port)">⚓ ${node.name} <span style="font-weight:400;color:#888;font-size:11px;">${node.name_en}</span></div>
+      <div class="popup-meta">${ap.year}년 · ${ap.deal}</div>
+      <div class="popup-note">${ap.note}</div>
+    `, { maxWidth: 270 });
+  }
+  m.on('click', () => handleNodeClick(id));
+  m.addTo(map);
+  state.cityMarkers[id] = m;
+});
+
+// ── Resources & chokepoints
+GAS_FIELDS.forEach(f => {
+  const html = `<svg width="13" height="13" viewBox="0 0 14 14"><circle cx="7" cy="7" r="5" fill="#c89010" stroke="white" stroke-width="1.5"/><line x1="4" y1="7" x2="10" y2="7" stroke="rgba(255,255,255,0.5)" stroke-width="0.8"/></svg><div class="marker-label resource-label">${f.name}</div>`;
+  L.marker([f.lat, f.lng], { icon: L.divIcon({ className:'node-icon', html, iconSize:[22,22], iconAnchor:[11,11] }) })
+    .bindPopup(`<div class="popup-title" style="color:var(--gasfield)">⛽ ${f.name} 가스전</div><div class="popup-meta">${f.name_en}</div><div class="popup-note">${f.note}</div>`, { maxWidth:250 })
+    .addTo(map);
+});
+OIL_FIELDS.forEach(f => {
+  const html = `<svg width="13" height="13" viewBox="0 0 14 14"><polygon points="7,2 12.5,12 1.5,12" fill="#5a3a1a" stroke="white" stroke-width="1.5" stroke-linejoin="round"/></svg><div class="marker-label resource-label">${f.name}</div>`;
+  L.marker([f.lat, f.lng], { icon: L.divIcon({ className:'node-icon', html, iconSize:[22,22], iconAnchor:[11,11] }) })
+    .bindPopup(`<div class="popup-title" style="color:var(--oilfield)">🛢️ ${f.name} 유전</div><div class="popup-meta">${f.name_en}</div><div class="popup-note">${f.note}</div>`, { maxWidth:250 })
+    .addTo(map);
+});
+CHOKEPOINTS.forEach(c => {
+  const html = `<svg width="13" height="13" viewBox="0 0 14 14"><polygon points="7,1 13,7 7,13 1,7" fill="#c54a25" stroke="white" stroke-width="1.5" stroke-linejoin="round"/></svg><div class="marker-label choke-label">${c.name}</div>`;
+  L.marker([c.lat, c.lng], { icon: L.divIcon({ className:'node-icon', html, iconSize:[22,22], iconAnchor:[11,11] }) })
+    .bindPopup(`<div class="popup-title" style="color:var(--chokepoint)">⚠️ ${c.name}</div><div class="popup-meta">${c.name_en}</div><div class="popup-note">${c.note}</div>`, { maxWidth:260 })
+    .addTo(map);
+});
+
+// ════════════════════════════════════════════════════════════
+//  Route layer construction
+// ════════════════════════════════════════════════════════════
+function buildRouteLayer(route, options) {
+  options = options || {};
+  const partial = (typeof options.partial === 'number') ? options.partial : null;
+  const lg = L.layerGroup();
+
+  let pts;
+  if (partial !== null) pts = getPartialOutline(route, partial);
+  else pts = route.outline;
+
+  if (route.kind === 'corridor') {
+    if (pts.length >= 2) {
+      const band = L.polyline(ptsToLatLngs(pts), {
+        color: route.color, weight:11, opacity:0.22,
+        lineCap:'round', lineJoin:'round', pane:'corridorBands',
+      });
+      band.bindTooltip(`<strong>${route.icon} ${route.name}</strong>`, { sticky:true, className:'node-tt' });
+      band.addTo(lg);
+    }
+  } else if (route.kind === 'maritime') {
+    if (pts.length >= 2) {
+      const band = L.polyline(ptsToLatLngs(pts), {
+        color: route.color, weight:11, opacity:0.32,
+        lineCap:'round', lineJoin:'round', pane:'corridorBands',
+      });
+      band.bindTooltip(`<strong>${route.icon} ${route.name}</strong>`, { sticky:true, className:'node-tt' });
+      band.addTo(lg);
+    }
+  } else if (route.kind === 'pearls') {
+    if (pts.length >= 2) {
+      const line = L.polyline(ptsToLatLngs(pts), {
+        color: route.color, weight:2.5, opacity:0.85,
+        dashArray:'5 4', pane:'corridorBands',
+      });
+      line.bindTooltip(`<strong>${route.icon} ${route.name}</strong>`, { sticky:true, className:'node-tt' });
+      line.addTo(lg);
+    }
+    pts.forEach(cityId => {
+      if (typeof cityId !== 'string') return;
+      const base = route.bases.find(b => b.id === cityId);
+      if (!base) return;
+      const n = NODES[cityId];
+      const html = `<div class="pearl-mark"></div><div class="marker-label pearl-label">${n.name}</div>`;
+      L.marker([n.lat, n.lng], {
+        icon: L.divIcon({ className:'node-icon', html, iconSize:[14,14], iconAnchor:[7,7] }),
+        pane: 'additions',
+      })
+      .bindPopup(`<div class="popup-title" style="color:var(--pearl)">🔮 ${n.name} <span style="font-weight:400;color:#888;font-size:11px;">${n.name_en}</span></div><div class="popup-meta">${base.deal}</div><div class="popup-note">${base.note}</div>`,
+        { maxWidth:280 })
+      .addTo(lg);
+    });
+  }
+  return lg;
+}
+
+function buildSubLayer(route, type) {
+  const lg = L.layerGroup();
+  const items = route.additions[type] || [];
+  if (type === 'ports') {
+    items.forEach(portId => {
+      const n = NODES[portId]; if (!n) return;
+      L.circleMarker([n.lat, n.lng], {
+        radius:10, color:'#8b1c2b', weight:2.5,
+        fillOpacity:0, opacity:0.9, pane:'additions',
+      }).addTo(lg).bindTooltip(`<strong>⚓ ${n.name}</strong> <em>(${route.name})</em>`,
+        { sticky:true, className:'node-tt' });
+    });
+  } else {
+    items.forEach(item => {
+      let draw;
+      const color = type==='rail'?'#c8102e':type==='road'?'#d97757':type==='gas'?'#d4a017':'#6b5020';
+      const opts = { color, opacity:0.95, pane:'additions' };
+      if (type==='rail') draw = drawBriRail(ptsToLatLngs(item.pts), opts);
+      else if (type==='road') draw = drawBriRoad(ptsToLatLngs(item.pts), opts);
+      else if (type==='gas') draw = drawBriGas(ptsToLatLngs(item.pts), opts);
+      else if (type==='oil') draw = drawBriOil(ptsToLatLngs(item.pts), opts);
+      draw.line.bindTooltip(`${TYPE_ICON[type]} ${item.name}`,
+        { permanent:true, direction:'center', className:'line-label-bri', sticky:false });
+      draw.lg.addTo(lg);
+    });
+  }
+  return lg;
+}
+
+// ════════════════════════════════════════════════════════════
+//  Build overlay (pulsing target + visited rings)
+// ════════════════════════════════════════════════════════════
+function updateBuildOverlay() {
+  state.buildOverlay.clearLayers();
+  for (const rid of state.activeRoutes) {
+    if (!isInBuildMode(rid)) continue;
+    const route = ROUTES.find(x => x.id === rid);
+    const stops = getClickStops(route);
+    const progress = state.buildState[rid].progress;
+    for (let i = 0; i < progress; i++) {
+      const n = NODES[stops[i]]; if (!n) continue;
+      const html = `<div class="visited-overlay"><div class="visited-ring"></div></div>`;
+      L.marker([n.lat, n.lng], {
+        icon: L.divIcon({ className:'node-icon', html, iconSize:[1,1], iconAnchor:[0,0] }),
+        interactive: false, pane:'buildOverlay',
+      }).addTo(state.buildOverlay);
+    }
+    if (progress < stops.length) {
+      const target = stops[progress];
+      const n = NODES[target]; if (!n) continue;
+      const html = `<div class="target-overlay"><div class="target-ring"></div><div class="target-ring delay"></div></div>`;
+      L.marker([n.lat, n.lng], {
+        icon: L.divIcon({ className:'node-icon', html, iconSize:[1,1], iconAnchor:[0,0] }),
+        interactive: false, pane:'buildOverlay',
+      }).addTo(state.buildOverlay);
+    }
+  }
+}
+
+function updatePartialOutline(routeId) {
+  const route = ROUTES.find(r => r.id === routeId);
+  if (state.routeLayers[routeId]) map.removeLayer(state.routeLayers[routeId]);
+  const progress = state.buildState[routeId] ? state.buildState[routeId].progress : null;
+  state.routeLayers[routeId] = buildRouteLayer(route, { partial: progress });
+  state.routeLayers[routeId].addTo(map);
+}
+
+// ════════════════════════════════════════════════════════════
+//  Toggle / activate / deactivate
+// ════════════════════════════════════════════════════════════
+function toggleRoute(id) {
+  if (state.activeRoutes.has(id)) {
+    deactivateRoute(id);
+  } else {
+    const r = ROUTES.find(x => x.id === id);
+    // Only cancel in-progress builds if THIS is also a build route
+    if (!r.instant) {
+      ROUTES.forEach(x => {
+        if (x.id !== id && state.activeRoutes.has(x.id) && !isBuildComplete(x.id)) {
+          deactivateRoute(x.id);
+        }
+      });
+    }
+    activateRoute(id);
+  }
+  renderRouteCards();
+  renderRouteDetails();
+  persist();
+}
+window.toggleRoute = toggleRoute;
+
+function activateRoute(id) {
+  const r = ROUTES.find(x => x.id === id);
+  state.activeRoutes.add(id);
+  if (r.instant) {
+    // Pre-shown: skip build mode, mark complete immediately
+    const stops = getClickStops(r);
+    state.buildState[id] = { progress: stops.length, complete: true };
+  } else {
+    state.buildState[id] = { progress: 0, complete: false };
+  }
+  updatePartialOutline(id);
+  updateBuildOverlay();
+}
+
+function deactivateRoute(id) {
+  state.activeRoutes.delete(id);
+  delete state.buildState[id];
+  if (state.routeLayers[id]) {
+    map.removeLayer(state.routeLayers[id]);
+    delete state.routeLayers[id];
+  }
+  for (const key of [...state.activeSubLayers]) {
+    if (key.startsWith(id + ':')) {
+      state.activeSubLayers.delete(key);
+      if (state.subLayers[key]) {
+        map.removeLayer(state.subLayers[key]);
+        delete state.subLayers[key];
+      }
+    }
+  }
+  updateBuildOverlay();
+}
+
+function toggleSubLayer(routeId, type) {
+  const key = `${routeId}:${type}`;
+  const r = ROUTES.find(x => x.id === routeId);
+  if (state.activeSubLayers.has(key)) {
+    state.activeSubLayers.delete(key);
+    if (state.subLayers[key]) map.removeLayer(state.subLayers[key]);
+  } else {
+    state.activeSubLayers.add(key);
+    if (!state.subLayers[key]) state.subLayers[key] = buildSubLayer(r, type);
+    state.subLayers[key].addTo(map);
+  }
+  renderRouteDetails();
+  persist();
+}
+window.toggleSubLayer = toggleSubLayer;
+
+function skipBuild(routeId) {
+  const r = ROUTES.find(x => x.id === routeId);
+  const stops = getClickStops(r);
+  state.buildState[routeId].progress = stops.length;
+  completeBuild(routeId);
+  persist();
+}
+window.skipBuild = skipBuild;
+
+function saveInquiry(routeId, value) {
+  try { localStorage.setItem('bri_inquiry_' + routeId, value); } catch(e) {}
+}
+window.saveInquiry = saveInquiry;
+
+function completeBuild(routeId) {
+  state.buildState[routeId].complete = true;
+  updatePartialOutline(routeId);
+  updateBuildOverlay();
+  renderRouteDetails();
+  renderRouteCards();
+}
+
+// ════════════════════════════════════════════════════════════
+//  Rendering
+// ════════════════════════════════════════════════════════════
+function renderRouteCards() {
+  const corridors = ROUTES.filter(r => r.kind === 'corridor');
+  const others = ROUTES.filter(r => r.kind !== 'corridor');
+  const cardHtml = r => {
+    const on = state.activeRoutes.has(r.id);
+    const done = isBuildComplete(r.id);
+    const inquiryBadge = r.inquiryQuestion ? `<span class="rc-inquiry-badge">탐구</span>` : '';
+    return `
+      <div class="route-card${on?' on':''}${done ?' completed':''}" data-id="${r.id}" onclick="toggleRoute('${r.id}')">
+        <div class="rc-head">
+          <span class="rc-icon">${r.icon}</span>
+          <span class="rc-name">${r.name}</span>
+          ${inquiryBadge}
+          <span class="rc-toggle"></span>
+        </div>
+        <div class="rc-short">${r.name_en}</div>
+      </div>
+    `;
+  };
+  document.getElementById('routeCards').innerHTML =
+    corridors.map(cardHtml).join('') +
+    '<div class="divider"></div>' +
+    others.map(cardHtml).join('');
+}
+
+function renderRouteDetails() {
+  const el = document.getElementById('routeDetails');
+  if (state.activeRoutes.size === 0) {
+    el.innerHTML = '<div class="empty-card">왼쪽 카드를 켜면<br>회랑 그리기 과제가 시작됩니다</div>';
+    return;
+  }
+  const html = [...state.activeRoutes]
+    .map(rid => ROUTES.find(r => r.id === rid))
+    .map(r => renderRouteDetailCard(r))
+    .join('');
+  el.innerHTML = html;
+}
+
+function renderRouteDetailCard(r) {
+  const completed = isBuildComplete(r.id);
+  return completed ? renderCompletedUI(r) : renderBuildUI(r);
+}
+
+function renderBuildUI(r) {
+  const stops = getClickStops(r);
+  const progress = state.buildState[r.id].progress;
+  const stepsHtml = stops.map((cityId, i) => {
+    const n = NODES[cityId];
+    const country = COUNTRY[cityId] || '';
+    const countryHtml = country ? `<span class="cs-country">${country}</span>` : '';
+    const cls = i < progress ? 'done' : (i === progress ? 'current' : '');
+    const marker = i < progress ? '✅' : (i === progress ? '🟡' : '○');
+    return `<div class="city-step ${cls}">
+      <span>${marker}</span>
+      <span class="cs-num">${i+1}.</span>
+      <span class="cs-name">${n.name}</span>
+      ${countryHtml}
+      <span class="cs-en">${n.name_en}</span>
+    </div>`;
+  }).join('');
+  const pct = Math.round((progress / stops.length) * 100);
+  return `
+    <div class="route-detail" style="--cd-color:${r.color}">
+      <div class="cd-header">
+        <span class="cd-icon">${r.icon}</span>
+        <span class="cd-name">${r.name}</span>
+      </div>
+      <div class="cd-en">${r.name_en}</div>
+
+      <div class="cd-section">
+        <div class="cd-label">목표</div>
+        <div class="cd-text">${r.desc.purpose}</div>
+      </div>
+
+      <div class="task-banner">
+        <strong>✏️ 과제.</strong> 지도에서 <strong>빨간색으로 깜빡이는 도시</strong>를 순서대로 찾아 클릭하세요. 클릭할 때마다 회랑 선이 그 도시까지 연장됩니다.
+      </div>
+
+      <div class="build-progress">
+        <div class="bp-bar"><div class="bp-fill" style="width:${pct}%"></div></div>
+        <div class="bp-text">${progress} / ${stops.length}</div>
+      </div>
+
+      <div class="cd-section">
+        <div class="cd-label">경유 도시 (순서대로)</div>
+        <div class="city-list">${stepsHtml}</div>
+      </div>
+
+      <div class="build-actions">
+        <button class="btn-small" onclick="skipBuild('${r.id}')">건너뛰기 ▶▶</button>
+      </div>
+    </div>
+  `;
+}
+
+function renderCompletedUI(r) {
+  const d = r.desc;
+  let body = `
+    <div class="cd-section">
+      <div class="cd-label">목표</div>
+      <div class="cd-text">${d.purpose}</div>
+    </div>
+    <div class="complete-banner">✅ 회랑 그리기 완료</div>
+  `;
+
+  if (r.kind === 'corridor') {
+    body += `<div class="cd-section"><div class="cd-label">활용하는 기존 인프라</div><ul class="cd-list">${d.existing.map(x=>`<li>${x}</li>`).join('')}</ul></div>`;
+    const subOrder = ['rail','road','gas','oil','ports'];
+    const subButtons = subOrder
+      .filter(type => Array.isArray(r.additions[type]) && r.additions[type].length > 0)
+      .map(type => {
+        const key = `${r.id}:${type}`;
+        const on = state.activeSubLayers.has(key);
+        const count = r.additions[type].length;
+        return `<span class="sub-toggle-btn${on?' on':''}" data-type="${type}" onclick="toggleSubLayer('${r.id}','${type}')">${TYPE_ICON[type]} ${TYPE_LABEL[type]} <span class="sub-count">${count}</span></span>`;
+      }).join('');
+    const subHtml = subButtons
+      ? `<div class="sub-toggles">${subButtons}</div>`
+      : `<div class="no-additions">이 회랑은 <strong>거의 전적으로 기존 인프라</strong>를 활용합니다 — BRI가 추가하는 별도의 노선·시설이 거의 없고, <em>운영·서비스 통합</em>이 BRI의 기여입니다.</div>`;
+    body += `<div class="cd-section"><div class="cd-label">BRI가 추가하는 것</div>${subHtml}</div>`;
+  } else if (r.kind === 'maritime') {
+    body += `<div class="cd-section"><div class="cd-label">주요 경유지</div><ul class="cd-list">${r.waypoints.map(x=>`<li>${x}</li>`).join('')}</ul></div>`;
+    body += `<div class="cd-section"><div class="cd-label">관련 인수·확보 항구</div><ul class="cd-list">${r.relatedPorts.map(x=>`<li>${x}</li>`).join('')}</ul></div>`;
+  } else if (r.kind === 'pearls') {
+    body += `<div class="cd-section"><div class="cd-label">7개 거점</div><ul class="cd-list">${r.bases.map(b=>`<li><strong>${NODES[b.id].name}</strong> — ${b.deal}</li>`).join('')}</ul></div>`;
+  }
+
+  body += `<div class="cd-section"><div class="cd-label">전략적 의미</div><div class="cd-strategy">${d.strategy}</div></div>`;
+
+  if (r.inquiryQuestion) {
+    let savedAns = '';
+    try { savedAns = localStorage.getItem('bri_inquiry_' + r.id) || ''; } catch(e) {}
+    const escapedAns = savedAns.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    body += `
+      <div class="cd-section">
+        <div class="cd-label">🤔 탐구 질문</div>
+        <div class="inquiry-q-box">${r.inquiryQuestion}</div>
+        <textarea class="inquiry-answer" oninput="saveInquiry('${r.id}', this.value)" placeholder="이 질문에 대한 자신의 생각을 적어보세요...">${escapedAns}</textarea>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="route-detail" style="--cd-color:${r.color}">
+      <div class="cd-header">
+        <span class="cd-icon">${r.icon}</span>
+        <span class="cd-name">${r.name}</span>
+        <span class="cd-check">✅</span>
+      </div>
+      <div class="cd-en">${r.name_en}</div>
+      ${body}
+    </div>
+  `;
+}
+
+// ════════════════════════════════════════════════════════════
+//  Persistence
+// ════════════════════════════════════════════════════════════
+function persist() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      routes:[...state.activeRoutes],
+      builds: state.buildState,
+      subs:[...state.activeSubLayers],
+    }));
+  } catch(e) {}
+}
+
+function loadFromStorage() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    const s = JSON.parse(raw);
+    (s.routes||[]).forEach(id => {
+      const r = ROUTES.find(x => x.id === id);
+      if (!r) return;
+      state.activeRoutes.add(id);
+      state.buildState[id] = (s.builds && s.builds[id]) ? s.builds[id] : { progress:0, complete:false };
+      updatePartialOutline(id);
+    });
+    (s.subs||[]).forEach(key => {
+      const [rid, type] = key.split(':');
+      if (state.activeRoutes.has(rid) && isBuildComplete(rid)) {
+        state.activeSubLayers.add(key);
+        const r = ROUTES.find(x => x.id === rid);
+        state.subLayers[key] = buildSubLayer(r, type);
+        state.subLayers[key].addTo(map);
+      }
+    });
+    updateBuildOverlay();
+    renderRouteCards();
+    renderRouteDetails();
+  } catch(e) { console.error(e); }
+}
+
+document.getElementById('resetBtn').onclick = () => {
+  if (!confirm('모든 토글을 초기화할까요?')) return;
+  [...state.activeRoutes].forEach(id => deactivateRoute(id));
+  try { localStorage.removeItem(STORAGE_KEY); } catch(e) {}
+  renderRouteCards();
+  renderRouteDetails();
+};
+
+// Init
+renderRouteCards();
+renderRouteDetails();
+loadFromStorage();
+
+// ════════════════════════════════════════════════════════════
+//  Tabs + Activity (말풍선/토론) Persistence
+// ════════════════════════════════════════════════════════════
+(function setupTabsAndActivities() {
+  // Tab switching
+  function activateTab(tabId) {
+    document.querySelectorAll('.tab-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.tab === tabId);
+    });
+    document.querySelectorAll('.tab-panel').forEach(p => {
+      p.classList.toggle('active', p.id === 'tab-' + tabId);
+    });
+    // Map needs invalidateSize when shown after being hidden
+    if (tabId === 'map' && map) {
+      setTimeout(() => map.invalidateSize(), 50);
+    }
+    try { localStorage.setItem('bri_active_tab', tabId); } catch(e) {}
+  }
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => activateTab(btn.dataset.tab));
+  });
+  // Restore last active tab
+  try {
+    const savedTab = localStorage.getItem('bri_active_tab');
+    if (savedTab && document.querySelector(`.tab-btn[data-tab="${savedTab}"]`)) {
+      activateTab(savedTab);
+    }
+  } catch(e) {}
+
+  // Speech bubbles + discussion reason — auto-save
+  ['speech-xi', 'speech-trump', 'discuss-reason'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    try {
+      const saved = localStorage.getItem('bri_' + id);
+      if (saved) el.value = saved;
+    } catch(e) {}
+    el.addEventListener('input', () => {
+      try { localStorage.setItem('bri_' + id, el.value); } catch(e) {}
+    });
+  });
+
+  // Discussion choice
+  document.querySelectorAll('input[name="choice"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      try { localStorage.setItem('bri_choice', radio.value); } catch(e) {}
+      document.querySelectorAll('.discuss-card').forEach(c => {
+        c.classList.toggle('selected', c.dataset.choice === radio.value);
+      });
+    });
+  });
+  // Restore choice
+  try {
+    const savedChoice = localStorage.getItem('bri_choice');
+    if (savedChoice) {
+      const radio = document.querySelector(`input[name="choice"][value="${savedChoice}"]`);
+      if (radio) {
+        radio.checked = true;
+        document.querySelector(`.discuss-card[data-choice="${savedChoice}"]`).classList.add('selected');
+      }
+    }
+  } catch(e) {}
+
+  // Export submission button
+  const exportBtn = document.getElementById('exportBtn');
+  if (exportBtn) {
+    exportBtn.addEventListener('click', exportSubmission);
+  }
+})();
+
+// ════════════════════════════════════════════════════════════
+//  Export submission as downloadable HTML
+// ════════════════════════════════════════════════════════════
+function exportSubmission() {
+  const name = prompt('이름을 입력하세요 (생략하면 빈칸으로 저장):') || '';
+  if (name === null) return; // user cancelled
+
+  const get = key => { try { return localStorage.getItem(key) || ''; } catch(e) { return ''; } };
+  const escapeHtml = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const orEmpty = s => s.trim() ? escapeHtml(s) : '<span class="empty">(답안 없음)</span>';
+
+  const ccwaec = get('bri_inquiry_ccwaec');
+  const cpec   = get('bri_inquiry_cpec');
+  const maritime = get('bri_inquiry_maritime');
+  const speechXi = get('bri_speech-xi');
+  const speechTrump = get('bri_speech-trump');
+  const choice = get('bri_choice');
+  const reason = get('bri_discuss-reason');
+
+  const choiceLabel = choice === 'A' ? 'A안 · 일대일로 참여'
+                    : choice === 'B' ? 'B안 · 쿼드 동참'
+                    : '(선택 없음)';
+
+  const dateStr = new Date().toLocaleDateString('ko-KR', { year:'numeric', month:'long', day:'numeric' });
+
+  const html = `<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>일대일로 학습 활동 — ${escapeHtml(name || '학생')}</title>
+<style>
+  body { font-family: 'Noto Sans KR', 'Malgun Gothic', sans-serif; max-width: 760px; margin: 40px auto; padding: 30px; line-height: 1.7; color: #2a2825; background: #fbfaf6; }
+  h1 { color: #8b1c2b; border-bottom: 3px double #8b1c2b; padding-bottom: 10px; font-size: 22px; }
+  h2 { color: #8b1c2b; margin-top: 36px; border-left: 5px solid #8b1c2b; padding-left: 14px; font-size: 17px; }
+  h3 { color: #444; font-size: 14px; margin-top: 20px; }
+  .meta { color: #6b6660; font-size: 13px; margin: 16px 0 20px; padding: 10px 14px; background: white; border-radius: 4px; border: 1px solid #d8d2c4; }
+  .question { background: #fff8ed; border-left: 3px solid #d4a017; padding: 10px 14px; margin: 6px 0; font-style: italic; font-size: 13px; color: #555; }
+  .question em { color: #8a6a0a; font-style: normal; font-weight: 700; }
+  .answer { background: white; padding: 12px 16px; border-radius: 3px; border: 1px solid #d8d2c4; white-space: pre-wrap; min-height: 24px; font-size: 14px; }
+  .empty { color: #aaa; font-style: italic; }
+  .choice-banner { background: #fef0f0; padding: 10px 16px; border-radius: 3px; font-weight: 700; color: #8b1c2b; margin-bottom: 8px; border-left: 4px solid #8b1c2b; }
+  .speech { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 10px; }
+  .speech-box { background: white; border: 1px solid #d8d2c4; border-radius: 6px; padding: 12px 14px; }
+  .speech-box.xi { border-top: 3px solid #c8102e; }
+  .speech-box.trump { border-top: 3px solid #1e5aaa; }
+  .speech-name { font-weight: 700; margin-bottom: 8px; font-size: 13px; }
+  .speech-name.xi { color: #c8102e; }
+  .speech-name.trump { color: #1e5aaa; }
+  @media print {
+    body { background: white; margin: 0; padding: 20px; }
+    .answer, .meta, .speech-box { box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+  <h1>동아시아 지정학 — 일대일로와 쿼드 학습 활동</h1>
+  <div class="meta">
+    <strong>이름:</strong> ${escapeHtml(name) || '(미입력)'}<br>
+    <strong>제출일:</strong> ${dateStr}
+  </div>
+
+  <h2>🤔 탐구 질문 답안</h2>
+
+  <h3>1. 중앙아-서아시아 회랑 (CCAWEC)</h3>
+  <div class="question">이 회랑의 핵심 가스관(D라인)은 갈키니쉬에서 출발해 우루무치를 거쳐 시안까지 갑니다. 똑같이 가스를 수입하는 데 <em>바닷길</em>이 아닌 <em>육상 파이프</em>를 선택한 이유는 무엇일까요?</div>
+  <div class="answer">${orEmpty(ccwaec)}</div>
+
+  <h3>2. 중-파키스탄 회랑 (CPEC)</h3>
+  <div class="question">카슈가르와 그와다르를 잇는 이 회랑은, <em>해상로</em>가 아니라 <em>육로</em>로 인도양에 접근하려 합니다. 굳이 험준한 파키스탄을 종단하는 이 선택의 지정학적 의도는 무엇일까요?</div>
+  <div class="answer">${orEmpty(cpec)}</div>
+
+  <h3>3. 해상 실크로드</h3>
+  <div class="question">해상 실크로드와 진주목걸이를 함께 켜보세요. 둘이 <em>겹쳐 보이는 항구들</em>은 어디인가요? 이 항구들이 가진 공통 특성은 무엇일까요?</div>
+  <div class="answer">${orEmpty(maritime)}</div>
+
+  <h2>🗨️ 말풍선 작성</h2>
+  <div class="speech">
+    <div class="speech-box xi">
+      <div class="speech-name xi">🇨🇳 시진핑 (중국 국가주석)</div>
+      <div class="answer">${orEmpty(speechXi)}</div>
+    </div>
+    <div class="speech-box trump">
+      <div class="speech-name trump">🇺🇸 트럼프 (미국 대통령)</div>
+      <div class="answer">${orEmpty(speechTrump)}</div>
+    </div>
+  </div>
+
+  <h2>💬 한국의 선택</h2>
+  <div class="choice-banner">선택: ${choiceLabel}</div>
+  <h3>그렇게 선택한 이유</h3>
+  <div class="answer">${orEmpty(reason)}</div>
+
+  <div style="margin-top: 40px; padding-top: 16px; border-top: 1px solid #d8d2c4; text-align: center; color: #6b6660; font-size: 11px;">
+    동아시아 지정학 학습 활동 · 일대일로와 쿼드 · 인쇄하려면 Ctrl+P / Cmd+P
+  </div>
+</body>
+</html>`;
+
+  const safeName = (name || '학생').replace(/[\\/:*?"<>|]/g, '_');
+  const ymd = new Date().toISOString().slice(0,10);
+  const filename = `BRI학습활동_${safeName}_${ymd}.html`;
+
+  const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+window.exportSubmission = exportSubmission;
+</script>
+</body>
+</html>
