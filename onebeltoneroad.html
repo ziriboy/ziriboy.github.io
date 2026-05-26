@@ -1194,6 +1194,44 @@ body {
   font-style: italic;
   opacity: 0.7;
 }
+/* Quick keyword question — lighter, smaller than inquiry */
+.cd-label.quick { color: #2a4a6a; }
+.quick-q-box {
+  background: #f0f7fb;
+  border-left: 3px solid #4a7a9a;
+  padding: 8px 12px;
+  margin-top: 4px;
+  border-radius: 0 2px 2px 0;
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: #2a4a6a;
+}
+.quick-q-box em { color: #1a5a8a; font-style: normal; font-weight: 700; }
+.quick-q-box strong { color: #1a5a8a; }
+.quick-answer {
+  width: 100%;
+  min-height: 42px;
+  margin-top: 6px;
+  padding: 6px 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: 3px;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: var(--text);
+  background: white;
+  resize: vertical;
+  outline: none;
+}
+.quick-answer:focus {
+  border-color: #4a7a9a;
+  box-shadow: 0 0 0 2px rgba(74,122,154,0.15);
+}
+.quick-answer::placeholder {
+  color: var(--text-muted);
+  font-style: italic;
+  opacity: 0.7;
+}
 .model-answer-details {
   margin-top: 8px;
   border: 1px solid var(--border);
@@ -1249,7 +1287,7 @@ body {
   <header class="header">
     <div class="brand"><h1>동아시아 지정학 — 일대일로와 쿼드</h1></div>
     <div class="header-right">
-      <button class="btn-header" id="exportBtn" type="button">📥 답안 저장</button>
+      <button class="btn-header" id="exportBtn" type="button" onclick="exportSubmission()">🖨️ 출력</button>
       <span class="header-meta">v10 · 학습 활동</span>
     </div>
   </header>
@@ -1630,6 +1668,7 @@ const ROUTES = [
       existing: ['몽골 횡단철도','시베리아 횡단철도','ESPO 송유관 (2009)'],
       strategy: '러시아의 대유럽 가스 수출 위축 → 대중국 수출 가속. 가스관(시베리아의 힘)은 회랑 본선과 달리 <strong>만주(다칭)</strong>를 경유하여 베이징·상하이로 연결됨.',
     },
+    quickQuestion: '이 회랑(C-M-R)이 연결하는 <strong>세 국가</strong>는 무엇인가요?',
   },
   {
     id:'nelb', kind:'corridor',
@@ -1643,6 +1682,7 @@ const ROUTES = [
       existing: ['룽하이-란신 철도','카자흐 횡단철도','시베리아 횡단철도','유럽 간선'],
       strategy: 'BRI의 "Belt"는 새 철도를 까는 게 아니라 100년 된 철도망을 통합·표준화·서비스화. 컨테이너 화물열차 ~15일 (해상 35-40일).',
     },
+    quickQuestion: '이 회랑의 종착 도시(유럽)는 어디인가요?',
   },
   {
     id:'ccwaec', kind:'corridor',
@@ -1659,7 +1699,6 @@ const ROUTES = [
       existing: ['우루무치-알라산커우-알마티 철도','중앙아 5국 기존 철도망','이란·터키 기존 철도'],
       strategy: '갈키니쉬 가스전(투르크멘, 세계 2위)→중국 서부까지 약 7,000km 직결. 호르무즈 LNG 운송 리스크 회피.',
     },
-    inquiryQuestion: '이 회랑의 핵심 가스관(D라인)은 갈키니쉬에서 출발해 우루무치를 거쳐 시안까지 갑니다. 똑같이 가스를 수입하는 데 <em>바닷길</em>이 아닌 <em>육상 파이프</em>를 선택한 이유는 무엇일까요?',
   },
   {
     id:'cpec', kind:'corridor',
@@ -1681,6 +1720,7 @@ const ROUTES = [
       strategy: '카슈가르→그와다르 약 3,000km. 인도양 직접 접근 + 군사·전략 거점 가능성. 인도 견제.',
     },
     inquiryQuestion: '카슈가르와 그와다르를 잇는 이 회랑은, <em>해상로</em>가 아니라 <em>육로</em>로 인도양에 접근하려 합니다. 굳이 험준한 파키스탄을 종단하는 이 선택의 <strong>지정학적 의도</strong>는 무엇일까요?',
+    inquiryQuestion2: '이 회랑의 <strong>대규모 인프라 투자</strong>(고속도로·항만·발전소 등)가 파키스탄에게 가져오는 <em>장점</em>과 <em>문제점</em>은 각각 무엇일까요? <small>(배경 탭의 파키스탄 사례 참고)</small>',
   },
   {
     id:'bcim', kind:'corridor',
@@ -1699,6 +1739,7 @@ const ROUTES = [
       existing: ['다카-캘커타 (Maitree)','윈난-미얀마 기존 도로'],
       strategy: '<strong>차우퓨 분기</strong>는 "말라카 딜레마" 직접 해결책 — 중동·아프리카산 원유를 차우퓨에서 양륙해 쿤밍·충칭으로 직송.',
     },
+    quickQuestion: '이 회랑 이름의 영문 약자 <strong>B-C-I-M</strong>은 어떤 <em>4개 국가</em>의 머리글자인가요?',
   },
   {
     id:'cicpec', kind:'corridor',
@@ -1737,7 +1778,7 @@ const ROUTES = [
       purpose: '취안저우에서 동남아·인도양·아프리카·지중해를 거쳐 베니스까지 잇는 해상 무역 네트워크.',
       strategy: '단순 물류를 넘어 <strong>항만 인수·운영권·해군 기지화</strong> 등 전략 거점 확보. 진주목걸이 전략과 결합.',
     },
-    inquiryQuestion: '해상 실크로드와 진주목걸이를 함께 켜보세요. 둘이 <em>겹쳐 보이는 항구들</em>은 어디인가요? 이 항구들이 가진 공통 특성은 무엇일까요?',
+    inquiryQuestion: '해상 실크로드와 진주목걸이를 함께 켜보세요. (1) 두 노선에 모두 등장하는 <em>겹쳐 보이는 항구</em>를 2~3개 적어보세요. (2) 이 항구들이 자리한 <strong>인도양</strong>은 중국이 어느 <em>두 지역(대륙)</em>으로부터 자원을 수입하는 핵심 항로일까요?',
   },
   {
     id:'pearls', kind:'pearls',
@@ -2297,6 +2338,16 @@ function saveInquiry(routeId, value) {
 }
 window.saveInquiry = saveInquiry;
 
+function saveInquiry2(routeId, value) {
+  try { localStorage.setItem('bri_inquiry2_' + routeId, value); } catch(e) {}
+}
+window.saveInquiry2 = saveInquiry2;
+
+function saveQuick(routeId, value) {
+  try { localStorage.setItem('bri_quick_' + routeId, value); } catch(e) {}
+}
+window.saveQuick = saveQuick;
+
 function completeBuild(routeId) {
   state.buildState[routeId].complete = true;
   updatePartialOutline(routeId);
@@ -2314,13 +2365,11 @@ function renderRouteCards() {
   const cardHtml = r => {
     const on = state.activeRoutes.has(r.id);
     const done = isBuildComplete(r.id);
-    const inquiryBadge = r.inquiryQuestion ? `<span class="rc-inquiry-badge">탐구</span>` : '';
     return `
       <div class="route-card${on?' on':''}${done ?' completed':''}" data-id="${r.id}" onclick="toggleRoute('${r.id}')">
         <div class="rc-head">
           <span class="rc-icon">${r.icon}</span>
           <span class="rc-name">${r.name}</span>
-          ${inquiryBadge}
           <span class="rc-toggle"></span>
         </div>
         <div class="rc-short">${r.name_en}</div>
@@ -2441,11 +2490,36 @@ function renderCompletedUI(r) {
     let savedAns = '';
     try { savedAns = localStorage.getItem('bri_inquiry_' + r.id) || ''; } catch(e) {}
     const escapedAns = savedAns.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    const label = r.inquiryQuestion2 ? '🤔 탐구 질문 1' : '🤔 탐구 질문';
     body += `
       <div class="cd-section">
-        <div class="cd-label">🤔 탐구 질문</div>
+        <div class="cd-label">${label}</div>
         <div class="inquiry-q-box">${r.inquiryQuestion}</div>
         <textarea class="inquiry-answer" oninput="saveInquiry('${r.id}', this.value)" placeholder="이 질문에 대한 자신의 생각을 적어보세요...">${escapedAns}</textarea>
+      </div>
+    `;
+  }
+  if (r.inquiryQuestion2) {
+    let savedAns2 = '';
+    try { savedAns2 = localStorage.getItem('bri_inquiry2_' + r.id) || ''; } catch(e) {}
+    const escapedAns2 = savedAns2.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    body += `
+      <div class="cd-section">
+        <div class="cd-label">🤔 탐구 질문 2</div>
+        <div class="inquiry-q-box">${r.inquiryQuestion2}</div>
+        <textarea class="inquiry-answer" oninput="saveInquiry2('${r.id}', this.value)" placeholder="이 질문에 대한 자신의 생각을 적어보세요...">${escapedAns2}</textarea>
+      </div>
+    `;
+  }
+  if (r.quickQuestion) {
+    let savedQ = '';
+    try { savedQ = localStorage.getItem('bri_quick_' + r.id) || ''; } catch(e) {}
+    const escapedQ = savedQ.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    body += `
+      <div class="cd-section">
+        <div class="cd-label quick">💡 키워드 확인</div>
+        <div class="quick-q-box">${r.quickQuestion}</div>
+        <textarea class="quick-answer" oninput="saveQuick('${r.id}', this.value)" placeholder="간단히 적어보세요...">${escapedQ}</textarea>
       </div>
     `;
   }
@@ -2578,27 +2652,89 @@ loadFromStorage();
       }
     }
   } catch(e) {}
-
-  // Export submission button
-  const exportBtn = document.getElementById('exportBtn');
-  if (exportBtn) {
-    exportBtn.addEventListener('click', exportSubmission);
-  }
 })();
 
 // ════════════════════════════════════════════════════════════
 //  Export submission as downloadable HTML
 // ════════════════════════════════════════════════════════════
-function exportSubmission() {
-  const name = prompt('이름을 입력하세요 (생략하면 빈칸으로 저장):') || '';
-  if (name === null) return; // user cancelled
+// ════════════════════════════════════════════════════════════
+//  Export submission — text + answers only (no map capture)
+// ════════════════════════════════════════════════════════════
+async function exportSubmission() {
+  const btn = document.getElementById('exportBtn');
+  const originalText = btn ? btn.textContent : '';
+
+  try {
+    const name = prompt('이름을 입력하세요:');
+    if (name === null) return; // user cancelled
+    const studentName = name || '';
+
+    // Show loading state
+    if (btn) {
+      btn.textContent = '⏳ 출력 페이지 생성...';
+      btn.disabled = true;
+    }
+
+    await _generateAndOpenExport(studentName);
+
+  } catch (err) {
+    console.error('Export failed:', err);
+    alert('출력 중 오류가 발생했습니다:\n' + (err && err.message ? err.message : err));
+  } finally {
+    if (btn) {
+      btn.textContent = originalText || '🖨️ 출력';
+      btn.disabled = false;
+    }
+  }
+}
+window.exportSubmission = exportSubmission;
+
+async function _generateAndOpenExport(name) {
 
   const get = key => { try { return localStorage.getItem(key) || ''; } catch(e) { return ''; } };
   const escapeHtml = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   const orEmpty = s => s.trim() ? escapeHtml(s) : '<span class="empty">(답안 없음)</span>';
 
-  const ccwaec = get('bri_inquiry_ccwaec');
+  // Gather corridor work
+  const corridorRows = ROUTES.map(r => {
+    const stops = getClickStops(r);
+    const bs = state.buildState[r.id] || { progress: 0, complete: false };
+    const cityNames = stops.map(id => NODES[id]?.name || id);
+    const quickAns = get('bri_quick_' + r.id);
+    const quickHtml = r.quickQuestion ? `
+      <div class="quick-row">
+        <div class="quick-q">💡 ${r.quickQuestion}</div>
+        <div class="quick-a">${orEmpty(quickAns)}</div>
+      </div>
+    ` : '';
+    if (bs.complete) {
+      return `<div class="corridor-item done">
+        <div class="corridor-name">✅ ${r.name} <span class="route-en">${r.name_en}</span></div>
+        <div class="corridor-path">${cityNames.join(' → ')}</div>
+        ${quickHtml}
+      </div>`;
+    } else if (bs.progress > 0) {
+      const completedCities = cityNames.slice(0, bs.progress).join(' → ');
+      const remaining = stops.length - bs.progress;
+      return `<div class="corridor-item partial">
+        <div class="corridor-name">🔄 ${r.name} <span class="route-en">${r.name_en}</span></div>
+        <div class="corridor-path">${completedCities} <span class="muted">... (남은 도시 ${remaining}개)</span></div>
+        ${quickHtml}
+      </div>`;
+    } else {
+      return `<div class="corridor-item todo">
+        <div class="corridor-name">⬜ ${r.name} <span class="route-en">${r.name_en}</span></div>
+        <div class="corridor-path muted">시작하지 않음</div>
+        ${quickHtml}
+      </div>`;
+    }
+  }).join('');
+
+  const completedCount = ROUTES.filter(r => state.buildState[r.id]?.complete).length;
+
+  const ccwaec = ''; // CCAWEC no longer has inquiry
   const cpec   = get('bri_inquiry_cpec');
+  const cpec2  = get('bri_inquiry2_cpec');
   const maritime = get('bri_inquiry_maritime');
   const speechXi = get('bri_speech-xi');
   const speechTrump = get('bri_speech-trump');
@@ -2617,11 +2753,33 @@ function exportSubmission() {
 <meta charset="UTF-8">
 <title>일대일로 학습 활동 — ${escapeHtml(name || '학생')}</title>
 <style>
-  body { font-family: 'Noto Sans KR', 'Malgun Gothic', sans-serif; max-width: 760px; margin: 40px auto; padding: 30px; line-height: 1.7; color: #2a2825; background: #fbfaf6; }
-  h1 { color: #8b1c2b; border-bottom: 3px double #8b1c2b; padding-bottom: 10px; font-size: 22px; }
-  h2 { color: #8b1c2b; margin-top: 36px; border-left: 5px solid #8b1c2b; padding-left: 14px; font-size: 17px; }
-  h3 { color: #444; font-size: 14px; margin-top: 20px; }
+  body { font-family: 'Noto Sans KR', 'Malgun Gothic', sans-serif; max-width: 800px; margin: 0 auto; padding: 30px; line-height: 1.7; color: #2a2825; background: #fbfaf6; }
+  h1 { color: #8b1c2b; border-bottom: 3px double #8b1c2b; padding-bottom: 10px; font-size: 22px; margin-top: 0; }
+  h2 { color: #8b1c2b; margin-top: 32px; border-left: 5px solid #8b1c2b; padding-left: 14px; font-size: 17px; }
+  h3 { color: #444; font-size: 14px; margin-top: 18px; }
   .meta { color: #6b6660; font-size: 13px; margin: 16px 0 20px; padding: 10px 14px; background: white; border-radius: 4px; border: 1px solid #d8d2c4; }
+  .summary-line { font-size: 12px; color: #6b6660; margin-bottom: 8px; font-family: 'JetBrains Mono', monospace; }
+
+  .print-bar { position: sticky; top: 0; background: #fbfaf6; padding: 10px 0 16px; margin: -30px -30px 20px; padding: 14px 30px; border-bottom: 1px solid #d8d2c4; display: flex; gap: 10px; align-items: center; z-index: 10; }
+  .print-btn { background: #8b1c2b; color: white; padding: 8px 18px; border: none; border-radius: 4px; font-size: 13px; cursor: pointer; font-family: inherit; font-weight: 600; }
+  .print-btn:hover { background: #6b0c1c; }
+  .print-hint { font-size: 11px; color: #6b6660; }
+
+  .corridor-item { background: white; padding: 9px 14px; margin: 5px 0; border-radius: 3px; border: 1px solid #d8d2c4; border-left-width: 4px; }
+  .corridor-item.done { border-left-color: #4a8a4a; }
+  .corridor-item.partial { border-left-color: #d4a017; background: #fff8ed; }
+  .corridor-item.todo { border-left-color: #d8d2c4; opacity: 0.55; }
+  .corridor-name { font-weight: 700; font-size: 13px; }
+  .route-en { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #6b6660; font-weight: 400; margin-left: 6px; letter-spacing: 0.02em; }
+  .corridor-path { font-size: 11.5px; color: #444; margin-top: 3px; font-family: 'JetBrains Mono', monospace; }
+  .corridor-path.muted { color: #aaa; font-style: italic; }
+  .muted { color: #aaa; }
+  .quick-row { margin-top: 8px; padding: 8px 10px; background: #f0f7fb; border-left: 3px solid #4a7a9a; border-radius: 0 2px 2px 0; font-size: 11.5px; }
+  .quick-q { color: #2a4a6a; margin-bottom: 4px; font-style: italic; }
+  .quick-q em { color: #1a5a8a; font-style: normal; font-weight: 700; }
+  .quick-q strong { color: #1a5a8a; }
+  .quick-a { background: white; padding: 6px 10px; border-radius: 2px; border: 1px solid #d8d2c4; min-height: 16px; }
+
   .question { background: #fff8ed; border-left: 3px solid #d4a017; padding: 10px 14px; margin: 6px 0; font-style: italic; font-size: 13px; color: #555; }
   .question em { color: #8a6a0a; font-style: normal; font-weight: 700; }
   .answer { background: white; padding: 12px 16px; border-radius: 3px; border: 1px solid #d8d2c4; white-space: pre-wrap; min-height: 24px; font-size: 14px; }
@@ -2634,34 +2792,48 @@ function exportSubmission() {
   .speech-name { font-weight: 700; margin-bottom: 8px; font-size: 13px; }
   .speech-name.xi { color: #c8102e; }
   .speech-name.trump { color: #1e5aaa; }
+  .footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid #d8d2c4; text-align: center; color: #6b6660; font-size: 11px; }
+
   @media print {
-    body { background: white; margin: 0; padding: 20px; }
-    .answer, .meta, .speech-box { box-shadow: none; }
+    body { background: white; margin: 0; padding: 16px; max-width: none; }
+    .print-bar { display: none !important; }
+    h2 { page-break-after: avoid; }
+    .corridor-item, .speech-box, .answer { page-break-inside: avoid; }
+    .speech { page-break-inside: avoid; }
   }
 </style>
 </head>
 <body>
+  <div class="print-bar">
+    <button class="print-btn" onclick="window.print()">🖨️ 인쇄 / PDF로 저장</button>
+    <span class="print-hint">인쇄 대화상자에서 '대상'을 'PDF로 저장'으로 선택하면 PDF 파일로 받을 수 있습니다.</span>
+  </div>
+
   <h1>동아시아 지정학 — 일대일로와 쿼드 학습 활동</h1>
   <div class="meta">
     <strong>이름:</strong> ${escapeHtml(name) || '(미입력)'}<br>
     <strong>제출일:</strong> ${dateStr}
   </div>
 
-  <h2>🤔 탐구 질문 답안</h2>
+  <h2>🗺️ 활동 1 · 일대일로 회랑 그리기</h2>
+  <div class="summary-line">완성: ${completedCount} / ${ROUTES.length} 회랑</div>
+  ${corridorRows}
 
-  <h3>1. 중앙아-서아시아 회랑 (CCAWEC)</h3>
-  <div class="question">이 회랑의 핵심 가스관(D라인)은 갈키니쉬에서 출발해 우루무치를 거쳐 시안까지 갑니다. 똑같이 가스를 수입하는 데 <em>바닷길</em>이 아닌 <em>육상 파이프</em>를 선택한 이유는 무엇일까요?</div>
-  <div class="answer">${orEmpty(ccwaec)}</div>
+  <h2>🤔 활동 2 · 탐구 질문 답안</h2>
 
-  <h3>2. 중-파키스탄 회랑 (CPEC)</h3>
+  <h3>1. 중-파키스탄 회랑 (CPEC) — 탐구 1</h3>
   <div class="question">카슈가르와 그와다르를 잇는 이 회랑은, <em>해상로</em>가 아니라 <em>육로</em>로 인도양에 접근하려 합니다. 굳이 험준한 파키스탄을 종단하는 이 선택의 지정학적 의도는 무엇일까요?</div>
   <div class="answer">${orEmpty(cpec)}</div>
 
+  <h3>2. 중-파키스탄 회랑 (CPEC) — 탐구 2</h3>
+  <div class="question">이 회랑의 <strong>대규모 인프라 투자</strong>(고속도로·항만·발전소 등)가 파키스탄에게 가져오는 <em>장점</em>과 <em>문제점</em>은 각각 무엇일까요?</div>
+  <div class="answer">${orEmpty(cpec2)}</div>
+
   <h3>3. 해상 실크로드</h3>
-  <div class="question">해상 실크로드와 진주목걸이를 함께 켜보세요. 둘이 <em>겹쳐 보이는 항구들</em>은 어디인가요? 이 항구들이 가진 공통 특성은 무엇일까요?</div>
+  <div class="question">(1) 해상 실크로드와 진주목걸이 두 노선에 모두 등장하는 <em>겹쳐 보이는 항구</em>를 2~3개 적어보세요. (2) 이 항구들이 자리한 <strong>인도양</strong>은 중국이 어느 <em>두 지역(대륙)</em>으로부터 자원을 수입하는 핵심 항로일까요?</div>
   <div class="answer">${orEmpty(maritime)}</div>
 
-  <h2>🗨️ 말풍선 작성</h2>
+  <h2>🗨️ 활동 3 · 말풍선 작성</h2>
   <div class="speech">
     <div class="speech-box xi">
       <div class="speech-name xi">🇨🇳 시진핑 (중국 국가주석)</div>
@@ -2673,32 +2845,27 @@ function exportSubmission() {
     </div>
   </div>
 
-  <h2>💬 한국의 선택</h2>
+  <h2>💬 활동 4 · 한국의 선택</h2>
   <div class="choice-banner">선택: ${choiceLabel}</div>
   <h3>그렇게 선택한 이유</h3>
   <div class="answer">${orEmpty(reason)}</div>
 
-  <div style="margin-top: 40px; padding-top: 16px; border-top: 1px solid #d8d2c4; text-align: center; color: #6b6660; font-size: 11px;">
-    동아시아 지정학 학습 활동 · 일대일로와 쿼드 · 인쇄하려면 Ctrl+P / Cmd+P
+  <div class="footer">
+    동아시아 지정학 학습 활동 · 일대일로와 쿼드
   </div>
 </body>
 </html>`;
 
-  const safeName = (name || '학생').replace(/[\\/:*?"<>|]/g, '_');
-  const ymd = new Date().toISOString().slice(0,10);
-  const filename = `BRI학습활동_${safeName}_${ymd}.html`;
-
-  const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  const win = window.open('', '_blank');
+  if (!win) {
+    alert('새 창이 차단되었습니다. 팝업 차단을 해제하고 다시 시도해주세요.');
+    return;
+  }
+  win.document.open();
+  win.document.write(html);
+  win.document.close();
+  win.document.title = `일대일로 학습 활동 — ${name || '학생'}`;
 }
-window.exportSubmission = exportSubmission;
 </script>
 </body>
 </html>
