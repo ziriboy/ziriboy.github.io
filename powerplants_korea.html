@@ -153,6 +153,7 @@ body{background:var(--bg);display:flex;flex-direction:column;}
 .tt-name{font-weight:700;font-size:13px;}
 .tt-meta{color:#666;font-size:11px;margin-top:3px;}
 .tt-cap{color:#1255A0;font-weight:700;margin-top:3px;}
+.tt-note{color:#8A97AB;font-size:10px;margin-top:4px;}
 </style>
 </head>
 <body>
@@ -160,10 +161,10 @@ body{background:var(--bg);display:flex;flex-direction:column;}
 <div id="hd">
   <div>
     <div id="hd-t">한국의 주요 발전소 분포</div>
-    <div id="hd-s">설비용량 100MW 이상 · 단지 단위</div>
+    <div id="hd-s">발전원별 주요 발전소 25곳 · 단지 단위</div>
   </div>
   <div class="ml-auto">
-    <span class="hbadge">31개 발전소</span>
+    <span class="hbadge">25개 발전소</span>
   </div>
 </div>
 
@@ -201,7 +202,7 @@ body{background:var(--bg);display:flex;flex-direction:column;}
       <span class="fdot" style="background:#378ADD"></span>
       <span class="ftext">
         <span class="ftitle">LNG 복합화력</span>
-        <span class="fsub">수도권 인근</span>
+        <span class="fsub">수도권·울산·광양</span>
       </span>
     </button>
     
@@ -217,7 +218,7 @@ body{background:var(--bg);display:flex;flex-direction:column;}
       <span class="fdot" style="background:#639922"></span>
       <span class="ftext">
         <span class="ftitle">풍력</span>
-        <span class="fsub">서남해·강원·제주</span>
+        <span class="fsub">산지·서남해·제주</span>
       </span>
     </button>
     
@@ -276,7 +277,7 @@ body{background:var(--bg);display:flex;flex-direction:column;}
       </div>
     </div>
     
-    <div id="msrc">자료: 한국전력공사, 한국수력원자력, 환경운동연합 (2024~2025)</div>
+    <div id="msrc">자료: 제공 데이터셋(좌표·설비용량) · 베이스맵 © OpenStreetMap, CARTO</div>
   </div>
 </div>
 
@@ -285,46 +286,40 @@ body{background:var(--bg);display:flex;flex-direction:column;}
    발전소 데이터 (500MW 이상, 신재생은 100MW 이상)
    ============================================================ */
 const plants = [
-  // 석탄 (9개)
-  {type:"coal", name:"태안화력",          loc:"충남 태안", lat:36.910, lng:126.230, mw:6100, op:"한국서부발전"},
-  {type:"coal", name:"당진화력",          loc:"충남 당진", lat:37.052, lng:126.521, mw:6040, op:"한국동서발전"},
-  {type:"coal", name:"보령화력",          loc:"충남 보령", lat:36.408, lng:126.488, mw:4000, op:"한국중부발전"},
-  {type:"coal", name:"신서천화력",        loc:"충남 서천", lat:36.073, lng:126.625, mw:1000, op:"한국중부발전"},
-  {type:"coal", name:"영흥화력",          loc:"인천 옹진", lat:37.245, lng:126.485, mw:5080, op:"한국남동발전"},
-  {type:"coal", name:"삼척화력",          loc:"강원 삼척", lat:37.405, lng:129.198, mw:2100, op:"삼척블루파워"},
-  {type:"coal", name:"강릉안인화력",      loc:"강원 강릉", lat:37.738, lng:129.022, mw:2080, op:"강릉에코파워"},
-  {type:"coal", name:"하동화력",          loc:"경남 하동", lat:35.001, lng:127.829, mw:4000, op:"한국남부발전"},
-  {type:"coal", name:"삼천포화력",        loc:"경남 고성", lat:34.945, lng:128.115, mw:3240, op:"한국남동발전"},
-  
+  // 석탄 (8개)
+  {type:"coal", name:"태안화력", loc:"충청남도 태안군", lat:36.91, lng:126.23, mw:5600, note:"※ 위성 확인 권장"},
+  {type:"coal", name:"당진화력", loc:"충청남도 당진시", lat:37.052, lng:126.521, mw:6040, note:"※ 위성 확인 권장"},
+  {type:"coal", name:"보령화력", loc:"충청남도 보령시", lat:36.408, lng:126.488, mw:3050, note:"※ 위성 확인 권장"},
+  {type:"coal", name:"영흥화력", loc:"인천광역시 옹진군", lat:37.245, lng:126.485, mw:5080, note:"※ 위성 확인 권장"},
+  {type:"coal", name:"하동화력", loc:"경상남도 하동군", lat:35.001, lng:127.829, mw:4000, note:"※ 위성 확인 권장"},
+  {type:"coal", name:"삼천포화력", loc:"경상남도 고성군", lat:34.945, lng:128.115, mw:2120, note:"※ 위성 확인 권장"},
+  {type:"coal", name:"삼척화력", loc:"강원도 삼척시", lat:37.405, lng:129.198, mw:4144, note:"※ 위성 확인 권장"},
+  {type:"coal", name:"강릉안인화력", loc:"강원도 강릉시", lat:37.738, lng:129.022, mw:2080, note:"※ 위성 확인 권장"},
+
   // 원자력 (4개)
-  {type:"nuc",  name:"고리·새울원전",     loc:"부산 기장 / 울산 울주", lat:35.322, lng:129.291, mw:7570, op:"한국수력원자력"},
-  {type:"nuc",  name:"월성원전",          loc:"경북 경주", lat:35.713, lng:129.475, mw:4779, op:"한국수력원자력"},
-  {type:"nuc",  name:"한울원전",          loc:"경북 울진", lat:37.094, lng:129.385, mw:6910, op:"한국수력원자력"},
-  {type:"nuc",  name:"한빛원전",          loc:"전남 영광", lat:35.413, lng:126.418, mw:5899, op:"한국수력원자력"},
-  
-  // LNG (10개)
-  {type:"lng",  name:"인천복합",          loc:"인천 서구", lat:37.503, lng:126.626, mw:4500, op:"한국중부발전·포스코"},
-  {type:"lng",  name:"신인천복합",        loc:"인천 연수", lat:37.387, lng:126.628, mw:1800, op:"한국남부발전"},
-  {type:"lng",  name:"평택복합",          loc:"경기 평택", lat:36.967, lng:126.842, mw:2300, op:"한국서부발전"},
-  {type:"lng",  name:"분당복합",          loc:"경기 성남", lat:37.376, lng:127.124, mw:922,  op:"한국남부발전"},
-  {type:"lng",  name:"일산복합",          loc:"경기 고양", lat:37.673, lng:126.752, mw:900,  op:"한국지역난방공사"},
-  {type:"lng",  name:"안산복합",          loc:"경기 안산", lat:37.295, lng:126.792, mw:850,  op:"민간"},
-  {type:"lng",  name:"광양복합",          loc:"전남 광양", lat:34.928, lng:127.700, mw:1000, op:"포스코에너지"},
-  {type:"lng",  name:"군산복합",          loc:"전북 군산", lat:35.992, lng:126.711, mw:720,  op:"한국서부발전"},
-  {type:"lng",  name:"보령복합",          loc:"충남 보령", lat:36.413, lng:126.490, mw:1000, op:"한국중부발전"},
-  {type:"lng",  name:"율촌복합",          loc:"전남 여수", lat:34.866, lng:127.616, mw:528,  op:"민간"},
-  
+  {type:"nuc", name:"고리·새울원전", loc:"부산광역시 기장군", lat:35.322, lng:129.291, mw:7350, note:"※ 위성 확인 권장"},
+  {type:"nuc", name:"월성원전", loc:"경상북도 경주시", lat:35.713, lng:129.475, mw:4100, note:"※ 위성 확인 권장"},
+  {type:"nuc", name:"한울원전", loc:"경상북도 울진군", lat:37.094, lng:129.385, mw:8700, note:"※ 위성 확인 권장"},
+  {type:"nuc", name:"한빛원전", loc:"전라남도 영광군", lat:35.413, lng:126.418, mw:5900, note:"※ 위성 확인 권장"},
+
+  // LNG (6개)
+  {type:"lng", name:"인천복합단지", loc:"인천광역시 서구", lat:37.503, lng:126.626, mw:5062, note:"※ 위성 확인 권장"},
+  {type:"lng", name:"평택복합", loc:"경기도 평택시", lat:36.967, lng:126.842, mw:868, note:"※ 위성 확인 권장"},
+  {type:"lng", name:"광양복합", loc:"전라남도 광양시", lat:34.928, lng:127.7, mw:989, note:"※ 위성 확인 권장"},
+  {type:"lng", name:"포천복합", loc:"경기도 포천시", lat:37.895, lng:127.2, mw:2324, note:"※ 위성 확인 권장"},
+  {type:"lng", name:"여주복합", loc:"경기도 여주시", lat:37.298, lng:127.637, mw:1025, note:"※ 위성 확인 권장"},
+  {type:"lng", name:"울산복합", loc:"울산광역시 남구", lat:35.5, lng:129.36, mw:2072, note:"※ 위성 확인 권장"},
+
   // 태양광 (3개)
-  {type:"sol",  name:"새만금 태양광",      loc:"전북 군산", lat:35.806, lng:126.557, mw:800, op:"다수 사업자"},
-  {type:"sol",  name:"솔라시도",          loc:"전남 해남", lat:34.524, lng:126.591, mw:98,  op:"민간"},
-  {type:"sol",  name:"영암 태양광",       loc:"전남 영암", lat:34.831, lng:126.690, mw:100, op:"민간"},
-  
-  // 풍력 (5개)
-  {type:"wind", name:"영양풍력",          loc:"경북 영양", lat:36.667, lng:129.135, mw:62,  op:"민간"},
-  {type:"wind", name:"영광풍력",          loc:"전남 영광", lat:35.296, lng:126.401, mw:80,  op:"민간"},
-  {type:"wind", name:"탐라해상풍력",      loc:"제주 한경", lat:33.319, lng:126.176, mw:30,  op:"한국남동발전"},
-  {type:"wind", name:"서남해 해상풍력",    loc:"전북 부안", lat:35.660, lng:126.346, mw:60,  op:"다수(시범단지)"},
-  {type:"wind", name:"강원풍력",          loc:"강원 평창", lat:37.563, lng:128.586, mw:98,  op:"민간"},
+  {type:"sol", name:"새만금 태양광", loc:"전북특별자치도 김제시", lat:35.806, lng:126.557, mw:215, note:"※ 대표 지점(참고)"},
+  {type:"sol", name:"솔라시도", loc:"전라남도 해남군", lat:34.524, lng:126.591, mw:100, note:"※ 대표 지점(참고)"},
+  {type:"sol", name:"영암 태양광", loc:"전라남도 영암군", lat:34.831, lng:126.69, mw:150, note:"※ 대표 지점(참고)"},
+
+  // 풍력 (4개)
+  {type:"wind", name:"영양풍력", loc:"경상북도 영양군", lat:36.667, lng:129.135, mw:187, note:"※ 대표 지점(참고)"},
+  {type:"wind", name:"강원풍력", loc:"강원도 평창군", lat:37.563, lng:128.586, mw:135, note:"※ 대표 지점(참고)"},
+  {type:"wind", name:"탐라해상풍력", loc:"제주특별자치도 제주시", lat:33.319, lng:126.176, mw:30, note:"※ 대표 지점(참고)"},
+  {type:"wind", name:"서남해 해상풍력", loc:"전라북도 부안군", lat:35.66, lng:126.346, mw:60, note:"※ 대표 지점(참고)"},
 ];
 
 const colorMap = {
@@ -399,7 +394,7 @@ plants.forEach(p => {
     <div class="tt-name">${p.name}</div>
     <div class="tt-meta">${p.loc}</div>
     <div class="tt-cap">${p.mw.toLocaleString()} MW</div>
-    <div class="tt-meta">${p.op}</div>
+    ${p.note ? `<div class="tt-note">${p.note}</div>` : ''}
   `, {
     direction: 'top',
     offset: [0, -radius(p.mw)],
