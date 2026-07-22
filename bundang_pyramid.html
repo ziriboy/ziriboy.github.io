@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>분당구 인구 피라미드 (2025)</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ground:#EFF2F1;
+    --panel:#F8FAF9;
+    --ink:#13272C;
+    --ink-soft:#42585D;
+    --line:#C9D3D2;
+    --grid:#DCE3E2;
+    --male:#1E7B8C;
+    --male-soft:#7FB2BB;
+    --female:#C24A63;
+    --female-soft:#DD9AA7;
+    --median:#B07A16;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--ground);
+    color:var(--ink);
+    font-family:"Pretendard","Space Grotesk",system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    padding:32px 20px 44px;
+  }
+  .wrap{max-width:940px;margin:0 auto;}
+
+  /* Header */
+  .eyebrow{
+    font-family:"Space Grotesk",sans-serif;
+    font-size:12px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--ink-soft);font-weight:600;margin:0 0 8px;
+  }
+  h1{
+    font-size:clamp(26px,4.4vw,40px);
+    font-weight:700;line-height:1.05;letter-spacing:-.01em;margin:0;
+  }
+  h1 .en{
+    font-family:"Space Grotesk",sans-serif;font-weight:500;
+    color:var(--ink-soft);font-size:.5em;letter-spacing:0;display:block;margin-top:6px;
+  }
+  .sub{color:var(--ink-soft);font-size:14.5px;margin:12px 0 0;max-width:60ch;line-height:1.55;}
+
+  /* Key figures */
+  .stats{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:14px;
+    margin:26px 0 8px;
+  }
+  .stat{
+    background:var(--panel);border:1px solid var(--line);border-radius:10px;
+    padding:14px 15px;
+  }
+  .stat .num{
+    font-family:"Space Grotesk",sans-serif;font-weight:600;
+    font-size:23px;line-height:1;letter-spacing:-.01em;
+  }
+  .stat .lab{font-size:12px;color:var(--ink-soft);margin-top:7px;line-height:1.35;}
+  .stat.m .num{color:var(--male);}
+  .stat.f .num{color:var(--female);}
+
+  /* Legend */
+  .legend{display:flex;gap:22px;align-items:center;margin:22px 2px 6px;flex-wrap:wrap;}
+  .legend span{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;color:var(--ink-soft);}
+  .sw{width:15px;height:15px;border-radius:3px;display:inline-block;}
+  .sw.m{background:var(--male);}
+  .sw.f{background:var(--female);}
+  .sw.med{width:22px;height:0;border-top:2px dashed var(--median);border-radius:0;}
+
+  /* Chart */
+  .chart{
+    position:relative;background:var(--panel);border:1px solid var(--line);
+    border-radius:12px;padding:10px 8px 4px;margin-top:4px;
+  }
+  svg{display:block;width:100%;height:auto;}
+  .grid-line{stroke:var(--grid);stroke-width:1;}
+  .axis-base{stroke:var(--line);stroke-width:1.5;}
+  .tick-lab{font-family:"Space Grotesk",sans-serif;font-size:11px;fill:var(--ink-soft);}
+  .age-lab{font-size:11.5px;fill:var(--ink-soft);font-variant-numeric:tabular-nums;}
+  .side-lab{font-size:13px;font-weight:600;letter-spacing:.02em;}
+  .axis-title{font-size:11px;fill:var(--ink-soft);font-family:"Space Grotesk",sans-serif;letter-spacing:.04em;}
+  .bar{cursor:default;transition:opacity .15s;}
+  .bar:hover{opacity:.78;}
+  .median-line{stroke:var(--median);stroke-width:1.6;stroke-dasharray:5 4;}
+  .median-tag{fill:var(--median);font-size:11px;font-weight:600;font-family:"Space Grotesk",sans-serif;}
+
+  /* Tooltip */
+  .tip{
+    position:absolute;pointer-events:none;opacity:0;transition:opacity .12s;
+    background:var(--ink);color:#fff;border-radius:8px;padding:9px 11px;
+    font-size:12.5px;line-height:1.45;white-space:nowrap;z-index:5;
+    box-shadow:0 6px 20px rgba(19,39,44,.22);transform:translate(-50%,-118%);
+  }
+  .tip b{font-family:"Space Grotesk",sans-serif;font-size:14px;}
+  .tip .cnt{color:#B9CBCE;}
+
+  /* Footer */
+  .foot{margin-top:18px;font-size:12px;color:var(--ink-soft);line-height:1.6;}
+  .foot .note{margin-top:4px;}
+
+  @media(max-width:560px){
+    .stats{grid-template-columns:repeat(2,1fr);}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .bar{transition:none;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="eyebrow">경기 성남시 · 주민등록인구 · 2025</p>
+  <h1>분당구 인구 피라미드
+    <span class="en">Bundang-gu Population Pyramid — share of total population (%)</span>
+  </h1>
+  <p class="sub">막대 길이는 절대 인구수가 아니라 <b>전체 인구 대비 각 연령·성별 집단의 비율(%)</b>입니다. 42개 막대의 합은 100%이며, 인구 규모가 다른 지역과도 형태를 직접 비교할 수 있습니다.</p>
+
+  <div class="stats">
+    <div class="stat"><div class="num" id="s-total">—</div><div class="lab">총인구 (명)</div></div>
+    <div class="stat"><div class="num" id="s-median">—</div><div class="lab">중위연령 (세, 근사)</div></div>
+    <div class="stat m"><div class="num" id="s-sexratio">—</div><div class="lab">성비 (여성 100명당 남성)</div></div>
+    <div class="stat f"><div class="num" id="s-old">—</div><div class="lab">65세 이상 비율</div></div>
+  </div>
+
+  <div class="legend">
+    <span><i class="sw m"></i>남자</span>
+    <span><i class="sw f"></i>여자</span>
+    <span><i class="sw med"></i>중위연령</span>
+  </div>
+
+  <div class="chart">
+    <svg id="pyramid" viewBox="0 0 960 600" role="img"
+         aria-label="분당구 2025년 성·연령별 인구 비율 피라미드"></svg>
+    <div class="tip" id="tip"></div>
+  </div>
+
+  <div class="foot">
+    <div>자료: 「주민등록인구현황」, 행정안전부 · KOSIS(통계표 DT_1B04005N) · 자료다운 2026.07.22</div>
+    <div class="note">비율은 남녀 합산 총인구(469,833명)를 분모로 계산. 5세 단위 계급, 100세 이상은 하나의 계급으로 묶음. 중위연령은 계급 구간 선형보간으로 추정.</div>
+  </div>
+</div>
+
+<script>
+const ages = ["0–4","5–9","10–14","15–19","20–24","25–29","30–34","35–39","40–44","45–49","50–54","55–59","60–64","65–69","70–74","75–79","80–84","85–89","90–94","95–99","100+"];
+const male   = [6765,9211,13284,12871,11329,15478,17695,15762,17942,18860,19814,18224,15063,13391,8607,5795,4132,2324,783,154,23];
+const female = [6248,8946,12547,12611,11329,15568,17192,16991,20010,21283,21808,18891,16310,14137,9546,7346,5413,3753,1857,478,62];
+
+const tm = male.reduce((a,b)=>a+b,0);
+const tf = female.reduce((a,b)=>a+b,0);
+const total = tm + tf;
+const mPct = male.map(v=>100*v/total);
+const fPct = female.map(v=>100*v/total);
+
+// ---- key figures ----
+const nf = new Intl.NumberFormat('ko-KR');
+document.getElementById('s-total').textContent   = nf.format(total);
+document.getElementById('s-sexratio').textContent = (100*tm/tf).toFixed(1);
+const old65 = ages.reduce((s,a,i)=> (parseInt(a)>=65 ? s+male[i]+female[i] : s),0);
+document.getElementById('s-old').textContent = (100*old65/total).toFixed(1)+'%';
+// median age via linear interpolation over 5-year classes
+(()=>{const counts=ages.map((a,i)=>male[i]+female[i]);let run=0;const half=total/2;
+ for(let i=0;i<ages.length;i++){if(run+counts[i]>=half){const low=parseInt(ages[i]);
+   document.getElementById('s-median').textContent=(low+(half-run)/counts[i]*5).toFixed(1);break;} run+=counts[i];}})();
+
+// ---- geometry ----
+const W=960, H=600;
+const padTop=16, axisH=40, padSide=14, centerW=70;
+const n=ages.length;
+const rowH=(H-padTop-axisH)/n;
+const barH=rowH*0.66;
+const cx=W/2;
+const halfW=(W/2)-(centerW/2)-padSide;
+const AXIS_MAX=5;                     // % axis maximum
+const xForPct=p=>p/AXIS_MAX*halfW;
+const maleInner = cx-centerW/2;       // right edge of male bars (near center)
+const femInner  = cx+centerW/2;       // left edge of female bars
+const svgNS="http://www.w3.org/2000/svg";
+const svg=document.getElementById('pyramid');
+const el=(t,a)=>{const e=document.createElementNS(svgNS,t);for(const k in a)e.setAttribute(k,a[k]);return e;};
+// display order: oldest (100+) at top -> data index reversed
+const dispRow=i=>(n-1-i);
+const rowY=i=>padTop+dispRow(i)*rowH+rowH/2;   // vertical center of a band's row
+
+// ---- gridlines + ticks ----
+const plotBottom=padTop+n*rowH;
+for(let p=0;p<=AXIS_MAX;p++){
+  const dx=xForPct(p);
+  [maleInner-dx, femInner+dx].forEach((x,side)=>{
+    if(p>0||side===0){ // avoid double center line
+      svg.appendChild(el('line',{class:'grid-line',x1:x,y1:padTop,x2:x,y2:plotBottom}));
+    }
+    const t=el('text',{class:'tick-lab','text-anchor':'middle',x:x,y:plotBottom+16});
+    t.textContent=p; svg.appendChild(t);
+  });
+}
+// center baseline
+svg.appendChild(el('line',{class:'axis-base',x1:cx,y1:padTop,x2:cx,y2:plotBottom}));
+// axis titles
+const axL=el('text',{class:'axis-title','text-anchor':'middle',x:maleInner-halfW/2,y:plotBottom+33});axL.textContent='← 남자 (%)';svg.appendChild(axL);
+const axR=el('text',{class:'axis-title','text-anchor':'middle',x:femInner+halfW/2,y:plotBottom+33});axR.textContent='여자 (%) →';svg.appendChild(axR);
+
+// ---- side labels (top) ----
+const sl=el('text',{class:'side-lab','text-anchor':'end',x:maleInner-6,y:padTop-2,fill:'var(--male)'});sl.textContent='남 MALE';svg.appendChild(sl);
+const sr=el('text',{class:'side-lab','text-anchor':'start',x:femInner+6,y:padTop-2,fill:'var(--female)'});sr.textContent='여 FEMALE';svg.appendChild(sr);
+
+// ---- bars + age labels ----
+const tip=document.getElementById('tip');
+const chart=document.querySelector('.chart');
+const reduce=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+function showTip(evt,txt){
+  tip.innerHTML=txt;
+  const cr=chart.getBoundingClientRect();
+  tip.style.left=(evt.clientX-cr.left)+'px';
+  tip.style.top=(evt.clientY-cr.top)+'px';
+  tip.style.opacity=1;
+}
+function hideTip(){tip.style.opacity=0;}
+
+ages.forEach((a,i)=>{
+  const y=rowY(i)-barH/2;
+  // male (extends left from center gap)
+  const wm=xForPct(mPct[i]);
+  const rm=el('rect',{class:'bar',x:maleInner-wm,y:y,width:reduce?wm:0,height:barH,fill:'var(--male)',rx:1.5});
+  rm.addEventListener('mousemove',e=>showTip(e,`<b>${mPct[i].toFixed(2)}%</b> · 남 ${a}세<br><span class="cnt">${nf.format(male[i])}명</span>`));
+  rm.addEventListener('mouseleave',hideTip);
+  svg.appendChild(rm);
+  // female (extends right)
+  const wf=xForPct(fPct[i]);
+  const rf=el('rect',{class:'bar',x:femInner,y:y,width:reduce?wf:0,height:barH,fill:'var(--female)',rx:1.5});
+  rf.addEventListener('mousemove',e=>showTip(e,`<b>${fPct[i].toFixed(2)}%</b> · 여 ${a}세<br><span class="cnt">${nf.format(female[i])}명</span>`));
+  rf.addEventListener('mouseleave',hideTip);
+  svg.appendChild(rf);
+  if(!reduce){ // grow animation
+    rm.animate([{width:0},{width:wm+'px'}],{duration:650,delay:i*22,easing:'cubic-bezier(.22,1,.36,1)',fill:'forwards'});
+    rf.animate([{width:0},{width:wf+'px'}],{duration:650,delay:i*22,easing:'cubic-bezier(.22,1,.36,1)',fill:'forwards'});
+    setTimeout(()=>{rm.setAttribute('width',wm);rf.setAttribute('width',wf);},650+i*22+30);
+  }
+  // age label (center channel)
+  const t=el('text',{class:'age-lab','text-anchor':'middle',x:cx,y:rowY(i)+4});
+  t.textContent=a; svg.appendChild(t);
+});
+
+// ---- median age line (signature) ----
+(()=>{const counts=ages.map((a,i)=>male[i]+female[i]);let run=0;const half=total/2;let med=null,bi=0;
+ for(let i=0;i<ages.length;i++){if(run+counts[i]>=half){med=parseInt(ages[i])+(half-run)/counts[i]*5;bi=i;break;}run+=counts[i];}
+ const low=parseInt(ages[bi]);const frac=(med-low)/5;               // fraction into band (toward older = up)
+ const y=padTop+(dispRow(bi)+(1-frac))*rowH;
+ svg.appendChild(el('line',{class:'median-line',x1:padSide,y1:y,x2:W-padSide,y2:y}));
+ const tg=el('text',{class:'median-tag','text-anchor':'end',x:W-padSide,y:y-6});
+ tg.textContent='중위연령 '+med.toFixed(1)+'세'; svg.appendChild(tg);
+})();
+</script>
+</body>
+</html>
