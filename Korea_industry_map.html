@@ -285,7 +285,7 @@ body{background:var(--bg);display:flex;flex-direction:column;}
 <div id="hd">
   <div>
     <div id="hd-t">📍 한국 주요 제조업 — 어디서 만드는가, 그 산업은 지금 어떤 상태인가?</div>
-    <div id="hd-s">한국은행 「주요 제조업 생산 및 공급망 지도」(2023) · 실제 공장 위치 기반</div>
+    <div id="hd-s">한국은행 「주요 제조업 생산 및 공급망 지도」(2023) · 실제 공장 위치 기반 · 좌표 검증 v2</div>
   </div>
   <div class="ml-auto">
     <span class="hbadge" style="background:rgba(39,174,96,.25);">● 성장</span>
@@ -537,162 +537,162 @@ const IND=[
    trend:[120,143,134,142,179],
    share:{sudo:80.7,chung:15.8,daeg:1.9,honam:1.3,dong:0.1},
    factories:[
-    {lat:37.204,lng:127.072,name:"삼성전자 화성공장",   region:"sudo"},
-    {lat:37.096,lng:127.082,name:"삼성전자 평택공장",   region:"sudo"},
-    {lat:37.279,lng:127.046,name:"삼성전자 기흥공장",   region:"sudo"},
-    {lat:37.276,lng:127.437,name:"SK하이닉스 이천공장", region:"sudo"},
-    {lat:37.374,lng:126.768,name:"서울반도체 안산공장", region:"sudo"},
-    {lat:36.644,lng:127.502,name:"SK하이닉스 청주공장", region:"chung"},
-    {lat:36.649,lng:127.080,name:"삼성전자 온양공장",   region:"chung"},
-    {lat:36.355,lng:127.379,name:"LX세미콘 대전사업장", region:"chung"},
-    {lat:36.108,lng:128.330,name:"SK실트론 구미공장",   region:"daeg"},
-    {lat:35.155,lng:126.829,name:"앰코테크놀로지 광주", region:"honam"},
+    {lat:37.21621,lng:127.07120,name:"삼성전자 화성공장", region:"sudo"},
+    {lat:37.03472,lng:127.06010,name:"삼성전자 평택공장", region:"sudo"},
+    {lat:37.22886,lng:127.08019,name:"삼성전자 기흥공장", region:"sudo"},
+    {lat:37.25033,lng:127.48388,name:"SK하이닉스 이천공장", region:"sudo"},
+    {lat:37.31403,lng:126.78683,name:"서울반도체 안산공장", region:"sudo"},
+    {lat:36.65473,lng:127.43069,name:"SK하이닉스 청주공장", region:"chung"},
+    {lat:36.76601,lng:127.06247,name:"삼성전자 온양공장", region:"chung"},
+    {lat:36.42110,lng:127.40773,name:"LX세미콘 대전사업장", region:"chung"},
+    {lat:36.09434,lng:128.41277,name:"SK실트론 구미공장", region:"daeg"},
+    {lat:35.22936,lng:126.85234,name:"앰코테크놀로지 광주", region:"honam"},
    ]},
   {id:"batt", name:"전기장비(이차전지 포함)",       emoji:"🔋",type:"adv",status:"grow",
    statusDesc:"전기장비 생산액 79→115조원으로 성장. 이차전지(전체의 약 30%)가 전기차 보급에 힘입어 급성장하며 견인. 충청권을 새로운 첨단산업 거점으로 부상시킴.",
    trend:[79,84,89,99,115],
    share:{chung:31.2,sudo:23.9,dong:23.8,daeg:11.1,honam:9.4},
    factories:[
-    {lat:36.664,lng:127.446,name:"LG에너지솔루션 청주", region:"chung"},
-    {lat:36.818,lng:127.131,name:"삼성SDI 천안공장",    region:"chung"},
-    {lat:36.777,lng:126.459,name:"SK온 서산공장",       region:"chung"},
-    {lat:36.715,lng:127.426,name:"에코프로비엠 오창",   region:"chung"},
-    {lat:36.642,lng:127.450,name:"LG화학 청주공장",     region:"chung"},
-    {lat:35.234,lng:128.692,name:"LG전자 창원공장",     region:"dong"},
-    {lat:35.536,lng:129.286,name:"삼성SDI 울산공장",    region:"dong"},
-    {lat:35.859,lng:128.626,name:"현대모비스 대구공장", region:"daeg"},
-    {lat:35.873,lng:128.597,name:"엘앤에프 대구공장",   region:"daeg"},
-    {lat:34.928,lng:127.700,name:"포스코퓨처엠 광양",   region:"honam"},
+    {lat:36.73205,lng:127.44440,name:"LG에너지솔루션 청주", region:"chung"},
+    {lat:36.84274,lng:127.11864,name:"삼성SDI 천안공장", region:"chung"},
+    {lat:36.85397,lng:126.45156,name:"SK온 서산공장", region:"chung"},
+    {lat:36.73099,lng:127.44966,name:"에코프로비엠 오창", region:"chung"},
+    {lat:36.65188,lng:127.44084,name:"LG화학 청주공장", region:"chung"},
+    {lat:35.20878,lng:128.68278,name:"LG전자 창원공장", region:"dong"},
+    {lat:35.51518,lng:129.09372,name:"삼성SDI 울산공장", region:"dong"},
+    {lat:35.68299,lng:128.46429,name:"현대모비스 대구공장", region:"daeg"},
+    {lat:35.84000,lng:128.47866,name:"엘앤에프 대구공장", region:"daeg"},
+    {lat:34.89702,lng:127.60530,name:"포스코퓨처엠 광양", region:"honam"},
    ]},
   {id:"disp", name:"디스플레이",     emoji:"🖥️",type:"adv",status:"warn",
    statusDesc:"생산액 정체(74→74조원). OLED 전환으로 기회가 있으나 중국의 LCD 시장 잠식 심화.",
    trend:[74,69,66,67,74],
    share:{chung:43.2,sudo:35.4,daeg:20.9,dong:0.5},
    factories:[
-    {lat:36.786,lng:126.991,name:"삼성디스플레이 아산", region:"chung"},
-    {lat:36.809,lng:127.151,name:"삼성디스플레이 천안", region:"chung"},
-    {lat:36.644,lng:127.502,name:"삼성SDI 청주공장",    region:"chung"},
-    {lat:37.742,lng:126.779,name:"LG디스플레이 파주",   region:"sudo"},
-    {lat:36.122,lng:128.340,name:"LG디스플레이 구미",   region:"daeg"},
-    {lat:36.115,lng:128.343,name:"LG전자 구미공장",     region:"daeg"},
-    {lat:36.118,lng:128.348,name:"삼성SDI 구미공장",    region:"daeg"},
+    {lat:36.81487,lng:127.06530,name:"삼성디스플레이 아산", region:"chung"},
+    {lat:36.84149,lng:127.11510,name:"삼성디스플레이 천안", region:"chung"},
+    {lat:36.70623,lng:127.40978,name:"삼성SDI 청주공장", region:"chung"},
+    {lat:37.81006,lng:126.76566,name:"LG디스플레이 파주", region:"sudo"},
+    {lat:36.09478,lng:128.40893,name:"LG디스플레이 구미", region:"daeg"},
+    {lat:36.09059,lng:128.38363,name:"LG전자 구미공장", region:"daeg"},
+    {lat:36.09102,lng:128.36642,name:"삼성SDI 구미공장", region:"daeg"},
    ]},
   {id:"wire", name:"무선통신·전자부품",emoji:"📱",type:"adv",status:"warn",
    statusDesc:"생산액 72→63조원으로 하락. 스마트폰 성장 둔화 속에 고부가 부품 중심 재편 중.",
    trend:[72,66,61,54,63],
    share:{sudo:44.7,daeg:36.0,chung:9.7,dong:6.3,honam:3.1},
    factories:[
-    {lat:37.262,lng:127.028,name:"삼성전기 수원공장",   region:"sudo"},
-    {lat:37.272,lng:127.032,name:"삼성전자 수원공장",   region:"sudo"},
-    {lat:37.294,lng:127.192,name:"가온그룹 성남공장",   region:"sudo"},
-    {lat:36.119,lng:128.338,name:"삼성전자 구미공장",   region:"daeg"},
-    {lat:36.113,lng:128.350,name:"LG이노텍 구미공장",   region:"daeg"},
-    {lat:35.869,lng:128.591,name:"이수페타시스 대구",   region:"daeg"},
-    {lat:36.644,lng:127.507,name:"심텍 청주공장",       region:"chung"},
-    {lat:35.219,lng:129.014,name:"삼성전기 부산공장",   region:"dong"},
-    {lat:35.130,lng:126.906,name:"LG이노텍 광주공장",   region:"honam"},
+    {lat:37.26380,lng:127.05529,name:"삼성전기 수원공장", region:"sudo"},
+    {lat:37.25550,lng:127.05400,name:"삼성전자 수원공장", region:"sudo"},
+    {lat:37.40874,lng:127.12925,name:"가온그룹 성남공장", region:"sudo"},
+    {lat:36.10818,lng:128.41397,name:"삼성전자 구미공장", region:"daeg"},
+    {lat:36.11601,lng:128.37931,name:"LG이노텍 구미공장", region:"daeg"},
+    {lat:35.73852,lng:128.45392,name:"이수페타시스 대구", region:"daeg"},
+    {lat:36.64058,lng:127.44593,name:"심텍 청주공장", region:"chung"},
+    {lat:35.09533,lng:128.85567,name:"삼성전기 부산공장", region:"dong"},
+    {lat:35.19605,lng:126.79709,name:"LG이노텍 광주공장", region:"honam"},
    ]},
   {id:"mach", name:"기계장비",       emoji:"🔧",type:"adv",status:"grow",
    statusDesc:"생산액 121→136조원으로 성장. 반도체 제조 장비 수요 폭증이 성장 견인.",
    trend:[121,123,119,118,136],
    share:{sudo:42.5,dong:24.4,chung:18.1,daeg:8.6,honam:5.8},
    factories:[
-    {lat:37.462,lng:126.636,name:"HD현대인프라코어 인천",region:"sudo"},
-    {lat:37.052,lng:126.990,name:"원익IPS 평택공장",    region:"sudo"},
-    {lat:35.545,lng:129.286,name:"HD현대건설기계 울산", region:"dong"},
-    {lat:35.228,lng:128.672,name:"DN솔루션즈 창원",     region:"dong"},
-    {lat:36.822,lng:127.131,name:"세메스 천안공장",      region:"chung"},
-    {lat:35.874,lng:128.606,name:"대동 대구공장",        region:"daeg"},
-    {lat:35.823,lng:127.130,name:"LS엠트론 전주공장",    region:"honam"},
+    {lat:37.48640,lng:126.62817,name:"HD현대인프라코어 인천", region:"sudo"},
+    {lat:37.12517,lng:127.08278,name:"원익IPS 평택공장", region:"sudo"},
+    {lat:35.50086,lng:129.43695,name:"HD현대건설기계 울산", region:"dong"},
+    {lat:35.19354,lng:128.70860,name:"DN솔루션즈 창원", region:"dong"},
+    {lat:36.86494,lng:127.12191,name:"세메스 천안공장", region:"chung"},
+    {lat:35.72879,lng:128.45484,name:"대동 대구공장", region:"daeg"},
+    {lat:35.94857,lng:127.12811,name:"LS엠트론 전주공장", region:"honam"},
    ]},
   {id:"auto", name:"자동차",         emoji:"🚗",type:"trad",status:"warn",
    statusDesc:"생산액 95→105조원. 전기차 전환 과도기. 내연기관 수요 감소 진행 중.",
    trend:[95,91,95,94,105],
    share:{dong:40.8,sudo:35.5,honam:14.7,chung:8.8,daeg:0.2},
    factories:[
-    {lat:35.541,lng:129.325,name:"현대자동차 울산공장", region:"dong"},
-    {lat:35.200,lng:129.046,name:"르노코리아 부산공장", region:"dong"},
-    {lat:35.232,lng:128.592,name:"한국지엠 창원공장",   region:"dong"},
-    {lat:37.183,lng:126.829,name:"기아 화성공장",       region:"sudo"},
-    {lat:37.481,lng:126.864,name:"기아 광명공장",       region:"sudo"},
-    {lat:37.513,lng:126.727,name:"한국지엠 인천공장",   region:"sudo"},
-    {lat:35.178,lng:126.890,name:"기아 광주공장",       region:"honam"},
-    {lat:35.845,lng:127.143,name:"현대자동차 전주공장", region:"honam"},
-    {lat:36.788,lng:127.049,name:"현대자동차 아산공장", region:"chung"},
+    {lat:35.53630,lng:129.38356,name:"현대자동차 울산공장", region:"dong"},
+    {lat:35.08916,lng:128.88198,name:"르노코리아 부산공장", region:"dong"},
+    {lat:35.19679,lng:128.70484,name:"한국지엠 창원공장", region:"dong"},
+    {lat:37.03372,lng:126.75820,name:"기아 화성공장", region:"sudo"},
+    {lat:37.43800,lng:126.88365,name:"기아 광명공장", region:"sudo"},
+    {lat:37.51357,lng:126.71981,name:"한국지엠 인천공장", region:"sudo"},
+    {lat:35.16220,lng:126.87113,name:"기아 광주공장", region:"honam"},
+    {lat:35.94925,lng:127.13521,name:"현대자동차 전주공장", region:"honam"},
+    {lat:36.84884,lng:126.87628,name:"현대자동차 아산공장", region:"chung"},
    ]},
   {id:"apar", name:"자동차부품",     emoji:"⚙️",type:"trad",status:"cris",
    statusDesc:"내연기관 부품 수요 급감. 전기차 부품 전환 속도가 느려 동남권 지역경제 타격 우려.",
    trend:[98,99,101,102,109],
    share:{dong:27.7,chung:25.5,sudo:20.5,daeg:19.0,honam:6.1,gang:1.2},
    factories:[
-    {lat:35.543,lng:129.280,name:"현대모비스 울산공장", region:"dong"},
-    {lat:35.245,lng:128.657,name:"현대위아 창원공장",   region:"dong"},
-    {lat:35.539,lng:129.290,name:"한온시스템 울산공장", region:"dong"},
-    {lat:36.930,lng:126.427,name:"현대트랜시스 서산",   region:"chung"},
-    {lat:36.915,lng:127.449,name:"현대모비스 진천공장", region:"chung"},
-    {lat:37.054,lng:126.987,name:"HL만도 평택공장",     region:"sudo"},
-    {lat:35.887,lng:128.586,name:"평화발레오 대구공장", region:"daeg"},
-    {lat:35.840,lng:129.213,name:"경신 경주공장",       region:"daeg"},
-    {lat:35.131,lng:126.901,name:"현대위아 광주공장",   region:"honam"},
-    {lat:37.351,lng:127.948,name:"HL만도 원주공장",     region:"gang"},
+    {lat:35.51194,lng:129.36627,name:"현대모비스 울산공장", region:"dong"},
+    {lat:35.20527,lng:128.67626,name:"현대위아 창원공장", region:"dong"},
+    {lat:35.51635,lng:129.36313,name:"한온시스템 울산공장", region:"dong"},
+    {lat:36.85743,lng:126.43967,name:"현대트랜시스 서산", region:"chung"},
+    {lat:36.84060,lng:127.46119,name:"현대모비스 진천공장", region:"chung"},
+    {lat:36.95532,lng:126.85552,name:"HL만도 평택공장", region:"sudo"},
+    {lat:35.83871,lng:128.50815,name:"평화발레오 대구공장", region:"daeg"},
+    {lat:35.97851,lng:129.26367,name:"경신 경주공장", region:"daeg"},
+    {lat:35.19713,lng:126.78930,name:"현대위아 광주공장", region:"honam"},
+    {lat:37.29331,lng:127.80187,name:"HL만도 원주공장", region:"gang"},
    ]},
   {id:"stl",  name:"철강",           emoji:"🏗️",type:"trad",status:"cris",
    statusDesc:"중국 과잉 공급과 건설 수요 감소로 구조적 위기. 포항·광양·당진 등 생산 거점 정체.",
    trend:[141,145,141,133,183],
    share:{daeg:24.6,dong:23.8,honam:19.1,chung:16.9,sudo:15.2,gang:0.4},
    factories:[
-    {lat:36.028,lng:129.343,name:"포스코 포항제철소",   region:"daeg"},
-    {lat:36.043,lng:129.345,name:"현대제철 포항공장",   region:"daeg"},
-    {lat:35.432,lng:129.323,name:"고려아연 울산제련소", region:"dong"},
-    {lat:35.536,lng:129.293,name:"현대제철 울산공장",   region:"dong"},
-    {lat:35.225,lng:128.690,name:"세아창원특수강",      region:"dong"},
-    {lat:34.928,lng:127.697,name:"포스코 광양제철소",   region:"honam"},
-    {lat:34.979,lng:127.524,name:"현대제철 순천공장",   region:"honam"},
-    {lat:36.998,lng:126.625,name:"현대제철 당진제철소", region:"chung"},
-    {lat:36.994,lng:126.631,name:"동국제강 당진공장",   region:"chung"},
-    {lat:37.504,lng:126.660,name:"현대제철 인천공장",   region:"sudo"},
+    {lat:35.99882,lng:129.38948,name:"포스코 포항제철소", region:"daeg"},
+    {lat:36.00593,lng:129.37309,name:"현대제철 포항공장", region:"daeg"},
+    {lat:35.42989,lng:129.34364,name:"고려아연 울산제련소", region:"dong"},
+    {lat:35.53054,lng:129.39039,name:"현대제철 울산공장", region:"dong"},
+    {lat:35.19797,lng:128.59865,name:"세아창원특수강", region:"dong"},
+    {lat:34.93287,lng:127.73611,name:"포스코 광양제철소", region:"honam"},
+    {lat:34.91373,lng:127.58284,name:"현대제철 순천공장", region:"honam"},
+    {lat:36.98542,lng:126.72455,name:"현대제철 당진제철소", region:"chung"},
+    {lat:36.97465,lng:126.77087,name:"동국제강 당진공장", region:"chung"},
+    {lat:37.48633,lng:126.64388,name:"현대제철 인천공장", region:"sudo"},
    ]},
   {id:"ship", name:"조선",           emoji:"🚢",type:"trad",status:"warn",
    statusDesc:"생산액 하락했으나 LNG운반선·친환경선 수주 급증으로 2022년 이후 회복세. 고부가가치 전환 중.",
    trend:[42,36,37,36,33],
    share:{dong:79.3,honam:19.8,daeg:0.7,sudo:0.1},
    factories:[
-    {lat:35.535,lng:129.384,name:"HD현대중공업 울산",   region:"dong"},
-    {lat:34.873,lng:128.618,name:"삼성중공업 거제",     region:"dong"},
-    {lat:34.868,lng:128.592,name:"한화오션 거제",       region:"dong"},
-    {lat:35.503,lng:129.385,name:"현대미포조선 울산",   region:"dong"},
-    {lat:35.082,lng:129.046,name:"HJ중공업 부산",       region:"dong"},
-    {lat:34.607,lng:128.454,name:"케이조선 창원(진해)", region:"dong"},
-    {lat:34.752,lng:126.442,name:"현대삼호중공업 영암", region:"honam"},
-    {lat:34.573,lng:126.586,name:"대한조선 해남",       region:"honam"},
+    {lat:35.51675,lng:129.43803,name:"HD현대중공업 울산", region:"dong"},
+    {lat:34.89697,lng:128.60464,name:"삼성중공업 거제", region:"dong"},
+    {lat:34.88770,lng:128.69515,name:"한화오션 거제", region:"dong"},
+    {lat:35.50547,lng:129.39884,name:"현대미포조선 울산", region:"dong"},
+    {lat:35.09573,lng:129.05286,name:"HJ중공업 부산", region:"dong"},
+    {lat:35.09886,lng:128.72289,name:"케이조선 창원(진해)", region:"dong"},
+    {lat:34.73200,lng:126.38865,name:"현대삼호중공업 영암", region:"honam"},
+    {lat:34.74347,lng:126.31683,name:"대한조선 해남", region:"honam"},
    ]},
   {id:"oil",  name:"석유정제",       emoji:"🛢️",type:"trad",status:"warn",
    statusDesc:"탄소중립 정책으로 장기 수요 감소 전망. 울산·여수·서산 정유 거점 전환 모색 중.",
    trend:[107,133,126,81,123],
    share:{dong:47.5,honam:25.7,chung:20.6,sudo:6.1},
    factories:[
-    {lat:35.508,lng:129.359,name:"SK에너지 울산공장",    region:"dong"},
-    {lat:35.434,lng:129.320,name:"S-OIL 울산공장",      region:"dong"},
-    {lat:35.510,lng:129.348,name:"SK엔무브 울산공장",    region:"dong"},
-    {lat:34.762,lng:127.759,name:"GS칼텍스 여수공장",    region:"honam"},
-    {lat:37.007,lng:126.383,name:"HD현대오일뱅크 서산", region:"chung"},
-    {lat:37.503,lng:126.626,name:"SK인천석유화학",       region:"sudo"},
+    {lat:35.50334,lng:129.35631,name:"SK에너지 울산공장", region:"dong"},
+    {lat:35.43929,lng:129.33911,name:"S-OIL 울산공장", region:"dong"},
+    {lat:35.50334,lng:129.35631,name:"SK엔무브 울산공장", region:"dong"},
+    {lat:34.85057,lng:127.70658,name:"GS칼텍스 여수공장", region:"honam"},
+    {lat:37.00661,lng:126.40252,name:"HD현대오일뱅크 서산", region:"chung"},
+    {lat:37.51393,lng:126.65711,name:"SK인천석유화학", region:"sudo"},
    ]},
   {id:"chem", name:"석유화학",       emoji:"⚗️",type:"trad",status:"cris",
    statusDesc:"중국의 자급률 급상승으로 수출 시장 잠식. 범용 제품 마진 급락, 여수·울산·서산 거점 구조조정 압력.",
    trend:[95,106,97,83,115],
    share:{honam:38.9,dong:33.6,chung:22.2,sudo:3.0,daeg:2.2},
    factories:[
-    {lat:34.755,lng:127.750,name:"LG화학 여수공장",      region:"honam"},
-    {lat:34.748,lng:127.745,name:"롯데케미칼 여수공장",  region:"honam"},
-    {lat:34.751,lng:127.748,name:"여천NCC 여수공장",     region:"honam"},
-    {lat:34.758,lng:127.741,name:"한화솔루션 여수공장",  region:"honam"},
-    {lat:34.754,lng:127.753,name:"금호석유화학 여수",    region:"honam"},
-    {lat:35.506,lng:129.368,name:"SK지오센트릭 울산",    region:"dong"},
-    {lat:35.435,lng:129.322,name:"금호석유화학 울산",    region:"dong"},
-    {lat:35.501,lng:129.364,name:"롯데케미칼 울산공장",  region:"dong"},
-    {lat:37.005,lng:126.380,name:"한화토탈에너지스 서산",region:"chung"},
-    {lat:36.999,lng:126.385,name:"LG화학 서산공장",      region:"chung"},
+    {lat:34.80388,lng:127.65260,name:"LG화학 여수공장", region:"honam"},
+    {lat:34.82689,lng:127.67598,name:"롯데케미칼 여수공장", region:"honam"},
+    {lat:34.81767,lng:127.67452,name:"여천NCC 여수공장", region:"honam"},
+    {lat:34.82398,lng:127.66525,name:"한화솔루션 여수공장", region:"honam"},
+    {lat:34.82519,lng:127.66794,name:"금호석유화학 여수", region:"honam"},
+    {lat:35.48668,lng:129.32547,name:"SK지오센트릭 울산", region:"dong"},
+    {lat:35.48961,lng:129.33444,name:"금호석유화학 울산", region:"dong"},
+    {lat:35.49947,lng:129.32450,name:"롯데케미칼 울산공장", region:"dong"},
+    {lat:36.99907,lng:126.35416,name:"한화토탈에너지스 서산", region:"chung"},
+    {lat:36.99076,lng:126.39132,name:"LG화학 서산공장", region:"chung"},
    ]},
 ];
 
@@ -711,6 +711,36 @@ function mainColor(type){return type==='adv'?'#C84B00':'#1255A0';}
 function lightColor(type){return type==='adv'?'#F4A57A':'#7AAEE0';}
 function statusColor(s){return s==='grow'?'#1A7A3C':s==='cris'?'#B91C1C':'#B45309';}
 function bubbleRadius(pct){return Math.round(Math.sqrt(pct)*9.5);}
+
+/* ── 좌표가 완전히 같은 공장 분산 표시 ──
+   동일 부지를 공유하는 사업장(예: SK울산CLX의 SK에너지·SK엔무브)은
+   좌표를 그대로 두되, 화면상 몇 픽셀만 어긋나게 그려 두 마커가 모두 보이도록 한다.
+   오프셋은 줌 배율과 무관하게 항상 일정하므로 겹침 정도가 변하지 않는다. */
+const COINC={};
+IND.forEach(ind=>ind.factories.forEach(f=>{
+  const k=f.lat.toFixed(5)+','+f.lng.toFixed(5);
+  (COINC[k]=COINC[k]||[]).push(f);
+}));
+function coincGroup(f){
+  const g=COINC[f.lat.toFixed(5)+','+f.lng.toFixed(5)];
+  return (g&&g.length>1)?g:null;
+}
+function spreadLatLng(f){
+  const g=coincGroup(f);
+  if(!g) return [f.lat,f.lng];
+  const i=g.indexOf(f), n=g.length, z=map.getZoom();
+  const pt=map.project([f.lat,f.lng],z);
+  const R=(n===2)?4.2:5.8;
+  const a=(n===2)?(i?0:Math.PI):(2*Math.PI*i/n-Math.PI/2);
+  const ll=map.unproject(L.point(pt.x+R*Math.cos(a),pt.y+R*Math.sin(a)),z);
+  return [ll.lat,ll.lng];
+}
+function coincNote(f){
+  const g=coincGroup(f);
+  return g?`<br><span style="font-size:9.5px;color:#B45309;">⚑ 동일 부지 공유 · ${g.length}개 사업장</span>`:'';
+}
+map.on('zoomend',()=>{pinLayers.forEach(m=>{if(m._fac)m.setLatLng(spreadLatLng(m._fac));});});
+
 
 /* ── 개별 산업 그리기 ── */
 function drawSingle(ind){
@@ -733,14 +763,15 @@ function drawSingle(ind){
 
   ind.factories.forEach(f=>{
     const sh=ind.share[f.region]||0;
-    const m=L.circleMarker([f.lat,f.lng],{
+    const m=L.circleMarker(spreadLatLng(f),{
       radius:5,fillColor:col,color:'#fff',weight:1.5,fillOpacity:.92,
     }).addTo(map);
+    m._fac=f;
     m.bindTooltip(
       `<strong>${f.name}</strong><br>`+
       `<span style="font-size:10px;color:#6B7A99;">${RNAMES[f.region]}</span>`+
       `&ensp;<span style="font-weight:900;color:${col};">${sh}%</span>`+
-      `<br><span style="font-size:10px;opacity:.7;">이 권역의 전국 생산 비중</span>`,
+      `<br><span style="font-size:10px;opacity:.7;">이 권역의 전국 생산 비중</span>`+coincNote(f),
       {sticky:true,direction:'top',offset:[0,-6]});
     pinLayers.push(m);
   });
@@ -764,17 +795,18 @@ function drawAll(){
   IND.forEach(ind=>{
     const col=DOT_COLOR[ind.status];
     ind.factories.forEach(f=>{
-      const m=L.circleMarker([f.lat,f.lng],{
+      const m=L.circleMarker(spreadLatLng(f),{
         radius:6,
         fillColor:col,
         color:'#fff',weight:1.5,fillOpacity:.88,
       }).addTo(map);
+      m._fac=f;
 
       const statusLabel=ind.status==='grow'?'성장':ind.status==='cris'?'위기':'전환 중';
       m.bindTooltip(
         `<strong>${f.name}</strong><br>`+
         `<span style="font-size:10.5px;color:#6B7A99;">${ind.emoji} ${ind.name}</span>`+
-        `&ensp;<span style="font-weight:900;color:${col};">${statusLabel}</span>`,
+        `&ensp;<span style="font-weight:900;color:${col};">${statusLabel}</span>`+coincNote(f),
         {sticky:true,direction:'top',offset:[0,-6]});
       pinLayers.push(m);
     });
