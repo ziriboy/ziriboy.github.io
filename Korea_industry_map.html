@@ -442,7 +442,7 @@ body{background:var(--bg);display:flex;flex-direction:column;}
 <!-- WORKSHEET -->
 <button id="ws-toggle">
   <span>📋</span>
-  <span id="ws-t-title">탐구 워크시트 — 4단계 발견 활동</span>
+  <span id="ws-t-title">탐구 활동 — 지금 우리 산업은 어떤 상태인가</span>
   <span id="ws-t-sub">클릭하여 열기</span>
   <span class="wschev" id="wschev">▲</span>
 </button>
@@ -457,60 +457,76 @@ body{background:var(--bg);display:flex;flex-direction:column;}
 
     <div class="ws-item" style="min-width:100%;">
       <div class="ws-all-hint">
-        💡 <strong>먼저 '전체 보기'(왼쪽 하단)를 클릭하세요.</strong> 모든 공장이 녹색(성장) / 주황(전환) / 빨간색(위기) 색으로 표시됩니다.
-        색깔 패턴을 관찰한 뒤 아래 질문에 답하세요.
+        💡 <strong>산업을 하나씩 눌러</strong> 오른쪽의 생산액 추이 그래프와 현황 설명을 확인하세요.
+        지역 분포를 볼 때는 왼쪽 아래 <strong>'전체 보기'</strong>를 누르면 모든 공장이 녹색(성장)·주황(전환 중)·빨강(위기)으로 함께 표시됩니다.
       </div>
     </div>
 
     <!-- STEP 1 -->
     <div class="ws-item">
-      <span class="ws-step ws-s1">1단계 · 패턴 찾기</span>
-      <div class="ws-q"><b>성장 산업 공장</b>이 많은 지역과 <em>위기 산업 공장</em>이 많은 지역을 각각 적어보자. 구체적인 도시명도 함께 쓰자.</div>
-      <textarea class="ws-a" placeholder="성장 공장이 많은 지역: (예) ○○시, ○○시, ○○시 ...&#10;위기 공장이 많은 지역: (예) ○○시, ○○시, ○○시 ..."></textarea>
-    </div>
-
-    <!-- STEP 2 -->
-    <div class="ws-item">
-      <span class="ws-step ws-s2">2단계 · 왜 이 색인가?</span>
-      <div class="ws-hint">💡 개별 산업을 클릭해 오른쪽 <b>생산액 추이 그래프</b>와 <b>현황 배너</b>를 보자. 산업 이름은 주어져 있으니, <b>왜 지금 이 색인지</b>를 찾아 써보자.</div>
+      <span class="ws-step ws-s1">1단계 · 무엇이 어떤 상태인가</span>
+      <div class="ws-q">산업을 하나씩 눌러 <b>성장</b>·<strong>전환 중</strong>·<em>위기</em>로 분류해 보자.</div>
       <table class="ws-table">
         <tr style="background:#E8F1FF;">
-          <th class="ws-th">구분</th>
-          <th class="ws-th">대표 산업 <span style="font-weight:400;color:#8A94A6;">(주어짐)</span></th>
-          <th class="ws-th">왜 지금 이 상태인가?</th>
+          <th class="ws-th" style="width:70px;">구분</th>
+          <th class="ws-th">해당 산업</th>
         </tr>
         <tr>
           <td class="ws-td ws-td-label" style="color:#1A7A3C;">🟢 성장</td>
-          <td class="ws-td" style="color:#3A4A63;">반도체 · 전기장비 · 기계장비</td>
-          <td class="ws-td" style="color:#8A94A6;font-style:italic;">예시) 생산액이 뚜렷이 늘고 글로벌 수요도 확대되는 중</td>
+          <td class="ws-td ws-td-edit" contenteditable="true" data-ph=""></td>
         </tr>
         <tr>
-          <td class="ws-td ws-td-label" style="color:#B45309;">🟠 전환</td>
-          <td class="ws-td" style="color:#3A4A63;">디스플레이 · 무선통신 · 자동차 · 조선 · 석유정제</td>
+          <td class="ws-td ws-td-label" style="color:#B45309;">🟠 전환 중</td>
           <td class="ws-td ws-td-edit" contenteditable="true" data-ph=""></td>
         </tr>
         <tr>
           <td class="ws-td ws-td-label" style="color:#C0392B;">🔴 위기</td>
-          <td class="ws-td" style="color:#3A4A63;">자동차부품 · 철강 · 석유화학</td>
           <td class="ws-td ws-td-edit" contenteditable="true" data-ph=""></td>
         </tr>
       </table>
     </div>
 
+    <!-- STEP 2 -->
+    <div class="ws-item">
+      <span class="ws-step ws-s2">2단계 · 왜 이 상태인가</span>
+      <div class="ws-hint">💡 현황 설명을 읽고 <b>까닭을 낱말로</b> 짧게 적자. 예) 반도체 → AI 수요, 메모리 고성장</div>
+      <table class="ws-table">
+        <tr style="background:#E8F1FF;">
+          <th class="ws-th" style="width:70px;">구분</th>
+          <th class="ws-th">왜 지금 이 상태인가</th>
+        </tr>
+        <tr>
+          <td class="ws-td ws-td-label" style="color:#1A7A3C;">🟢 성장</td>
+          <td class="ws-td ws-td-edit" contenteditable="true" data-ph=""></td>
+        </tr>
+        <tr>
+          <td class="ws-td ws-td-label" style="color:#B45309;">🟠 전환 중</td>
+          <td class="ws-td ws-td-edit" contenteditable="true" data-ph=""></td>
+        </tr>
+        <tr>
+          <td class="ws-td ws-td-label" style="color:#C0392B;">🔴 위기</td>
+          <td class="ws-td ws-td-edit" contenteditable="true" data-ph=""></td>
+        </tr>
+      </table>
+      <div class="ws-q" style="margin-top:8px;">다 적은 뒤, 성장 산업끼리 · 위기 산업끼리 모아 놓고 <strong>반복되는 낱말</strong>을 찾아보자.</div>
+      <textarea class="ws-a" placeholder="성장 산업에 반복되는 낱말: &#10;위기 산업에 반복되는 낱말: "></textarea>
+    </div>
+
     <!-- STEP 3 -->
     <div class="ws-item">
-      <span class="ws-step ws-s3">3단계 · 앞으로 어디로?</span>
-      <div class="ws-hint">💡 세 색은 사실 하나의 <b>순서</b>다: 성장 → 전환 → 위기. 그중 <b>주황(전환)</b>은 아직 방향이 정해지지 않은 <b>중간 상태</b>다.</div>
-      <div class="ws-q">전환 중(주황)인 산업 하나를 골라, 앞으로 <strong>성장 쪽</strong>으로 갈지 <strong>위기 쪽</strong>으로 갈지 예측하고, 그렇게 생각한 근거를 써보자.</div>
-      <textarea class="ws-a" style="min-height:56px;" placeholder="내가 고른 전환 산업: (예) 조선&#10;예측: 성장 쪽 / 위기 쪽&#10;근거: ..."></textarea>
+      <span class="ws-step ws-s3">3단계 · 어디에 모여 있는가</span>
+      <div class="ws-hint">💡 왼쪽 아래 <b>'전체 보기'</b>를 눌러 색깔 분포를 살펴보자.</div>
+      <div class="ws-q"><b>성장 산업</b>이 많은 도시와 <em>위기 산업</em>이 많은 도시를 각각 찾아 적어 보자.</div>
+      <textarea class="ws-a" placeholder="성장 산업이 많은 도시: (예) ○○시, ○○시 ...&#10;위기 산업이 많은 도시: (예) ○○시, ○○시 ..."></textarea>
     </div>
 
     <!-- STEP 4 -->
     <div class="ws-item" style="min-width:100%;">
       <hr class="ws-divider">
-      <span class="ws-step ws-s4">4단계 · 정책은 지도를 어떻게 바꿀까?</span>
-      <div class="ws-q">정부는 반도체·이차전지 등 <strong>성장 산업</strong>을 <strong>경기·충청 특화단지</strong>에 더 집중시키는 정책을 추진하고 있다. 이 정책이 계속되면 몇 년 뒤 이 지도의 <strong>색 분포</strong>는 어떻게 달라질까? <strong>성장 지역</strong>과 <strong>전환·위기 지역</strong>에 미칠 영향을 장점과 단점으로 나누어 써보자.</div>
-      <textarea class="ws-a" style="min-height:90px;margin-top:6px;" placeholder="장점: &#10;단점: "></textarea>
+      <span class="ws-step ws-s4">4단계 · 앞으로 어디로 갈까</span>
+      <div class="ws-hint">💡 세 색은 사실 하나의 <b>순서</b>다: 성장 → 전환 → 위기. 그중 <b>주황(전환 중)</b>은 아직 방향이 정해지지 않은 <b>중간 상태</b>다.</div>
+      <div class="ws-q">전환 중인 산업 하나를 골라, 앞으로 <b>성장 쪽</b>으로 갈지 <em>위기 쪽</em>으로 갈지 예측하고 근거를 써 보자. 그 산업이 몰려 있는 <strong>지역은 어떻게 될지</strong>도 함께 적어 보자.</div>
+      <textarea class="ws-a" style="min-height:90px;margin-top:6px;" placeholder="내가 고른 산업: (예) 조선&#10;예측: 성장 쪽 / 위기 쪽&#10;근거: &#10;그 지역은: "></textarea>
     </div>
 
   </div>
@@ -961,29 +977,15 @@ document.getElementById('ws-save-btn').addEventListener('click', async ()=>{
     font-size:13px;line-height:1.7;
   `;
 
-  // 단계 정보
-  const steps=[
-    {id:'ws-s1-ta', label:'1단계 · 패턴 찾기', color:'#1255A0', bg:'#E6F0FF'},
-    {id:'ws-s2-ta', label:'2단계 · 왜 이 색인가?', color:'#B45309', bg:'#FEF3C7'},
-    {id:'ws-s3-ta', label:'3단계 · 앞으로 어디로?', color:'#1A7A3C', bg:'#E8F7EE'},
-  ];
-
-  // 각 textarea에 id 부여 (아직 없으면)
-  const tas=document.querySelectorAll('#ws-inner .ws-a');
-  if(tas[0]) tas[0].id='ws-s1-ta';
-  if(tas[1]) tas[1].id='ws-s3-ta'; // step3 textarea
-
-  // 모든 textarea 값 수집
+  // 입력값 수집
   const taAll=document.querySelectorAll('#ws-inner .ws-a');
-  const taVals=[...taAll].map(t=>t.value||'(미작성)');
-
-  // contenteditable 테이블 셀 값 수집
-  const editCells=document.querySelectorAll('.ws-td-edit');
+  const taVals=[...taAll].map(t=>t.value.trim()||'(미작성)');
+  const editCells=document.querySelectorAll('#ws-inner .ws-td-edit');
   const cellVals=[...editCells].map(c=>c.textContent.trim()||'—');
 
   pw.innerHTML=`
     <div style="border-bottom:3px solid #1255A0;padding-bottom:14px;margin-bottom:20px;">
-      <div style="font-size:17px;font-weight:900;color:#0B2550;">📍 한국 주요 제조업 — 탐구 워크시트</div>
+      <div style="font-size:17px;font-weight:900;color:#0B2550;">📍 한국 주요 제조업 — 탐구 활동</div>
       <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:12px;color:#6B7A99;">
         <span>한국은행 「주요 제조업 생산 및 공급망 지도」(2023) 기반</span>
         <span style="font-weight:700;color:#18243A;">이름: ${nameVal}</span>
@@ -992,50 +994,53 @@ document.getElementById('ws-save-btn').addEventListener('click', async ()=>{
 
     <!-- 1단계 -->
     <div style="margin-bottom:20px;">
-      <div style="display:inline-block;background:#E6F0FF;color:#1255A0;font-size:11px;font-weight:700;padding:3px 12px;border-radius:5px;margin-bottom:8px;">1단계 · 패턴 찾기</div>
-      <div style="font-size:12.5px;margin-bottom:8px;font-weight:500;">성장 산업 공장이 많은 지역과 위기 산업 공장이 많은 지역을 각각 적어보자.</div>
-      <div style="border:1.5px solid #DDE3EE;border-radius:7px;padding:12px 14px;min-height:70px;background:#FAFBFE;font-size:12px;white-space:pre-wrap;">${taVals[0]}</div>
+      <div style="display:inline-block;background:#E6F0FF;color:#1255A0;font-size:11px;font-weight:700;padding:3px 12px;border-radius:5px;margin-bottom:8px;">1단계 · 무엇이 어떤 상태인가</div>
+      <div style="font-size:12.5px;margin-bottom:8px;font-weight:500;">산업을 하나씩 눌러 성장·전환 중·위기로 분류해 보자.</div>
+      <table style="width:100%;border-collapse:collapse;font-size:12px;">
+        <tr style="background:#E8F1FF;">
+          <th style="padding:6px 10px;border:1px solid #C8D8F0;width:80px;">구분</th>
+          <th style="padding:6px 10px;border:1px solid #C8D8F0;">해당 산업</th>
+        </tr>
+        <tr><td style="padding:7px 10px;border:1px solid #DDE3EE;color:#1A7A3C;font-size:11px;">🟢 성장</td>
+            <td style="padding:7px 10px;border:1px solid #DDE3EE;">${cellVals[0]}</td></tr>
+        <tr><td style="padding:7px 10px;border:1px solid #DDE3EE;color:#B45309;font-size:11px;">🟠 전환 중</td>
+            <td style="padding:7px 10px;border:1px solid #DDE3EE;">${cellVals[1]}</td></tr>
+        <tr><td style="padding:7px 10px;border:1px solid #DDE3EE;color:#C0392B;font-size:11px;">🔴 위기</td>
+            <td style="padding:7px 10px;border:1px solid #DDE3EE;">${cellVals[2]}</td></tr>
+      </table>
     </div>
 
     <!-- 2단계 -->
     <div style="margin-bottom:20px;">
-      <div style="display:inline-block;background:#FEF3C7;color:#B45309;font-size:11px;font-weight:700;padding:3px 12px;border-radius:5px;margin-bottom:8px;">2단계 · 왜 이 색인가?</div>
-      <div style="font-size:12.5px;margin-bottom:8px;font-weight:500;">각 산업이 왜 지금 이 색(상태)인지, 생산액 추이 그래프·현황 배너에서 근거를 찾아 써보자.</div>
+      <div style="display:inline-block;background:#FEF3C7;color:#B45309;font-size:11px;font-weight:700;padding:3px 12px;border-radius:5px;margin-bottom:8px;">2단계 · 왜 이 상태인가</div>
+      <div style="font-size:12.5px;margin-bottom:8px;font-weight:500;">현황 설명을 읽고 그렇게 표시된 까닭을 낱말로 적어 보자.</div>
       <table style="width:100%;border-collapse:collapse;font-size:12px;">
         <tr style="background:#E8F1FF;">
-          <th style="padding:6px 10px;border:1px solid #C8D8F0;">구분</th>
-          <th style="padding:6px 10px;border:1px solid #C8D8F0;">대표 산업 (주어짐)</th>
-          <th style="padding:6px 10px;border:1px solid #C8D8F0;">왜 지금 이 상태인가?</th>
+          <th style="padding:6px 10px;border:1px solid #C8D8F0;width:80px;">구분</th>
+          <th style="padding:6px 10px;border:1px solid #C8D8F0;">왜 지금 이 상태인가</th>
         </tr>
-        <tr>
-          <td style="padding:7px 10px;border:1px solid #DDE3EE;color:#1A7A3C;font-size:11px;">🟢 성장</td>
-          <td style="padding:7px 10px;border:1px solid #DDE3EE;font-size:11px;color:#3A4A63;">반도체·전기장비·기계장비</td>
-          <td style="padding:7px 10px;border:1px solid #DDE3EE;color:#8A94A6;font-style:italic;">예시) 생산액이 뚜렷이 늘고 글로벌 수요도 확대되는 중</td>
-        </tr>
-        <tr>
-          <td style="padding:7px 10px;border:1px solid #DDE3EE;color:#B45309;font-size:11px;">🟠 전환</td>
-          <td style="padding:7px 10px;border:1px solid #DDE3EE;font-size:11px;color:#3A4A63;">디스플레이·무선통신·자동차·조선·석유정제</td>
-          <td style="padding:7px 10px;border:1px solid #DDE3EE;">${cellVals[0]||'—'}</td>
-        </tr>
-        <tr>
-          <td style="padding:7px 10px;border:1px solid #DDE3EE;color:#C0392B;font-size:11px;">🔴 위기</td>
-          <td style="padding:7px 10px;border:1px solid #DDE3EE;font-size:11px;color:#3A4A63;">자동차부품·철강·석유화학</td>
-          <td style="padding:7px 10px;border:1px solid #DDE3EE;">${cellVals[1]||'—'}</td>
-        </tr>
+        <tr><td style="padding:7px 10px;border:1px solid #DDE3EE;color:#1A7A3C;font-size:11px;">🟢 성장</td>
+            <td style="padding:7px 10px;border:1px solid #DDE3EE;">${cellVals[3]}</td></tr>
+        <tr><td style="padding:7px 10px;border:1px solid #DDE3EE;color:#B45309;font-size:11px;">🟠 전환 중</td>
+            <td style="padding:7px 10px;border:1px solid #DDE3EE;">${cellVals[4]}</td></tr>
+        <tr><td style="padding:7px 10px;border:1px solid #DDE3EE;color:#C0392B;font-size:11px;">🔴 위기</td>
+            <td style="padding:7px 10px;border:1px solid #DDE3EE;">${cellVals[5]}</td></tr>
       </table>
+      <div style="font-size:12px;margin:10px 0 6px;font-weight:500;">반복되는 낱말</div>
+      <div style="border:1.5px solid #DDE3EE;border-radius:7px;padding:11px 14px;min-height:46px;background:#FAFBFE;font-size:12px;white-space:pre-wrap;">${taVals[0]}</div>
     </div>
 
     <!-- 3단계 -->
     <div style="margin-bottom:20px;">
-      <div style="display:inline-block;background:#E8F7EE;color:#1A7A3C;font-size:11px;font-weight:700;padding:3px 12px;border-radius:5px;margin-bottom:8px;">3단계 · 앞으로 어디로?</div>
-      <div style="font-size:12.5px;margin-bottom:8px;font-weight:500;">전환 중(주황)인 산업 하나를 골라, 앞으로 성장 쪽으로 갈지 위기 쪽으로 갈지 예측하고 근거를 써보자.</div>
+      <div style="display:inline-block;background:#E8F7EE;color:#1A7A3C;font-size:11px;font-weight:700;padding:3px 12px;border-radius:5px;margin-bottom:8px;">3단계 · 어디에 모여 있는가</div>
+      <div style="font-size:12.5px;margin-bottom:8px;font-weight:500;">성장 산업이 많은 도시와 위기 산업이 많은 도시를 각각 찾아 적어 보자.</div>
       <div style="border:1.5px solid #DDE3EE;border-radius:7px;padding:12px 14px;min-height:60px;background:#FAFBFE;font-size:12px;white-space:pre-wrap;">${taVals[1]}</div>
     </div>
 
     <!-- 4단계 -->
     <div style="margin-bottom:24px;">
-      <div style="display:inline-block;background:#FFF1EA;color:#C84B00;font-size:11px;font-weight:700;padding:3px 12px;border-radius:5px;margin-bottom:8px;">4단계 · 정책은 지도를 어떻게 바꿀까?</div>
-      <div style="font-size:12.5px;margin-bottom:10px;font-weight:500;">정부는 반도체·이차전지 등 성장 산업을 경기·충청 특화단지에 더 집중시키는 정책을 추진하고 있다. 이 정책이 계속되면 몇 년 뒤 지도의 색 분포는 어떻게 달라질까? 성장 지역과 전환·위기 지역에 미칠 영향을 장점과 단점으로 나누어 써보자.</div>
+      <div style="display:inline-block;background:#FFF1EA;color:#C84B00;font-size:11px;font-weight:700;padding:3px 12px;border-radius:5px;margin-bottom:8px;">4단계 · 앞으로 어디로 갈까</div>
+      <div style="font-size:12.5px;margin-bottom:10px;font-weight:500;">전환 중인 산업 하나를 골라 성장 쪽으로 갈지 위기 쪽으로 갈지 예측하고, 근거와 그 지역의 앞날을 함께 써 보자.</div>
       <div style="border:1.5px solid #DDE3EE;border-radius:7px;padding:12px 14px;min-height:90px;background:#FAFBFE;font-size:12px;white-space:pre-wrap;">${taVals[2]}</div>
     </div>
 
