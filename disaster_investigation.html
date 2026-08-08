@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>우리 지역 자연재해 위험 조사</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+ :root{--ink:#12222C;--soft:#4E626D;--faint:#94A2A9;--paper:#EDF0F2;--card:#FFFFFF;
+  --line:#D7DFE4;--a:#2E86C8;--ok:#1F8A5B;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --sans:"Pretendard Variable",Pretendard,-apple-system,"Malgun Gothic",system-ui,sans-serif;}
+ *{box-sizing:border-box} body{margin:0;font-family:var(--sans);background:var(--paper);
+  color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
+ .wrap{max-width:840px;margin:0 auto;padding:26px 16px 60px}
+ .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--soft);margin:0 0 8px}
+ h1{font-size:clamp(22px,4.2vw,30px);font-weight:800;letter-spacing:-.035em;margin:0 0 6px}
+ .lede{margin:0 0 18px;font-size:14.5px;color:var(--soft)}
+ .bar{position:sticky;top:0;z-index:20;background:var(--paper);padding:10px 0 12px;margin-bottom:14px;border-bottom:1px solid var(--line)}
+ .tabs{display:inline-flex;background:#DFE6EA;border-radius:999px;padding:3px;margin-bottom:10px}
+ .tabs button{font-family:var(--sans);font-size:13.5px;font-weight:700;border:0;background:transparent;
+   color:var(--soft);padding:8px 20px;border-radius:999px;cursor:pointer;transition:.2s}
+ .tabs button[aria-pressed="true"]{background:#fff;color:var(--ink);box-shadow:0 1px 3px #0001}
+ .prog{display:flex;align-items:center;gap:10px}
+ .prog .track{flex:1;height:6px;background:#DCE3E7;border-radius:99px;overflow:hidden}
+ .prog .fill{height:100%;background:var(--a);width:0%;transition:width .3s ease}
+ .prog .n{font-family:var(--mono);font-size:12.5px;color:var(--soft);white-space:nowrap}
+ .me{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:16px}
+ .me .row{display:flex;gap:10px;flex-wrap:wrap}
+ .me label{flex:1;min-width:150px;font-size:12.5px;color:var(--soft)}
+ .me input{width:100%;margin-top:4px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-family:var(--sans);font-size:14px}
+ .me input:focus{outline:2px solid var(--a);outline-offset:-1px}
+ .pick{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:18px}
+ .pick h2{font-size:13px;font-weight:800;margin:0 0 4px}
+ .pick p{margin:0 0 10px;font-size:12.5px;color:var(--soft)}
+ .pick .prow{display:flex;align-items:flex-start;gap:9px;margin-bottom:7px}
+ .pick .prow .k{font-family:var(--mono);font-size:10px;letter-spacing:.12em;padding:5px 9px;border-radius:99px;
+   background:#EAF1F6;color:#2C6E96;flex:none;margin-top:2px}
+ .pick .prow .k.opt{background:#F1F0EC;color:#6E6A5E}
+ .pick .ph{margin:8px 0 0;font-size:12px;color:var(--faint)}
+ .pick .opts{display:flex;gap:7px;flex-wrap:wrap}
+ .pick .opts.fixed span{font-family:var(--sans);font-size:13px;font-weight:600;
+   border:1px solid #CBDCE8;background:#F3F8FB;color:#2C6E96;padding:7px 14px;border-radius:999px}
+ .pick button{font-family:var(--sans);font-size:13px;font-weight:600;border:1px solid var(--line);
+   background:#fff;color:var(--soft);padding:7px 14px;border-radius:999px;cursor:pointer}
+ .pick button[aria-pressed="true"]{background:var(--a);border-color:var(--a);color:#fff}
+ .item{background:var(--card);border:1px solid var(--line);border-radius:12px;margin-bottom:10px;overflow:hidden}
+ .item.done{border-color:#A8D5BE}
+ .ihead{display:flex;align-items:flex-start;gap:10px;padding:12px 16px 10px;border-bottom:1px solid #EEF2F4}
+ .ihead .num{font-family:var(--mono);font-size:11px;color:var(--faint);padding-top:4px;min-width:20px}
+ .ihead .t{flex:1}
+ .ihead h3{font-size:16.5px;font-weight:800;letter-spacing:-.02em;margin:0}
+ .ihead .src{font-size:12.5px;color:var(--soft);margin-top:2px}
+ .ihead .src b{color:var(--ink);font-weight:700}
+ .tag{font-family:var(--mono);font-size:10px;letter-spacing:.1em;padding:3px 8px;border-radius:99px;
+   background:#EAF1F6;color:#2C6E96;white-space:nowrap;margin-top:3px}
+ .tag.opt{background:#F1F0EC;color:#6E6A5E}
+ .chk{font-size:16px;color:var(--ok)}
+ .go{font-family:var(--sans);font-size:12.5px;font-weight:700;text-decoration:none;
+   background:var(--a);color:#fff;padding:7px 13px;border-radius:999px;white-space:nowrap;margin-top:2px}
+ .ibody{padding:12px 16px 13px}
+ .about{font-size:13px;color:var(--ink);line-height:1.65;margin-bottom:10px}
+ .about b{font-weight:700;color:var(--a)}
+ .hint{font-size:12.5px;color:var(--soft);margin-bottom:10px}
+ .fgrp{margin-bottom:11px}
+ .gl{font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--faint);
+   margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid #EEF2F4}
+ .frow{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:flex-start}
+ .frow .f{margin-bottom:0;flex:0 0 auto;max-width:100%}
+ @media (max-width:520px){.frow{gap:9px 12px}}
+ .f{margin-bottom:9px}
+ .f .lb{font-size:13px;font-weight:700;margin-bottom:5px}
+ .grades{display:flex;gap:5px;flex-wrap:wrap}
+ .grades button{font-family:var(--sans);font-size:12.5px;font-weight:600;border:1px solid var(--line);
+   background:#fff;color:var(--soft);padding:6px 11px;border-radius:8px;cursor:pointer}
+ .grades button[aria-pressed="true"]{background:var(--a);border-color:var(--a);color:#fff}
+ .mean{font-size:12.5px;color:var(--a);font-weight:600;margin-top:4px;min-height:0}
+ .mean:empty{margin-top:0}
+ .numin{display:flex;align-items:center;gap:8px}
+ .numin input{width:104px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-family:var(--mono);font-size:14px}
+ .numin input:focus{outline:2px solid var(--a);outline-offset:-1px}
+ .numin .u{font-size:13px;color:var(--soft)}
+ .txin{width:180px;max-width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-family:var(--sans);font-size:14px}
+ textarea.memo{width:100%;min-height:54px;padding:9px 11px;border:1px solid var(--line);border-radius:8px;
+   font-family:var(--sans);font-size:13.5px;resize:vertical}
+ textarea.memo:focus,.txin:focus{outline:2px solid var(--a);outline-offset:-1px}
+ .opt2{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;background:#F1F0EC;color:#6E6A5E;
+   padding:2px 7px;border-radius:99px;margin-left:5px;font-weight:400}
+ .shot input[type=file]{position:absolute;left:-9999px}
+ .shot{display:flex;gap:7px;align-items:center}
+ .shotb,.shotx{font-family:var(--sans);font-size:12.5px;font-weight:600;border:1px solid var(--line);
+   background:#fff;color:var(--soft);padding:7px 13px;border-radius:8px;cursor:pointer}
+ .shotb:hover,.shotx:hover{border-color:var(--soft)}
+ .shotp{margin-top:7px}
+ .shotp img{max-width:100%;max-height:170px;object-fit:contain;object-position:left;
+   border:1px solid var(--line);border-radius:8px;display:block;background:#F7FAFB}
+
+ /* ── 결과 보고서 ── */
+
+ .scope{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 15px 12px;margin:0 0 16px}
+ .scope .sl{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;margin-bottom:5px}
+ .scope .k{font-family:var(--mono);font-size:10px;letter-spacing:.12em;padding:3px 9px;border-radius:99px;
+   background:#EAF1F6;color:#2C6E96;flex:none}
+ .scope .k.opt{background:#F1F0EC;color:#6E6A5E}
+ .scope .v{font-size:13.5px;font-weight:700;color:var(--ink)}
+ .scope em{font-style:normal;font-size:12px;color:var(--faint)}
+ .cav{font-size:12px;color:var(--soft);margin:9px 0 0;padding-top:9px;border-top:1px solid #EEF2F4}
+
+ .rep{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 18px 20px;margin-top:24px}
+ .rep h2{font-size:17px;font-weight:800;margin:0 0 3px;letter-spacing:-.02em}
+ .rep .sub{font-size:12.5px;color:var(--soft);margin:0 0 16px}
+ .rgroup{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid #EEF2F4}
+ .rgroup:last-of-type{border-bottom:0;margin-bottom:6px}
+ .rgroup .gh{display:flex;align-items:baseline;gap:8px;margin-bottom:8px}
+ .rgroup .gh .gn{font-size:14.5px;font-weight:800}
+ .rgroup .gh .gs{font-family:var(--mono);font-size:10.5px;color:var(--faint)}
+ .rrow{display:grid;grid-template-columns:118px 1fr;gap:10px;align-items:center;margin-bottom:7px}
+ .rrow .rk{font-size:12.5px;color:var(--soft);text-align:right}
+ .steps{display:flex;gap:3px;align-items:center}
+ .steps .st{height:16px;flex:1;border-radius:3px;background:#EDF1F3;position:relative}
+ .steps .st.on{box-shadow:inset 0 0 0 1px rgba(0,0,0,.10)}
+ .steps .st.cur{outline:2px solid var(--ink);outline-offset:1px}
+ .rval{font-family:var(--mono);font-size:12.5px;font-weight:600;white-space:nowrap}
+ .rval span{font-family:var(--sans);font-weight:400;color:var(--soft);margin-left:5px}
+ .rnote{font-size:12px;color:var(--faint);margin-top:5px}
+ .rsee{font-size:12.5px;color:var(--ink);background:#F6F9FA;border-left:3px solid var(--line);
+   padding:7px 11px;border-radius:0 7px 7px 0;margin-top:8px}
+ .rempty{font-size:12.5px;color:var(--faint)}
+
+ .blank{border:1px dashed #C7D2D8;border-radius:7px;height:34px;background:#FBFCFD}
+ .rsee.blank{height:44px;border-left:3px solid #E4EAED;background:#FBFCFD}
+ .rshot{margin-top:9px}
+ .rshot .box{width:320px;max-width:100%;aspect-ratio:4/3;border:1px solid var(--line);
+   border-radius:6px;background:#F2F6F8;overflow:hidden}
+ .rshot .box img{width:100%;height:100%;object-fit:cover;object-position:center;display:block}
+ .rshot .cap{font-size:11px;color:var(--faint);margin-top:4px}
+ .out{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px 16px;margin-top:16px}
+ .out h2{font-size:14px;font-weight:800;margin:0 0 4px}
+ .out p{margin:0 0 10px;font-size:12.5px;color:var(--soft)}
+ .out textarea{width:100%;min-height:200px;font-family:var(--mono);font-size:12px;line-height:1.6;
+   border:1px solid var(--line);border-radius:8px;padding:11px;background:#FAFCFD}
+ .btns{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+ .btn{font-family:var(--sans);font-size:13.5px;font-weight:700;border:0;background:var(--a);color:#fff;
+   padding:9px 16px;border-radius:999px;cursor:pointer}
+ .btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line);font-weight:600}
+ .msg{font-size:12.5px;color:var(--ok);font-weight:600;align-self:center}
+ .warn{margin-top:16px;background:#FFF7ED;border:1px solid #EBD5B3;border-radius:10px;padding:12px 14px;font-size:12.5px;color:#7A5A21}
+ .rule{margin-top:16px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+ .rule h2{font-size:13px;font-weight:800;margin:0 0 7px}
+ .rule li{font-size:12.5px;color:var(--soft);margin-bottom:4px}
+ @media (max-width:560px){.ihead{flex-wrap:wrap} .go{margin-top:6px}
+   .rrow{grid-template-columns:1fr;gap:3px} .rrow .rk{text-align:left}}
+ @media print{
+   .bar,.pick,.warn,.btns,#viewA,.lede,.eyebrow,.me{display:none !important}
+   body{background:#fff} .wrap{padding:0;max-width:none}
+   .rep{border:0;padding:0} .rgroup{page-break-inside:avoid;padding-bottom:9px;margin-bottom:10px}
+   .rshot .box{width:210px}
+   .rrow{margin-bottom:4px} .rep h2{font-size:15px} .rgroup .gh .gn{font-size:13px}
+ }
+</style></head><body>
+<div class="wrap">
+<p class="eyebrow">한국지리 탐구 · 4.11</p>
+<h1>우리 지역 자연재해 위험 조사</h1>
+<p class="lede">같은 자연재해라도 지역의 자연환경과 생활 공간에 따라 위험의 정도는 달라진다. 국가가 제공하는 지도를 이용해 우리 지역의 자연재해 위험을 직접 확인해 보자.</p>
+
+
+
+<div class="bar">
+  <div class="tabs">
+    <button id="tabA" aria-pressed="true">조사하기</button>
+    <button id="tabB" aria-pressed="false">보고서</button>
+  </div>
+  <div class="prog">
+    <div class="track"><div class="fill" id="fill"></div></div>
+    <div class="n" id="pn">0 / 5 항목</div>
+  </div>
+</div>
+
+<div class="me"><div class="row">
+  <label>우리 지역<input id="mRegion" placeholder="예: 충청북도 청주시 흥덕구"></label>
+  <label>학년·반·이름<input id="mName" placeholder="예: 1학년 3반 홍길동"></label>
+</div></div>
+
+
+<div id="viewA">
+
+<div class="pick">
+  <h2>조사할 항목 고르기</h2>
+  <div class="prow"><span class="k">필수</span><div class="opts fixed" id="reqPick"></div></div>
+  <div class="prow"><span class="k opt">선택</span><div class="opts" id="optPick"></div></div>
+  <p class="ph">필수 다섯 항목만 조사하면 된다. 선택 항목은 우리 지역에 해당하는 것이 있으면 눌러서 더한다.</p>
+</div>
+
+<div id="list"></div>
+</div>
+
+<div id="viewB" style="display:none">
+
+<div class="rep">
+  <h2 id="repTitle">조사 결과</h2>
+  <p class="sub" id="repSub">항목마다 그 자료의 눈금 위에 표시된다. 눈금이 서로 다르므로 항목끼리 견주지 않는다.</p>
+  <div id="repBody"></div>
+</div>
+
+<div class="btns">
+  <button class="btn" id="bPrint">인쇄 · PDF로 저장</button>
+</div>
+
+<div class="warn">입력한 내용은 저장되지 않는다. 창을 닫기 전에 반드시 인쇄하거나 PDF로 저장해 둔다.</div>
+</div>
+
+
+</div>
+
+<script>
+(function(){
+ var ITEMS = [{"id": "flood", "name": "홍수 · 침수", "req": true, "src": "생활안전지도", "path": "재난안전 → 도시침수지도 / 하천범람지도", "link": "https://www.safemap.go.kr/main/smap.do", "about": "드물게 내리는 큰비를 가정해 잠길 수 있는 범위와 깊이를 나타낸 지도다. <b>도시침수지도</b>는 빗물펌프장·저류조가 물을 다 처리하지 못한 경우, <b>하천범람지도</b>는 100년에 한 번쯤 올 큰비에 강이 넘치거나 제방이 무너진 경우를 가정한다.", "scaleNote": "숫자가 클수록 깊이 잠긴다.", "interp": "예) 아주 큰비가 내리면 우리 지역은 1.0~2.0m 정도 잠길 수 있다.", "interpKey": "urban", "interpBy": {"없음": "예) 우리 지역은 두 지도 모두 색칠되지 않았다. 지대가 높기 때문일 것이다.", "1등급": "예) 아주 큰비가 내리면 우리 지역은 무릎 아래 정도로 얕게 잠길 수 있다.", "2등급": "예) 아주 큰비가 내리면 우리 지역은 허리 높이까지 잠길 수 있다.", "3등급": "예) 아주 큰비가 내리면 우리 지역은 키를 넘길 만큼 잠길 수 있다.", "4등급": "예) 아주 큰비가 내리면 우리 지역은 건물 1층이 잠길 만큼 물이 찰 수 있다.", "5등급": "예) 아주 큰비가 내리면 우리 지역은 2층까지 잠길 만큼 물이 찰 수 있다."}, "fields": [{"key": "urban", "label": "도시침수지도", "type": "grade", "colors": ["#DDE3E7", "#FDE96A", "#B9E86B", "#5FE0E0", "#C89BE8", "#F14C9A"], "options": [["없음", "색칠되지 않음"], ["1등급", "0.5m 미만 · 무릎 아래"], ["2등급", "0.5~1.0m 미만 · 허리 높이"], ["3등급", "1.0~2.0m 미만 · 키를 넘긴다"], ["4등급", "2.0~5.0m 미만 · 1층이 잠긴다"], ["5등급", "5.0m 이상 · 2층까지"]]}, {"key": "river", "label": "하천범람지도", "type": "grade", "colors": ["#DDE3E7", "#FDE96A", "#B9E86B", "#5FE0E0", "#C89BE8", "#F14C9A"], "options": [["없음", "색칠되지 않음"], ["1등급", "0.5m 미만 · 무릎 아래"], ["2등급", "0.5~1.0m 미만 · 허리 높이"], ["3등급", "1.0~2.0m 미만 · 키를 넘긴다"], ["4등급", "2.0~5.0m 미만 · 1층이 잠긴다"], ["5등급", "5.0m 이상 · 2층까지"]]}], "rowLabels": {}}, {"id": "landslide", "name": "산사태", "req": true, "src": "생활안전지도", "path": "재난안전 → 산사태위험지도", "link": "https://www.safemap.go.kr/main/smap.do", "about": "산림청이 지형·경사·토양·지질·강우량·숲의 모습을 종합해 산사태가 일어날 가능성을 다섯 등급으로 나눈 지도다. <b>1등급이 가장 위험하다.</b> 등급이 낮다고 안전한 것은 아니며, 비가 그친 뒤에도 산사태는 일어날 수 있다.", "scaleNote": "1등급이 가장 위험하다. 다른 지도와 방향이 반대다.", "interp": "예) 우리 동네 뒷산은 3등급으로 중간 정도다. 그렇다고 안전한 것은 아니다.", "interpBy": {"없음": "예) 우리 동네는 산지가 아니어서 색칠되지 않았다. 다만 가까운 산자락에는 등급이 표시되어 있었다.", "1등급": "예) 우리 동네 뒷산은 1등급으로 가장 위험한 구간이다. 큰비가 오면 특히 조심해야 한다.", "2등급": "예) 우리 동네 뒷산은 2등급으로 위험도가 높은 편이다. 경사가 급하고 흙이 두껍기 때문일 것이다.", "3등급": "예) 우리 동네 뒷산은 3등급으로 중간 정도다. 등급이 중간이라고 안전한 것은 아니다.", "4등급": "예) 우리 동네 뒷산은 4등급으로 위험도가 낮은 편이다. 그래도 큰비가 오면 산사태가 날 수 있다.", "5등급": "예) 우리 동네 뒷산은 5등급으로 위험도가 가장 낮다. 경사가 완만하기 때문일 것이다."}, "fields": [{"key": "grade", "label": "산사태위험지도", "type": "grade", "rev": true, "colors": ["#DDE3E7", "#E8483C", "#F4A62A", "#B7E8A0", "#7FD3F0", "#3A56D6"], "options": [["없음", "색칠되지 않음 · 산지가 아니다"], ["1등급", "가장 위험도가 높은 구간"], ["2등급", "위험도가 높은 구간"], ["3등급", "중간 위험도 구간"], ["4등급", "위험도가 낮은 구간"], ["5등급", "가장 낮은 위험도 구간"]]}], "rowLabels": {}}, {"id": "fire", "name": "산불", "req": true, "src": "생활안전지도", "noInterp": true, "path": "재난안전 → 산불발생이력", "link": "https://www.safemap.go.kr/main/smap.do", "about": "지금까지 산불이 난 자리를 점으로 찍은 <b>실제 기록</b>이다. 위험 등급이 아니다. 우리 지역이 화면에 들어오도록 지도를 맞춘 뒤 표시된 지점을 세고, 가까운 곳에 기록이 있으면 눌러서 발생 시기·원인·피해 면적을 확인한다.", "scaleNote": "건수는 등급이 아니다. 주변과 견주어 판단한다.", "interp": "예) 우리 지역에 산불 이력이 3건 있었다. 가까운 곳의 산불은 쓰레기를 태우다 난 불이었다.", "interpKey": "rel", "interpBy": {"적음": "예) 우리 지역에는 산불 이력이 거의 없었다. 산림이 적기 때문일 것이다.", "비슷": "예) 우리 지역의 산불 이력은 주변과 비슷했다. 원인은 대부분 사람의 활동이었다.", "많음": "예) 우리 지역에 산불이 자주 났다. 산자락에 마을과 밭이 붙어 있기 때문일 것이다."}, "fields": [{"key": "cnt", "label": "산불 발생 건수", "type": "num", "unit": "건", "ph": "예: 3", "pair": 1}, {"key": "rel", "label": "주변 지역과 견주면", "type": "grade", "colors": ["#DDE3E7", "#BFD8E6", "#F5C97B", "#EE8B5B"], "options": [["적음", "적은 편이다"], ["비슷", "비슷하다"], ["많음", "많은 편이다"]], "pair": 1}, {"key": "when", "label": "발생 시기", "type": "text", "opt": true, "ph": "예: 2016년 6월", "pair": 2}, {"key": "cause", "label": "발생 원인", "type": "text", "opt": true, "ph": "예: 농산폐기물 소각", "pair": 2}, {"key": "area", "label": "피해 면적", "type": "num", "unit": "ha", "opt": true, "ph": "예: 0.5", "pair": 2}], "rowLabels": {"1": "우리 지역", "2": "가까운 산불 기록 — 있는 경우에만"}}, {"id": "heat", "name": "폭염", "req": true, "src": "기상자료개방포털", "noInterp": true, "path": "기후통계분석 → 기상현상일수 → 폭염일수 → 분포도 → 자료구분 '년' → 지점 '전체'", "link": "https://data.kma.go.kr/", "about": "일최고기온이 33℃ 이상이었던 날의 수다. <b>지난 한 해</b>를 기준으로 조회한다. 지점 '전체'로 보면 전국 값이 한 지도에 나온다.", "scaleNote": "기상청 분포도의 색 구간을 그대로 쓴다. 지난 한 해 기준이다.", "fields": [{"key": "stn", "label": "확인한 지점", "type": "text", "ph": "예: 청주", "pair": 1}, {"key": "days", "label": "폭염일수", "type": "band", "unit": "일", "ph": "예: 17", "bands": [[0, 5, "0~5일"], [5, 10, "5~10일"], [10, 15, "10~15일"], [15, 20, "15~20일"], [20, 30, "20~30일"], [30, 9999, "30일 이상"]], "pair": 1}, {"key": "range", "label": "전국의 범위", "type": "text", "ph": "예: 3일 ~ 32일", "pair": 2}, {"key": "rel", "label": "우리 지역은", "type": "grade", "colors": ["#DDE3E7", "#BFD8E6", "#F5C97B", "#EE8B5B"], "options": [["적음", "적은 편이다"], ["중간", "중간쯤이다"], ["많음", "많은 편이다"]], "pair": 2}], "rowLabels": {"1": "우리 지역", "2": "전국과 견주면"}}, {"id": "snow", "name": "대설", "req": true, "src": "기상자료개방포털", "noInterp": true, "path": "기후통계분석 → 기상현상일수 → 눈일수 → 분포도 → 자료구분 '년' → 지점 '전체'", "link": "https://data.kma.go.kr/", "about": "눈이 관측된 날의 수다. <b>지난 한 해</b> 기준이며, 눈이 얼마나 쌓였는지는 알려주지 않는다. 관측 지점이 23곳뿐이라 우리 지역에 없으면 가장 가까운 지점을 쓴다.", "scaleNote": "눈일수는 빈도이며 적설량이 아니다. 지난 한 해 기준이다.", "fields": [{"key": "stn", "label": "확인한 지점", "type": "text", "ph": "예: 청주", "pair": 1}, {"key": "days", "label": "눈일수", "type": "band", "unit": "일", "ph": "예: 32", "bands": [[0, 5, "0~5일"], [5, 10, "5~10일"], [10, 15, "10~15일"], [15, 20, "15~20일"], [20, 30, "20~30일"], [30, 9999, "30일 이상"]], "pair": 1}, {"key": "range", "label": "전국의 범위", "type": "text", "ph": "예: 3일 ~ 62일", "pair": 2}, {"key": "rel", "label": "우리 지역은", "type": "grade", "colors": ["#DDE3E7", "#BFD8E6", "#F5C97B", "#EE8B5B"], "options": [["적음", "적은 편이다"], ["중간", "중간쯤이다"], ["많음", "많은 편이다"]], "pair": 2}], "rowLabels": {"1": "우리 지역", "2": "전국과 견주면"}}, {"id": "coast", "name": "해안 침수", "req": false, "src": "생활안전지도", "path": "재난안전 → 해안침수예상도", "link": "https://www.safemap.go.kr/main/smap.do", "about": "100년에 한 번쯤 올 큰 태풍이 왔을 때 바닷물이 얼마나 높아져 어디까지 잠길지를 예측한 지도다.", "scaleNote": "숫자가 클수록 깊이 잠긴다.", "interp": "예) 큰 태풍이 오면 우리 지역은 1.5m 정도까지 물에 잠길 수 있다.", "interpKey": "grade", "interpBy": {"없음": "예) 우리 지역은 해안에서 멀어 색칠되지 않았다.", "1등급": "예) 큰 태풍이 와도 우리 지역은 0.5m 미만으로 얕게 잠긴다.", "2등급": "예) 큰 태풍이 오면 우리 지역은 1m 가까이 물에 잠길 수 있다.", "3등급": "예) 큰 태풍이 오면 우리 지역은 1.5m 가까이 물에 잠길 수 있다.", "4등급": "예) 큰 태풍이 오면 우리 지역은 2m 가까이 물에 잠길 수 있다.", "5등급": "예) 큰 태풍이 오면 우리 지역은 건물 1층이 잠길 만큼 물이 찰 수 있다.", "6등급": "예) 큰 태풍이 오면 우리 지역은 3m 이상 물에 잠길 수 있다."}, "fields": [{"key": "grade", "label": "해안침수예상도", "type": "grade", "colors": ["#DDE3E7", "#FDE96A", "#C4EE6E", "#8BE8B0", "#5FE0E0", "#7FC9F5", "#A98BE8"], "options": [["없음", "색칠되지 않음"], ["1등급", "0.5m 미만"], ["2등급", "0.5~1.0m 미만"], ["3등급", "1.0~1.5m 미만"], ["4등급", "1.5~2.0m 미만"], ["5등급", "2.0~3.0m 미만 · 1층이 잠긴다"], ["6등급", "3.0m 이상"]]}], "rowLabels": {}}, {"id": "quake", "name": "지진", "req": false, "src": "생활안전지도", "path": "재난안전 → 지진발생이력", "link": "https://www.safemap.go.kr/main/smap.do", "about": "지금까지 지진이 일어난 자리를 규모별로 색을 달리해 찍은 기록이다. 우리 지역에서 <b>가장 가까운 지점</b>을 찾아 눌러 발생일시·발생지점·규모를 확인한다.", "scaleNote": "규모는 지진의 크기다. 가까운 한 건을 예로 기록한 것이다.", "interp": "예) 우리 지역에서 가장 가까운 지진은 규모 2.2로, 사람이 느끼기 어려운 크기였다.", "interpKey": "mag", "interpBy": {"없음": "예) 우리 지역 가까이에 기록된 지진이 없었다.", "3 미만": "예) 가장 가까운 지진은 규모 3 미만으로, 사람이 느끼기 어려운 크기였다.", "4 미만": "예) 가장 가까운 지진은 규모 4 미만으로, 실내에서 흔들림을 느낄 수 있는 크기였다.", "5 미만": "예) 가장 가까운 지진은 규모 5 미만으로, 건물이 흔들릴 수 있는 크기였다.", "6 미만": "예) 가장 가까운 지진은 규모 6 미만으로, 물건이 떨어질 수 있는 크기였다.", "7 미만": "예) 가장 가까운 지진은 규모 7 미만으로, 건물이 손상될 수 있는 크기였다.", "7 이상": "예) 가장 가까운 지진은 규모 7 이상으로, 큰 피해가 날 수 있는 크기였다."}, "fields": [{"key": "when", "label": "발생일시", "type": "text", "ph": "예: 2014년 8월 2일", "pair": 1}, {"key": "where", "label": "발생지점", "type": "text", "ph": "예: 경기 광주시 남서쪽 6km", "pair": 1}, {"key": "val", "label": "규모 (M)", "type": "num", "ph": "예: 2.2", "pair": 2}, {"key": "mag", "label": "규모 구간", "type": "grade", "colors": ["#DDE3E7", "#4FD0E0", "#5FC26A", "#F5DC5A", "#F0A050", "#E8544A", "#3A3A3A"], "options": [["없음", "기록이 없다"], ["3 미만", "사람이 느끼기 어렵다"], ["4 미만", "실내에서 느낀다"], ["5 미만", "건물이 흔들린다"], ["6 미만", "물건이 떨어진다"], ["7 미만", "건물이 손상된다"], ["7 이상", "큰 피해가 난다"]], "pair": 2}], "rowLabels": {"1": "가장 가까운 지진", "2": "그 지진의 규모"}}];
+ var BANDC = ["#DDE3E7", "#CFEBFA", "#8FD8F5", "#2FA8E8", "#2A6FD6", "#1C3FA8", "#141414"];
+ var state={}, on={};
+ ITEMS.forEach(function(it){ state[it.id]={}; on[it.id]=it.req; });
+ var $=function(i){return document.getElementById(i);};
+
+ function bandIdx(v,bands){
+  if(v===""||v===null||isNaN(v)) return -1;
+  v=parseFloat(v);
+  for(var i=0;i<bands.length;i++) if(v>=bands[i][0]&&v<bands[i][1]) return i;
+  return bands.length-1;
+ }
+ function esc(s){ return (s||"").replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];}); }
+
+ function fieldHTML(it,f){
+  var s='<div class="f"><div class="lb">'+f.label+(f.opt? ' <span class="opt2">선택</span>':'')+'</div>';
+  if(f.type==="grade"){
+   s+='<div class="grades" data-item="'+it.id+'" data-key="'+f.key+'">';
+   f.options.forEach(function(o,i){
+    s+='<button type="button" data-v="'+o[0]+'" data-m="'+o[1]+'" data-i="'+i+'" aria-pressed="false">'+o[0]+'</button>';
+   });
+   s+='</div><div class="mean" id="m_'+it.id+'_'+f.key+'"></div>';
+  } else if(f.type==="num"||f.type==="band"){
+   s+='<div class="numin"><input type="number" step="any" data-item="'+it.id+'" data-key="'+f.key+'" placeholder="'+(f.ph||'')+'">'
+    +'<span class="u">'+(f.unit||'')+'</span></div><div class="mean" id="m_'+it.id+'_'+f.key+'"></div>';
+  } else {
+   s+='<input class="txin" data-item="'+it.id+'" data-key="'+f.key+'" placeholder="'+(f.ph||'')+'">';
+  }
+  return s+'</div>';
+ }
+
+ function render(){
+  var html="";
+  ITEMS.forEach(function(it,idx){
+   if(!on[it.id]) return;
+   html+='<div class="item" id="it_'+it.id+'"><div class="ihead"><div class="num">'+("0"+(idx+1)).slice(-2)+'</div>'
+    +'<div class="t"><h3>'+it.name+' <span class="chk" id="ck_'+it.id+'"></span></h3>'
+    +'<div class="src"><b>'+it.src+'</b> · '+it.path+'</div></div>'
+    +'<span class="tag'+(it.req?"":" opt")+'">'+(it.req?"필수":"선택")+'</span>'
+    +'<a class="go" href="'+it.link+'" target="_blank" rel="noopener">자료 열기</a></div>'
+    +'<div class="ibody">'
+    +(it.about? '<div class="about">'+it.about+'</div>' : '')
+    +(it.note? '<div class="hint">'+it.note+'</div>' : '');
+   var buf=[], cur=0;
+   function flush(){
+    if(!buf.length) return;
+    var lb=(it.rowLabels||{})[cur];
+    html+='<div class="fgrp">'+(lb? '<div class="gl">'+lb+'</div>':'')
+      +'<div class="frow">'+buf.map(function(x){return fieldHTML(it,x);}).join("")+'</div></div>';
+    buf=[];
+   }
+   it.fields.forEach(function(f){
+    if(f.pair){ if(f.pair!==cur){ flush(); cur=f.pair; } buf.push(f); return; }
+    flush(); cur=0; html+=fieldHTML(it,f);
+   });
+   flush();
+   if(!it.noInterp){
+    html+='<div class="f"><div class="lb">이 결과는 무엇을 뜻하는가 — 우리 지역에 대해 한두 문장으로</div>'
+     +'<textarea class="memo" data-item="'+it.id+'" data-key="_see" placeholder="'+(it.interp||"")+'"></textarea></div>';
+   }
+   html+='<div class="f"><div class="lb">확인한 화면 붙이기 <span class="opt2">선택</span></div>'
+    +'<div class="shot"><input type="file" accept="image/*" data-shot="'+it.id+'" id="sh_'+it.id+'">'
+    +'<label class="shotb" for="sh_'+it.id+'">화면 캡처 고르기</label>'
+    +'<button type="button" class="shotx" data-del="'+it.id+'">지우기</button></div>'
+    +'<div class="shotp" id="sp_'+it.id+'"></div></div>';
+   html+='</div></div>';
+  });
+  $("list").innerHTML=html;
+  bind(); refresh();
+ }
+
+ function bind(){
+  [].forEach.call(document.querySelectorAll('.grades'),function(g){
+   g.addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b) return;
+    var id=g.dataset.item,k=g.dataset.key;
+    [].forEach.call(g.querySelectorAll('button'),function(x){x.setAttribute('aria-pressed',x===b?'true':'false');});
+    state[id][k]={v:b.dataset.v,m:b.dataset.m,i:parseInt(b.dataset.i,10)};
+    $('m_'+id+'_'+k).textContent=b.dataset.m;
+    var itm=ITEMS.filter(function(x){return x.id===id;})[0];
+    if(itm && itm.interpBy && (itm.interpKey||itm.fields[0].key)===k){
+     var ta=document.querySelector('textarea[data-item="'+id+'"][data-key="_see"]');
+     if(ta) ta.placeholder = itm.interpBy[b.dataset.v] || itm.interp || "";
+    }
+    refresh();
+   });
+  });
+  [].forEach.call(document.querySelectorAll('input[data-shot]'),function(el){
+   el.addEventListener('change',function(){
+    var id=el.dataset.shot, f=el.files&&el.files[0];
+    if(!f) return;
+    var r=new FileReader();
+    r.onload=function(){
+     state[id]._shot={v:r.result,m:f.name};
+     $('sp_'+id).innerHTML='<img src="'+r.result+'" alt="">';
+     refresh();
+    };
+    r.readAsDataURL(f);
+   });
+  });
+  [].forEach.call(document.querySelectorAll('button[data-del]'),function(b){
+   b.addEventListener('click',function(){
+    var id=b.dataset.del;
+    delete state[id]._shot;
+    $('sp_'+id).innerHTML=""; 
+    var inp=$('sh_'+id); if(inp) inp.value="";
+    refresh();
+   });
+  });
+  [].forEach.call(document.querySelectorAll('input[data-item], textarea[data-item]'),function(el){
+   el.addEventListener('input',function(){
+    var id=el.dataset.item,k=el.dataset.key;
+    var it=ITEMS.filter(function(x){return x.id===id;})[0];
+    var f=(it.fields||[]).filter(function(x){return x.key===k;})[0];
+    var rec={v:el.value,m:"",i:-1};
+    if(f&&f.type==="band"){
+     var bi=bandIdx(el.value,f.bands);
+     if(bi>=0){ rec.m=f.bands[bi][2]; rec.i=bi+1; }
+     var box=$('m_'+id+'_'+k); if(box) box.textContent=rec.m?("→ "+rec.m+" 구간"):"";
+    }
+    state[id][k]=rec;
+    refresh();
+   });
+  });
+ }
+
+ function filled(it){
+  var st=state[it.id]||{};
+  return it.fields.every(function(f){
+   if(f.opt) return true;
+   var d=st[f.key]; return d&&d.v!==""&&d.v!==undefined; });
+ }
+
+ /* 눈금 막대 — 각 항목의 자기 눈금 위에만 표시 */
+ function stepsHTML(f,rec){
+  var n, colors, idx;
+  if(f.type==="grade"){ n=f.options.length; colors=f.colors||[]; idx=rec?rec.i:-1; }
+  else if(f.type==="band"){ n=f.bands.length+1; colors=BANDC; idx=rec?rec.i:-1; }
+  else return "";
+  var s='<div class="steps">';
+  for(var i=0;i<n;i++){
+   var c = (idx>=0 && i<=idx && i>0) ? (colors[i]||"#BBD3E2") : "#EDF1F3";
+   if(idx===0 && i===0) c="#DDE3E7";
+   s+='<div class="st'+(i<=idx&&idx>=0?" on":"")+(i===idx?" cur":"")+'" style="background:'+c+'"></div>';
+  }
+  return s+'</div>';
+ }
+
+ function report(act){
+  if(!act.length) return '<div class="rempty">조사할 항목을 골라 주세요.</div>';
+  var h="";
+  act.forEach(function(it){
+   var st=state[it.id]||{};
+   h+='<div class="rgroup"><div class="gh"><span class="gn">'+it.name+'</span>'
+     +'<span class="gs">'+it.src+'</span></div>';
+   it.fields.forEach(function(f){
+    var rec=st[f.key];
+    var val = rec&&rec.v!==""&&rec.v!==undefined ? rec.v : null;
+    if(f.opt && val===null) return;
+    h+='<div class="rrow"><div class="rk">'+f.label+'</div><div>';
+    if(val===null){
+     h+='<div class="blank"></div>';
+    } else if(f.type==="grade"||f.type==="band"){
+     h+=stepsHTML(f,rec);
+     h+='<div class="rval">'+esc(String(val))+(f.unit||"")
+       +(rec&&rec.m? '<span>'+esc(rec.m)+'</span>':'')+'</div>';
+    } else {
+     h+='<div class="rval">'+esc(String(val))+(f.unit||"")+'</div>';
+    }
+    h+='</div></div>';
+   });
+   if(it.scaleNote) h+='<div class="rnote">'+it.scaleNote+'</div>';
+   if(!it.noInterp){
+    var see=st["_see"];
+    h += (see&&see.v) ? '<div class="rsee">'+esc(see.v)+'</div>'
+                      : '<div class="rsee blank"></div>';
+   }
+   var sh=st["_shot"];
+   if(sh&&sh.v) h+='<div class="rshot"><div class="box"><img src="'+sh.v+'" alt=""></div>'
+       +'<div class="cap">확인한 화면 — '+esc(sh.m||"")+'</div></div>';
+   h+='</div>';
+  });
+  return h;
+ }
+
+ function refresh(){
+  var act=ITEMS.filter(function(it){return on[it.id];});
+  var done=act.filter(filled).length;
+  $("fill").style.width=(act.length? done/act.length*100:0).toFixed(1)+"%";
+  $("pn").textContent=done+" / "+act.length+" 항목";
+  act.forEach(function(it){
+   var box=$('it_'+it.id), ck=$('ck_'+it.id);
+   if(!box) return;
+   var f=filled(it);
+   box.className="item"+(f?" done":"");
+   if(ck) ck.textContent=f?"✓":"";
+  });
+  var r=$("mRegion").value, nm=$("mName").value;
+  $("repTitle").textContent = r? (r+" 자연재해 위험 조사") : "조사 결과";
+  $("repSub").textContent = (nm? nm+"  ·  " : "")
+    +"항목마다 그 자료의 눈금 위에 표시된다. 눈금이 서로 다르므로 항목끼리 견주지 않는다.";
+  $("repBody").innerHTML=report(act);
+ }
+
+
+ $("reqPick").innerHTML = ITEMS.filter(function(i){return i.req;})
+   .map(function(i){return '<span>'+i.name+'</span>';}).join("");
+
+ var pick="";
+ ITEMS.filter(function(it){return !it.req;}).forEach(function(it){
+  pick+='<button type="button" data-id="'+it.id+'" aria-pressed="false">'+it.name+'</button>';
+ });
+ $("optPick").innerHTML=pick;
+ $("optPick").addEventListener('click',function(e){
+  var b=e.target.closest('button'); if(!b) return;
+  var id=b.dataset.id; on[id]=!on[id];
+  b.setAttribute('aria-pressed',on[id]?'true':'false');
+  render();
+ });
+ $("mRegion").addEventListener('input',refresh);
+ $("mName").addEventListener('input',refresh);
+ $("bPrint").addEventListener('click',function(){ show("B"); setTimeout(function(){window.print();},60); });
+
+ function show(v){
+  $("viewA").style.display = v==="A"?"":"none";
+  $("viewB").style.display = v==="B"?"":"none";
+  $("tabA").setAttribute("aria-pressed", v==="A"?"true":"false");
+  $("tabB").setAttribute("aria-pressed", v==="B"?"true":"false");
+  window.scrollTo({top:0,behavior:"instant"});
+ }
+ $("tabA").addEventListener('click',function(){ show("A"); });
+ $("tabB").addEventListener('click',function(){ show("B"); });
+
+ render();
+})();
+</script></body></html>
