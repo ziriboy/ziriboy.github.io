@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>시군구별 산불 피해면적 (2011-2025)</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif;background:#f7f7f5;color:#2c2c2a}
+.wrap{max-width:1000px;margin:0 auto;padding:16px}
+h1{font-size:20px;font-weight:600;margin:0 0 4px}
+.sub{font-size:13px;color:#6b6b66;margin-bottom:6px}
+.filter{font-size:13px;color:#993c1d;background:#fbe4d8;display:inline-block;padding:4px 11px;border-radius:5px;margin-bottom:12px}
+#map{height:640px;border-radius:8px;border:1px solid #ddd}
+.legend{background:#fff;padding:11px 13px;border-radius:6px;font-size:12px;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.legend b{display:block;margin-bottom:8px}
+.cir{display:flex;align-items:center;gap:9px;margin-bottom:6px}
+.cir span.d{border-radius:50%;flex:none;border:1.6px solid #a8391a;background:rgba(216,90,48,.32)}
+.foot{font-size:12px;color:#8a8a85;margin-top:10px;line-height:1.7}
+.leaflet-popup-content{font-size:13px;line-height:1.75;margin:10px 12px}
+@media(max-width:600px){#map{height:460px}}
+</style></head><body>
+<div class="wrap">
+<h1>시군구별 산불 피해면적</h1>
+<div class="sub">2011&ndash;2025년 &middot; 산불 7,175건 &middot; 원 크기는 총 피해면적 (로그 스케일)</div>
+<div class="filter">총 피해면적 100ha 이상 38개 시군구만 표시</div>
+<div id="map"></div>
+<div class="foot">자료: 산림청 산불통계 &middot; 위치는 시군구 경계 중심점<br>
+원 크기는 로그 스케일이다. 값이 10배 커질 때마다 원이 일정하게 커진다.<br>원을 클릭하면 상세 수치가 나옵니다. 표시되지 않은 지역에도 산불은 발생했습니다.</div>
+</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const DATA=[{"nm": "경북 의성", "sd": "경북", "c": 42, "a": 99451.5, "per": 2367.89, "lat": 36.362, "lng": 128.615}, {"nm": "경북 울진", "sd": "경북", "c": 57, "a": 16724.6, "per": 293.41, "lat": 36.9041, "lng": 129.3124}, {"nm": "강원 강릉", "sd": "강원", "c": 85, "a": 6033.3, "per": 70.98, "lat": 37.7092, "lng": 128.8324}, {"nm": "경남 산청", "sd": "경남", "c": 55, "a": 3423.0, "per": 62.24, "lat": 35.3686, "lng": 127.8844}, {"nm": "경북 안동", "sd": "경북", "c": 110, "a": 2329.3, "per": 21.18, "lat": 36.5803, "lng": 128.78}, {"nm": "울산 울주", "sd": "울산", "c": 118, "a": 2055.0, "per": 17.41, "lat": 35.5462, "lng": 129.1875}, {"nm": "강원 고성", "sd": "강원", "c": 37, "a": 1755.5, "per": 47.45, "lat": 35.0163, "lng": 128.2908}, {"nm": "충남 홍성", "sd": "충남", "c": 29, "a": 1341.7, "per": 46.27, "lat": 36.5701, "lng": 126.6258}, {"nm": "강원 삼척", "sd": "강원", "c": 66, "a": 1152.8, "per": 17.47, "lat": 37.2775, "lng": 129.122}, {"nm": "경남 합천", "sd": "경남", "c": 55, "a": 1013.5, "per": 18.43, "lat": 35.5767, "lng": 128.1416}, {"nm": "충남 금산", "sd": "충남", "c": 37, "a": 925.2, "per": 25.01, "lat": 36.119, "lng": 127.4784}, {"nm": "강원 양구", "sd": "강원", "c": 40, "a": 755.3, "per": 18.88, "lat": 38.1781, "lng": 128.0012}, {"nm": "전남 함평", "sd": "전남", "c": 25, "a": 689.3, "per": 27.57, "lat": 35.1127, "lng": 126.5355}, {"nm": "경남 밀양", "sd": "경남", "c": 33, "a": 665.9, "per": 20.18, "lat": 35.4985, "lng": 128.7897}, {"nm": "경북 영덕", "sd": "경북", "c": 47, "a": 653.1, "per": 13.89, "lat": 36.4825, "lng": 129.3176}, {"nm": "강원 인제", "sd": "강원", "c": 51, "a": 502.0, "per": 9.84, "lat": 38.069, "lng": 128.2633}, {"nm": "경북 예천", "sd": "경북", "c": 39, "a": 418.0, "per": 10.72, "lat": 36.6539, "lng": 128.4224}, {"nm": "강원 양양", "sd": "강원", "c": 46, "a": 337.1, "per": 7.33, "lat": 38.0046, "lng": 128.5953}, {"nm": "경북 상주", "sd": "경북", "c": 72, "a": 298.8, "per": 4.15, "lat": 36.4296, "lng": 128.067}, {"nm": "경북 영주", "sd": "경북", "c": 53, "a": 294.5, "per": 5.56, "lat": 36.8705, "lng": 128.5976}, {"nm": "전남 순천", "sd": "전남", "c": 60, "a": 290.6, "per": 4.84, "lat": 34.9945, "lng": 127.3894}, {"nm": "경남 하동", "sd": "경남", "c": 34, "a": 288.3, "per": 8.48, "lat": 35.1376, "lng": 127.7791}, {"nm": "경북 군위", "sd": "경북", "c": 31, "a": 286.9, "per": 9.25, "lat": 36.1701, "lng": 128.6481}, {"nm": "대구 북", "sd": "대구", "c": 26, "a": 261.2, "per": 10.05, "lat": 35.6101, "lng": 129.3799}, {"nm": "강원 영월", "sd": "강원", "c": 50, "a": 235.5, "per": 4.71, "lat": 37.204, "lng": 128.5001}, {"nm": "경북 고령", "sd": "경북", "c": 34, "a": 226.1, "per": 6.65, "lat": 35.7372, "lng": 128.3068}, {"nm": "경북 봉화", "sd": "경북", "c": 80, "a": 187.1, "per": 2.34, "lat": 36.9342, "lng": 128.913}, {"nm": "충남 서산", "sd": "충남", "c": 44, "a": 179.7, "per": 4.09, "lat": 36.7841, "lng": 126.4637}, {"nm": "강원 화천", "sd": "강원", "c": 46, "a": 154.6, "per": 3.36, "lat": 38.1384, "lng": 127.6852}, {"nm": "강원 홍천", "sd": "강원", "c": 128, "a": 135.1, "per": 1.06, "lat": 37.7449, "lng": 128.0745}, {"nm": "충북 옥천", "sd": "충북", "c": 38, "a": 134.6, "per": 3.54, "lat": 36.3204, "lng": 127.6566}, {"nm": "경남 김해", "sd": "경남", "c": 39, "a": 132.6, "per": 3.4, "lat": 35.2722, "lng": 128.8452}, {"nm": "대구 달성", "sd": "대구", "c": 40, "a": 127.0, "per": 3.18, "lat": 35.7324, "lng": 128.5094}, {"nm": "충남 당진", "sd": "충남", "c": 41, "a": 119.9, "per": 2.92, "lat": 36.9031, "lng": 126.6538}, {"nm": "충남 보령", "sd": "충남", "c": 39, "a": 111.0, "per": 2.85, "lat": 36.3405, "lng": 126.6041}, {"nm": "경북 성주", "sd": "경북", "c": 40, "a": 104.5, "per": 2.61, "lat": 35.9072, "lng": 128.2333}, {"nm": "충북 영동", "sd": "충북", "c": 33, "a": 104.4, "per": 3.16, "lat": 36.1597, "lng": 127.8143}, {"nm": "경북 포항", "sd": "경북", "c": 71, "a": 104.0, "per": 1.46, "lat": 36.0618, "lng": 129.3361}];
+const map=L.map('map').setView([36.4,128.1],7);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{
+  maxZoom:13,minZoom:6,attribution:'&copy; OpenStreetMap contributors'}).addTo(map);
+const MX=Math.max.apply(null,DATA.map(function(d){return d.a;}));
+const MN=Math.min.apply(null,DATA.map(function(d){return d.a;}));
+function rad(v){return 6+30*(Math.log(v)-Math.log(MN))/(Math.log(MX)-Math.log(MN));}
+DATA.forEach(function(d){
+  const m=L.circleMarker([d.lat,d.lng],{
+    radius:rad(d.a),fillColor:'#d85a30',fillOpacity:0.3,
+    color:'#a8391a',weight:1.6,opacity:0.85
+  }).addTo(map);
+  m.bindPopup('<b>'+d.nm+'</b><br>총 피해면적 <b>'+d.a.toLocaleString()+'</b> ha<br>발생 건수 <b>'+d.c+'</b>건<br>한 건당 평균 '+d.per+' ha');
+  m.bindTooltip(d.nm,{direction:'top'});
+});
+const lg=L.control({position:'bottomright'});
+lg.onAdd=function(){
+  const el=L.DomUtil.create('div','legend');
+  let h='<b>총 피해면적 (ha)</b>';
+  [100000,10000,1000,100].forEach(function(v){
+    const r=Math.round(rad(v)*2);
+    h+='<div class="cir"><span class="d" style="width:'+r+'px;height:'+r+'px"></span>'+v.toLocaleString()+'</div>';
+  });
+  el.innerHTML=h;
+  return el;
+};
+lg.addTo(map);
+</script></body></html>
