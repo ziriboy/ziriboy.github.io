@@ -403,12 +403,12 @@ function CustomForm({ v, onChange }){
       <div className="frow">
         <div className="fld">
           <label>지역 이름</label>
-          <input value={v.region} placeholder="예) 춘천"
+          <input value={v.region} placeholder="예) 완도"
             onChange={e=>onChange({...v,region:e.target.value})}/>
         </div>
         <div className="fld">
           <label>음식 이름</label>
-          <input value={v.food} placeholder="예) 닭갈비"
+          <input value={v.food} placeholder="예) 전복"
             onChange={e=>onChange({...v,food:e.target.value})}/>
         </div>
       </div>
