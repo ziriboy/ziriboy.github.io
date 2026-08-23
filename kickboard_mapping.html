@@ -1,0 +1,1758 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>우리 동네 전동킥보드 주차 실태 지도</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+
+<style>
+:root{
+  --ink:#14171A; --ink2:#333A41; --mute:#6B7076;
+  --paper:#F4F3EF; --card:#FFFFFF; --line:#DFDBD2; --line2:#EDEAE3;
+  --tactile:#F5C518; --tow:#D93B2B; --warn:#DE8A2C; --calm:#2C6E6A; --ok:#2F7D4F; --stn:#12456F;
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  --sans: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard",
+          "Noto Sans KR", "Malgun Gothic", "맑은 고딕", sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;height:100%}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);font-size:14px;line-height:1.55;
+  -webkit-text-size-adjust:100%;display:flex;flex-direction:column;height:100dvh;overflow:hidden}
+button{font-family:inherit;font-size:inherit;cursor:pointer}
+input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+:focus-visible{outline:2.5px solid var(--tactile);outline-offset:2px}
+
+header{background:var(--ink);color:#fff;padding:9px 14px 8px;flex:none}
+.hbar{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.brand{font-size:15.5px;font-weight:800;letter-spacing:-.03em;white-space:nowrap}
+.brand small{font-weight:500;opacity:.55;font-size:11.5px;letter-spacing:0;margin-left:6px}
+.hspace{flex:1}
+.chip{font-family:var(--mono);font-size:11px;background:rgba(255,255,255,.11);
+  border:1px solid rgba(255,255,255,.18);color:#fff;padding:3px 9px;border-radius:99px;white-space:nowrap}
+.chip b{color:var(--tactile);font-weight:700}
+.chip:hover{background:rgba(255,255,255,.2)}
+.dots{height:11px;flex:none;
+  background:radial-gradient(circle at 6px 5.5px, var(--tactile) 2.9px, transparent 3.3px) 0 0/15px 11px repeat-x, var(--ink)}
+
+nav{display:flex;background:var(--card);border-bottom:1px solid var(--line);flex:none}
+nav button{border:0;background:none;padding:11px 18px 9px;font-weight:700;font-size:13.5px;
+  color:var(--mute);border-bottom:3px solid transparent;letter-spacing:-.02em}
+nav button .n{font-family:var(--mono);font-size:10.5px;opacity:.6;margin-right:5px}
+nav button[aria-selected=true]{color:var(--ink);border-bottom-color:var(--tactile)}
+nav .navsp{flex:1}
+nav .tool{border:0;background:none;padding:0 14px;font-size:12px;color:var(--mute);font-weight:600}
+nav .tool:hover{color:var(--ink)}
+
+main{flex:1;min-height:0;display:flex}
+#map{flex:1;min-width:0;background:#E8E6E0;position:relative}
+.panel{width:400px;flex:none;background:var(--card);border-left:1px solid var(--line);
+  overflow-y:auto;overscroll-behavior:contain}
+.sec{border-bottom:1px solid var(--line2);padding:14px}
+.sec:last-child{border-bottom:0}
+h2{font-size:12px;font-weight:800;letter-spacing:.06em;margin:0 0 9px}
+h2 .num{font-family:var(--mono);color:var(--tactile);margin-right:6px;-webkit-text-stroke:.4px var(--ink2)}
+h3{font-size:12.5px;font-weight:700;margin:0 0 7px}
+label.f{display:block;font-size:11.5px;font-weight:700;color:var(--ink2);margin:0 0 5px}
+label.f span{font-weight:500;color:var(--mute)}
+.hint{font-size:11.5px;color:var(--mute);line-height:1.5}
+input[type=text],input[type=number],input[type=datetime-local],select,textarea{
+  width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:7px;background:#FCFBF9}
+textarea{resize:vertical;line-height:1.6}
+.row{display:flex;gap:7px}
+.row>*{flex:1;min-width:0}
+.btn{border:1px solid var(--ink);background:var(--ink);color:#fff;padding:9px 14px;border-radius:8px;
+  font-weight:700;letter-spacing:-.02em}
+.btn:hover{background:var(--ink2)}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn.ghost{background:#fff;color:var(--ink);border-color:var(--line)}
+.btn.ghost:hover{background:#F6F5F2}
+.btn.ghost.on{background:var(--tactile);border-color:#C9A00E;color:var(--ink)}
+.btn.sm{padding:6px 10px;font-size:12px;border-radius:6px;font-weight:600}
+.btn.wide{width:100%}
+.btn.danger{background:#fff;color:var(--tow);border-color:#EFC4BE}
+.btn.danger:hover{background:#FDF2F0}
+
+.drop{border:1.5px dashed var(--line);border-radius:10px;background:#FBFAF7;padding:16px;text-align:center;position:relative}
+.drop input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.drop .big{font-size:13px;font-weight:700}
+.thumb{width:100%;border-radius:9px;display:block;border:1px solid var(--line)}
+.exif{font-family:var(--mono);font-size:11px;padding:6px 9px;border-radius:6px;margin-top:8px;
+  border:1px solid var(--line);background:#FBFAF7;color:var(--ink2)}
+.exif.ok{background:#F0F7F2;border-color:#C6DFCE;color:#20573A}
+.exif.no{background:#FDF6E8;border-color:#EBD9A6;color:#7A5A05}
+
+.coord{font-family:var(--mono);font-size:12px;background:#FBFAF7;border:1px solid var(--line);
+  border-radius:7px;padding:8px 10px;display:flex;justify-content:space-between;gap:8px;align-items:center}
+.coord.empty{color:var(--mute)}
+.coord b{color:var(--calm)}
+
+/* 위반 유형 — 하나의 목록, 여러 개 체크 */
+.catgrp{margin-bottom:10px}
+.catgrp .gh{font-size:11px;font-weight:800;display:flex;align-items:center;gap:6px;margin:0 0 6px;color:var(--ink2)}
+.catgrp .gh i{width:9px;height:9px;border-radius:2px;display:inline-block}
+.catgrp .gh small{font-weight:500;color:var(--mute)}
+.chk{display:block;margin-bottom:5px;position:relative}
+.chk input{position:absolute;opacity:0;width:0;height:0}
+.chk span{display:block;padding:8px 10px 8px 32px;border:1px solid var(--line);border-radius:8px;
+  font-size:13px;background:#fff;line-height:1.35;font-weight:600}
+.chk span:before{content:"";position:absolute;left:10px;top:9px;width:15px;height:15px;
+  border:1.8px solid var(--line);border-radius:4px;background:#fff}
+.chk span small{display:block;font-weight:500;font-size:11px;color:var(--mute);margin-top:1px}
+.chk input:checked+span{border-color:var(--ink);background:#FBFAF7}
+.chk input:checked+span small{color:var(--ink2)}
+.chk.t input:checked+span{border-color:var(--tow);background:#FDF3F1}
+.chk.t input:checked+span:before{background:var(--tow);border-color:var(--tow)}
+.chk.w input:checked+span:before{background:var(--warn);border-color:var(--warn)}
+.chk input:checked+span:after{content:"";position:absolute;left:14.5px;top:13px;width:6px;height:3px;
+  border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg)}
+.chk input:focus-visible+span{outline:2.5px solid var(--tactile);outline-offset:2px}
+.chksum{font-size:11.5px;color:var(--mute);margin-top:2px}
+
+.entry{display:flex;gap:9px;padding:9px;border:1px solid var(--line2);border-radius:9px;
+  margin-bottom:7px;background:#fff;align-items:flex-start}
+.entry:hover{border-color:var(--line);background:#FCFBF9}
+.entry .ph{width:52px;height:52px;flex:none;border-radius:6px;object-fit:cover;background:#EDEAE3;border:1px solid var(--line2)}
+.entry .meta{flex:1;min-width:0}
+.entry .tt{font-size:12.5px;font-weight:700;line-height:1.4}
+.entry .sub{font-family:var(--mono);font-size:10.5px;color:var(--mute);margin-top:3px}
+.entry .acts{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap}
+.tag{display:inline-block;font-size:10px;font-weight:800;padding:1px 6px;border-radius:4px;color:#fff;margin-right:5px}
+.empty{text-align:center;color:var(--mute);font-size:12.5px;padding:22px 10px;
+  border:1.5px dashed var(--line);border-radius:10px;background:#FBFAF7}
+
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:12px}
+.stat{border:1px solid var(--line2);border-radius:9px;padding:9px 10px;background:#FBFAF7}
+.stat .v{font-family:var(--mono);font-size:19px;font-weight:700;letter-spacing:-.04em;line-height:1.1}
+.stat .k{font-size:10.5px;color:var(--mute);margin-top:2px;font-weight:600}
+
+/* 유형 막대 — 누르면 지도에서 그 유형만 */
+.bar{display:block;width:100%;text-align:left;border:0;background:none;padding:4px 5px;margin:0 0 2px;
+  border-radius:6px}
+.bar:hover{background:#F6F5F2}
+.bar.act{background:#FFF6D6;box-shadow:inset 0 0 0 1.5px var(--tactile)}
+.bar .bl{display:flex;justify-content:space-between;font-size:11.5px;margin-bottom:3px;gap:8px;align-items:baseline}
+.bar .bl b{font-weight:600}
+.bar .bl span{font-family:var(--mono);color:var(--mute);flex:none;font-size:10.5px}
+.bar .bt{height:8px;border-radius:99px;background:var(--line2);overflow:hidden}
+.bar .bf{height:100%;border-radius:99px;min-width:2px}
+.scale{display:flex;justify-content:space-between;font-family:var(--mono);font-size:9.5px;
+  color:#A8A49B;margin:1px 5px 8px}
+table.mini{width:100%;border-collapse:collapse;font-size:12px}
+table.mini th,table.mini td{padding:5px 6px;border-bottom:1px solid var(--line2);text-align:left}
+table.mini th{font-size:10.5px;color:var(--mute)}
+table.mini td.n{font-family:var(--mono);text-align:right}
+
+.note{font-size:11.5px;background:#FDF6E8;border:1px solid #EBD9A6;color:#7A5A05;
+  padding:8px 10px;border-radius:7px;line-height:1.5}
+.note.calm{background:#F0F5F5;border-color:#C6DBDA;color:#1E4C4A}
+.gate{text-align:center;padding:18px 14px}
+.gate .prog{height:9px;background:var(--line2);border-radius:99px;overflow:hidden;margin:10px 0 7px}
+.gate .prog i{display:block;height:100%;background:var(--tactile)}
+.counter{font-family:var(--mono);font-size:11px;color:var(--mute);text-align:right;margin-top:4px}
+.counter.ok{color:var(--ok);font-weight:700}
+.ringpick{display:flex;gap:6px;margin-top:8px}
+.ringpick .k{flex:1;border:1px solid var(--line2);border-radius:8px;padding:7px 8px;text-align:center;background:#FBFAF7}
+.ringpick .k b{font-family:var(--mono);font-size:16px;display:block;line-height:1.2}
+.ringpick .k span{font-size:10.5px;color:var(--mute)}
+.segs{display:flex;gap:5px;margin-top:9px}
+.segs button{flex:1;border:1px solid var(--line);background:#fff;border-radius:7px;padding:6px 4px;
+  font-size:11.5px;font-weight:600}
+.segs button.on{background:var(--calm);border-color:var(--calm);color:#fff}
+
+.mapctl{position:absolute;z-index:600;top:10px;left:10px;display:flex;gap:6px;flex-wrap:wrap;
+  max-width:calc(100% - 76px)}
+.mapctl select,.mapctl input,.mapctl button{border:1px solid var(--line);background:rgba(255,255,255,.97);
+  border-radius:7px;padding:6px 9px;font-size:12px;font-weight:600;box-shadow:0 1px 4px rgba(0,0,0,.14);
+  max-width:150px}
+.mapctl input{font-weight:400;width:118px}
+.mapctl button{background:var(--ink);color:#fff;border-color:var(--ink)}
+.mapctl button.ghost{background:rgba(255,255,255,.97);color:var(--ink);border-color:var(--line)}
+.mapctl button.ghost.on{background:var(--tactile);border-color:#C9A00E}
+.zoomer{position:absolute;z-index:650;right:12px;bottom:74px;display:flex;flex-direction:column;
+  border-radius:11px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.22);border:1px solid var(--line)}
+.zoomer button{width:46px;height:46px;border:0;background:#fff;font-size:24px;line-height:1;
+  color:var(--ink);display:flex;align-items:center;justify-content:center}
+.zoomer button:hover{background:var(--tactile)}
+.zoomer button+button{border-top:1px solid var(--line2)}
+.zoomer .lv{height:32px;background:var(--ink);color:#fff;font-family:var(--mono);font-size:11px;
+  display:flex;align-items:center;justify-content:center}
+.zoomer .lv b{color:var(--tactile)}
+.legend{position:absolute;z-index:600;bottom:18px;left:10px;background:rgba(255,255,255,.95);
+  border:1px solid var(--line);border-radius:9px;padding:8px 10px;font-size:11.5px;
+  box-shadow:0 1px 5px rgba(0,0,0,.13);line-height:1.75}
+.legend i{width:10px;height:10px;border-radius:99px;display:inline-block;margin-right:6px}
+.picking #map{cursor:crosshair}
+.pickbar{position:absolute;z-index:700;top:52px;left:50%;transform:translateX(-50%);
+  background:var(--tactile);color:var(--ink);font-weight:800;font-size:12.5px;padding:8px 14px;
+  border-radius:99px;box-shadow:0 2px 10px rgba(0,0,0,.22);white-space:nowrap;text-align:center}
+.pickbar small{display:block;font-weight:600;font-size:11px;opacity:.75}
+.filtbar{position:absolute;z-index:650;bottom:18px;right:12px;background:var(--ink);color:#fff;
+  font-size:11.5px;font-weight:600;padding:6px 10px;border-radius:99px;box-shadow:0 2px 8px rgba(0,0,0,.25);
+  display:flex;gap:8px;align-items:center}
+.filtbar button{border:0;background:rgba(255,255,255,.2);color:#fff;border-radius:99px;
+  width:18px;height:18px;line-height:1;font-size:12px;padding:0}
+
+.stn{width:15px;height:15px;border-radius:50%;background:var(--stn);border:3px solid #fff;
+  box-shadow:0 0 0 1.5px var(--stn), 0 1px 4px rgba(0,0,0,.45)}
+.leaflet-tooltip.stnlab{background:rgba(255,255,255,.95);border:1.5px solid var(--stn);color:var(--stn);
+  font-weight:800;font-size:11px;padding:1px 6px;border-radius:5px;box-shadow:0 1px 3px rgba(0,0,0,.2);
+  white-space:nowrap;margin-left:2px}
+.leaflet-tooltip.stnlab:before{display:none}
+.draft{width:22px;height:22px;border-radius:99px;background:var(--tactile);border:3px solid var(--ink);
+  box-shadow:0 0 0 6px rgba(245,197,24,.35)}
+.leaflet-popup-content{margin:11px 13px;font-family:var(--sans);font-size:12.5px;min-width:190px}
+.leaflet-popup-content img{width:100%;border-radius:7px;margin-bottom:7px;display:block}
+.leaflet-popup-content .who{font-family:var(--mono);font-size:10.5px;color:var(--mute);margin-top:5px}
+.leaflet-tooltip{font-family:var(--sans);font-size:11.5px;font-weight:600}
+
+.modal{position:fixed;inset:0;z-index:2000;background:rgba(20,23,26,.55);
+  display:flex;align-items:center;justify-content:center;padding:16px}
+.modal .box{background:var(--card);border-radius:14px;max-width:640px;width:100%;max-height:86dvh;
+  overflow-y:auto;box-shadow:0 18px 50px rgba(0,0,0,.3)}
+.modal .box>.dots{border-radius:14px 14px 0 0}
+.modal .bd{padding:18px}
+.modal h1{font-size:19px;margin:0 0 6px;letter-spacing:-.03em}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:3000;background:var(--ink);
+  color:#fff;padding:10px 18px;border-radius:99px;font-size:12.5px;font-weight:600;max-width:88vw;
+  box-shadow:0 4px 16px rgba(0,0,0,.3);opacity:0;transition:opacity .2s;pointer-events:none;text-align:center}
+.toast.on{opacity:1}
+.hidden{display:none !important}
+.shot{display:flex;gap:8px;border:1px solid var(--line2);border-radius:9px;padding:7px;margin-bottom:7px;background:#fff}
+.shot img{width:88px;height:60px;object-fit:cover;border-radius:5px;border:1px solid var(--line2);flex:none}
+.shot .c{flex:1;min-width:0;font-size:12px}
+.grid-lab{font-family:var(--mono);font-size:11px;font-weight:700;color:#fff;text-shadow:0 0 3px rgba(0,0,0,.6)}
+.doc{background:#fff;color:#14171A;font-family:var(--sans);line-height:1.75;font-size:13.5px}
+.doc h1{font-size:21px;margin:0 0 4px;letter-spacing:-.03em;line-height:1.3}
+.doc .by{font-family:var(--mono);font-size:11.5px;color:#6B7076;margin-bottom:14px;
+  padding-bottom:10px;border-bottom:3px solid #F5C518}
+.doc h2{font-size:12px;letter-spacing:.06em;margin:18px 0 7px;color:#333A41;
+  border-left:3px solid #F5C518;padding-left:7px}
+.doc p{margin:0 0 8px}
+.doc figure{margin:0 0 12px}
+.doc figure img{width:100%;border:1px solid #DFDBD2;border-radius:6px;display:block}
+.doc figcaption{font-size:11.5px;color:#6B7076;margin-top:4px}
+.doc table{width:100%;border-collapse:collapse;font-size:12.5px;margin-bottom:10px}
+.doc th,.doc td{padding:5px 7px;border-bottom:1px solid #EDEAE3;text-align:left}
+.doc th{font-size:11px;color:#6B7076}
+.doc td.n{font-family:var(--mono);text-align:right}
+.doc .kv{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12.5px;margin-bottom:10px}
+.doc .kv div span{color:#6B7076;font-size:11px;margin-right:5px}
+.doc .b{height:7px;background:#EDEAE3;border-radius:99px;overflow:hidden;margin:2px 0 6px}
+.doc .b i{display:block;height:100%;border-radius:99px}
+
+@media (max-width:860px){
+  main{flex-direction:column}
+  #map{height:46dvh;flex:none}
+  .panel{width:100%;border-left:0;border-top:1px solid var(--line);flex:1;min-height:0}
+  .brand small{display:none}
+  .zoomer{bottom:12px}
+  .legend,.filtbar{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<header>
+  <div class="hbar">
+    <div class="brand">우리 동네 전동킥보드 주차 실태 지도<small>커뮤니티 매핑 과제</small></div>
+    <div class="hspace"></div>
+    <button class="chip" id="chipProj">과제코드 <b>—</b></button>
+    <button class="chip" id="chipMe">이름 <b>—</b></button>
+  </div>
+</header>
+<div class="dots"></div>
+
+<nav role="tablist">
+  <button role="tab" id="tabIn" aria-selected="true"><span class="n">01</span>입력</button>
+  <button role="tab" id="tabAn" aria-selected="false"><span class="n">02</span>분석</button>
+  <button role="tab" id="tabRep" aria-selected="false"><span class="n">03</span>보고서</button>
+  <div class="navsp"></div>
+  <button class="tool" id="btnHelp">유형 기준 ?</button>
+  <button class="tool" id="btnSync">새로고침</button>
+</nav>
+
+<main>
+  <div id="map">
+    <div class="mapctl">
+      <select id="selSido"><option value="">시·도</option></select>
+      <select id="selSgg"><option value="">시·군·구</option></select>
+      <select id="selDong"><option value="">읍·면·동</option></select>
+      <input type="text" id="qAddr" placeholder="장소 검색">
+      <button id="btnAddr">검색</button>
+      <button class="ghost on hidden" id="btnStn">지하철역 표시 중</button>
+    </div>
+    <div class="zoomer">
+      <button id="zIn" title="확대" aria-label="지도 확대">+</button>
+      <div class="lv">z<b id="zLv">7</b></div>
+      <button id="zOut" title="축소" aria-label="지도 축소">−</button>
+    </div>
+    <div class="legend">
+      <div><i style="background:var(--tow)"></i>즉시견인 대상 포함</div>
+      <div><i style="background:var(--warn)"></i>보행 방해만</div>
+      <div id="lgStn" class="hidden"><i style="background:var(--stn);border:2px solid #fff;box-shadow:0 0 0 1px var(--stn)"></i>지하철역</div>
+    </div>
+    <div class="pickbar hidden" id="stnhint" style="background:#fff;color:var(--ink2);font-weight:600;top:auto;bottom:60px">지도를 조금 더 확대하면 지하철역이 나타납니다</div>
+    <div class="pickbar hidden" id="pickbar">지도를 눌러 킥보드 위치를 찍으세요<small>+ 버튼으로 확대한 뒤 · 핀은 끌어서 조정</small></div>
+    <div class="filtbar hidden" id="filtbar"><span id="filtbarT"></span><button id="filtbarX" aria-label="필터 해제">×</button></div>
+  </div>
+
+  <section class="panel" id="panelIn">
+    <div class="sec">
+      <h2><span class="num">01</span>사진 올리기</h2>
+      <div class="drop">
+        <input type="file" id="file" accept="image/*" capture="environment">
+        <div class="big" id="dropTitle">사진 선택 · 촬영</div>
+        <div class="hint" style="margin-top:3px">촬영 원본이면 위치 좌표를 자동으로 읽습니다</div>
+      </div>
+      <div id="photoBox" class="hidden" style="margin-top:9px">
+        <img class="thumb" id="thumb" alt="선택한 사진 미리보기">
+        <div class="exif" id="exif"></div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <h2><span class="num">02</span>위치 지정</h2>
+      <div class="coord empty" id="coord"><span>아직 위치가 없습니다</span></div>
+      <div class="row" style="margin-top:7px">
+        <button class="btn ghost sm" id="btnPick">지도에서 찍기</button>
+        <button class="btn ghost sm" id="btnGeo">현재 위치</button>
+      </div>
+      <div class="hint" style="margin-top:6px">위쪽 메뉴에서 시·도 → 시·군·구 → 읍·면·동을 고르면 그 동네로 바로 이동합니다.</div>
+    </div>
+
+    <div class="sec">
+      <h2><span class="num">03</span>일시와 유형</h2>
+      <label class="f" for="dt">발견 일시</label>
+      <input type="datetime-local" id="dt">
+      <div style="height:12px"></div>
+      <label class="f">무엇이 문제인가요? <span>· 해당하는 것 모두 고르기</span></label>
+      <div id="cats"></div>
+      <div class="chksum" id="chksum">아직 고르지 않았습니다</div>
+    </div>
+
+    <div class="sec">
+      <button class="btn wide" id="btnSave">이 지점 등록하기</button>
+      <button class="btn ghost wide sm hidden" id="btnCancel" style="margin-top:7px">수정 취소</button>
+    </div>
+
+    <div class="sec">
+      <h2><span class="num">04</span>등록된 지점 <span id="cntAll" style="font-family:var(--mono);color:var(--mute)"></span></h2>
+      <div class="row" style="margin-bottom:9px">
+        <select id="filtWho"><option value="all">모든 학생</option><option value="me">내 것만</option></select>
+        <select id="filtCat"><option value="all">모든 유형</option></select>
+      </div>
+      <div id="list"></div>
+    </div>
+  </section>
+
+  <section class="panel hidden" id="panelAn">
+    <div class="sec" id="gateBox"></div>
+
+    <div class="sec">
+      <h2><span class="num">05</span>유형별 분포</h2>
+      <div class="stats" id="statBox"></div>
+      <div class="hint" style="margin-bottom:7px">막대를 누르면 그 유형만 지도에 남습니다. 다시 누르면 해제됩니다.</div>
+      <h3 style="color:var(--tow)">즉시견인 대상</h3>
+      <div id="barsT"></div>
+      <h3 style="margin-top:12px;color:var(--warn)">보행 방해</h3>
+      <div id="barsW"></div>
+      <h3 style="margin-top:12px">시간대별</h3>
+      <div id="barsH"></div>
+    </div>
+
+    <div class="sec">
+      <h2><span class="num">06</span>히트맵</h2>
+      <div class="hint" style="margin-bottom:8px">밀집 정도를 색으로 봅니다. 지점 수가 적으면 색이 흩어져 보이니, 반경을 키우고 지도를 축소해서 보세요.</div>
+      <button class="btn ghost wide" id="btnHeat">히트맵 켜기</button>
+      <div class="row" style="margin-top:9px">
+        <div><label class="f" for="heatR">점의 반경 <span id="heatRv" style="font-family:var(--mono);color:var(--calm)">34</span></label>
+          <input type="range" id="heatR" min="12" max="80" value="34" style="width:100%"></div>
+        <div><label class="f" for="heatB">번짐 <span id="heatBv" style="font-family:var(--mono);color:var(--calm)">24</span></label>
+          <input type="range" id="heatB" min="8" max="50" value="24" style="width:100%"></div>
+      </div>
+      <div id="heatMsg" class="hint" style="margin-top:7px"></div>
+    </div>
+
+    <div class="sec">
+      <h2><span class="num">07</span>격자 집계와 군집도</h2>
+      <div class="hint" style="margin-bottom:8px">히트맵은 눈으로 보는 도구이고, 이 둘은 <b>숫자로 말하는</b> 도구입니다. 격자는 칸마다 건수를 세고, 군집도는 점들이 실제로 뭉쳐 있는지 하나의 값으로 판정합니다.</div>
+      <div class="segs" id="gridSegs">
+        <button data-g="0" class="on">격자 끄기</button>
+        <button data-g="250">250 m</button>
+        <button data-g="500">500 m</button>
+      </div>
+      <div id="gridOut" style="margin-top:10px"></div>
+      <button class="btn ghost wide sm" id="btnNni" style="margin-top:9px">군집도(최근접이웃) 계산</button>
+      <div id="nniOut" style="margin-top:10px"></div>
+    </div>
+
+    <div class="sec">
+      <h2><span class="num">08</span>지하철역 버퍼 분석</h2>
+      <div class="hint" style="margin-bottom:8px">역 출입구 앞 5m는 즉시견인 구역입니다. 역에서 <b>100m</b>와 <b>250m</b> 두 겹의 버퍼를 그려, 각 지점이 어느 띠에 속하는지 나눠 봅니다.</div>
+      <div class="ringpick">
+        <div class="k"><b style="color:#0F5C57">100 m</b><span>역 바로 앞</span></div>
+        <div class="k"><b style="color:#2C6E6A">250 m</b><span>도보 역세권</span></div>
+      </div>
+      <button class="btn ghost wide" id="btnBuf" style="margin-top:9px">100m · 250m 버퍼 그리기</button>
+      <div class="row" style="margin-top:7px">
+        <button class="btn ghost sm" id="btnBufOff">버퍼 지우기</button>
+        <button class="btn ghost sm" id="btnBufC">반경 직접 정하기</button>
+      </div>
+      <div id="bufOut" style="margin-top:11px"></div>
+      <div class="hint" style="margin-top:8px" id="stnInfo"></div>
+      <button class="btn ghost wide sm" id="btnStnLoad" style="margin-top:7px">이 지역 지하철역 더 불러오기</button>
+    </div>
+
+  </section>
+
+  <section class="panel hidden" id="panelRep">
+    <div class="sec">
+      <h2><span class="num">09</span>보고서 기본 정보</h2>
+      <label class="f" for="rTitle">제목</label>
+      <input type="text" id="rTitle" placeholder="예: 서현역 일대 전동킥보드 주차 실태 조사">
+      <div style="height:10px"></div>
+      <label class="f" for="rAim">조사 목적 <span>· 1~2문장</span></label>
+      <textarea id="rAim" rows="3" placeholder="예: 우리 동네에서 전동킥보드가 어디에 어떻게 잘못 세워지는지 확인하고, 가장 먼저 고쳐야 할 곳을 찾기 위해 조사하였다."></textarea>
+    </div>
+
+    <div class="sec">
+      <h2><span class="num">10</span>지도 담기 <span id="shotCnt" style="font-family:var(--mono);color:var(--mute)"></span></h2>
+      <div class="hint">분석 탭에서 보고 싶은 화면(히트맵·격자·버퍼)을 만든 뒤 여기서 담으면 그 모습 그대로 보고서에 들어갑니다. 최대 3장.</div>
+      <label class="f" for="shotCap" style="margin-top:9px">그림 설명</label>
+      <input type="text" id="shotCap" placeholder="예: 250m 격자로 본 밀집 분포">
+      <button class="btn ghost wide sm" id="btnShot" style="margin-top:7px">지금 지도 담기</button>
+      <div id="shots" style="margin-top:9px"></div>
+    </div>
+
+    <div class="sec">
+      <h2><span class="num">11</span>분석 결과</h2>
+      <div class="note calm" style="margin-bottom:9px">지도와 수치를 근거로 <b>4~5문장</b>으로 쓰세요. ① 어디에 몰려 있는지 ② 어떤 유형이 많은지 ③ 지하철역과 어떤 관계인지 ④ 왜 그런지 ⑤ 무엇을 바꿔야 하는지</div>
+      <textarea id="report" rows="9" placeholder="예) 우리 조가 조사한 32건 중 21건이 …"></textarea>
+      <div class="counter" id="repCount">0문장 · 0자</div>
+      <div style="height:11px"></div>
+      <label class="f" for="rSug">제언 <span>· 선택, 1~2문장</span></label>
+      <textarea id="rSug" rows="3" placeholder="예: 서현역 2번 출구 옆 자투리 공간에 주차구역을 지정하면 …"></textarea>
+    </div>
+
+    <div class="sec">
+      <h2><span class="num">12</span>미리보기와 제출</h2>
+      <button class="btn wide ghost" id="btnPrev">완성본 미리보기</button>
+      <button class="btn wide" id="btnSubmit" style="margin-top:7px" disabled>보고서 제출하기</button>
+      <div class="row" style="margin-top:7px">
+        <button class="btn ghost sm" id="btnDl">HTML로 내려받기</button>
+        <button class="btn ghost sm" id="btnCsv">전체 자료 CSV</button>
+      </div>
+      <div id="repState" style="margin-top:9px"></div>
+    </div>
+
+    <div class="sec">
+      <h2><span class="num">13</span>제출된 보고서</h2>
+      <div id="repList"></div>
+    </div>
+  </section>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* leaflet.heat (c) 2014 Vladimir Agafonkin, BSD-2-Clause */
+/*
+ (c) 2014, Vladimir Agafonkin
+ simpleheat, a tiny JavaScript library for drawing heatmaps with Canvas
+ https://github.com/mourner/simpleheat
+*/
+!function(){"use strict";function t(i){return this instanceof t?(this._canvas=i="string"==typeof i?document.getElementById(i):i,this._ctx=i.getContext("2d"),this._width=i.width,this._height=i.height,this._max=1,void this.clear()):new t(i)}t.prototype={defaultRadius:25,defaultGradient:{.4:"blue",.6:"cyan",.7:"lime",.8:"yellow",1:"red"},data:function(t,i){return this._data=t,this},max:function(t){return this._max=t,this},add:function(t){return this._data.push(t),this},clear:function(){return this._data=[],this},radius:function(t,i){i=i||15;var a=this._circle=document.createElement("canvas"),s=a.getContext("2d"),e=this._r=t+i;return a.width=a.height=2*e,s.shadowOffsetX=s.shadowOffsetY=200,s.shadowBlur=i,s.shadowColor="black",s.beginPath(),s.arc(e-200,e-200,t,0,2*Math.PI,!0),s.closePath(),s.fill(),this},gradient:function(t){var i=document.createElement("canvas"),a=i.getContext("2d"),s=a.createLinearGradient(0,0,0,256);i.width=1,i.height=256;for(var e in t)s.addColorStop(e,t[e]);return a.fillStyle=s,a.fillRect(0,0,1,256),this._grad=a.getImageData(0,0,1,256).data,this},draw:function(t){this._circle||this.radius(this.defaultRadius),this._grad||this.gradient(this.defaultGradient);var i=this._ctx;i.clearRect(0,0,this._width,this._height);for(var a,s=0,e=this._data.length;e>s;s++)a=this._data[s],i.globalAlpha=Math.max(a[2]/this._max,t||.05),i.drawImage(this._circle,a[0]-this._r,a[1]-this._r);var n=i.getImageData(0,0,this._width,this._height);return this._colorize(n.data,this._grad),i.putImageData(n,0,0),this},_colorize:function(t,i){for(var a,s=3,e=t.length;e>s;s+=4)a=4*t[s],a&&(t[s-3]=i[a],t[s-2]=i[a+1],t[s-1]=i[a+2])}},window.simpleheat=t}(),/*
+ (c) 2014, Vladimir Agafonkin
+ Leaflet.heat, a tiny and fast heatmap plugin for Leaflet.
+ https://github.com/Leaflet/Leaflet.heat
+*/
+L.HeatLayer=(L.Layer?L.Layer:L.Class).extend({initialize:function(t,i){this._latlngs=t,L.setOptions(this,i)},setLatLngs:function(t){return this._latlngs=t,this.redraw()},addLatLng:function(t){return this._latlngs.push(t),this.redraw()},setOptions:function(t){return L.setOptions(this,t),this._heat&&this._updateOptions(),this.redraw()},redraw:function(){return!this._heat||this._frame||this._map._animating||(this._frame=L.Util.requestAnimFrame(this._redraw,this)),this},onAdd:function(t){this._map=t,this._canvas||this._initCanvas(),t._panes.overlayPane.appendChild(this._canvas),t.on("moveend",this._reset,this),t.options.zoomAnimation&&L.Browser.any3d&&t.on("zoomanim",this._animateZoom,this),this._reset()},onRemove:function(t){t.getPanes().overlayPane.removeChild(this._canvas),t.off("moveend",this._reset,this),t.options.zoomAnimation&&t.off("zoomanim",this._animateZoom,this)},addTo:function(t){return t.addLayer(this),this},_initCanvas:function(){var t=this._canvas=L.DomUtil.create("canvas","leaflet-heatmap-layer leaflet-layer"),i=L.DomUtil.testProp(["transformOrigin","WebkitTransformOrigin","msTransformOrigin"]);t.style[i]="50% 50%";var a=this._map.getSize();t.width=a.x,t.height=a.y;var s=this._map.options.zoomAnimation&&L.Browser.any3d;L.DomUtil.addClass(t,"leaflet-zoom-"+(s?"animated":"hide")),this._heat=simpleheat(t),this._updateOptions()},_updateOptions:function(){this._heat.radius(this.options.radius||this._heat.defaultRadius,this.options.blur),this.options.gradient&&this._heat.gradient(this.options.gradient),this.options.max&&this._heat.max(this.options.max)},_reset:function(){var t=this._map.containerPointToLayerPoint([0,0]);L.DomUtil.setPosition(this._canvas,t);var i=this._map.getSize();this._heat._width!==i.x&&(this._canvas.width=this._heat._width=i.x),this._heat._height!==i.y&&(this._canvas.height=this._heat._height=i.y),this._redraw()},_redraw:function(){var t,i,a,s,e,n,h,o,r,d=[],_=this._heat._r,l=this._map.getSize(),m=new L.Bounds(L.point([-_,-_]),l.add([_,_])),c=void 0===this.options.max?1:this.options.max,u=void 0===this.options.maxZoom?this._map.getMaxZoom():this.options.maxZoom,f=1/Math.pow(2,Math.max(0,Math.min(u-this._map.getZoom(),12))),g=_/2,p=[],v=this._map._getMapPanePos(),w=v.x%g,y=v.y%g;for(t=0,i=this._latlngs.length;i>t;t++)if(a=this._map.latLngToContainerPoint(this._latlngs[t]),m.contains(a)){e=Math.floor((a.x-w)/g)+2,n=Math.floor((a.y-y)/g)+2;var x=void 0!==this._latlngs[t].alt?this._latlngs[t].alt:void 0!==this._latlngs[t][2]?+this._latlngs[t][2]:1;r=x*f,p[n]=p[n]||[],s=p[n][e],s?(s[0]=(s[0]*s[2]+a.x*r)/(s[2]+r),s[1]=(s[1]*s[2]+a.y*r)/(s[2]+r),s[2]+=r):p[n][e]=[a.x,a.y,r]}for(t=0,i=p.length;i>t;t++)if(p[t])for(h=0,o=p[t].length;o>h;h++)s=p[t][h],s&&d.push([Math.round(s[0]),Math.round(s[1]),Math.min(s[2],c)]);this._heat.data(d).draw(this.options.minOpacity),this._frame=null},_animateZoom:function(t){var i=this._map.getZoomScale(t.zoom),a=this._map._getCenterOffset(t.center)._multiplyBy(-i).subtract(this._map._getMapPanePos());L.DomUtil.setTransform?L.DomUtil.setTransform(this._canvas,a,i):this._canvas.style[L.DomUtil.TRANSFORM]=L.DomUtil.getTranslateString(a)+" scale("+i+")"}}),L.heatLayer=function(t,i){return new L.HeatLayer(t,i)};
+</script>
+
+<script>
+/* 수도권 전철역 좌표 — 서울 열린데이터광장 역사 마스터 기반 */
+const STN_RAW = "4·19민주묘지|37.64951|127.01146;가능|37.74858|127.04421;가락시장|37.49252|127.11823;가산디지털단지|37.48107|126.88234;가양|37.56139|126.85446;가오리|37.64116|127.01461;가재울|37.48419|126.68367;가정|37.52465|126.67554;가정중앙시장|37.51705|126.67667;가좌|37.56849|126.91549;가천대|37.44861|127.1267;가평|37.81454|127.51074;간석|37.46474|126.69418;간석오거리|37.46705|126.70794;갈매|37.63412|127.11476;갈산|37.51727|126.72151;강남|37.49717|127.02793;강남구청|37.51719|127.04128;강남대|37.27016|127.12603;강동|37.5358|127.13248;강동구청|37.53034|127.12051;강매|37.61231|126.84322;강변|37.53509|127.09468;강촌|37.80572|127.63415;개롱|37.49808|127.13482;개봉|37.49459|126.85868;개포동|37.48912|127.06614;개화|37.57861|126.79815;개화산|37.5724|126.80617;거여|37.4931|127.14415;건대입구|37.54069|127.07023;검단사거리|37.60185|126.65711;검단오류|37.59488|126.62718;검바위|37.56141|126.67757;검암|37.5691|126.67373;경기광주|37.39991|127.25263;경기도청북부청사|37.75059|127.07149;경마공원|37.44389|127.00789;경복궁|37.57576|126.97353;경인교대입구|37.53816|126.7226;경전철의정부|37.7372|127.04326;경찰병원|37.49592|127.12454;계산|37.54324|126.72813;계양|37.57146|126.73564;고덕|37.555|127.15415;고려대|37.59051|127.0363;고속터미널|37.50481|127.00494;고잔|37.31678|126.82325;고진|37.24484|127.21425;곡산|37.64568|126.80176;곤제|37.75047|127.08371;곤지암|37.35131|127.34674;공덕|37.54402|126.95159;공릉|37.62574|127.0729;공항시장|37.56373|126.81068;공항화물청사|37.45837|126.47624;과천|37.43302|126.99657;관악|37.41923|126.90871;광교|37.30211|127.04448;광교중앙|37.28862|127.05148;광나루|37.5453|127.10357;광명|37.41618|126.88447;광명사거리|37.47925|126.85488;광운대|37.62363|127.06184;광화문|37.57103|126.97667;광흥창|37.54746|126.93199;교대|37.49341|127.01408;구로|37.50304|126.88197;구로디지털단지|37.48527|126.9014;구룡|37.48684|127.05886;구리|37.60339|127.14387;구반포|37.50136|126.98733;구산|37.61138|126.91727;구성|37.29897|127.10566;구의|37.53708|127.08592;구일|37.49676|126.87079;구파발|37.63676|126.91882;국수|37.51617|127.39937;국제업무지구|37.39991|126.63035;국회의사당|37.5281|126.91787;군자|37.55712|127.07954;군포|37.35356|126.94846;굴봉산|37.83207|127.55769;굴포천|37.507|126.73128;굽은다리|37.54548|127.14285;귤현|37.56638|126.74265;금곡|37.63738|127.20785;금릉|37.75132|126.76535;금정|37.37222|126.94343;금천구청|37.45563|126.89398;금촌|37.76622|126.77464;금호|37.54803|127.01587;기흥|37.27562|127.11594;길동|37.5378|127.14;길음|37.60341|127.02505;김량장|37.23725|127.19878;김유정|37.81847|127.71434;김포공항|37.56243|126.80106;까치산|37.53177|126.84668;까치울|37.50621|126.81094;낙성대|37.47693|126.96369;남구로|37.48606|126.88725;남동구청|37.44816|126.73694;남동인더스파크|37.40772|126.69522;남부터미널|37.48501|127.01619;남성|37.4846|126.97125;남영|37.54102|126.9713;남춘천|37.86401|127.72379;남태령|37.46387|126.98913;남한산성입구|37.45153|127.15982;내방|37.48762|126.99351;노들|37.51289|126.95322;노량진|37.51422|126.94245;노원|37.65513|127.06137;녹번|37.60093|126.93576;녹사평|37.53468|126.98669;녹양|37.75938|127.04229;녹천|37.6448|127.05127;논현|37.51109|127.02142;능곡|37.61881|126.82078;단대오거리|37.44521|127.15687;달미|37.34905|126.8088;달월|37.37968|126.74518;답십리|37.56675|127.0527;당고개|37.67027|127.07907;당산|37.53438|126.90228;당정|37.34428|126.94835;대곡|37.63163|126.81102;대공원|37.43568|127.00652;대림|37.49297|126.8958;대모산입구|37.49137|127.07272;대방|37.51334|126.92638;대성리|37.68407|127.37932;대야미|37.32847|126.91733;대청|37.49351|127.07953;대치|37.49461|127.06364;대화|37.67609|126.74757;대흥|37.54777|126.94207;덕계|37.81849|127.05649;덕소|37.58678|127.20883;덕정|37.84319|127.06128;도곡|37.49086|127.05538;도농|37.60881|127.16115;도림천|37.51429|126.88277;도봉|37.67956|127.0456;도봉산|37.68931|127.04622;도심|37.57962|127.22267;도원|37.46845|126.64271;도화|37.46607|126.66867;독립문|37.57457|126.95775;독바위|37.61846|126.93303;독산|37.46661|126.88925;독정|37.58521|126.67584;돌곶이|37.61054|127.05643;동대문|37.57142|127.00974;동대문역사문화공원|37.56514|127.0079;동대입구|37.55905|127.0056;동두천|37.92788|127.05479;동두천중앙|37.90189|127.05648;동막|37.39788|126.674;동묘앞|37.57263|127.01643;동백|37.26904|127.15272;동수|37.48531|126.71825;동암|37.47141|126.7029;동오|37.74527|127.05695;동인천|37.47528|126.6328;동작|37.50297|126.97931;동천|37.33793|127.10298;동춘|37.40474|126.68102;두정|36.83371|127.14896;둔전|37.26705|127.21364;둔촌동|37.52779|127.13625;등촌|37.55063|126.86569;디지털미디어시티|37.57665|126.90098;뚝섬|37.54718|127.04737;뚝섬유원지|37.53154|127.0667;마곡|37.56018|126.82545;마곡나루|37.56734|126.8295;마두|37.65221|126.77762;마들|37.66494|127.05768;마석|37.65278|127.31177;마장|37.5661|127.04297;마전|37.59757|126.667;마천|37.49499|127.15278;마포|37.53957|126.94593;마포구청|37.56352|126.90334;만수|37.45491|126.73209;망우|37.59955|127.09191;망원|37.55609|126.91005;망월사|37.70991|127.04745;망포|37.2458|127.05735;매교|37.26548|127.01568;매봉|37.48695|127.04677;매탄권선|37.25276|127.04057;먹골|37.61064|127.07773;면목|37.58858|127.0875;명동|37.56099|126.98632;명일|37.55137|127.144;명지대|37.23796|127.19029;명학|37.38465|126.93543;모란|37.43213|127.12909;모래내시장|37.45583|126.7193;목동|37.52607|126.86493;몽촌토성|37.51741|127.11236;무악재|37.5823|126.95029;문래|37.51793|126.89476;문산|37.85462|126.78805;문정|37.48586|127.1225;문학경기장|37.43494|126.69858;미금|37.35008|127.10891;미아|37.62667|127.02598;미아사거리|37.61329|127.03005;박촌|37.5537|126.74508;반월|37.31221|126.90352;반포|37.50818|127.01173;발곡|37.72705|127.0528;발산|37.5586|126.83767;방배|37.48143|126.9976;방이|37.50886|127.12613;방학|37.6675|127.04427;방화|37.57745|126.81274;배방|36.77763|127.05299;백마|37.65824|126.79446;백석|37.64311|126.78787;백양리|37.83078|127.58933;백운|37.48366|126.7077;버티고개|37.54801|127.00705;범계|37.38979|126.95081;범골|37.72875|127.04353;별내|37.64202|127.12684;병점|37.2075|127.03273;보라매|37.49987|126.92043;보문|37.58529|127.01938;보산|37.9137|127.05728;보정|37.31275|127.1082;보평|37.25897|127.21846;복정|37.47005|127.12666;봉명|36.80121|127.13576;봉은사|37.51422|127.06024;봉천|37.48236|126.94189;봉화산|37.61728|127.0914;부개|37.48842|126.74109;부발|37.26019|127.49028;부천|37.48405|126.78269;부천시청|37.50463|126.76354;부천종합운동장|37.50538|126.79734;부평|37.48949|126.72481;부평구청|37.50834|126.72055;부평삼거리|37.47768|126.71021;부평시장|37.49838|126.72224;북한산보국문|37.61208|127.00604;북한산우이|37.6629|127.01168;불광|37.61047|126.92989;사가정|37.58089|127.08848;사당|37.47653|126.98168;사릉|37.65108|127.17693;사평|37.50421|127.01526;산본|37.3581|126.93327;산성|37.45712|127.14991;삼가|37.24211|127.16808;삼각지|37.53478|126.97311;삼동|37.40952|127.20336;삼산체육관|37.50641|126.74215;삼성|37.50884|127.06316;삼성중앙|37.51301|127.05328;삼송|37.65308|126.89556;삼양|37.63413|127.01513;삼양사거리|37.6212|127.01653;상갈|37.26181|127.10885;상계|37.66088|127.07357;상도|37.50283|126.94791;상동|37.50578|126.75308;상록수|37.3028|126.86649;상봉|37.59636|127.08503;상수|37.54772|126.92285;상왕십리|37.56435|127.02935;상월곡|37.60638|127.04849;상일동|37.55671|127.16642;상천|37.77025|127.45482;상현|37.29766|127.06934;새말|37.74889|127.06362;새절|37.59115|126.91363;샛강|37.51727|126.92842;서강대|37.55188|126.93571;서구청|37.54374|126.67679;서대문|37.56577|126.96664;서동탄|37.1955|127.05167;서부여성회관|37.50619|126.6762;서빙고|37.51959|126.98854;서울|37.55507|126.9718;서울대입구|37.48125|126.95274;서울숲|37.54362|127.04471;서정리|37.0565|127.05282;서초|37.4919|127.00792;서현|37.38513|127.12359;석계|37.6148|127.06585;석남|37.50619|126.6762;석바위시장|37.45761|126.69258;석수|37.43505|126.90229;석천사거리|37.45681|126.70999;석촌|37.50543|127.10698;선릉|37.5045|127.04901;선바위|37.45167|127.0023;선부|37.33435|126.8099;선유도|37.53802|126.89352;선정릉|37.51098|127.04359;선학|37.42668|126.69886;성균관대|37.30035|126.97075;성복|37.31334|127.0801;성수|37.54458|127.05596;성신여대입구|37.59262|127.0164;성환|36.91608|127.12696;세류|37.24502|127.01322;세마|37.18753|127.04318;세종대왕릉|37.29531|127.57094;센트럴파크|37.39305|126.63473;소래포구|37.40095|126.73352;소사|37.48275|126.79445;소새울|37.4685|126.7961;소요산|37.9481|127.06103;솔밭공원|37.65579|127.01149;솔샘|37.62026|127.01137;송내|37.4876|126.75366;송도|37.42851|126.65777;송산|37.73728|127.08716;송정|37.56118|126.81197;송탄|37.0757|127.0543;송파|37.4997|127.11218;수내|37.37846|127.11432;수락산|37.67785|127.05531;수리산|37.3498|126.92536;수색|37.58084|126.89561;수서|37.48737|127.10188;수원|37.26597|126.99987;수원시청|37.26191|127.03074;수유|37.63805|127.02573;수지구청|37.3227|127.09503;수진|37.43743|127.14072;숙대입구|37.54456|126.97211;숭실대입구|37.49603|126.95382;숭의|37.46079|126.6383;시민공원|37.45833|126.68119;시청|37.56472|126.97711;시청·용인대|37.23915|127.17841;시흥능곡|37.37014|126.80871;시흥대야|37.48279|126.77814;시흥시청|37.38202|126.80623;신갈|37.2861|127.11131;신금호|37.55455|127.02033;신길|37.51712|126.91717;신길온천|37.33821|126.76584;신내|37.61289|127.10322;신논현|37.5046|127.02506;신답|37.57004|127.04648;신당|37.56597|127.01782;신대방|37.48746|126.91315;신대방삼거리|37.4997|126.92828;신도림|37.50872|126.89129;신둔도예촌|37.31719|127.40476;신림|37.4842|126.92972;신목동|37.54428|126.88308;신반포|37.50341|126.99592;신방화|37.56753|126.8166;신사|37.51633|127.02011;신설동|37.5753|127.02509;신연수|37.41804|126.69386;신용산|37.52917|126.96789;신원|37.52555|127.37292;신이문|37.60185|127.06732;신정|37.525|126.85619;신정네거리|37.52007|126.85291;신중동|37.50305|126.77596;신창|36.7695|126.95111;신천|37.43959|126.78677;신촌|37.55513|126.93689;신촌(경의중앙선)|37.55978|126.94232;신포|37.46874|126.62385;신풍|37.50008|126.90993;신현|37.40986|126.78802;신흥|37.44092|127.14756;쌍문|37.64863|127.03471;쌍용(나사렛대)|36.79376|127.1214;아산|36.79205|127.10436;아시아드경기장|37.5517|126.67712;아신|37.51382|127.44317;아차산|37.55169|127.08976;아현|37.55734|126.95614;안국|37.57648|126.98544;안산|37.32708|126.78853;안암|37.58627|127.029;안양|37.40159|126.92287;암사|37.55021|127.12756;압구정|37.52707|127.02846;압구정로데오|37.52738|127.04053;애오개|37.55374|126.95682;야당|37.71233|126.76136;야탑|37.41119|127.12871;약수|37.55434|127.01065;양수|37.54598|127.3291;양원|37.6066|127.10791;양재|37.48415|127.03463;양재시민의숲|37.47002|127.03842;양정|37.60533|127.19364;양주|37.77438|127.04471;양천구청|37.5124|126.86582;양천향교|37.56838|126.84133;양평|37.52565|126.88578;양평(경의중앙선)|37.49283|127.49181;어룡|37.7428|127.08504;어린이대공원|37.54801|127.07466;어정|37.27492|127.14371;언주|37.50729|127.03387;여의나루|37.5271|126.9329;여의도|37.52162|126.92419;여주|37.28288|127.62638;역곡|37.48518|126.8115;역삼|37.50062|127.03646;역촌|37.60602|126.92274;연수|37.4178|126.67894;연신내|37.619|126.92101;염창|37.54694|126.87492;영등포|37.5155|126.90763;영등포구청|37.52497|126.89595;영등포시장|37.52267|126.90514;영종|37.51147|126.5237;영통|37.25157|127.07139;예술회관|37.4494|126.70101;오금|37.50216|127.12811;오류동|37.49453|126.84537;오리|37.33982|127.10894;오목교|37.5245|126.87518;오빈|37.50606|127.47387;오산|37.14588|127.06672;오산대|37.16895|127.0632;오이도|37.36236|126.73871;옥수|37.54069|127.01797;온수|37.49226|126.82339;온양온천|36.78048|127.00325;올림픽공원|37.51608|127.13085;완정|37.59293|126.6732;왕길|37.59518|126.6427;왕십리|37.56153|127.03773;외대앞|37.59607|127.06355;용답|37.5619|127.0509;용두|37.57403|127.03809;용마산|37.57365|127.08673;용문|37.48223|127.59465;용산|37.52985|126.96456;용유|37.42483|126.42365;우장산|37.54877|126.83632;운길산|37.55467|127.31011;운동장·송담대|37.23785|127.2092;운서|37.4929|126.49379;운연|37.44013|126.75997;운정|37.72583|126.76726;워터파크|37.42918|126.43417;원곡|37.31316|126.79594;원당|37.65332|126.84304;원덕|37.46867|127.54708;원시|37.30061|126.78588;원인재|37.4126|126.68739;원흥|37.65066|126.87264;월계|37.63321|127.05883;월곡|37.60195|127.04152;월곶|37.39177|126.7427;월드컵경기장|37.56953|126.8993;월롱|37.79619|126.79259;을지로3가|37.56629|126.99191;을지로4가|37.56694|126.99808;을지로입구|37.56601|126.98262;응봉|37.54995|127.03454;응암|37.5986|126.91558;의왕|37.32085|126.94822;의정부|37.73842|127.04596;의정부시청|37.73926|127.03478;의정부중앙|37.74368|127.04957;이대|37.55673|126.94601;이매|37.3961|127.12827;이천|37.26558|127.44226;이촌|37.52227|126.97434;이태원|37.53449|126.9943;인덕원|37.40155|126.97671;인천|37.47669|126.61694;인천가좌|37.4897|126.67521;인천공항1터미널|37.44746|126.45251;인천공항2터미널|37.45935|126.42617;인천논현|37.40061|126.72248;인천대공원|37.44877|126.75262;인천대입구|37.38601|126.63948;인천시청|37.45741|126.70222;인천터미널|37.44238|126.69971;인하대|37.44849|126.64962;일산|37.68208|126.76985;일원|37.48368|127.08439;임학|37.54506|126.73866;작전|37.53041|126.72253;잠실|37.51395|127.10223;잠실나루|37.52073|127.10379;잠실새내|37.51169|127.08616;잠원|37.51276|127.01122;장기주차장|37.44389|126.45557;장승배기|37.5049|126.93915;장암|37.70011|127.0532;장지|37.4787|127.12619;장한평|37.56144|127.06462;전대·에버랜드|37.28534|127.21956;정릉|37.6038|127.00954;정발산|37.65948|126.77336;정부과천청사|37.42651|126.98978;정왕|37.35173|126.74299;정자|37.36706|127.1081;제기동|37.5781|127.03489;제물포|37.46677|126.65667;종각|37.57016|126.98292;종로3가|37.57161|126.99181;종로5가|37.57093|127.00185;종합운동장|37.511|127.07364;주안|37.46494|126.67992;주안국가산단|37.4737|126.68113;주엽|37.67007|126.76133;죽전|37.32475|127.10739;중계|37.64458|127.0643;중곡|37.56592|127.08432;중동|37.48656|126.76484;중랑|37.59492|127.07612;중앙|37.31594|126.83857;중화|37.60254|127.07926;증미|37.5574|126.86194;증산|37.58388|126.90964;지석|37.26961|127.13652;지식정보단지|37.37838|126.64517;지제|37.0188|127.07044;지축|37.64805|126.91395;지평|37.47646|127.62743;지행|37.89233|127.05572;직산|36.87059|127.1439;진위|37.10945|127.06228;창동|37.65317|127.04773;창신|37.57966|127.01524;천마산|37.65898|127.28538;천안|36.81|127.14683;천왕|37.48664|126.83871;천호|37.5384|127.12357;철산|37.47605|126.86791;청계산입구|37.44721|127.05566;청구|37.56025|127.01383;청담|37.51937|127.05335;청라국제도시|37.55588|126.62533;청량리|37.58018|127.04684;청명|37.25949|127.07893;청평|37.73549|127.42661;초당|37.26075|127.15944;초월|37.37442|127.299;초지|37.32061|126.80603;총신대입구(이수)|37.48626|126.98199;춘의|37.50366|126.78704;춘천|37.88505|127.71702;충무로|37.56124|126.99428;충정로|37.55997|126.96367;캠퍼스타운|37.38786|126.66167;탄현|37.69402|126.76109;탑석|37.73358|127.0887;태릉입구|37.61798|127.07512;태평|37.44002|127.12771;테크노파크|37.38227|126.65636;퇴계원|37.64831|127.14395;파라다이스시티|37.43719|126.45982;파주|37.8153|126.79278;판교|37.39476|127.11122;팔당|37.54737|127.24394;평내호평|37.65322|127.24449;평촌|37.39429|126.96388;평택|36.99073|127.08516;풍산|37.67235|126.78624;하계|37.63635|127.06799;학동|37.51423|127.03166;학여울|37.49666|127.07059;한강진|37.53963|127.00172;한남|37.52943|127.00917;한대앞|37.30969|126.85344;한성대입구|37.58846|127.00622;한양대|37.55527|127.04366;한티|37.49624|127.05287;합동청사|37.44051|126.45863;합정|37.54946|126.91374;행당|37.55732|127.02948;행신|37.6121|126.83415;혜화|37.58234|127.00184;호구포|37.40164|126.70863;홍대입구|37.55719|126.92538;홍제|37.58907|126.94374;화계|37.63411|127.0153;화곡|37.54151|126.84046;화랑대|37.62006|127.08469;화서|37.28386|126.98963;화전|37.60289|126.86839;화정|37.63459|126.83265;회기|37.58946|127.05758;회룡|37.72485|127.0469;회현|37.55851|126.97825;효자|37.75402|127.0769;효창공원앞|37.53926|126.96135;흑석|37.50877|126.96371;흥선|37.7433|127.03702;";
+/* 전국 행정동 중심좌표 — 통계청 행정동 경계 기반 */
+const ADM_RAW = "서울특별시^종로구~사직동|37.5741|126.9701,삼청동|37.588|126.9811,부암동|37.5967|126.9626,평창동|37.614|126.9693,무악동|37.5777|126.959,교남동|37.5711|126.9642,가회동|37.5827|126.9866,종로1·2·3·4가동|37.5751|126.9897,종로5·6가동|37.573|127.0042,이화동|37.5797|127.0031,창신1동|37.5723|127.014,창신2동|37.5758|127.0103,창신3동|37.5788|127.0132,숭인1동|37.5772|127.0169,숭인2동|37.5743|127.0206,청운효자동|37.5847|126.9704,혜화동|37.5875|126.9977;중구~소공동|37.5643|126.9744,회현동|37.557|126.9767,명동|37.5637|126.9844,필동|37.5568|126.9938,장충동|37.5556|127.0023,광희동|37.5652|127.0036,을지로동|37.5666|126.9965,신당5동|37.5636|127.022,황학동|37.5684|127.0208,중림동|37.5573|126.966,신당동|37.5657|127.0138,다산동|37.5547|127.0083,약수동|37.5498|127.0102,청구동|37.5569|127.015,동화동|37.5606|127.0187;용산구~후암동|37.5499|126.9806,용산2가동|37.5402|126.9835,남영동|37.5451|126.9735,원효로2동|37.5331|126.9514,효창동|37.5431|126.9613,용문동|37.5381|126.9586,이촌1동|37.5173|126.971,이촌2동|37.5233|126.9539,이태원1동|37.5334|126.9932,이태원2동|37.5417|126.9921,서빙고동|37.5225|126.9884,보광동|37.5259|127.0013,청파동|37.5479|126.9672,원효로1동|37.5375|126.9666,한강로동|37.5292|126.9679,한남동|37.5371|127.0058;성동구~왕십리2동|37.5615|127.0277,마장동|37.5676|127.0405,사근동|37.558|127.0454,행당1동|37.559|127.0361,행당2동|37.5567|127.0295,응봉동|37.551|127.034,금호1가동|37.5537|127.0251,금호4가동|37.5446|127.0246,성수1가1동|37.5404|127.041,성수1가2동|37.5491|127.044,성수2가1동|37.5367|127.0553,성수2가3동|37.5455|127.0581,송정동|37.5523|127.0657,용답동|37.5585|127.0578,왕십리도선동|37.5668|127.0296,금호2·3가동|37.5514|127.0199,옥수동|37.542|127.0162;광진구~화양동|37.5433|127.0735,군자동|37.5531|127.0737,중곡1동|37.562|127.0777,중곡2동|37.5589|127.0846,중곡3동|37.5679|127.082,중곡4동|37.5639|127.0944,능동|37.5507|127.0816,구의1동|37.5415|127.086,구의2동|37.551|127.0945,구의3동|37.5351|127.0952,광장동|37.5483|127.1049,자양1동|37.5355|127.0804,자양2동|37.5293|127.0833,자양3동|37.5317|127.0712,자양4동|37.5339|127.0638;동대문구~회기동|37.5937|127.0514,휘경1동|37.5919|127.0625,휘경2동|37.5865|127.0664,청량리동|37.5889|127.0451,용신동|37.5756|127.0323,제기동|37.5837|127.0372,전농1동|37.579|127.051,전농2동|37.5807|127.0611,답십리2동|37.5709|127.0611,장안1동|37.5662|127.0686,장안2동|37.5758|127.0725,이문1동|37.5972|127.0603,이문2동|37.6028|127.0675,답십리1동|37.5709|127.0517;중랑구~면목2동|37.5894|127.0781,면목4동|37.5735|127.0865,면목5동|37.583|127.0797,면목7동|37.5773|127.0927,상봉1동|37.602|127.0895,상봉2동|37.5942|127.0839,중화1동|37.6023|127.0831,중화2동|37.5987|127.0752,묵1동|37.6137|127.0825,묵2동|37.6104|127.0747,망우3동|37.5918|127.1029,신내1동|37.6128|127.1045,신내2동|37.611|127.0916,면목본동|37.5883|127.0895,면목3·8동|37.5846|127.0974,망우본동|37.602|127.1075;성북구~돈암1동|37.5993|127.024,돈암2동|37.5973|127.0116,안암동|37.5873|127.0273,보문동|37.5826|127.0192,정릉1동|37.6033|127.0167,정릉2동|37.6038|127.0081,정릉3동|37.6123|126.9938,정릉4동|37.6235|126.9952,길음1동|37.6081|127.0197,길음2동|37.608|127.0272,월곡1동|37.6079|127.0364,월곡2동|37.6033|127.0452,장위1동|37.6149|127.0443,장위2동|37.6122|127.0517,장위3동|37.6182|127.0535,성북동|37.5959|126.9962,삼선동|37.5866|127.0118,동선동|37.5937|127.0184,종암동|37.5973|127.0334,석관동|37.6083|127.0613;강북구~번1동|37.6376|127.0305,번2동|37.6295|127.0348,번3동|37.6238|127.0423,수유1동|37.6299|127.0088,수유2동|37.6454|127.0195,수유3동|37.6405|127.0235,삼양동|37.6238|127.0147,미아동|37.6287|127.0263,송중동|37.6177|127.0329,송천동|37.6182|127.0249,삼각산동|37.6171|127.0168,우이동|37.6604|127.0003,인수동|37.6376|127.004;도봉구~쌍문1동|37.653|127.0195,쌍문2동|37.6571|127.037,쌍문3동|37.6477|127.0306,쌍문4동|37.6556|127.0304,방학1동|37.665|127.0435,방학2동|37.6691|127.0323,방학3동|37.6628|127.0235,창1동|37.6471|127.0436,창2동|37.6426|127.0368,창3동|37.6374|127.0416,창4동|37.6526|127.0509,창5동|37.6554|127.0428,도봉1동|37.6851|127.0268,도봉2동|37.6812|127.0478;노원구~월계1동|37.6218|127.0586,월계2동|37.6341|127.0512,월계3동|37.6247|127.0649,공릉2동|37.6316|127.0942,하계1동|37.6386|127.0748,하계2동|37.6348|127.0648,중계본동|37.6481|127.0858,중계1동|37.65|127.0735,중계4동|37.6588|127.0822,상계1동|37.6833|127.0653,상계2동|37.6565|127.0673,상계5동|37.6632|127.0696,상계8동|37.6663|127.0537,상계9동|37.6681|127.0625,상계10동|37.6596|127.0584,상계3·4동|37.6751|127.0833,상계6·7동|37.6487|127.0601,중계2·3동|37.6433|127.0659,공릉1동|37.6241|127.0728;은평구~녹번동|37.6054|126.9351,불광1동|37.6173|126.9393,갈현1동|37.6254|126.9149,갈현2동|37.6183|126.9121,구산동|37.6111|126.9076,대조동|37.6123|126.9231,응암1동|37.5983|126.9269,응암2동|37.5919|126.923,신사1동|37.599|126.9088,신사2동|37.5929|126.9063,증산동|37.5838|126.9058,수색동|37.5858|126.8949,진관동|37.6393|126.9405,불광2동|37.6244|126.9286,응암3동|37.5887|126.9177,역촌동|37.6046|126.9145;서대문구~천연동|37.5712|126.9571,홍제1동|37.5815|126.9452,홍제3동|37.592|126.9512,홍제2동|37.5845|126.9525,홍은1동|37.6|126.947,홍은2동|37.587|126.9322,남가좌1동|37.5717|126.9162,남가좌2동|37.5776|126.9213,북가좌1동|37.5753|126.908,북가좌2동|37.581|126.9135,충현동|37.5639|126.9581,북아현동|37.5592|126.9555,신촌동|37.5636|126.9411,연희동|37.572|126.9327;마포구~용강동|37.5406|126.9413,대흥동|37.5521|126.9414,염리동|37.5498|126.9475,신수동|37.5436|126.9336,서교동|37.5548|126.9209,합정동|37.5469|126.9088,망원1동|37.5528|126.9002,망원2동|37.5571|126.8957,연남동|37.563|126.9215,성산1동|37.562|126.9118,성산2동|37.5681|126.902,상암동|37.5718|126.8809,도화동|37.537|126.9468,서강동|37.5459|126.9252,공덕동|37.5491|126.9578,아현동|37.5519|126.9528;양천구~목1동|37.5274|126.8751,목2동|37.5436|126.8741,목3동|37.5452|126.8654,목4동|37.5354|126.8669,신월1동|37.5313|126.8345,신월2동|37.5234|126.8463,신월3동|37.5324|126.8275,신월4동|37.5222|126.8398,신월5동|37.54|126.8299,신월6동|37.516|126.8421,신월7동|37.5207|126.8323,신정1동|37.5189|126.8596,신정2동|37.519|126.8752,신정3동|37.5118|126.8394,신정6동|37.5159|126.8696,신정7동|37.5101|126.8647,목5동|37.5363|126.881,신정4동|37.5254|126.8576;강서구~염창동|37.5532|126.8754,등촌1동|37.5559|126.8596,등촌2동|37.5457|126.86,등촌3동|37.5611|126.8463,화곡본동|37.5426|126.8482,화곡2동|37.5323|126.8544,화곡3동|37.5441|126.8343,화곡4동|37.5361|126.8586,화곡6동|37.5517|126.8512,화곡8동|37.5342|126.8486,가양1동|37.5731|126.8343,가양2동|37.5687|126.854,가양3동|37.5627|126.8623,발산1동|37.5504|126.8256,공항동|37.5565|126.795,방화1동|37.5686|126.8176,방화2동|37.5838|126.8045,방화3동|37.5816|126.8155,화곡1동|37.5338|126.8409,우장산동|37.5506|126.841;구로구~신도림동|37.5097|126.8828,구로1동|37.493|126.8755,구로3동|37.4849|126.895,구로4동|37.4915|126.8902,구로5동|37.502|126.8885,고척1동|37.5007|126.8634,고척2동|37.5059|126.8533,개봉2동|37.4927|126.8564,개봉3동|37.4868|126.8524,오류1동|37.497|126.8416,항동|37.481|126.8245,수궁동|37.4983|126.8261,가리봉동|37.4826|126.8883,구로2동|37.4975|126.8795,개봉1동|37.4999|126.8499,오류2동|37.4853|126.8384;금천구~가산동|37.4768|126.8843,독산1동|37.4642|126.8927,독산2동|37.4638|126.9026,독산3동|37.4759|126.9046,독산4동|37.4692|126.9041,시흥1동|37.4529|126.9001,시흥2동|37.4506|126.9201,시흥3동|37.4403|126.9059,시흥4동|37.4601|126.9091,시흥5동|37.4488|126.9124;영등포구~여의동|37.5275|126.9276,당산1동|37.5239|126.8969,당산2동|37.533|126.9039,양평1동|37.5251|126.8871,양평2동|37.5406|126.8942,신길1동|37.5123|126.9195,신길3동|37.5064|126.9059,신길4동|37.5073|126.9129,신길5동|37.5011|126.9056,신길6동|37.4992|126.9135,신길7동|37.5058|126.9198,대림1동|37.4938|126.9053,대림2동|37.4896|126.9006,대림3동|37.4999|126.8973,영등포본동|37.5137|126.9097,영등포동|37.5215|126.9078,도림동|37.5093|126.9012,문래동|37.5164|126.8915;동작구~노량진2동|37.5109|126.938,상도1동|37.4983|126.9535,상도2동|37.5037|126.9421,상도3동|37.4972|126.9334,상도4동|37.4974|126.9408,사당1동|37.4797|126.9774,사당3동|37.4888|126.9709,사당4동|37.4806|126.9708,사당5동|37.4858|126.965,대방동|37.5071|126.928,신대방1동|37.4899|126.9107,신대방2동|37.4943|126.9215,흑석동|37.5063|126.9638,노량진1동|37.513|126.9492,사당2동|37.4982|126.9752;관악구~보라매동|37.4904|126.9326,청림동|37.4894|126.9596,행운동|37.4809|126.9606,낙성대동|37.4672|126.96,중앙동|37.4841|126.9506,인헌동|37.4721|126.9666,남현동|37.4625|126.9766,서원동|37.4806|126.9334,신원동|37.4793|126.9267,서림동|37.4735|126.9392,신사동|37.4856|126.9188,신림동|37.4869|126.9276,난향동|37.4616|126.9183,조원동|37.4829|126.9075,대학동|37.4535|126.9485,은천동|37.4868|126.9422,성현동|37.4895|126.9512,청룡동|37.478|126.9459,난곡동|37.4705|126.921,삼성동|37.4607|126.9301,미성동|37.4759|126.9154;서초구~서초1동|37.487|127.0201,서초2동|37.4888|127.0279,서초3동|37.4854|127.0096,서초4동|37.499|127.02,잠원동|37.5176|127.013,반포본동|37.5063|126.9865,반포1동|37.5055|127.0166,반포2동|37.5064|126.9957,반포3동|37.5124|127.0036,반포4동|37.4996|127.0033,방배본동|37.4949|126.9878,방배1동|37.4849|126.9963,방배2동|37.473|126.9885,방배3동|37.4743|126.9979,방배4동|37.4898|126.991,양재1동|37.4696|127.0225,양재2동|37.4511|127.0459,내곡동|37.4565|127.0705;강남구~신사동|37.5257|127.0214,논현1동|37.5119|127.0265,논현2동|37.5152|127.0362,삼성1동|37.5154|127.0606,삼성2동|37.5118|127.0488,대치1동|37.4934|127.059,대치4동|37.5017|127.0549,역삼1동|37.5009|127.0355,역삼2동|37.4985|127.0449,도곡1동|37.489|127.041,도곡2동|37.4882|127.0497,개포1동|37.4793|127.0647,개포4동|37.4756|127.0532,일원본동|37.4824|127.0847,일원1동|37.4934|127.0892,일원2동|37.4955|127.0793,수서동|37.4868|127.1006,세곡동|37.4711|127.1043,압구정동|37.5303|127.0335,청담동|37.5245|127.0505,대치2동|37.5006|127.0664,개포2동|37.4865|127.0676;송파구~풍납1동|37.5382|127.1143,풍납2동|37.5299|127.1101,거여1동|37.4944|127.1417,거여2동|37.4924|127.1472,마천1동|37.4948|127.1557,마천2동|37.5003|127.1515,방이1동|37.5098|127.1223,방이2동|37.5133|127.1138,오륜동|37.5177|127.1285,오금동|37.504|127.1344,송파1동|37.5072|127.1103,송파2동|37.5028|127.1168,석촌동|37.5027|127.1025,삼전동|37.5017|127.0919,가락본동|37.4972|127.1216,가락1동|37.4953|127.1082,가락2동|37.4959|127.1306,문정1동|37.4882|127.1269,문정2동|37.4807|127.1191,잠실본동|37.5055|127.0823,잠실4동|37.5213|127.1082,잠실6동|37.5191|127.1,잠실7동|37.5075|127.0741,잠실2동|37.5177|127.0788,잠실3동|37.5136|127.0943,장지동|37.4828|127.1316,위례동|37.4817|127.1412;강동구~강일동|37.5639|127.174,상일동|37.5507|127.1648,명일1동|37.5504|127.1459,명일2동|37.5483|127.1542,고덕1동|37.5633|127.1503,고덕2동|37.5659|127.1616,암사2동|37.5574|127.1232,암사3동|37.5615|127.1385,천호1동|37.5463|127.1386,천호3동|37.5397|127.1332,성내1동|37.5288|127.1255,성내2동|37.5344|127.1277,성내3동|37.5284|127.1338,둔촌1동|37.5231|127.1404,둔촌2동|37.5315|127.1474,암사1동|37.5519|127.1346,천호2동|37.5447|127.1223,길동|37.5397|127.1459@광주광역시^동구~충장동|35.1506|126.9154,동명동|35.1507|126.9254,계림1동|35.1593|126.9175,계림2동|35.1602|126.9238,산수1동|35.1561|126.9287,산수2동|35.157|126.9374,지산1동|35.1498|126.9309,지산2동|35.1482|126.9449,서남동|35.143|126.9268,학동|35.1369|126.9248,학운동|35.1285|126.9634,지원1동|35.1278|126.9373,지원2동|35.1013|126.9494;서구~양동|35.1523|126.9027,양3동|35.1577|126.895,농성1동|35.1559|126.8889,농성2동|35.1505|126.8863,광천동|35.1651|126.8801,유덕동|35.1637|126.8456,상무1동|35.1562|126.8619,상무2동|35.1465|126.8614,화정1동|35.1552|126.8765,화정2동|35.1451|126.8819,화정3동|35.1448|126.876,화정4동|35.1398|126.8706,서창동|35.1173|126.8324,치평동|35.1528|126.8453,풍암동|35.1253|126.8756,금호1동|35.1354|126.8544,금호2동|35.1278|126.8578,동천동|35.1708|126.86;남구~양림동|35.1381|126.9143,방림1동|35.1335|126.9164,방림2동|35.1298|126.9224,사직동|35.1447|126.9094,월산동|35.1465|126.8999,월산4동|35.146|126.8915,월산5동|35.1403|126.8945,백운1동|35.1397|126.9056,백운2동|35.1359|126.9029,주월1동|35.1284|126.8957,주월2동|35.1363|126.8901,효덕동|35.1026|126.9023,송암동|35.1058|126.8783,봉선1동|35.1302|126.9089,봉선2동|35.1222|126.9136,대촌동|35.0785|126.8277;북구~중흥1동|35.1627|126.9112,중흥2동|35.17|126.9102,중흥3동|35.1719|126.9161,중앙동|35.1567|126.9065,임동|35.1637|126.8936,신안동|35.168|126.9002,용봉동|35.1792|126.9007,운암1동|35.1763|126.8731,운암2동|35.1749|126.8845,운암3동|35.1839|126.876,동림동|35.1812|126.8596,우산동|35.1746|126.9213,풍향동|35.1653|126.9263,문화동|35.1829|126.9412,문흥1동|35.1921|126.9293,문흥2동|35.1823|126.9183,두암1동|35.1698|126.9282,두암2동|35.1741|126.9375,두암3동|35.1653|126.9396,삼각동|35.2022|126.9089,매곡동|35.1909|126.8891,오치1동|35.19|126.9127,오치2동|35.1887|126.9021,석곡동|35.1746|126.9709,일곡동|35.2125|126.8982,신용동|35.2126|126.863,양산동|35.2012|126.8735,건국동|35.2344|126.8901;광산구~송정1동|35.1347|126.8045,송정2동|35.1371|126.7931,도산동|35.1199|126.7948,신흥동|35.132|126.8119,어룡동|35.1596|126.769,우산동|35.155|126.8153,월곡1동|35.1676|126.8129,월곡2동|35.1716|126.8058,비아동|35.2122|126.8231,하남동|35.195|126.7946,임곡동|35.2175|126.7537,동곡동|35.0953|126.7769,평동|35.1273|126.7419,삼도동|35.1433|126.6887,본량동|35.1892|126.7093,첨단1동|35.2221|126.8364,첨단2동|35.2092|126.8449,운남동|35.1734|126.8245,신창동|35.1908|126.8465,신가동|35.183|126.833,수완동|35.1916|126.8203@전라남도^목포시~용당1동|34.8068|126.3929,용당2동|34.8005|126.4002,연동|34.7975|126.3932,산정동|34.807|126.3834,연산동|34.8194|126.383,원산동|34.8091|126.378,대성동|34.7998|126.3828,목원동|34.793|126.3813,동명동|34.7898|126.3944,삼학동|34.7902|126.4044,만호동|34.7842|126.3897,유달동|34.7741|126.3171,죽교동|34.799|126.3657,북항동|34.8057|126.3695,용해동|34.8168|126.4003,이로동|34.797|126.4123,상동|34.8188|126.415,하당동|34.8092|126.4201,신흥동|34.7996|126.425,삼향동|34.8328|126.4153,옥암동|34.8147|126.4363,부흥동|34.8025|126.4352,부주동|34.8044|126.4488;여수시~돌산읍|34.6482|127.7638,소라면|34.7889|127.6048,율촌면|34.8504|127.5723,화양면|34.6903|127.5966,남면|34.5221|127.7505,화정면|34.5688|127.665,삼산면|34.2296|127.2464,동문동|34.7422|127.7433,한려동|34.7444|127.7506,중앙동|34.7378|127.7372,충무동|34.7504|127.7301,광림동|34.7564|127.7209,서강동|34.7416|127.7215,대교동|34.7349|127.7245,국동|34.7304|127.7187,월호동|34.7322|127.6984,여서동|34.7472|127.7068,문수동|34.7554|127.699,미평동|34.7738|127.7098,둔덕동|34.7774|127.6987,만덕동|34.7794|127.7389,쌍봉동|34.7495|127.6518,시전동|34.7526|127.6791,여천동|34.7747|127.6562,주삼동|34.7912|127.6654,삼일동|34.8269|127.711,묘도동|34.8834|127.721;순천시~승주읍|35.0175|127.3621,주암면|35.0692|127.2462,송광면|34.989|127.2474,외서면|34.9163|127.2725,낙안면|34.9211|127.3461,별량면|34.8695|127.4296,상사면|34.9371|127.4191,해룡면|34.9057|127.5481,서면|35.0278|127.4935,황전면|35.1162|127.4591,월등면|35.0857|127.39,향동|34.9734|127.4402,매곡동|34.9628|127.4795,삼산동|34.9831|127.47,조곡동|34.9558|127.4969,덕연동|34.9432|127.5167,풍덕동|34.9348|127.5046,남제동|34.9413|127.4811,저전동|34.9485|127.4765,장천동|34.9498|127.4893,중앙동|34.9563|127.4874,도사동|34.9055|127.4953,왕조1동|34.9686|127.5298,왕조2동|34.9557|127.5323;나주시~남평읍|35.0284|126.863,세지면|34.9268|126.7329,왕곡면|34.9601|126.6711,반남면|34.9136|126.655,공산면|34.9499|126.6008,동강면|34.9262|126.5527,다시면|35.0149|126.6405,문평면|35.0675|126.6309,노안면|35.0832|126.7168,금천면|35.0232|126.7618,산포면|35.0308|126.8089,다도면|34.9345|126.8361,봉황면|34.9445|126.7826,송월동|35.0164|126.7216,영강동|35.0098|126.6948,금남동|35.0339|126.7054,성북동|35.0506|126.7233,영산동|34.9914|126.7369,이창동|34.9855|126.6869,빛가람동|35.0183|126.7891;광양시~광양읍|34.9582|127.6036,봉강면|35.0489|127.5655,옥룡면|35.0541|127.6143,옥곡면|34.9977|127.6787,진상면|35.054|127.6844,진월면|35.0061|127.7545,다압면|35.1189|127.6644,골약동|34.9297|127.6578,중마동|34.9451|127.6999,광영동|34.9613|127.7168,태인동|34.9455|127.7552,금호동|34.918|127.7463;담양군~담양읍|35.321|126.9828,봉산면|35.2692|126.9558,고서면|35.2197|126.9741,가사문학면|35.1589|127.0404,창평면|35.2311|127.0152,대덕면|35.2312|127.0586,무정면|35.2866|127.0479,금성면|35.3447|127.0374,용면|35.4066|127.0053,월산면|35.3586|126.9313,수북면|35.3036|126.9235,대전면|35.2845|126.888;곡성군~곡성읍|35.281|127.2695,오곡면|35.2339|127.3214,삼기면|35.2131|127.2267,석곡면|35.1548|127.239,목사동면|35.1074|127.3021,죽곡면|35.1618|127.3395,고달면|35.2775|127.3629,옥과면|35.2956|127.1416,입면|35.296|127.2095,겸면|35.2532|127.1774,오산면|35.2316|127.1251;구례군~구례읍|35.203|127.4264,문척면|35.1661|127.4989,간전면|35.1529|127.5675,토지면|35.2401|127.562,마산면|35.2428|127.4991,광의면|35.2696|127.4677,용방면|35.2477|127.4238,산동면|35.3198|127.4679;고흥군~고흥읍|34.6067|127.2625,도양읍|34.5519|127.1428,풍양면|34.5572|127.2406,도덕면|34.5775|127.1835,금산면|34.4603|127.1691,도화면|34.4998|127.3219,포두면|34.5656|127.3575,봉래면|34.4451|127.4969,동일면|34.5088|127.4669,점암면|34.6444|127.4012,영남면|34.6047|127.4563,과역면|34.6871|127.3842,남양면|34.7417|127.3601,동강면|34.7953|127.3356,대서면|34.7624|127.2817,두원면|34.6597|127.2763;보성군~보성읍|34.7509|127.07,벌교읍|34.8482|127.3166,노동면|34.8109|127.0539,미력면|34.8087|127.1065,겸백면|34.8257|127.1584,율어면|34.8659|127.2022,복내면|34.8993|127.1225,문덕면|34.9387|127.1848,조성면|34.8037|127.239,득량면|34.7512|127.1683,회천면|34.692|127.0946,웅치면|34.7072|127.0216;화순군~화순읍|35.0618|126.963,한천면|34.9706|127.0328,춘양면|34.9412|126.95,청풍면|34.876|126.9538,이양면|34.8908|127.03,능주면|35.0053|126.9564,도곡면|35.0066|126.9101,도암면|34.9123|126.8895,이서면|35.1066|127.0686,백아면|35.1625|127.1405,동복면|35.0781|127.1474,사평면|35.0022|127.1247,동면|35.0412|127.0433;장흥군~장흥읍|34.6797|126.9055,관산읍|34.5537|126.9379,대덕읍|34.4931|126.8823,용산면|34.6135|126.9268,안양면|34.6556|126.9904,장동면|34.7464|126.979,장평면|34.808|126.9632,유치면|34.7957|126.8606,부산면|34.7326|126.9098,회진면|34.4778|126.936;강진군~강진읍|34.6307|126.7399,군동면|34.6447|126.8233,칠량면|34.5743|126.8301,대구면|34.514|126.8185,마량면|34.4725|126.8305,도암면|34.565|126.7226,신전면|34.4966|126.7176,성전면|34.7089|126.7121,작천면|34.7092|126.7705,병영면|34.7106|126.8255,옴천면|34.7579|126.7869;해남군~해남읍|34.5578|126.5655,삼산면|34.511|126.6049,화산면|34.4833|126.4951,현산면|34.4539|126.5695,송지면|34.3684|126.535,북평면|34.3884|126.6108,북일면|34.4605|126.6796,옥천면|34.5624|126.6555,계곡면|34.655|126.6359,마산면|34.62|126.5578,황산면|34.5712|126.4456,산이면|34.6561|126.4322,문내면|34.6078|126.3275,화원면|34.6894|126.3058;영암군~영암읍|34.7907|126.7233,삼호읍|34.7483|126.4635,덕진면|34.8299|126.702,금정면|34.8531|126.782,신북면|34.8921|126.69,시종면|34.8697|126.5922,도포면|34.8449|126.6414,군서면|34.7795|126.6365,서호면|34.7724|126.5754,학산면|34.732|126.5993,미암면|34.6973|126.563;무안군~무안읍|34.9925|126.4713,일로읍|34.8339|126.5083,삼향읍|34.8466|126.447,몽탄면|34.923|126.5,청계면|34.9315|126.4285,현경면|35.0394|126.4103,망운면|35.0006|126.3815,해제면|35.1026|126.2917,운남면|34.9516|126.3388;함평군~함평읍|35.0679|126.4886,손불면|35.1415|126.431,신광면|35.1627|126.4877,학교면|35.0207|126.5617,엄다면|35.0135|126.5142,대동면|35.1002|126.5394,나산면|35.1218|126.6048,해보면|35.17|126.5755,월야면|35.191|126.6262;영광군~영광읍|35.2945|126.5058,백수읍|35.3014|126.3998,홍농읍|35.4018|126.4449,대마면|35.2996|126.5917,묘량면|35.2437|126.5594,불갑면|35.2089|126.5122,군서면|35.264|126.4696,군남면|35.2242|126.4389,염산면|35.2138|126.3589,법성면|35.3534|126.4715,낙월면|35.3475|126.0233;장성군~장성읍|35.3265|126.8158,진원면|35.2682|126.8412,남면|35.2434|126.7979,동화면|35.2646|126.7192,삼서면|35.2325|126.6434,삼계면|35.2854|126.6649,황룡면|35.3082|126.7314,서삼면|35.3498|126.7516,북일면|35.3864|126.7773,북이면|35.4317|126.7957,북하면|35.4065|126.8688;완도군~완도읍|34.3279|126.7162,금일읍|34.3504|127.0461,노화읍|34.2009|126.5856,군외면|34.3698|126.6718,신지면|34.3309|126.8374,고금면|34.4034|126.8064,약산면|34.3812|126.9053,청산면|34.1814|126.8879,소안면|34.1559|126.6557,금당면|34.4347|127.0529,보길면|34.1524|126.5483,생일면|34.3231|126.9832;진도군~진도읍|34.4902|126.2407,군내면|34.5349|126.2851,고군면|34.4878|126.3434,의신면|34.4332|126.2914,임회면|34.3949|126.2056,지산면|34.4399|126.1572,조도면|34.2954|126.0556;신안군~지도읍|35.0694|126.2174,압해읍|34.8661|126.3124,증도면|34.9852|126.1508,임자면|35.0935|126.0944,자은면|34.8879|126.0471,비금면|34.7598|125.942,도초면|34.6957|125.9635,흑산면|34.6653|125.419,하의면|34.6072|126.0359,신의면|34.5786|126.0713,장산면|34.644|126.1506,안좌면|34.7306|126.1253,팔금면|34.7866|126.1437,암태면|34.8415|126.1101@제주특별자치도^제주시~한림읍|33.3761|126.2842,애월읍|33.4109|126.394,구좌읍|33.4992|126.796,조천읍|33.4726|126.6672,한경면|33.3232|126.2185,추자면|33.9462|126.3237,우도면|33.5059|126.9563,일도1동|33.5131|126.5277,일도2동|33.5065|126.5411,이도1동|33.5056|126.5276,이도2동|33.4913|126.5327,삼도1동|33.5028|126.5195,삼도2동|33.513|126.5211,용담1동|33.5086|126.5147,용담2동|33.51|126.4991,건입동|33.5175|126.5413,화북동|33.5085|126.5641,삼양동|33.5149|126.5915,봉개동|33.4545|126.6113,아라동|33.4329|126.5569,오라동|33.4372|126.5164,연동|33.4578|126.4952,노형동|33.4322|126.476,외도동|33.483|126.44,이호동|33.495|126.4583,도두동|33.5023|126.4778;서귀포시~대정읍|33.2573|126.2468,남원읍|33.3275|126.6664,성산읍|33.4188|126.8671,안덕면|33.2922|126.3477,표선면|33.3736|126.7691,송산동|33.2447|126.5927,정방동|33.2465|126.5656,중앙동|33.2507|126.5644,천지동|33.2449|126.5534,효돈동|33.2603|126.6121,영천동|33.3082|126.5736,동홍동|33.2934|126.554,서홍동|33.2978|126.5379,대륜동|33.2766|126.5221,대천동|33.2838|126.4916,중문동|33.2987|126.4537,예래동|33.2754|126.4005@경상북도^포항시 남구~구룡포읍|35.9863|129.5362,연일읍|36.0044|129.3164,오천읍|35.9187|129.3965,대송면|35.9448|129.3527,동해면|35.9978|129.4864,장기면|35.9019|129.4773,호미곶면|36.0544|129.5556,송도동|36.0356|129.3764,청림동|35.9918|129.4172,제철동|35.9977|129.3864,효곡동|36.0197|129.3244,대이동|36.026|129.3348,상대동|36.0119|129.3577,해도동|36.02|129.3719;포항시 북구~흥해읍|36.1078|129.3441,신광면|36.1469|129.2549,청하면|36.1924|129.3241,송라면|36.2446|129.3236,기계면|36.0877|129.1781,죽장면|36.2156|129.1422,기북면|36.1517|129.1834,양학동|36.0326|129.3438,용흥동|36.0417|129.3495,우창동|36.0623|129.3572,두호동|36.0638|129.3804,장량동|36.0834|129.3832,환여동|36.0731|129.4035,중앙동|36.0466|129.3685,죽도동|36.0261|129.3595;경주시~감포읍|35.8059|129.479,안강읍|35.9818|129.1839,건천읍|35.8316|129.1035,외동읍|35.7124|129.3133,문무대왕면|35.7994|129.4136,양남면|35.7041|129.419,내남면|35.7477|129.1749,산내면|35.7492|129.0369,서면|35.8967|129.0658,현곡면|35.8968|129.1705,강동면|35.9957|129.2723,천북면|35.9046|129.2767,중부동|35.844|129.2089,성건동|35.8573|129.1932,월성동|35.811|129.2468,선도동|35.8379|129.1649,용강동|35.8719|129.2325,황성동|35.868|129.2154,동천동|35.8511|129.2359,불국동|35.782|129.2985,보덕동|35.8461|129.3179,황오동|35.845|129.2198,황남동|35.8089|129.199;김천시~아포읍|36.1556|128.2497,농소면|36.0786|128.1843,남면|36.0956|128.2401,개령면|36.1739|128.1814,감문면|36.2215|128.1721,어모면|36.203|128.0954,봉산면|36.1703|128.0309,대항면|36.1004|128.0079,감천면|36.0612|128.14,조마면|36.0098|128.1183,구성면|36.0423|128.0308,지례면|35.9652|128.0464,부항면|36.0005|127.9358,대덕면|35.9149|127.9499,증산면|35.8788|128.0307,양금동|36.0972|128.1084,대신동|36.1454|128.1091,대곡동|36.1155|128.082,지좌동|36.1169|128.1453,자산동|36.1239|128.1248,평화남산동|36.1215|128.1127,율곡동|36.1238|128.186;안동시~풍산읍|36.594|128.5852,와룡면|36.6306|128.7932,북후면|36.6782|128.6765,서후면|36.6282|128.6564,풍천면|36.5258|128.5154,일직면|36.4645|128.638,남후면|36.5284|128.6256,남선면|36.5082|128.7536,임하면|36.5105|128.8462,길안면|36.4137|128.9162,임동면|36.5795|128.939,예안면|36.6847|128.9134,도산면|36.7477|128.8469,녹전면|36.7503|128.7684,중구동|36.5736|128.7512,명륜동|36.5835|128.7387,용상동|36.5616|128.7855,태화동|36.5606|128.7089,평화동|36.5724|128.7123,안기동|36.594|128.714,옥동|36.5577|128.6912,송하동|36.5805|128.6894,서구동|36.5643|128.7225,강남동|36.5432|128.718;구미시~선산읍|36.2423|128.2928,고아읍|36.1846|128.3282,무을면|36.2675|128.1884,옥성면|36.3041|128.2605,도개면|36.3048|128.3534,해평면|36.2221|128.3902,산동읍|36.1792|128.4539,장천면|36.1481|128.5141,송정동|36.1187|128.3466,원평1동|36.1257|128.3466,원평2동|36.1316|128.3312,도량동|36.1418|128.3281,지산동|36.1354|128.3557,선주원남동|36.1245|128.3046,형곡1동|36.1146|128.3326,형곡2동|36.1038|128.3341,신평1동|36.1196|128.3619,신평2동|36.1255|128.3659,공단동|36.0962|128.3813,광평동|36.1093|128.3577,상모사곡동|36.0923|128.3486,임오동|36.0751|128.3651,인동동|36.0987|128.4459,진미동|36.1019|128.4103,양포동|36.1338|128.419,비산동|36.1177|128.3798;영주시~풍기읍|36.902|128.4892,이산면|36.818|128.6912,평은면|36.7422|128.7001,문수면|36.7483|128.624,장수면|36.7799|128.5681,안정면|36.8433|128.5567,봉현면|36.8272|128.4969,순흥면|36.9335|128.5493,단산면|36.9683|128.5945,부석면|36.9906|128.6556,상망동|36.8547|128.6367,하망동|36.8229|128.6366,영주1동|36.8292|128.6208,영주2동|36.8231|128.6187,휴천1동|36.8129|128.649,휴천2동|36.8079|128.6203,휴천3동|36.796|128.6365,가흥1동|36.8031|128.6061,가흥2동|36.8394|128.599;영천시~금호읍|35.9217|128.8986,청통면|35.9946|128.8155,신녕면|36.0547|128.7588,화산면|36.0397|128.855,화북면|36.1307|128.9433,화남면|36.0811|128.8963,자양면|36.1024|129.0403,임고면|36.043|129.0352,고경면|35.9832|129.0613,북안면|35.9008|129.0041,대창면|35.8641|128.9193,동부동|35.9867|128.9549,중앙동|36.0094|128.9303,서부동|35.9736|128.9044,완산동|35.962|128.9528,남부동|35.9283|128.9529;상주시~함창읍|36.5499|128.1971,사벌국면|36.4827|128.2214,중동면|36.4308|128.2869,낙동면|36.3648|128.2371,청리면|36.3286|128.135,공성면|36.288|128.0745,외남면|36.3589|128.0821,내서면|36.4133|128.0506,모동면|36.2988|127.9677,모서면|36.3348|127.9285,화동면|36.3942|127.9571,화서면|36.4533|127.951,화북면|36.5795|127.8841,외서면|36.4829|128.0679,은척면|36.5369|128.0476,공검면|36.5176|128.134,이안면|36.5743|128.1209,화남면|36.4516|127.9045,남원동|36.4153|128.126,북문동|36.4494|128.1572,계림동|36.4396|128.1828,동문동|36.4254|128.2115,동성동|36.3933|128.1836,신흥동|36.3679|128.1591;문경시~문경읍|36.7698|128.1277,가은읍|36.6599|128.0109,영순면|36.5651|128.2512,산양면|36.623|128.2584,호계면|36.6656|128.2014,산북면|36.7143|128.2537,동로면|36.7829|128.296,마성면|36.6858|128.1162,농암면|36.583|127.9804,점촌1동|36.5986|128.1958,점촌2동|36.5851|128.2066,점촌3동|36.6199|128.1981,점촌4동|36.6247|128.1536,점촌5동|36.5901|128.1856;경산시~하양읍|35.9135|128.7884,진량읍|35.8705|128.8348,와촌면|35.9569|128.7967,자인면|35.8221|128.8244,용성면|35.7993|128.9017,남산면|35.7715|128.8224,압량읍|35.845|128.7789,남천면|35.7556|128.7383,중앙동|35.8228|128.7396,동부동|35.8021|128.7696,서부1동|35.815|128.724,남부동|35.8037|128.7432,북부동|35.8366|128.7526,중방동|35.8298|128.7357,서부2동|35.8331|128.7236;군위군~군위읍|36.2369|128.5728,소보면|36.2626|128.4771,효령면|36.1391|128.5971,부계면|36.0623|128.6604,우보면|36.17|128.6598,의흥면|36.1705|128.7382,산성면|36.1008|128.7098,삼국유사면|36.1514|128.8202;의성군~의성읍|36.3489|128.6995,단촌면|36.4282|128.6988,점곡면|36.4115|128.7671,옥산면|36.3626|128.8322,사곡면|36.298|128.7954,춘산면|36.2404|128.8177,가음면|36.221|128.747,금성면|36.2595|128.6849,봉양면|36.3045|128.6101,비안면|36.3384|128.5167,구천면|36.3321|128.4228,단밀면|36.3652|128.354,단북면|36.3953|128.3968,안계면|36.3938|128.4616,다인면|36.4597|128.3704,신평면|36.47|128.5132,안평면|36.3862|128.5857,안사면|36.4573|128.4553;청송군~청송읍|36.4231|129.0985,주왕산면|36.3623|129.1657,부남면|36.296|129.1308,현동면|36.2554|129.0299,현서면|36.2282|128.9291,안덕면|36.3191|128.9846,파천면|36.453|129.028,진보면|36.5245|129.0624;영양군~영양읍|36.6527|129.1717,입암면|36.6|129.0595,청기면|36.7164|129.0419,일월면|36.7608|129.1266,수비면|36.788|129.222,석보면|36.5554|129.1721;영덕군~영덕읍|36.4382|129.3832,강구면|36.3829|129.3703,남정면|36.3137|129.3361,달산면|36.3745|129.2725,지품면|36.4587|129.2481,축산면|36.4944|129.3838,영해면|36.5305|129.335,병곡면|36.6081|129.3856,창수면|36.6026|129.2961;청도군~화양읍|35.6661|128.7163,청도읍|35.628|128.7565,각남면|35.6171|128.6559,풍각면|35.6379|128.5775,각북면|35.6992|128.582,이서면|35.6889|128.662,운문면|35.7101|128.975,금천면|35.7023|128.8971,매전면|35.664|128.8304;고령군~대가야읍|35.7297|128.2564,덕곡면|35.7832|128.2038,운수면|35.7829|128.2974,성산면|35.7555|128.3571,다산면|35.821|128.4177,개진면|35.714|128.3657,우곡면|35.6596|128.346,쌍림면|35.6805|128.2315;성주군~성주읍|35.9185|128.2803,선남면|35.9037|128.352,용암면|35.845|128.3156,수륜면|35.8279|128.203,가천면|35.8664|128.1282,금수면|35.9242|128.1242,대가면|35.9021|128.2158,벽진면|35.974|128.1981,초전면|36.0073|128.2483,월항면|35.9752|128.3065;칠곡군~왜관읍|35.9773|128.4248,북삼읍|36.06|128.3305,석적읍|36.0517|128.4341,지천면|35.962|128.4874,동명면|36.0094|128.5631,가산면|36.0703|128.5434,약목면|36.0282|128.3656,기산면|35.9823|128.3576;예천군~예천읍|36.6569|128.453,용문면|36.7064|128.3943,효자면|36.7939|128.4219,은풍면|36.7451|128.4424,감천면|36.7328|128.5162,보문면|36.6773|128.5521,호명면|36.607|128.4752,유천면|36.6529|128.3661,용궁면|36.6054|128.3051,개포면|36.6098|128.3689,지보면|36.5535|128.3892,풍양면|36.5133|128.3038;봉화군~봉화읍|36.89|128.7072,물야면|36.9734|128.7334,봉성면|36.918|128.8092,법전면|36.9103|128.9168,춘양면|37.004|128.8535,소천면|36.9456|129.0279,석포면|37.0508|129.0543,재산면|36.8216|129.0008,명호면|36.8393|128.8887,상운면|36.8349|128.7764;울진군~울진읍|37.0011|129.345,평해읍|36.73|129.4375,북면|37.0756|129.3097,근남면|36.9459|129.361,기성면|36.8049|129.408,온정면|36.7175|129.3422,죽변면|37.0532|129.3952,후포면|36.6796|129.4269,금강송면|36.947|129.2077,매화면|36.8633|129.3527;울릉군~울릉읍|37.4974|130.8898,서면|37.4952|130.8311,북면|37.5283|130.866@인천광역시^중구~연안동|37.4518|126.6088,신포동|37.4673|126.6232,신흥동|37.4441|126.627,도원동|37.4672|126.6398,율목동|37.4701|126.635,동인천동|37.4753|126.6288,북성동|37.4759|126.6069,송월동|37.4793|126.622,영종동|37.5028|126.5277,용유동|37.45|126.3962,운서동|37.4702|126.452,영종1동|37.4926|126.5652;동구~만석동|37.4864|126.6202,화수1·화평동|37.4805|126.6299,화수2동|37.485|126.6311,송현1·2동|37.4779|126.6358,송현3동|37.4882|126.6411,송림1동|37.4752|126.6388,송림2동|37.4765|126.643,송림3·5동|37.4731|126.6484,송림4동|37.4818|126.6579,송림6동|37.4818|126.6484,금창동|37.4716|126.6407;미추홀구~숭의2동|37.4609|126.6476,숭의4동|37.4624|126.6571,용현2동|37.4562|126.6435,용현3동|37.4554|126.6527,용현5동|37.449|126.639,학익1동|37.4385|126.6537,학익2동|37.4434|126.6703,도화1동|37.4622|126.6692,주안1동|37.462|126.6806,주안2동|37.4553|126.672,주안3동|37.4484|126.6716,주안4동|37.4544|126.6871,주안5동|37.4692|126.6805,주안6동|37.461|126.6908,주안7동|37.4473|126.6778,주안8동|37.4476|126.6853,관교동|37.4427|126.694,문학동|37.4365|126.6853,숭의1·3동|37.4649|126.6453,용현1·4동|37.4518|126.6589,도화2·3동|37.4735|126.6623;연수구~옥련1동|37.4202|126.6498,선학동|37.4297|126.6975,연수1동|37.4251|126.6799,연수2동|37.4134|126.6841,연수3동|37.4197|126.6885,청학동|37.425|126.6664,동춘1동|37.4086|126.6595,동춘2동|37.4009|126.6711,동춘3동|37.4078|126.6782,옥련2동|37.4289|126.647,송도4동|37.3917|126.6225,송도1동|37.3829|126.6471,송도3동|37.3642|126.6559,송도2동|37.4004|126.6398,송도5동|37.42|126.6169;남동구~구월1동|37.4459|126.7093,구월2동|37.4564|126.7155,구월3동|37.4498|126.6975,구월4동|37.4485|126.7227,간석1동|37.4597|126.7017,간석2동|37.4604|126.7105,간석3동|37.4688|126.7153,간석4동|37.4667|126.6964,만수1동|37.4509|126.734,만수2동|37.4651|126.7359,만수3동|37.4658|126.7267,만수4동|37.4568|126.7378,만수5동|37.4561|126.7264,만수6동|37.4419|126.7399,서창2동|37.4266|126.7482,남촌도림동|37.4257|126.7209,논현1동|37.409|126.739,논현2동|37.4076|126.7081,논현고잔동|37.3944|126.703,장수서창동|37.4511|126.7606;부평구~부평1동|37.4963|126.7203,부평2동|37.4792|126.7212,부평3동|37.4844|126.7091,부평4동|37.5014|126.7261,부평5동|37.4955|126.7305,부평6동|37.4848|126.7271,산곡1동|37.5047|126.6957,산곡2동|37.5035|126.7053,산곡3동|37.4929|126.7069,산곡4동|37.5021|126.7121,청천1동|37.5185|126.6947,청천2동|37.5152|126.7133,갈산1동|37.5185|126.7267,갈산2동|37.5105|126.7267,삼산1동|37.5204|126.747,부개1동|37.4841|126.736,부개2동|37.4931|126.7379,부개3동|37.5023|126.7383,일신동|37.4752|126.7484,십정1동|37.4782|126.6949,십정2동|37.4731|126.7027,삼산2동|37.5125|126.7387;계양구~효성1동|37.5341|126.7081,효성2동|37.53|126.698,계산1동|37.5408|126.7177,계산2동|37.5479|126.7198,계산3동|37.5395|126.7317,작전1동|37.5294|126.7299,작전2동|37.5309|126.7226,작전서운동|37.5303|126.748,계양2동|37.5485|126.7411,계산4동|37.5386|126.7399,계양1동|37.5718|126.7262,계양3동|37.5694|126.7648;서구~검암경서동|37.5687|126.6368,연희동|37.5478|126.6823,가정1동|37.5285|126.671,가정2동|37.5287|126.6814,가정3동|37.5177|126.6813,석남1동|37.5102|126.6687,석남2동|37.5031|126.6582,석남3동|37.5063|126.6815,가좌1동|37.4914|126.6626,가좌2동|37.4951|126.686,가좌3동|37.4877|126.6802,가좌4동|37.4861|126.6885,불로대곡동|37.6179|126.6771,원당동|37.5918|126.7058,마전동|37.589|126.6788,신현원창동|37.5108|126.6372,청라1동|37.533|126.6562,청라2동|37.5337|126.6408,검단동|37.6122|126.6527,오류왕길동|37.5906|126.6317,청라3동|37.5334|126.6182,당하동|37.5963|126.6736;강화군~강화읍|37.7527|126.4897,선원면|37.7166|126.4886,불은면|37.6833|126.4855,길상면|37.6223|126.5011,화도면|37.6191|126.4231,양도면|37.6715|126.4297,내가면|37.7221|126.3888,하점면|37.7624|126.4006,양사면|37.8031|126.4016,송해면|37.7798|126.4601,교동면|37.7869|126.2654,삼산면|37.6957|126.3263,서도면|37.6718|126.1867;옹진군~북도면|37.5268|126.4544,연평면|37.6683|125.6964,백령면|37.9532|124.6743,대청면|37.8243|124.7002,덕적면|37.2338|126.1225,자월면|37.2569|126.3143,영흥면|37.2573|126.4621@세종특별자치시^세종시~조치원읍|36.608|127.2867,연동면|36.5473|127.3272,부강면|36.5239|127.3786,장군면|36.503|127.2077,연서면|36.5845|127.2459,전의면|36.6613|127.1882,전동면|36.6565|127.2509,소정면|36.7143|127.1691,한솔동|36.4734|127.2496,아름동|36.5179|127.2496,종촌동|36.5035|127.2477,보람동|36.4778|127.2899,고운동|36.5187|127.2355,다정동|36.4949|127.2448,대평동|36.4704|127.2742,새롬동|36.4862|127.257,연기면|36.5192|127.2772,도담동|36.5185|127.2611,금남면|36.4518|127.2984,소담동|36.495|127.3199@충청북도^충주시~주덕읍|36.9865|127.7831,살미면|36.9125|127.9956,수안보면|36.8441|128.0268,신니면|36.9993|127.7102,노은면|37.0521|127.7501,앙성면|37.1224|127.7555,금가면|37.0317|127.8955,동량면|37.0152|128.021,산척면|37.0839|128.0047,엄정면|37.1183|127.9254,소태면|37.1229|127.8544,대소원면|36.949|127.8522,중앙탑면|37.0371|127.8512,성내·충인동|36.9714|127.9335,교현·안림동|36.9767|127.9805,교현2동|36.9794|127.9292,용산동|36.9609|127.9446,지현동|36.963|127.932,문화동|36.9692|127.9229,호암·직동|36.947|127.9499,달천동|36.9437|127.9,봉방동|36.9756|127.9063,칠금·금릉동|36.99|127.9134,연수동|36.9905|127.9451,목행·용탄동|37.0091|127.945;제천시~봉양읍|37.1478|128.1154,금성면|37.0629|128.1834,청풍면|37.0096|128.1449,수산면|36.9488|128.2086,덕산면|36.8757|128.165,한수면|36.9034|128.0879,백운면|37.1807|127.9958,송학면|37.2022|128.2445,교동|37.1475|128.2279,용두동|37.1585|128.1845,청전동|37.1505|128.2098,화산동|37.1098|128.2013,의림지동|37.1739|128.2153,중앙동|37.1398|128.2092,남현동|37.1329|128.2183,영서동|37.1278|128.1781,신백동|37.1192|128.2623;청주시 상당구~낭성면|36.6301|127.5973,미원면|36.6535|127.6769,가덕면|36.5631|127.5627,남일면|36.5748|127.5202,문의면|36.4912|127.5112,중앙동|36.6425|127.4937,성안동|36.6311|127.4891,탑·대성동|36.6315|127.498,영운동|36.6191|127.5003,금천동|36.6264|127.506,용담·명암·산성동|36.6513|127.5265,용암1동|36.6271|127.5233,용암2동|36.6153|127.5316;청주시 서원구~남이면|36.5666|127.4285,현도면|36.4894|127.4345,사직1동|36.64|127.4766,사직2동|36.6324|127.4748,사창동|36.6347|127.4627,모충동|36.6251|127.4808,산남동|36.6087|127.4694,분평동|36.5966|127.4873,수곡1동|36.617|127.486,수곡2동|36.6189|127.4736,성화·개신·죽림동|36.6148|127.452;청주시 흥덕구~오송읍|36.6281|127.3203,강내면|36.5988|127.3605,옥산면|36.687|127.3559,운천·신봉동|36.6524|127.4708,복대1동|36.6376|127.4349,복대2동|36.6299|127.4458,가경동|36.6201|127.434,봉명1동|36.6404|127.4602,봉명2·송정동|36.6486|127.4506,강서1동|36.6226|127.3995,강서2동|36.6665|127.429;청주시 청원구~내수읍|36.7028|127.5471,오창읍|36.7332|127.4213,북이면|36.7462|127.548,오근장동|36.6924|127.4793,우암동|36.6504|127.4891,내덕1동|36.6588|127.4815,내덕2동|36.6583|127.4948,율량·사천동|36.6662|127.4973;보은군~보은읍|36.4991|127.7232,속리산면|36.5249|127.8339,장안면|36.4778|127.8001,마로면|36.4175|127.8381,탄부면|36.4372|127.7785,삼승면|36.4174|127.735,수한면|36.4607|127.6683,회남면|36.4335|127.5743,회인면|36.5006|127.6025,내북면|36.5545|127.6586,산외면|36.5716|127.7472;옥천군~옥천읍|36.3011|127.5834,동이면|36.2951|127.6462,안남면|36.3549|127.6809,안내면|36.3993|127.649,청성면|36.3243|127.7331,청산면|36.3454|127.8156,이원면|36.228|127.6321,군서면|36.2731|127.5252,군북면|36.3567|127.5595;영동군~영동읍|36.177|127.811,용산면|36.263|127.8047,황간면|36.2359|127.8967,추풍령면|36.229|127.9978,매곡면|36.1667|127.953,상촌면|36.0999|127.8955,양강면|36.1227|127.7611,용화면|36.0471|127.7772,학산면|36.0865|127.6882,양산면|36.1462|127.6422,심천면|36.2149|127.7095;진천군~진천읍|36.8478|127.4127,덕산읍|36.8988|127.5068,초평면|36.8299|127.5311,문백면|36.7999|127.4512,백곡면|36.8998|127.3512,이월면|36.9191|127.4329,광혜원면|36.9766|127.4237;괴산군~괴산읍|36.8266|127.8052,감물면|36.8391|127.8827,장연면|36.8353|127.9348,연풍면|36.7667|128.0028,칠성면|36.7532|127.8826,문광면|36.7716|127.7741,청천면|36.6735|127.8155,청안면|36.7491|127.6822,사리면|36.8154|127.6817,소수면|36.849|127.7273,불정면|36.8926|127.8236;음성군~음성읍|36.9418|127.655,금왕읍|36.9881|127.5734,소이면|36.9129|127.7521,원남면|36.8814|127.6476,맹동면|36.9186|127.5586,대소면|36.961|127.4913,삼성면|37.0191|127.4938,생극면|37.0357|127.6122,감곡면|37.0967|127.6628;단양군~단양읍|36.9606|128.3912,매포읍|37.0466|128.3016,단성면|36.8975|128.2903,대강면|36.8678|128.3801,가곡면|37.0143|128.4318,영춘면|37.0682|128.4999,어상천면|37.097|128.347,적성면|36.995|128.2763;증평군~증평읍|36.767|127.6038,도안면|36.8273|127.6061@울산광역시^중구~학성동|35.5545|129.3351,반구1동|35.5547|129.346,반구2동|35.5622|129.3393,복산1동|35.5636|129.326,복산2동|35.5655|129.3314,우정동|35.5628|129.3102,태화동|35.5634|129.2942,다운동|35.5681|129.2741,병영1동|35.567|129.3465,병영2동|35.5864|129.3395,약사동|35.5791|129.3307,성안동|35.5802|129.3087,중앙동|35.5554|129.3216;남구~신정1동|35.5436|129.3048,신정2동|35.529|129.3038,신정3동|35.5452|129.314,신정4동|35.529|129.315,신정5동|35.5457|129.3211,달동|35.5357|129.3221,삼산동|35.5419|129.3414,삼호동|35.5485|129.2755,무거동|35.5423|129.2539,옥동|35.5241|129.2878,야음장생포동|35.5201|129.3637,대현동|35.5266|129.3279,수암동|35.5224|129.3188,선암동|35.4918|129.3475;동구~방어동|35.4861|129.4148,일산동|35.4981|129.4346,화정동|35.4943|129.4207,대송동|35.5082|129.4057,전하1동|35.5248|129.4351,남목1동|35.5388|129.4152,남목2동|35.5288|129.4226,남목3동|35.5549|129.4354,전하2동|35.5093|129.4252;북구~농소1동|35.6298|129.3683,농소2동|35.6588|129.3526,농소3동|35.6244|129.321,강동동|35.6152|129.4186,효문동|35.5688|129.3732,송정동|35.5973|129.3696,양정동|35.5522|129.3892,염포동|35.5353|129.3982;울주군~온산읍|35.4303|129.331,언양읍|35.5853|129.1593,온양읍|35.4172|129.2561,범서읍|35.5965|129.246,서생면|35.3676|129.3142,청량읍|35.4929|129.2692,웅촌면|35.4672|129.1977,두동면|35.6627|129.2121,두서면|35.6729|129.1443,상북면|35.592|129.0567,삼남읍|35.5324|129.0962,삼동면|35.5058|129.154@경기도^수원시 장안구~파장동|37.3205|126.9889,율천동|37.2988|126.972,정자1동|37.3047|126.9893,정자2동|37.2923|126.998,영화동|37.2913|127.0136,송죽동|37.3063|127.0047,조원1동|37.3005|127.0166,연무동|37.3246|127.0228,정자3동|37.2986|126.9844,조원2동|37.3087|127.0131;수원시 권선구~세류1동|37.2598|127.0053,세류2동|37.245|127.0077,세류3동|37.2599|127.0152,평동|37.2458|126.9799,서둔동|37.2685|126.982,구운동|37.2805|126.9698,호매실동|37.2625|126.9529,곡선동|37.2364|127.0236,입북동|37.2905|126.9484,금곡동|37.2735|126.9434,권선2동|37.2459|127.0246,권선1동|37.2583|127.0271;수원시 팔달구~지동|37.2806|127.0249,우만1동|37.2877|127.0336,우만2동|37.2803|127.0387,인계동|37.2687|127.0298,매교동|37.2689|127.0149,매산동|37.2688|127.0056,고등동|37.2743|127.0031,화서1동|37.2803|127.0011,화서2동|37.2844|126.9912,행궁동|37.2818|127.0162;수원시 영통구~매탄1동|37.271|127.0404,매탄2동|37.2706|127.0514,매탄3동|37.2566|127.0495,매탄4동|37.2661|127.05,영통1동|37.2613|127.0776,영통2동|37.2476|127.0563,망포1동|37.2391|127.0585,원천동|37.273|127.0571,광교1동|37.3014|127.0477,광교2동|37.2873|127.0723,영통3동|37.2517|127.0717,망포2동|37.24|127.0476;성남시 수정구~신흥1동|37.4408|127.1405,신흥2동|37.4499|127.148,신흥3동|37.4429|127.1465,태평1동|37.4455|127.123,태평2동|37.4476|127.1364,태평3동|37.4456|127.1321,태평4동|37.4484|127.1408,수진1동|37.4383|127.1358,수진2동|37.4365|127.1256,단대동|37.4546|127.1571,산성동|37.4568|127.1527,양지동|37.4643|127.1662,복정동|37.4588|127.1305,신촌동|37.4506|127.104,고등동|37.4293|127.0811,시흥동|37.412|127.0835,위례동|37.468|127.1467;성남시 중원구~성남동|37.4313|127.1329,금광1동|37.4443|127.1661,금광2동|37.4494|127.1685,은행1동|37.4524|127.1669,은행2동|37.4611|127.1746,상대원1동|37.4401|127.1801,상대원2동|37.4359|127.1577,상대원3동|37.439|127.1632,하대원동|37.4279|127.1461,도촌동|37.4192|127.1609,중앙동|37.4399|127.1521;성남시 분당구~분당동|37.3685|127.1441,수내3동|37.3649|127.1294,수내1동|37.379|127.116,수내2동|37.3752|127.1231,정자2동|37.3666|127.1185,정자3동|37.3578|127.1226,서현1동|37.3853|127.1496,서현2동|37.3752|127.1374,이매1동|37.3947|127.1327,이매2동|37.3989|127.1222,야탑1동|37.4131|127.126,야탑3동|37.4043|127.1503,야탑2동|37.4076|127.1275,구미동|37.3427|127.1217,운중동|37.3819|127.0587,금곡동|37.3627|127.0963,구미1동|37.3524|127.0934,삼평동|37.4015|127.1091,판교동|37.3871|127.0926,백현동|37.3883|127.1103,정자1동|37.3694|127.1063,정자동|37.3668|127.1115;의정부시~의정부1동|37.7458|127.0486,의정부2동|37.7356|127.0367,의정부3동|37.7335|127.0499,호원1동|37.7066|127.0367,장암동|37.7069|127.0632,신곡1동|37.7311|127.0645,신곡2동|37.7453|127.068,송산1동|37.7261|127.0977,자금동|37.7633|127.0868,가능동|37.7524|127.0199,흥선동|37.737|127.0193,녹양동|37.7616|127.0293,호원2동|37.7212|127.0312,송산2동|37.7399|127.0942,송산3동|37.754|127.1161;안양시 만안구~안양1동|37.3992|126.9251,안양2동|37.4092|126.9202,안양3동|37.3979|126.9127,안양4동|37.3967|126.9187,안양5동|37.3923|126.9222,안양6동|37.386|126.9249,안양7동|37.3895|126.9366,안양8동|37.3803|126.9301,안양9동|37.3772|126.9045,석수1동|37.4294|126.9266,석수2동|37.4195|126.9019,석수3동|37.4087|126.8979,박달1동|37.4044|126.9093,박달2동|37.3962|126.8885;안양시 동안구~비산1동|37.4067|126.9339,비산2동|37.3967|126.939,비산3동|37.4201|126.9511,부흥동|37.394|126.946,달안동|37.396|126.9506,관양1동|37.4107|126.9641,관양2동|37.3991|126.9715,부림동|37.3967|126.9579,평촌동|37.3923|126.9755,평안동|37.3902|126.9638,귀인동|37.3843|126.967,호계1동|37.3726|126.954,호계2동|37.3824|126.9471,호계3동|37.3672|126.9605,범계동|37.3877|126.9539,신촌동|37.3811|126.9573,갈산동|37.3777|126.9649;광명시~광명1동|37.4874|126.8618,광명2동|37.4828|126.8579,광명3동|37.4802|126.856,광명4동|37.478|126.8544,광명5동|37.477|126.8485,광명6동|37.4672|126.8388,광명7동|37.4658|126.8514,철산1동|37.4892|126.8691,철산2동|37.4835|126.8672,철산3동|37.4755|126.8714,철산4동|37.4724|126.8634,하안1동|37.4574|126.8663,하안2동|37.4647|126.8743,하안3동|37.4606|126.8829,하안4동|37.4672|126.8802,소하1동|37.4448|126.8872,소하2동|37.4281|126.8795,학온동|37.4295|126.855;평택시~팽성읍|36.9618|127.0361,안중읍|36.9908|126.9371,포승읍|36.9877|126.8606,진위면|37.1081|127.0884,서탄면|37.1018|127.0218,고덕면|37.0375|127.028,오성면|37.0042|126.992,청북읍|37.045|126.9346,현덕면|36.9449|126.932,중앙동|37.0517|127.0612,서정동|37.0696|127.0539,송탄동|37.0453|127.0961,지산동|37.0765|127.0593,송북동|37.0792|127.078,신장1동|37.0877|127.0502,신장2동|37.0768|127.0502,신평동|36.9817|127.1067,원평동|36.9927|127.0719,통복동|36.998|127.0857,비전1동|37.015|127.12,비전2동|36.9906|127.1198,세교동|37.0138|127.073,용이동|37.0011|127.1403;동두천시~생연1동|37.9091|127.0667,생연2동|37.9002|127.0508,중앙동|37.9084|127.0546,보산동|37.9251|127.0881,불현동|37.8924|127.1086,소요동|37.948|127.0564,상패동|37.9092|127.0317,송내동|37.8809|127.0645;안산시 상록구~일동|37.3129|126.8701,사동|37.2993|126.8507,사이동|37.284|126.8422,본오1동|37.2843|126.87,본오2동|37.2947|126.8697,본오3동|37.3001|126.8674,부곡동|37.3346|126.8693,월피동|37.3448|126.8477,성포동|37.3217|126.8489,반월동|37.303|126.9064,안산동|37.3583|126.8768,이동|37.3094|126.8557,해양동|37.2972|126.8309;안산시 단원구~와동|37.3396|126.8268,고잔동|37.3246|126.8252,중앙동|37.3258|126.836,신길동|37.3308|126.7691,백운동|37.3239|126.7995,원곡동|37.3312|126.7929,초지동|37.3094|126.7729,선부1동|37.3322|126.8082,선부2동|37.345|126.8008,선부3동|37.3518|126.8225,대부동|37.2418|126.5875,호수동|37.3105|126.8314;고양시 덕양구~주교동|37.6618|126.8278,원신동|37.6718|126.8644,흥도동|37.6365|126.8629,성사1동|37.6591|126.8455,성사2동|37.6506|126.84,효자동|37.6641|126.9575,삼송동|37.6614|126.9015,창릉동|37.6315|126.8923,고양동|37.7094|126.9044,관산동|37.7094|126.8637,능곡동|37.6286|126.8023,화정1동|37.6419|126.833,화정2동|37.6323|126.8369,행주동|37.6073|126.8189,행신1동|37.6214|126.834,행신2동|37.6081|126.8406,화전동|37.6038|126.8839,대덕동|37.5899|126.8564,행신3동|37.6216|126.8457;고양시 일산동구~식사동|37.6789|126.816,중산동|37.6858|126.7848,정발산동|37.6706|126.778,풍산동|37.6619|126.8015,백석1동|37.6474|126.7923,마두1동|37.6608|126.7834,마두2동|37.6535|126.7821,장항1동|37.6416|126.7629,장항2동|37.6557|126.7688,고봉동|37.7068|126.814,백석2동|37.6421|126.7844;고양시 일산서구~일산1동|37.6879|126.7681,일산2동|37.6854|126.7745,일산3동|37.6792|126.7677,탄현동|37.6978|126.7691,주엽1동|37.6698|126.7657,주엽2동|37.6727|126.7582,대화동|37.6751|126.7476,송포동|37.665|126.723,송산동|37.6889|126.7113;과천시~중앙동|37.4347|126.9787,갈현동|37.4152|126.9814,별양동|37.4274|126.9958,부림동|37.4349|126.9991,과천동|37.4506|127.0091,문원동|37.4247|127.019;구리시~갈매동|37.6314|127.1178,동구동|37.6249|127.1368,인창동|37.6083|127.1285,교문1동|37.5811|127.1183,교문2동|37.5861|127.1338,수택1동|37.5981|127.1481,수택2동|37.5942|127.1435,수택3동|37.5821|127.149;남양주시~와부읍|37.5944|127.2472,진접읍|37.7256|127.193,화도읍|37.6528|127.3156,진건읍|37.6579|127.1852,오남읍|37.6938|127.2315,별내면|37.7097|127.126,퇴계원읍|37.6535|127.1434,수동면|37.7263|127.3042,조안면|37.5675|127.2985,호평동|37.6639|127.2495,평내동|37.6464|127.2353,금곡동|37.6322|127.2124,양정동|37.6113|127.1915,다산2동|37.5974|127.169,다산1동|37.6187|127.1567,별내동|37.6664|127.1144;오산시~중앙동|37.1537|127.084,대원동|37.1383|127.0803,남촌동|37.1566|127.0493,신장동|37.173|127.0584,세마동|37.1842|127.0297,초평동|37.143|127.0454;시흥시~대야동|37.4529|126.7998,신천동|37.4385|126.7801,신현동|37.4122|126.7738,은행동|37.4319|126.8079,매화동|37.4059|126.8238,목감동|37.3802|126.8529,과림동|37.432|126.8344,정왕2동|37.3302|126.7079,정왕3동|37.3455|126.7063,정왕4동|37.3626|126.7314,정왕본동|37.3584|126.7523,정왕1동|37.3328|126.7347,능곡동|37.3645|126.8096,군자동|37.3551|126.7808,월곶동|37.384|126.7582,연성동|37.3884|126.8049,장곡동|37.3822|126.7835,배곧동|37.3703|126.7238;군포시~군포1동|37.3536|126.952,군포2동|37.3346|126.9371,산본1동|37.3732|126.9401,산본2동|37.3714|126.9315,금정동|37.3655|126.9455,재궁동|37.3587|126.9375,오금동|37.3492|126.9295,수리동|37.3509|126.9172,궁내동|37.3638|126.9173,광정동|37.367|126.9249,대야동|37.3313|126.904;의왕시~고천동|37.3431|126.9863,부곡동|37.3199|126.9528,오전동|37.3599|126.9844,내손1동|37.3768|126.9768,내손2동|37.3861|126.9825,청계동|37.3888|127.0121;하남시~천현동|37.5116|127.2387,신장1동|37.5389|127.2073,신장2동|37.5501|127.2226,덕풍1동|37.5353|127.198,덕풍2동|37.5416|127.1992,감북동|37.5186|127.1629,춘궁동|37.5065|127.1943,초이동|37.5342|127.1734,풍산동|37.5504|127.1899,미사1동|37.5675|127.2049,미사2동|37.5802|127.1875,덕풍3동|37.5513|127.2047,위례동|37.4788|127.162,감일동|37.502|127.1622;용인시 처인구~포곡읍|37.2906|127.2178,모현읍|37.3265|127.2183,남사읍|37.1328|127.1566,이동읍|37.1645|127.2112,원삼면|37.1634|127.3135,백암면|37.144|127.3798,양지면|37.2421|127.2887,중앙동|37.2253|127.1999,역삼동|37.2408|127.1756,유림동|37.2541|127.2117,동부동|37.2045|127.2509;용인시 기흥구~구갈동|37.2771|127.1231,보라동|37.2451|127.1309,기흥동|37.2309|127.1145,서농동|37.2343|127.0811,구성동|37.2954|127.141,마북동|37.3062|127.1276,동백3동|37.2796|127.1471,보정동|37.3094|127.1074,상하동|37.2621|127.1436,신갈동|37.2831|127.1026,영덕2동|37.2567|127.0925,영덕1동|37.2754|127.081,상갈동|37.2656|127.111,동백2동|37.2666|127.1616,동백1동|37.2859|127.1646;용인시 수지구~풍덕천1동|37.328|127.0945,풍덕천2동|37.32|127.0899,신봉동|37.3324|127.0576,죽전1동|37.3288|127.1273,죽전2동|37.3307|127.1072,동천동|37.3503|127.0571,상현1동|37.3033|127.0714,상현2동|37.3053|127.0877,성복동|37.3194|127.0605;파주시~문산읍|37.8741|126.7805,파주읍|37.8282|126.8154,법원읍|37.8674|126.8929,조리읍|37.7504|126.8231,진동면|37.9418|126.7975,장단면|37.873|126.7081,월롱면|37.7975|126.7893,탄현면|37.8035|126.7069,광탄면|37.7764|126.883,파평면|37.9142|126.8507,적성면|37.9581|126.9294,군내면|37.933|126.7271,금촌2동|37.7512|126.7758,금촌1동|37.7608|126.7827,금촌3동|37.7799|126.7484,교하동|37.7321|126.7118,운정1동|37.7304|126.7683,운정2동|37.7267|126.74,운정3동|37.7119|126.7535;이천시~장호원읍|37.1345|127.5964,부발읍|37.2731|127.5068,신둔면|37.3137|127.4106,백사면|37.3256|127.4828,호법면|37.2154|127.4121,마장면|37.2498|127.3709,대월면|37.2129|127.4978,모가면|37.1709|127.4568,설성면|37.1395|127.5231,율면|37.0756|127.5472,창전동|37.2835|127.4455,중리동|37.2434|127.4503,관고동|37.2882|127.4217,증포동|37.29|127.454;안성시~공도읍|36.9941|127.1741,보개면|37.0561|127.314,금광면|36.9817|127.3446,서운면|36.9367|127.2681,미양면|36.9694|127.2246,대덕면|37.0346|127.239,양성면|37.0818|127.2202,원곡면|37.056|127.1476,일죽면|37.0982|127.469,죽산면|37.0488|127.4219,삼죽면|37.0683|127.3671,고삼면|37.0923|127.2716,안성1동|37.0035|127.283,안성2동|36.9933|127.2656,안성3동|37.0271|127.2642;김포시~통진읍|37.6961|126.5995,고촌읍|37.6066|126.7633,양촌읍|37.641|126.6241,대곶면|37.6464|126.5686,월곶면|37.729|126.5528,하성면|37.7345|126.6451,김포본동|37.6341|126.7098,사우동|37.619|126.7262,풍무동|37.6062|126.7221,장기동|37.6385|126.6791,구래동|37.6459|126.6281,장기본동|37.648|126.6636,운양동|37.6572|126.6856,마산동|37.6394|126.6415;화성시~봉담읍|37.2042|126.9391,우정읍|37.0801|126.7892,향남읍|37.1143|126.9271,남양읍|37.2082|126.8215,매송면|37.2633|126.9072,비봉면|37.2326|126.8712,마도면|37.1921|126.7631,송산면|37.23|126.7189,서신면|37.1631|126.6972,팔탄면|37.1539|126.8826,장안면|37.0742|126.8406,양감면|37.0888|126.9603,정남면|37.1616|126.9862,동탄6동|37.1817|127.0886,진안동|37.2217|127.0371,병점1동|37.2034|127.0354,병점2동|37.2106|127.046,반월동|37.227|127.0603,기배동|37.2242|126.9886,화산동|37.2079|127.0053,동탄2동|37.1925|127.0752,동탄1동|37.2103|127.0741,동탄3동|37.2087|127.0567,새솔동|37.2815|126.8204,동탄5동|37.2093|127.1236,동탄4동|37.1957|127.1119,동탄7동|37.1797|127.1304,동탄8동|37.1549|127.1118;광주시~오포읍|37.3618|127.2121,초월읍|37.397|127.3113,곤지암읍|37.3638|127.3822,도척면|37.3083|127.3155,퇴촌면|37.4541|127.34,남종면|37.5026|127.3202,경안동|37.4058|127.2528,탄벌동|37.4311|127.2269,광남2동|37.3839|127.2281,남한산성면|37.4592|127.2341,쌍령동|37.4025|127.2711,송정동|37.425|127.2626,광남1동|37.3984|127.2053;양주시~백석읍|37.7896|126.9773,은현면|37.8695|127.0237,남면|37.8962|126.9796,광적면|37.8298|126.953,장흥면|37.7175|126.9639,양주1동|37.7857|127.0345,양주2동|37.793|127.0867,회천1동|37.8568|127.075,회천2동|37.8253|127.0475,회천3동|37.8255|127.071,회천4동|37.8327|127.098;포천시~소흘읍|37.7952|127.1489,군내면|37.8774|127.2298,내촌면|37.7973|127.2352,가산면|37.834|127.2011,신북면|37.945|127.1709,창수면|38.0224|127.1764,영중면|38.0023|127.2511,일동면|37.9651|127.3238,이동면|38.0522|127.3853,영북면|38.0737|127.2842,관인면|38.1285|127.2257,화현면|37.8978|127.2858,포천동|37.8943|127.1816,선단동|37.861|127.1468;여주시~가남읍|37.209|127.5807,점동면|37.1914|127.6844,능서면|37.2947|127.5782,흥천면|37.3454|127.5332,금사면|37.3966|127.4978,산북면|37.4092|127.442,대신면|37.3778|127.6024,북내면|37.3566|127.6893,강천면|37.2884|127.7263,여흥동|37.2562|127.6493,중앙동|37.2782|127.6187,오학동|37.3169|127.6499;연천군~연천읍|38.1004|127.1144,전곡읍|37.9941|127.0366,군남면|38.0747|127.038,청산면|38.0112|127.1016,백학면|38.0254|126.9182,미산면|38.0355|126.9775,왕징면|38.1318|126.8833,신서면|38.2024|127.1022,중면|38.1704|126.999,장남면|37.9947|126.8491;가평군~가평읍|37.8286|127.4875,설악면|37.6532|127.4997,청평면|37.7295|127.4295,상면|37.7905|127.3379,조종면|37.8671|127.3718,북면|37.9443|127.4945;양평군~양평읍|37.4934|127.5137,강상면|37.4612|127.4674,강하면|37.4683|127.4114,양서면|37.5413|127.3788,옥천면|37.5519|127.4865,서종면|37.6093|127.4064,단월면|37.5828|127.6358,청운면|37.5482|127.7524,양동면|37.4428|127.7422,지평면|37.4488|127.6511,용문면|37.5198|127.5881,개군면|37.4401|127.5492;부천시~심곡동|37.4888|126.7857,부천동|37.501|126.7985,중동|37.4913|126.7628,신중동|37.5041|126.7697,상동|37.5027|126.7503,대산동|37.4803|126.7699,소사본동|37.4735|126.7952,범안동|37.4719|126.8165,성곡동|37.5216|126.8112,오정동|37.5316|126.7813@충청남도^천안시 동남구~목천읍|36.7885|127.2126,풍세면|36.7377|127.123,광덕면|36.6768|127.0926,북면|36.8349|127.2718,성남면|36.7322|127.2366,수신면|36.7253|127.2859,병천면|36.7961|127.313,동면|36.7812|127.3672,중앙동|36.8034|127.1495,문성동|36.8128|127.1521,원성1동|36.8151|127.1826,원성2동|36.8025|127.1587,봉명동|36.8092|127.1342,일봉동|36.7931|127.1413,신방동|36.7785|127.1282,청룡동|36.7806|127.1617,신안동|36.8335|127.1803;천안시 서북구~성환읍|36.932|127.1281,성거읍|36.8738|127.1951,직산읍|36.8854|127.1381,입장면|36.9104|127.2258,성정1동|36.8135|127.1416,성정2동|36.8241|127.14,쌍용1동|36.8015|127.1302,쌍용2동|36.7942|127.1184,쌍용3동|36.808|127.1226,백석동|36.8274|127.116,불당동|36.8085|127.1062,부성1동|36.8495|127.1491,부성2동|36.8435|127.1221;공주시~유구읍|36.5966|126.9684,이인면|36.3745|127.0701,탄천면|36.3264|127.0294,계룡면|36.368|127.1578,반포면|36.3838|127.2388,의당면|36.544|127.1593,정안면|36.5994|127.0981,우성면|36.4746|127.0583,사곡면|36.5386|127.0337,신풍면|36.5062|126.9461,중학동|36.4501|127.1216,금학동|36.4241|127.1005,옥룡동|36.4365|127.1609,신관동|36.4788|127.1243,웅진동|36.4591|127.1122,월송동|36.4712|127.1722;보령시~웅천읍|36.2419|126.5886,주포면|36.4106|126.5802,주교면|36.3811|126.554,오천면|36.4214|126.5289,천북면|36.4826|126.5271,청소면|36.4518|126.6046,청라면|36.4036|126.6592,남포면|36.2961|126.5784,주산면|36.2027|126.6206,미산면|36.2429|126.6825,성주면|36.3294|126.6608,대천1동|36.3641|126.6059,대천2동|36.3561|126.5754,대천3동|36.3561|126.6219,대천4동|36.3343|126.6146,대천5동|36.3269|126.5478;아산시~염치읍|36.8224|126.98,배방읍|36.7539|127.0689,송악면|36.7035|126.9942,탕정면|36.8087|127.0686,음봉면|36.858|127.0479,둔포면|36.9108|127.0387,영인면|36.8857|126.9634,인주면|36.8603|126.888,선장면|36.7926|126.8686,도고면|36.741|126.9037,신창면|36.79|126.934,온양1동|36.7884|127.0006,온양2동|36.7795|127.0007,온양3동|36.7877|127.0217,온양4동|36.7825|126.9781,온양5동|36.7543|126.9839,온양6동|36.7586|127.0173;서산시~대산읍|36.9671|126.4129,인지면|36.7483|126.4178,부석면|36.6835|126.3932,팔봉면|36.8174|126.3653,지곡면|36.8762|126.4294,성연면|36.8321|126.4569,음암면|36.7961|126.5164,운산면|36.7783|126.5931,해미면|36.715|126.5428,고북면|36.67|126.5171,부춘동|36.793|126.4347,동문1동|36.7919|126.4711,동문2동|36.78|126.4612,수석동|36.7688|126.4834,석남동|36.7444|126.4625;논산시~강경읍|36.1521|127.0186,연무읍|36.1098|127.1033,성동면|36.1999|127.028,광석면|36.2422|127.0834,노성면|36.2882|127.1065,상월면|36.2919|127.1642,부적면|36.2068|127.1439,연산면|36.2297|127.1992,벌곡면|36.1887|127.287,양촌면|36.1387|127.2341,가야곡면|36.1409|127.1686,은진면|36.1638|127.1119,채운면|36.161|127.0546,취암동|36.1965|127.1038,부창동|36.1915|127.0772;계룡시~두마면|36.2528|127.2606,엄사면|36.2769|127.2212,신도안면|36.3209|127.2293,금암동|36.2718|127.2511;당진시~합덕읍|36.7928|126.7744,송악읍|36.9267|126.7396,고대면|36.9428|126.5776,석문면|37.0083|126.5424,대호지면|36.9144|126.5152,정미면|36.8589|126.5654,면천면|36.8149|126.6603,순성면|36.845|126.7083,우강면|36.8305|126.8094,신평면|36.8835|126.7819,송산면|36.9576|126.6747,당진1동|36.8927|126.6457,당진2동|36.8624|126.6247,당진3동|36.9053|126.6557;금산군~금산읍|36.0956|127.4716,금성면|36.1363|127.4661,제원면|36.129|127.5655,부리면|36.0593|127.5787,군북면|36.1818|127.5424,남일면|36.0286|127.5084,남이면|36.0495|127.4308,진산면|36.1409|127.3751,복수면|36.201|127.3973,추부면|36.2047|127.4916;부여군~부여읍|36.2863|126.9471,규암면|36.2856|126.8755,은산면|36.328|126.8175,외산면|36.3224|126.7212,내산면|36.2799|126.7623,구룡면|36.2527|126.817,홍산면|36.2297|126.7614,옥산면|36.1992|126.7297,남면|36.2128|126.807,충화면|36.1733|126.8262,양화면|36.1175|126.8554,임천면|36.1742|126.8897,장암면|36.2263|126.9017,세도면|36.18|126.9583,석성면|36.2364|126.9946,초촌면|36.2704|127.0239;서천군~장항읍|36.0207|126.691,서천읍|36.0853|126.7016,마서면|36.049|126.6916,화양면|36.0511|126.7888,기산면|36.0785|126.7597,한산면|36.0873|126.8258,마산면|36.1368|126.7904,시초면|36.1175|126.7537,문산면|36.1511|126.7381,판교면|36.1544|126.6803,종천면|36.1104|126.6606,비인면|36.1413|126.6131,서면|36.1632|126.5498;청양군~청양읍|36.4488|126.7901,운곡면|36.5274|126.854,대치면|36.446|126.8591,정산면|36.4239|126.9372,목면|36.413|126.994,청남면|36.349|126.948,장평면|36.3656|126.8839,남양면|36.3915|126.7702,화성면|36.443|126.7155,비봉면|36.4987|126.7819;홍성군~홍성읍|36.593|126.6625,광천읍|36.5084|126.6385,홍북읍|36.6413|126.6854,금마면|36.6081|126.7302,홍동면|36.5567|126.7044,장곡면|36.5026|126.7087,은하면|36.5304|126.5879,결성면|36.5485|126.5478,서부면|36.5686|126.4918,갈산면|36.6195|126.5437,구항면|36.574|126.6188;예산군~예산읍|36.7035|126.8549,삽교읍|36.6915|126.7153,대술면|36.6665|126.9178,신양면|36.6025|126.8798,광시면|36.5637|126.7935,대흥면|36.6328|126.8214,응봉면|36.6458|126.7755,덕산면|36.6782|126.627,봉산면|36.7443|126.6678,고덕면|36.756|126.7238,신암면|36.7446|126.806,오가면|36.6926|126.7907;태안군~태안읍|36.7563|126.3114,안면읍|36.5253|126.3628,고남면|36.4335|126.3979,남면|36.6518|126.3075,근흥면|36.7152|126.2097,소원면|36.7786|126.1762,원북면|36.8387|126.2325,이원면|36.8914|126.2901@대전광역시^동구~효동|36.311|127.4516,판암1동|36.3153|127.4707,판암2동|36.3216|127.4542,용운동|36.3329|127.4618,자양동|36.338|127.4499,가양1동|36.3434|127.4422,가양2동|36.3488|127.4535,용전동|36.3541|127.4345,홍도동|36.3471|127.4257,대청동|36.3768|127.4955,산내동|36.254|127.4595,중앙동|36.3319|127.4351,신인동|36.3226|127.4411,대동|36.3291|127.4458,성남동|36.3435|127.4339,삼성동|36.3395|127.4243;중구~은행선화동|36.3307|127.4198,목동|36.3335|127.4091,중촌동|36.342|127.4088,대흥동|36.3227|127.4248,문창동|36.3182|127.4357,석교동|36.3006|127.4408,대사동|36.3096|127.4226,부사동|36.3111|127.4319,용두동|36.33|127.4064,오류동|36.3252|127.4051,태평1동|36.3268|127.3985,태평2동|36.3236|127.3915,유천1동|36.3155|127.3928,유천2동|36.3183|127.3995,문화1동|36.3113|127.4119,문화2동|36.3073|127.4026,산성동|36.2636|127.4079;서구~복수동|36.3023|127.3767,도마1동|36.3186|127.3792,도마2동|36.3196|127.3687,정림동|36.2913|127.3637,변동|36.3274|127.3767,용문동|36.3375|127.3957,탄방동|36.345|127.3915,둔산1동|36.3532|127.3898,둔산2동|36.3575|127.3854,괴정동|36.3387|127.3801,가장동|36.3311|127.3876,내동|36.3343|127.3733,갈마1동|36.3484|127.3672,갈마2동|36.3459|127.3739,월평1동|36.3459|127.3578,월평2동|36.3621|127.3748,월평3동|36.3606|127.3667,만년동|36.3685|127.3833,가수원동|36.3055|127.3492,기성동|36.2423|127.327,관저1동|36.3065|127.3383,관저2동|36.2925|127.3327,둔산3동|36.3533|127.3992;유성구~진잠동|36.3063|127.2928,온천2동|36.3688|127.349,신성동|36.4031|127.358,전민동|36.3943|127.3981,노은1동|36.3699|127.302,구즉동|36.4611|127.3767,관평동|36.4204|127.3984,온천1동|36.3505|127.3082,원신흥동|36.3412|127.341,노은2동|36.4049|127.3094,노은3동|36.3879|127.2996;대덕구~오정동|36.354|127.4136,대화동|36.3688|127.4075,회덕동|36.3996|127.4343,비래동|36.3632|127.4547,중리동|36.3614|127.4268,법1동|36.3706|127.4257,법2동|36.375|127.4379,신탄진동|36.442|127.466,석봉동|36.4505|127.4231,덕암동|36.4308|127.427,목상동|36.4417|127.4058,송촌동|36.3647|127.4429@강원특별자치도^춘천시~신북읍|37.9599|127.7534,동면|37.8887|127.8451,동산면|37.7726|127.7825,신동면|37.8089|127.7058,동내면|37.8372|127.7844,남면|37.7386|127.5985,남산면|37.7792|127.6206,서면|37.8976|127.6438,사북면|38.0107|127.6434,북산면|37.9694|127.9094,교동|37.8825|127.7366,조운동|37.8783|127.7315,약사명동|37.8754|127.7248,근화동|37.8885|127.709,소양동|37.8835|127.7262,후평1동|37.8881|127.7453,후평2동|37.877|127.7483,후평3동|37.8762|127.756,효자1동|37.8715|127.7281,효자2동|37.869|127.7397,효자3동|37.8757|127.7428,석사동|37.8585|127.7505,퇴계동|37.8536|127.7315,강남동|37.8573|127.6985,신사우동|37.9175|127.7311;원주시~문막읍|37.2915|127.8164,소초면|37.4072|128.0177,호저면|37.4389|127.9117,지정면|37.3808|127.8331,부론면|37.2056|127.7892,귀래면|37.1958|127.8809,흥업면|37.2859|127.8971,판부면|37.2824|127.9908,신림면|37.2509|128.107,중앙동|37.3617|127.947,원인동|37.3444|127.9485,개운동|37.3382|127.956,명륜1동|37.3392|127.947,명륜2동|37.3308|127.941,단구동|37.3248|127.9553,일산동|37.3482|127.9429,학성동|37.355|127.9403,단계동|37.3523|127.9276,우산동|37.379|127.9304,태장1동|37.3647|127.9635,태장2동|37.3891|127.9512,봉산동|37.3561|127.9779,행구동|37.3426|128.0098,무실동|37.328|127.9216,반곡관설동|37.3161|127.9881;강릉시~주문진읍|37.8868|128.763,성산면|37.7304|128.8034,왕산면|37.6029|128.7973,구정면|37.6984|128.8864,강동면|37.6796|128.9693,옥계면|37.5924|128.9813,사천면|37.7998|128.8067,연곡면|37.8282|128.6939,홍제동|37.751|128.8705,중앙동|37.7527|128.8942,옥천동|37.7584|128.9015,교1동|37.7646|128.8828,교2동|37.7709|128.8947,포남1동|37.7659|128.9088,포남2동|37.778|128.9074,초당동|37.7907|128.9151,송정동|37.777|128.9301,내곡동|37.7375|128.8754,강남동|37.732|128.9162,성덕동|37.7568|128.9323,경포동|37.789|128.8732;동해시~천곡동|37.5235|129.0986,송정동|37.4993|129.1264,북삼동|37.491|129.0904,부곡동|37.5362|129.0806,동호동|37.5478|129.0896,발한동|37.5464|129.1078,묵호동|37.5653|129.1124,북평동|37.4716|129.1172,망상동|37.5712|129.0759,삼화동|37.4918|129.0178;태백시~황지동|37.1702|128.9957,황연동|37.1661|129.0269,삼수동|37.2495|128.9639,상장동|37.1551|128.9676,구문소동|37.093|129.0434,장성동|37.0955|128.9826,철암동|37.1252|129.0602,문곡소도동|37.1168|128.9354;속초시~영랑동|38.2141|128.5603,동명동|38.2113|128.5918,금호동|38.2092|128.5817,교동|38.2036|128.5813,노학동|38.1921|128.5369,조양동|38.1851|128.5806,청호동|38.1948|128.5956,대포동|38.1647|128.5009;삼척시~도계읍|37.2307|129.0715,원덕읍|37.1828|129.2776,근덕면|37.319|129.2359,하장면|37.3554|128.9287,노곡면|37.2932|129.159,미로면|37.4052|129.0671,가곡면|37.124|129.1687,신기면|37.3303|129.0591,남양동|37.4107|129.1645,성내동|37.4391|129.1264,교동|37.458|129.1612,정라동|37.4399|129.1812;홍천군~홍천읍|37.6644|127.8743,화촌면|37.7685|127.9826,두촌면|37.8718|128.0316,내촌면|37.8123|128.1128,서석면|37.7137|128.2117,동면|37.6634|127.9929,남면|37.6132|127.7855,서면|37.6677|127.6355,북방면|37.7314|127.8132,내면|37.7946|128.4081;횡성군~횡성읍|37.491|127.9965,우천면|37.4746|128.0958,안흥면|37.4235|128.1827,둔내면|37.5234|128.235,갑천면|37.5687|128.0898,청일면|37.607|128.1719,공근면|37.57|127.9601,서원면|37.4911|127.8476,강림면|37.3511|128.1094;영월군~영월읍|37.2018|128.5107,상동읍|37.1169|128.8197,중동면|37.1703|128.6932,북면|37.2721|128.4329,남면|37.1658|128.3836,주천면|37.2801|128.2813,무릉도원면|37.3347|128.2224,김삿갓면|37.1036|128.6349,한반도면|37.2255|128.342;평창군~평창읍|37.3711|128.3907,미탄면|37.3399|128.5183,방림면|37.4523|128.3259,대화면|37.4976|128.4476,봉평면|37.6123|128.3467,용평면|37.6307|128.4524,진부면|37.6325|128.5632,대관령면|37.6877|128.6752;정선군~정선읍|37.3806|128.6232,고한읍|37.1923|128.8711,사북읍|37.2333|128.8227,신동읍|37.2381|128.6479,남면|37.2806|128.7288,북평면|37.4787|128.6346,임계면|37.4734|128.8731,화암면|37.3291|128.8081,여량면|37.491|128.7303;철원군~철원읍|38.2712|127.1747,김화읍|38.267|127.4071,갈말읍|38.2016|127.3297,동송읍|38.2409|127.249,근북면|38.3158|127.4028,서면|38.1776|127.4216,근남면|38.2408|127.5127;화천군~화천읍|38.2129|127.7751,간동면|38.0634|127.8181,하남면|38.0818|127.6541,상서면|38.2166|127.6229,사내면|38.0736|127.5082;양구군~양구읍|38.114|127.9532,국토정중앙면|38.0829|128.0498,동면|38.2407|128.0531,방산면|38.2575|127.9251,해안면|38.2867|128.1212;인제군~인제읍|38.0664|128.2479,남면|37.9751|128.1067,북면|38.1666|128.3156,기린면|37.9641|128.3894,서화면|38.2742|128.2203,상남면|37.884|128.267;고성군~간성읍|38.3444|128.3605,거진읍|38.4317|128.3775,현내면|38.5271|128.3619,죽왕면|38.3249|128.494,토성면|38.2504|128.4976;양양군~양양읍|38.0918|128.6008,서면|38.0109|128.525,손양면|38.0479|128.6526,현북면|37.951|128.647,현남면|37.9398|128.7395,강현면|38.1294|128.5612@부산광역시^중구~중앙동|35.1051|129.0385,동광동|35.1045|129.0343,대청동|35.1053|129.0311,보수동|35.1064|129.0252,부평동|35.1012|129.0252,광복동|35.1004|129.0311,남포동|35.0976|129.03,영주1동|35.1119|129.0353,영주2동|35.1126|129.0305;서구~동대신1동|35.11|129.022,동대신2동|35.1135|129.0234,동대신3동|35.1225|129.0214,서대신1동|35.109|129.0125,서대신3동|35.1144|129.0079,서대신4동|35.1275|129.0104,부민동|35.1047|129.0179,아미동|35.1006|129.0131,초장동|35.0948|129.0175,충무동|35.0974|129.0228,남부민1동|35.0902|129.0209,암남동|35.07|129.0144,남부민2동|35.085|129.0212;동구~초량1동|35.1148|129.0371,초량2동|35.1179|129.0356,초량3동|35.12|129.045,초량6동|35.1238|129.0306,수정1동|35.1249|129.0408,수정2동|35.1321|129.0393,수정4동|35.1303|129.0338,수정5동|35.1363|129.0419,범일2동|35.136|129.0617,범일1동|35.1412|129.048,범일5동|35.1269|129.0573,좌천동|35.1342|129.0506;영도구~남항동|35.0892|129.037,영선1동|35.0892|129.0432,영선2동|35.0796|129.0471,봉래1동|35.0944|129.0432,청학1동|35.0958|129.0566,청학2동|35.0897|129.0633,동삼1동|35.0751|129.0674,동삼2동|35.0641|129.0833,동삼3동|35.0841|129.0683,신선동|35.0849|129.0489,봉래2동|35.0932|129.0511;부산진구~부전2동|35.1546|129.0573,연지동|35.1716|129.0536,초읍동|35.1857|129.0407,양정1동|35.1725|129.0666,양정2동|35.1726|129.0756,전포2동|35.1623|129.0699,부암1동|35.1646|129.049,부암3동|35.1751|129.0337,당감2동|35.1591|129.0421,당감4동|35.1707|129.03,가야2동|35.1461|129.0268,개금1동|35.1515|129.0217,개금2동|35.1421|129.0186,개금3동|35.1602|129.0217,당감1동|35.1688|129.0238,가야제1동|35.147|129.0352,부전1동|35.164|129.0593,전포1동|35.1545|129.0718,범천1동|35.1459|129.0603,범천2동|35.1487|129.0493;동래구~수민동|35.1977|129.089,복산동|35.2056|129.0903,온천1동|35.2208|129.0741,온천2동|35.2139|129.0656,온천3동|35.2061|129.064,사직1동|35.1988|129.0627,사직2동|35.1987|129.0534,사직3동|35.1989|129.0713,안락1동|35.1988|129.099,안락2동|35.1943|129.1096,명장1동|35.2046|129.1067,명장2동|35.2093|129.0983,명륜동|35.2109|129.085;남구~대연3동|35.1455|129.0961,대연4동|35.1276|129.0911,대연5동|35.1415|129.0896,대연6동|35.1383|129.082,용호1동|35.1257|129.1097,용호2동|35.1082|129.1191,용호3동|35.1221|129.1192,용호4동|35.107|129.1072,용당동|35.1134|129.0974,감만1동|35.1118|129.0787,감만2동|35.1214|129.0846,문현1동|35.1464|129.0767,문현2동|35.1442|129.0666,문현3동|35.1388|129.0735,문현4동|35.1329|129.0707,대연1동|35.1327|129.0887,우암동|35.1261|129.0758;북구~구포1동|35.2062|129.0051,구포2동|35.1993|128.997,구포3동|35.1952|129.0139,금곡동|35.2629|129.0242,화명1동|35.2308|129.0282,덕천1동|35.2167|129.0175,덕천2동|35.2154|129.0043,덕천3동|35.2068|129.0187,만덕1동|35.2207|129.0412,만덕2동|35.2051|129.0386,만덕3동|35.2051|129.0269,화명2동|35.2465|129.0327,화명3동|35.2325|129.0052;해운대구~우1동|35.1772|129.1549,우2동|35.172|129.138,중1동|35.1638|129.1696,중2동|35.1609|129.184,송정동|35.1851|129.1976,반여2동|35.1955|129.135,반여3동|35.2004|129.1415,반송2동|35.2352|129.1519,재송1동|35.1828|129.1276,재송2동|35.1906|129.1318,좌1동|35.1738|129.1761,좌2동|35.1699|129.1845,좌3동|35.1732|129.1675,좌4동|35.1898|129.173,반여1동|35.2069|129.1304,반여4동|35.2081|129.1156,반송1동|35.2207|129.1437,우3동|35.1589|129.1437;사하구~괴정1동|35.099|128.9896,괴정2동|35.1058|129.0031,괴정3동|35.1053|128.9962,괴정4동|35.1003|128.9835,당리동|35.112|128.9836,하단1동|35.0957|128.9448,하단2동|35.1143|128.9576,신평1동|35.0905|128.9753,신평2동|35.0905|128.9604,장림1동|35.0769|128.9631,장림2동|35.0754|128.9757,다대1동|35.0549|128.9658,다대2동|35.0604|128.9847,구평동|35.0734|128.9903,감천1동|35.0874|129.0026,감천2동|35.0937|129.0088;금정구~서1동|35.2178|129.0979,서2동|35.2128|129.1046,금사회동동|35.2333|129.1238,부곡1동|35.2243|129.0959,부곡2동|35.2307|129.0958,부곡3동|35.2466|129.1145,부곡4동|35.2192|129.091,장전1동|35.2412|129.0759,선두구동|35.2815|129.1115,청룡노포동|35.2856|129.0789,남산동|35.2669|129.0787,구서1동|35.2492|129.0922,구서2동|35.2551|129.0811,금성동|35.2549|129.054,서3동|35.2207|129.1049,장전2동|35.2311|129.0742;강서구~대저1동|35.2105|128.9675,대저2동|35.1587|128.9421,강동동|35.1805|128.9189,명지1동|35.1107|128.9149,가락동|35.1847|128.8948,녹산동|35.1225|128.8585,가덕도동|35.0419|128.8278,명지2동|35.0842|128.9039;연제구~거제1동|35.1938|129.0776,거제2동|35.1887|129.0601,거제3동|35.1825|129.0717,거제4동|35.1815|129.0656,연산1동|35.1886|129.0897,연산2동|35.1724|129.0813,연산3동|35.1676|129.091,연산4동|35.1843|129.0865,연산5동|35.1838|129.078,연산6동|35.1722|129.0885,연산8동|35.1865|129.0971,연산9동|35.184|129.1069;수영구~남천1동|35.1437|129.1093,남천2동|35.1433|129.1143,수영동|35.1704|129.1177,망미1동|35.1715|129.1008,망미2동|35.1775|129.1152,광안1동|35.1625|129.1099,광안2동|35.1545|129.1155,광안3동|35.1678|129.1106,광안4동|35.1559|129.1054,민락동|35.1595|129.1259;사상구~삼락동|35.1722|128.971,모라1동|35.1881|128.9899,모라3동|35.1831|129.0077,덕포1동|35.1697|128.9871,덕포2동|35.1764|128.989,괘법동|35.1662|128.9933,주례1동|35.1556|129.0002,주례2동|35.152|129.0107,주례3동|35.1452|129.0013,학장동|35.1379|128.9889,엄궁동|35.1269|128.9722,감전동|35.1492|128.9774;기장군~기장읍|35.2256|129.209,장안읍|35.3496|129.2471,정관읍|35.3356|129.179,일광면|35.2876|129.2233,철마면|35.2818|129.1546@전북특별자치도^전주시 완산구~동서학동|35.7949|127.1831,서서학동|35.7928|127.1532,중화산1동|35.8139|127.1302,중화산2동|35.8196|127.1203,평화1동|35.7933|127.1431,평화2동|35.7726|127.1263,서신동|35.8324|127.1162,삼천1동|35.8002|127.1257,삼천2동|35.7955|127.1229,삼천3동|35.7714|127.0856,효자1동|35.8048|127.1323,효자2동|35.8081|127.1193,효자3동|35.8059|127.1134,효자4동|35.8108|127.0865,중앙동|35.8205|127.1404,풍남동|35.8144|127.1577,노송동|35.8235|127.1546,완산동|35.8087|127.1407,효자5동|35.8262|127.0972;전주시 덕진구~인후1동|35.8381|127.156,인후2동|35.8406|127.1478,인후3동|35.8295|127.1632,덕진동|35.8483|127.127,금암1동|35.8381|127.1333,금암2동|35.8429|127.1407,팔복동|35.8546|127.0976,우아1동|35.8502|127.1601,우아2동|35.829|127.193,호성동|35.8763|127.1472,송천1동|35.8659|127.1311,송천2동|35.882|127.1135,조촌동|35.8783|127.0386,여의동|35.8595|127.0741,진북동|35.8277|127.1341,혁신동|35.8308|127.0619;군산시~옥구읍|35.9128|126.689,옥산면|35.941|126.7401,회현면|35.9101|126.7595,임피면|35.9724|126.8598,서수면|36.0006|126.8792,대야면|35.9373|126.8318,개정면|35.9605|126.7862,성산면|36.0004|126.7914,나포면|36.0275|126.8343,옥도면|35.8248|126.4715,옥서면|35.9119|126.6318,해신동|35.9933|126.6982,월명동|35.9881|126.7127,신풍동|35.9767|126.7021,삼학동|35.9785|126.7096,중앙동|35.9878|126.7231,흥남동|35.9762|126.7178,조촌동|35.9724|126.7393,경암동|35.9841|126.7315,구암동|35.996|126.7513,개정동|35.965|126.7563,수송동|35.9599|126.7173,나운1동|35.969|126.6956,나운2동|35.9657|126.705,소룡동|35.9646|126.5886,미성동|35.9542|126.6432,나운3동|35.947|126.6853;익산시~함열읍|36.0614|126.9644,오산면|35.9378|126.8998,황등면|36.0173|126.938,함라면|36.0399|126.905,웅포면|36.0936|126.8917,성당면|36.0961|126.9292,용안면|36.1205|126.9557,낭산면|36.0609|127.0207,망성면|36.1189|127.0262,여산면|36.0514|127.0909,금마면|36.0075|127.0415,왕궁면|35.9733|127.084,춘포면|35.9265|127.0236,삼기면|36.0205|126.9932,용동면|36.1074|126.9971,중앙동|35.9397|126.9492,평화동|35.9247|126.9303,인화동|35.9256|126.9504,동산동|35.9163|126.9732,마동|35.9402|126.9643,남중동|35.9495|126.9565,모현동|35.9535|126.942,송학동|35.9395|126.9337,신동|35.9731|126.9428,영등1동|35.952|126.9715,팔봉동|35.9601|127.0128,삼성동|35.979|126.9857,영등2동|35.9645|126.9732,어양동|35.958|126.9834;정읍시~신태인읍|35.7015|126.8716,북면|35.5965|126.9061,입암면|35.5031|126.7986,소성면|35.5598|126.7809,고부면|35.6058|126.7585,영원면|35.6514|126.7672,덕천면|35.6301|126.8277,이평면|35.6669|126.8294,정우면|35.6467|126.8861,태인면|35.6567|126.9365,감곡면|35.7163|126.9285,옹동면|35.6491|126.9865,칠보면|35.5789|126.9647,산내면|35.5525|127.0477,산외면|35.6256|127.0545,수성동|35.5865|126.8615,장명동|35.5705|126.8825,내장상동|35.5196|126.9023,시기동|35.5645|126.8534,연지동|35.5727|126.8433,농소동|35.5971|126.8308,상교동|35.5193|126.8459,초산동|35.5554|126.8539;남원시~운봉읍|35.4306|127.5354,주천면|35.3808|127.4543,수지면|35.3338|127.3751,송동면|35.3571|127.3436,주생면|35.3846|127.3044,금지면|35.34|127.2817,대강면|35.3625|127.2307,대산면|35.4252|127.3151,사매면|35.4783|127.3519,덕과면|35.5252|127.3696,보절면|35.5153|127.4166,산동면|35.4968|127.4728,이백면|35.431|127.4596,인월면|35.465|127.613,아영면|35.5109|127.5939,산내면|35.3789|127.5926,동충동|35.4115|127.3827,죽항동|35.4069|127.384,노암동|35.3949|127.3898,금동|35.3992|127.3681,왕정동|35.4123|127.3567,향교동|35.4399|127.3746,도통동|35.4427|127.4103;김제시~만경읍|35.8652|126.8264,죽산면|35.7736|126.8086,백산면|35.8457|126.8876,용지면|35.8445|126.9708,백구면|35.8871|126.9635,부량면|35.7386|126.8442,공덕면|35.886|126.905,청하면|35.8873|126.8514,성덕면|35.819|126.8121,진봉면|35.8502|126.7646,금구면|35.7809|127.0181,봉남면|35.7428|126.9568,황산면|35.7885|126.9607,금산면|35.7152|127.0297,광활면|35.8295|126.7451,요촌동|35.8185|126.8906,신풍동|35.7744|126.9174,검산동|35.8128|126.9235,교월동|35.7855|126.8639;완주군~삼례읍|35.9129|127.0844,봉동읍|35.9502|127.1379,용진읍|35.8974|127.1802,상관면|35.7602|127.2297,이서면|35.8254|127.0318,소양면|35.8576|127.2558,구이면|35.7065|127.1195,고산면|35.9714|127.2329,비봉면|36.0114|127.1577,운주면|36.0715|127.3154,화산면|36.0507|127.1989,동상면|35.9393|127.3027,경천면|36.0388|127.2759;진안군~진안읍|35.7767|127.4445,용담면|35.9512|127.4902,안천면|35.9022|127.5469,동향면|35.8365|127.5741,상전면|35.8478|127.4975,백운면|35.6811|127.428,성수면|35.7215|127.3187,마령면|35.7464|127.3614,부귀면|35.8387|127.36,정천면|35.8907|127.4379,주천면|35.9671|127.4001;무주군~무주읍|36.0116|127.6557,무풍면|35.9326|127.8475,설천면|35.9543|127.7824,적상면|35.9341|127.6719,안성면|35.8471|127.679,부남면|35.969|127.5698;장수군~장수읍|35.6241|127.5124,산서면|35.5821|127.4092,번암면|35.5553|127.5435,장계면|35.7255|127.6188,천천면|35.7327|127.5221,계남면|35.6869|127.5799,계북면|35.7897|127.6311;임실군~임실읍|35.5938|127.2674,청웅면|35.5654|127.2079,운암면|35.6125|127.1515,신평면|35.6475|127.2325,성수면|35.6272|127.3602,오수면|35.5415|127.3188,신덕면|35.691|127.1802,삼계면|35.5086|127.2657,관촌면|35.6956|127.2822,강진면|35.545|127.1411,덕치면|35.4994|127.1708,지사면|35.5792|127.3538;순창군~순창읍|35.3703|127.1335,인계면|35.4228|127.159,동계면|35.4563|127.2494,적성면|35.4237|127.2079,유등면|35.3743|127.1876,풍산면|35.3329|127.1425,금과면|35.3336|127.0842,팔덕면|35.3944|127.0852,복흥면|35.4453|126.936,쌍치면|35.5049|126.992,구림면|35.463|127.0871;고창군~고창읍|35.4321|126.704,고수면|35.3901|126.6815,아산면|35.4672|126.6114,무장면|35.412|126.5749,공음면|35.3832|126.5268,상하면|35.4444|126.4783,해리면|35.4748|126.512,성송면|35.3648|126.6358,대산면|35.3393|126.573,심원면|35.5122|126.5465,흥덕면|35.5377|126.6992,성내면|35.5353|126.7448,신림면|35.4771|126.7226,부안면|35.5269|126.6424;부안군~부안읍|35.7087|126.745,주산면|35.6652|126.7087,동진면|35.7558|126.7468,행안면|35.7233|126.7053,계화면|35.7731|126.6712,보안면|35.623|126.667,변산면|35.6429|126.5336,진서면|35.6048|126.5718,백산면|35.7022|126.7929,상서면|35.669|126.6457,하서면|35.7131|126.6273,줄포면|35.5924|126.6944,위도면|35.5962|126.2818@대구광역시^중구~삼덕동|35.8653|128.604,성내1동|35.8686|128.5972,성내2동|35.8709|128.5893,성내3동|35.8749|128.5825,대신동|35.8674|128.5791,남산1동|35.86|128.5926,남산2동|35.8642|128.5881,남산3동|35.8599|128.586,남산4동|35.8609|128.5792,대봉1동|35.8593|128.6047,대봉2동|35.8578|128.5987,동인동|35.8703|128.6074;동구~신암1동|35.8853|128.6184,신암2동|35.8778|128.612,신암3동|35.8798|128.6211,신암4동|35.8848|128.6283,신암5동|35.889|128.6344,신천1·2동|35.8721|128.6159,신천3동|35.8726|128.6222,신천4동|35.8729|128.6297,효목1동|35.8822|128.6461,효목2동|35.8772|128.6381,도평동|35.9285|128.6882,불로·봉무동|35.9222|128.6423,지저동|35.8987|128.6401,동촌동|35.8949|128.6561,방촌동|35.8781|128.665,해안동|35.8986|128.6853,공산동|35.9754|128.6771,안심1동|35.8656|128.6958,안심2동|35.9032|128.714,안심4동|35.87|128.7173,안심3동|35.8636|128.7387,혁신동|35.8917|128.738;서구~내당1동|35.8621|128.5616,내당2·3동|35.8652|128.5713,내당4동|35.8591|128.5507,비산1동|35.8819|128.5667,비산2·3동|35.8767|128.5744,비산4동|35.8699|128.5724,비산5동|35.8864|128.5683,비산6동|35.8759|128.5694,비산7동|35.8874|128.5501,평리1동|35.8762|128.5652,평리2동|35.8693|128.5656,평리3동|35.8762|128.5588,평리4동|35.8676|128.558,평리5동|35.8723|128.5508,평리6동|35.8793|128.55,상중이동|35.873|128.5347,원대동|35.884|128.5766;남구~이천동|35.8515|128.6017,봉덕1동|35.8463|128.5981,봉덕2동|35.8242|128.5981,봉덕3동|35.8325|128.5927,대명1동|35.843|128.5761,대명2동|35.8523|128.5896,대명3동|35.8534|128.5792,대명4동|35.8466|128.5712,대명5동|35.8448|128.5857,대명6동|35.8292|128.5704,대명9동|35.8287|128.5807,대명10동|35.8407|128.5667,대명11동|35.8314|128.5624;북구~고성동|35.8813|128.5852,칠성동|35.8796|128.5971,침산1동|35.8997|128.5843,침산2동|35.8873|128.596,침산3동|35.8925|128.5881,산격1동|35.8974|128.5974,산격2동|35.9066|128.6076,산격3동|35.8923|128.6102,산격4동|35.895|128.6031,복현1동|35.8932|128.6171,복현2동|35.8988|128.6233,검단동|35.9173|128.6223,무태조야동|35.9376|128.6018,태전2동|35.9188|128.5507,관문동|35.9049|128.5368,읍내동|35.9591|128.5436,관음동|35.9452|128.5405,태전1동|35.9259|128.54,구암동|35.9323|128.5674,노원동|35.8947|128.5695,동천동|35.9394|128.5592,국우동|35.9601|128.5814,대현동|35.883|128.6073;수성구~범어1동|35.8538|128.627,범어2동|35.8629|128.6334,범어3동|35.8642|128.6229,범어4동|35.8538|128.6384,만촌1동|35.8712|128.6492,만촌2동|35.8616|128.6506,만촌3동|35.8506|128.6505,수성1가동|35.8549|128.6108,수성2·3가동|35.8553|128.6174,수성4가동|35.8629|128.6161,황금1동|35.8409|128.638,황금2동|35.8452|128.6225,중동|35.8449|128.612,상동|35.8333|128.6117,파동|35.8134|128.6129,두산동|35.829|128.6209,지산1동|35.8301|128.638,지산2동|35.8184|128.6319,범물1동|35.8103|128.6604,범물2동|35.8104|128.6438,고산1동|35.8116|128.6993,고산2동|35.8386|128.6772,고산3동|35.8492|128.714;달서구~두류3동|35.8516|128.555,본리동|35.8399|128.5384,감삼동|35.848|128.5398,죽전동|35.8546|128.5386,장기동|35.8428|128.5197,이곡1동|35.8569|128.5113,신당동|35.8486|128.4853,월성1동|35.8239|128.5255,월성2동|35.8273|128.5029,진천동|35.8037|128.525,상인1동|35.8196|128.541,상인2동|35.813|128.5385,상인3동|35.8126|128.5631,도원동|35.7954|128.5581,송현1동|35.8239|128.5582,송현2동|35.8309|128.5482,본동|35.8338|128.5397,용산1동|35.8556|128.5285,용산2동|35.86|128.5199,이곡2동|35.8506|128.5036,성당동|35.8446|128.5566,두류1·2동|35.8566|128.5674;달성군~화원읍|35.7865|128.5115,논공읍|35.7518|128.4346,다사읍|35.872|128.466,가창면|35.7584|128.6199,하빈면|35.898|128.4304,옥포읍|35.7686|128.4786,현풍읍|35.6879|128.4259,유가읍|35.6837|128.4881,구지면|35.6572|128.4025@경상남도^진주시~문산읍|35.157|128.182,내동면|35.1432|128.0403,정촌면|35.1273|128.114,금곡면|35.1043|128.1883,진성면|35.175|128.23,일반성면|35.1562|128.2851,이반성면|35.165|128.3348,사봉면|35.1994|128.2782,지수면|35.2356|128.2637,대곡면|35.263|128.1762,금산면|35.2094|128.1581,집현면|35.2536|128.0869,미천면|35.3073|128.1119,명석면|35.2549|128.021,대평면|35.2|127.9803,수곡면|35.2036|127.9298,상대동|35.1833|128.1124,하대동|35.1918|128.1158,상평동|35.1733|128.1141,초장동|35.2115|128.1001,평거동|35.1757|128.0616,신안동|35.1844|128.0703,이현동|35.1983|128.0539,판문동|35.1789|128.031,가호동|35.1577|128.1137,천전동|35.1756|128.0855,성북동|35.192|128.0769,중앙동|35.1959|128.0902,상봉동|35.2032|128.0724,충무공동|35.1768|128.143;통영시~산양읍|34.8019|128.3983,용남면|34.8811|128.4477,도산면|34.9055|128.3559,광도면|34.9219|128.4086,욕지면|34.6336|128.2561,한산면|34.7842|128.4834,사량면|34.8194|128.2318,명정동|34.8533|128.4062,중앙동|34.8452|128.4232,정량동|34.8464|128.4362,북신동|34.8545|128.4242,무전동|34.8606|128.4288,도천동|34.8441|128.3933,미수동|34.8244|128.4016,봉평동|34.8251|128.4225;사천시~사천읍|35.092|128.1185,정동면|35.0511|128.1362,사남면|35.0272|128.1062,용현면|35.0196|128.0681,축동면|35.1063|128.0591,곤양면|35.071|127.9851,곤명면|35.1206|127.9461,서포면|35.0134|127.9675,동서동|34.9422|128.0531,선구동|34.9493|128.0766,동서금동|34.9299|128.0799,벌용동|34.9634|128.0995,향촌동|34.9438|128.1093,남양동|34.98|128.0743;김해시~진영읍|35.2947|128.7396,주촌면|35.243|128.8222,진례면|35.2425|128.7578,한림면|35.3117|128.8084,생림면|35.3431|128.8512,상동면|35.3182|128.9182,대동면|35.2598|128.9682,동상동|35.2424|128.8877,회현동|35.2302|128.8776,부원동|35.2237|128.889,내외동|35.2369|128.861,북부동|35.2655|128.8687,칠산서부동|35.2023|128.8583,활천동|35.2347|128.9003,삼안동|35.2556|128.9075,불암동|35.2279|128.9236,장유1동|35.2049|128.8105,장유2동|35.1891|128.7748,장유3동|35.1699|128.8211;밀양시~삼랑진읍|35.4261|128.841,하남읍|35.3785|128.7407,부북면|35.5222|128.7151,상동면|35.5574|128.7854,산외면|35.5229|128.8205,산내면|35.5921|128.9246,단장면|35.5054|128.9102,상남면|35.4205|128.7642,초동면|35.4185|128.6838,무안면|35.4861|128.643,청도면|35.5592|128.6326,내일동|35.486|128.7921,내이동|35.4988|128.7417,교동|35.5081|128.7637,삼문동|35.4834|128.7519,가곡동|35.4751|128.7814;거제시~일운면|34.8207|128.6945,동부면|34.7978|128.6134,남부면|34.7376|128.6152,거제면|34.8534|128.5768,둔덕면|34.858|128.5145,사등면|34.8947|128.5304,연초면|34.927|128.653,하청면|34.9681|128.6345,장목면|34.9826|128.6946,장승포동|34.863|128.7264,능포동|34.8809|128.7349,아주동|34.8677|128.6916,옥포1동|34.8878|128.687,옥포2동|34.9079|128.6989,장평동|34.8934|128.5986,고현동|34.8837|128.623,상문동|34.8516|128.6474,수양동|34.885|128.6562;양산시~물금읍|35.3152|129.0008,동면|35.3212|129.073,원동면|35.4179|128.9592,상북면|35.4245|129.0445,하북면|35.4631|129.0842,삼성동|35.3656|129.0679,강서동|35.3841|129.0107,서창동|35.4083|129.1867,소주동|35.4126|129.145,평산동|35.3828|129.1274,덕계동|35.3701|129.1717,중앙동|35.3424|129.0655,양주동|35.3364|129.0291;창원시 의창구~동읍|35.3079|128.6695,북면|35.3311|128.6064,대산면|35.3432|128.7091,의창동|35.2652|128.6126,팔룡동|35.2354|128.6311,명곡동|35.2549|128.6446,봉림동|35.2475|128.6876,용지동|35.2311|128.686;창원시 성산구~반송동|35.2397|128.6672,중앙동|35.22|128.6704,상남동|35.2182|128.687,사파동|35.2211|128.7092,가음정동|35.2083|128.6947,성주동|35.1852|128.7164,웅남동|35.1913|128.634;창원시 마산합포구~구산면|35.097|128.58,진동면|35.134|128.5085,진북면|35.1494|128.4601,진전면|35.1309|128.4031,현동|35.1539|128.5537,가포동|35.1616|128.575,월영동|35.177|128.5576,반월중앙동|35.1929|128.5634,완월동|35.1986|128.5501,자산동|35.2044|128.5607,오동동|35.2038|128.5744,합포동|35.2112|128.5812,산호동|35.217|128.584,문화동|35.1876|128.552,교방동|35.2109|128.5546;창원시 마산회원구~석전동|35.2327|128.5714,내서읍|35.2307|128.5135,회원1동|35.2203|128.5738,회원2동|35.2194|128.5474,회성동|35.2385|128.5501,양덕1동|35.2322|128.5894,양덕2동|35.2256|128.584,합성1동|35.2486|128.5757,합성2동|35.239|128.5967,구암1동|35.26|128.5852,구암2동|35.249|128.5976,봉암동|35.2216|128.6048;창원시 진해구~여좌동|35.1676|128.6626,태백동|35.1579|128.6742,경화동|35.1609|128.6821,병암동|35.1606|128.6916,석동|35.1607|128.7028,이동|35.1503|128.6971,자은동|35.1524|128.7228,덕산동|35.1432|128.7055,풍호동|35.1238|128.7083,웅천동|35.1062|128.7451,웅동1동|35.1367|128.778,웅동2동|35.1013|128.8133,충무동|35.1495|128.6463;의령군~의령읍|35.3037|128.2636,가례면|35.3559|128.2272,칠곡면|35.3495|128.185,대의면|35.3677|128.143,화정면|35.2842|128.2168,용덕면|35.357|128.2787,정곡면|35.3766|128.3349,지정면|35.3923|128.3895,낙서면|35.4841|128.3908,부림면|35.4772|128.3322,봉수면|35.4765|128.2666,궁류면|35.4331|128.2317,유곡면|35.4226|128.2961;함안군~가야읍|35.2736|128.3955,함안면|35.2302|128.4241,군북면|35.2576|128.3337,법수면|35.3271|128.3507,대산면|35.3478|128.4365,칠서면|35.3514|128.4971,칠북면|35.3549|128.5392,산인면|35.2764|128.4537,여항면|35.1951|128.4447,칠원읍|35.2949|128.5278;창녕군~창녕읍|35.5239|128.52,남지읍|35.4284|128.4333,고암면|35.5707|128.5354,성산면|35.6233|128.5204,대합면|35.5948|128.4454,이방면|35.5685|128.3826,유어면|35.5178|128.4208,대지면|35.5423|128.4589,계성면|35.4765|128.5155,영산면|35.4467|128.5249,장마면|35.468|128.4697,도천면|35.4234|128.5331,길곡면|35.4036|128.568,부곡면|35.4176|128.617;고성군~고성읍|34.9771|128.3159,삼산면|34.9446|128.2727,하일면|34.9365|128.1911,하이면|34.9373|128.1428,상리면|34.9972|128.2002,대가면|35.0275|128.2767,영현면|35.0479|128.2189,영오면|35.1037|128.2307,개천면|35.0968|128.2862,구만면|35.0929|128.3379,회화면|35.0751|128.3874,마암면|35.0457|128.3344,동해면|35.025|128.4451,거류면|34.9844|128.3827;남해군~남해읍|34.8318|127.8908,이동면|34.7875|127.9517,상주면|34.7326|127.98,삼동면|34.7955|128.0197,미조면|34.7329|128.0347,남면|34.762|127.8781,서면|34.8383|127.8424,고현면|34.8894|127.8721,설천면|34.9187|127.8999,창선면|34.869|128.0171;하동군~하동읍|35.0857|127.7375,화개면|35.2541|127.6476,악양면|35.1712|127.7102,적량면|35.1053|127.7661,횡천면|35.1207|127.8157,고전면|35.0269|127.8156,금남면|34.978|127.8562,금성면|34.9641|127.7983,진교면|35.0334|127.8942,양보면|35.069|127.8467,북천면|35.12|127.871,청암면|35.1963|127.7577,옥종면|35.1942|127.8618;산청군~산청읍|35.4077|127.9005,차황면|35.4725|127.9442,오부면|35.4911|127.8925,생초면|35.5091|127.8482,금서면|35.4191|127.8132,삼장면|35.3397|127.8085,시천면|35.2766|127.7769,단성면|35.2949|127.916,신안면|35.3429|127.9786,생비량면|35.3504|128.0557,신등면|35.4068|128.0012;함양군~함양읍|35.4999|127.7033,마천면|35.3743|127.6795,휴천면|35.4453|127.7347,유림면|35.4858|127.7827,수동면|35.5582|127.8112,지곡면|35.5781|127.7601,안의면|35.6565|127.8038,서하면|35.6321|127.7175,서상면|35.6935|127.6792,백전면|35.5677|127.6333,병곡면|35.5563|127.6883;거창군~거창읍|35.6972|127.9095,주상면|35.7663|127.9155,웅양면|35.8324|127.9244,고제면|35.8493|127.8626,북상면|35.7893|127.7667,위천면|35.7481|127.8238,마리면|35.6993|127.8471,남상면|35.6201|127.9167,남하면|35.6736|127.9744,신원면|35.5653|127.9281,가조면|35.7049|128.0295,가북면|35.7942|128.0081;합천군~합천읍|35.6068|128.1398,봉산면|35.61|128.0357,묘산면|35.662|128.1109,가야면|35.7601|128.0986,야로면|35.7175|128.1691,율곡면|35.5953|128.2085,초계면|35.5404|128.2462,쌍책면|35.6091|128.2696,덕곡면|35.6315|128.3243,청덕면|35.5595|128.3308,적중면|35.5399|128.2853,대양면|35.5109|128.1872,쌍백면|35.4547|128.1548,삼가면|35.4134|128.1121,가회면|35.4596|128.0324,대병면|35.527|128.0096,용주면|35.5397|128.0994";
+
+const HAS_SHARED = typeof window.storage !== 'undefined' && !!window.storage;
+const Store = (()=>{
+  const mem=new Map();
+  const ls=(()=>{ try{ localStorage.setItem('_t','1'); localStorage.removeItem('_t'); return localStorage; }catch(e){ return null; } })();
+  const K=k=>'pkb__'+k;
+  return {
+    async get(k, shared=false){
+      if(HAS_SHARED){ try{ const r=await window.storage.get(k,shared); return r?r.value:null; }catch(e){ return null; } }
+      if(ls) return ls.getItem(K(k));
+      return mem.has(k)?mem.get(k):null;
+    },
+    async set(k,v,shared=false){
+      if(HAS_SHARED){ await window.storage.set(k,v,shared); return true; }
+      if(ls){ try{ ls.setItem(K(k),v); return true; }catch(e){ toast('저장 공간이 가득 찼습니다'); return false; } }
+      mem.set(k,v); return true;
+    },
+    async del(k,shared=false){
+      if(HAS_SHARED){ try{ await window.storage.delete(k,shared); }catch(e){} return; }
+      if(ls){ ls.removeItem(K(k)); return; }
+      mem.delete(k);
+    },
+    async list(prefix,shared=false){
+      if(HAS_SHARED){ try{ const r=await window.storage.list(prefix,shared); return (r&&r.keys)||[]; }catch(e){ return []; } }
+      const out=[];
+      if(ls){ for(let i=0;i<ls.length;i++){ const k=ls.key(i); if(k.startsWith(K(prefix))) out.push(k.slice(5)); } return out; }
+      for(const k of mem.keys()) if(k.startsWith(prefix)) out.push(k);
+      return out;
+    }
+  };
+})();
+
+/* ── 위반 유형: 하나의 목록, 여러 개 선택 ── */
+const CATS = [
+  {id:'T1', tow:true,  label:'차가 다니는 길에 세움',        sub:'차도·자전거도로 위'},
+  {id:'T2', tow:true,  label:'지하철역 입구 바로 앞',        sub:'출입구에서 다섯 걸음(5m) 안쪽'},
+  {id:'T3', tow:true,  label:'버스·택시 타는 곳 앞',         sub:'정류소·승강장에서 다섯 걸음 안쪽'},
+  {id:'T4', tow:true,  label:'횡단보도 앞·안전지대 위',      sub:'횡단보도에서 세 걸음(3m) 안쪽, 교통섬'},
+  {id:'T5', tow:true,  label:'노란 점자블록 위·엘리베이터 입구', sub:'교통약자가 지나는 길'},
+  {id:'T6', tow:true,  label:'학교 앞 어린이 보호구역',      sub:'노인·장애인 보호구역 포함'},
+  {id:'W1', tow:false, label:'보도 한가운데를 막음',         sub:'사람이 비켜서 지나가야 함'},
+  {id:'W2', tow:false, label:'가게·건물 입구를 막음',        sub:''},
+  {id:'W3', tow:false, label:'쓰러져 있음',                  sub:''},
+  {id:'W4', tow:false, label:'여러 대가 뒤엉켜 있음',        sub:''},
+  {id:'W5', tow:false, label:'화단·공원·풀밭에 세움',        sub:''},
+  {id:'W6', tow:false, label:'그 밖에 지나가기 불편함',      sub:''},
+];
+const CAT={}; CATS.forEach(c=>CAT[c.id]=c);
+const CATS_T=CATS.filter(c=>c.tow), CATS_W=CATS.filter(c=>!c.tow);
+const COL_T='#D93B2B', COL_W='#DE8A2C';
+const OLD_MAP={A1:'T1',A2:'T2',A3:'T3',A4:'T4',A5:'T5',A6:'T6',B1:'W1',B2:'W2',B3:'W3',B4:'W4',B5:'W5',B6:'W6'};
+
+/* ── 지역 ── */
+const SIDO_Z={'서울특별시':11,'부산광역시':11,'대구광역시':11,'인천광역시':11,'광주광역시':11,
+  '대전광역시':11,'울산광역시':11,'세종특별자치시':11,'제주특별자치도':10};
+const ADM={};
+(function parseAdm(){
+  for(const block of ADM_RAW.split('@')){
+    const [sido, rest] = block.split('^');
+    ADM[sido]={};
+    for(const sg of rest.split(';')){
+      const [sgg, ds] = sg.split('~');
+      ADM[sido][sgg]=ds.split(',').map(x=>{ const p=x.split('|'); return {n:p[0],lat:+p[1],lng:+p[2]}; });
+    }
+  }
+})();
+function centerOf(list){
+  let a=0,b=0; for(const d of list){a+=d.lat;b+=d.lng;} return [a/list.length, b/list.length];
+}
+
+const state = {
+  me:null, proj:'', projLabel:'', entries:[], stations:[], extraLoaded:false,
+  draft:{lat:null,lng:null,photo:null,src:null}, editing:null, picking:false,
+  minCount:10, lastStats:null, rings:[100,250], bufOn:false, filterCat:'all', filterRing:'all',
+  gridSize:0, shots:[],
+};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let toastT;
+function toast(msg){
+  const t=$('#toast'); t.textContent=msg; t.classList.add('on');
+  clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('on'),3200);
+}
+const slug=s=>(s||'').replace(/[^A-Za-z0-9가-힣]/g,'').slice(0,16)||'x';
+function codeKey(raw){
+  const a=(raw||'').trim().toUpperCase().replace(/[^A-Z0-9가-힣_-]/g,'');
+  if(!a) return 'CLASS1';
+  let h=0; for(const ch of a) h=(h*31+ch.charCodeAt(0))>>>0;
+  return ((a.replace(/[^A-Z0-9_-]/g,''))||'C')+'-'+h.toString(36);
+}
+const kStu=sid=>`pkb:${state.proj}:s:${sid}`;
+const kPho=eid=>`pkb:${state.proj}:p:${eid}`;
+const kRep=sid=>`pkb:${state.proj}:r:${sid}`;
+
+/* ── 지도 ── */
+const map=L.map('map',{zoomControl:false,minZoom:6,maxZoom:19,
+  scrollWheelZoom:true,touchZoom:true,doubleClickZoom:true,keyboard:true}).setView([36.4,127.9],7);
+L.control.zoom({position:'topright'}).addTo(map);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+  {maxZoom:19,attribution:'&copy; OpenStreetMap 기여자'}).addTo(map);
+const gEntries=L.layerGroup().addTo(map);
+const gStations=L.layerGroup().addTo(map);
+const gBuffers=L.layerGroup();
+let heatLayer=null, draftMarker=null, showStations=false;
+
+$('#zIn').onclick=()=>map.zoomIn();
+$('#zOut').onclick=()=>map.zoomOut();
+map.on('zoomend moveend',()=>{ $('#zLv').textContent=map.getZoom(); refreshStations(); });
+
+function catsOf(e){ return e.cats||[]; }
+function isTow(e){ return catsOf(e).some(c=>CAT[c]&&CAT[c].tow); }
+function catText(e){ return catsOf(e).map(c=>CAT[c]?CAT[c].label:c).join(' + ')||'미분류'; }
+function passFilter(e){
+  if(state.filterCat!=='all' && !catsOf(e).includes(state.filterCat)) return false;
+  if(state.bufOn && state.filterRing!=='all'){
+    if(state.filterRing==='out'){ if(e._ring) return false; }
+    else if(e._ring!==+state.filterRing) return false;
+  }
+  return true;
+}
+function drawEntries(){
+  if(!state.me) return;
+  gEntries.clearLayers();
+  const fw=$('#filtWho').value, dim=!!heatLayer;
+  for(const e of state.entries){
+    if(!passFilter(e)) continue;
+    if(fw==='me'&&e.sid!==state.me.sid) continue;
+    const st={radius:dim?4:7.5,color:'#fff',weight:dim?1:2,
+      fillColor:isTow(e)?COL_T:COL_W,fillOpacity:dim?.5:.92};
+    if(state.bufOn&&!dim){
+      if(e._ring===1){ st.color='#0F5C57'; st.weight=4; st.radius=8.5; }
+      else if(e._ring){ st.color='#2C6E6A'; st.weight=3; st.dashArray='2 3'; st.radius=8; }
+      else { st.fillOpacity=.35; st.color='#DDD9D0'; }
+    }
+    const m=L.circleMarker([e.lat,e.lng],st);
+    const rt=state.bufOn?` · ${e._sn||'역'} ${Math.round(e._nd)}m`:'';
+    m.bindTooltip(`<b>${esc(e.name)}</b> · ${esc(catText(e))}${esc(rt)}`,{direction:'top',offset:[0,-6]});
+    m.on('click',()=>openPopup(e,m));
+    m.addTo(gEntries);
+  }
+  const fb=$('#filtbar');
+  if(state.filterCat!=='all'||(state.bufOn&&state.filterRing!=='all')){
+    const parts=[];
+    if(state.filterCat!=='all') parts.push(CAT[state.filterCat].label);
+    if(state.bufOn&&state.filterRing!=='all')
+      parts.push(state.filterRing==='out'?`${state.rings[state.rings.length-1]}m 밖`
+        :(state.filterRing==='1'?`${state.rings[0]}m 안`:`${state.rings[0]}~${state.rings[1]}m`));
+    $('#filtbarT').textContent=parts.join(' · ')+'만 보는 중';
+    fb.classList.remove('hidden');
+  } else fb.classList.add('hidden');
+}
+$('#filtbarX').onclick=()=>{
+  state.filterCat='all'; state.filterRing='all'; $('#filtCat').value='all';
+  drawEntries(); renderList(); renderBarsOnly();
+};
+async function openPopup(e,m){
+  m.bindPopup(`<div id="pp-${e.id}">불러오는 중…</div>`).openPopup();
+  let img='';
+  if(e.hasPhoto){ const d=await Store.get(kPho(e.id),true); if(d) img=`<img src="${d}" alt="현장 사진">`; }
+  const own=e.sid===state.me.sid;
+  const html=`${img}
+    ${catsOf(e).map(c=>CAT[c]?`<div><span class="tag" style="background:${CAT[c].tow?COL_T:COL_W}">${
+      CAT[c].tow?'견인':'방해'}</span><b>${esc(CAT[c].label)}</b></div>`:'').join('')}
+    <div class="who">${esc(e.name)}${e.klass?' · '+esc(e.klass):''} · ${esc(fmtDT(e.ts))}</div>
+    <div class="who">${e.lat.toFixed(5)}, ${e.lng.toFixed(5)} · ${e.src==='exif'?'사진 좌표':'직접 지정'}</div>
+    ${own?`<div style="margin-top:8px;display:flex;gap:6px">
+      <button class="btn ghost sm" onclick="editEntry('${e.id}')">수정</button>
+      <button class="btn danger sm" onclick="delEntry('${e.id}')">삭제</button></div>`:''}`;
+  const el=document.getElementById('pp-'+e.id);
+  if(el) el.innerHTML=html; else m.setPopupContent(html);
+}
+function fmtDT(iso){
+  if(!iso) return '';
+  const d=new Date(iso); if(isNaN(d)) return iso;
+  const p=n=>String(n).padStart(2,'0');
+  return `${d.getFullYear()}.${p(d.getMonth()+1)}.${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+
+/* ── 지역 3단 메뉴 ── */
+const selSido=$('#selSido'), selSgg=$('#selSgg'), selDong=$('#selDong');
+Object.keys(ADM).sort().forEach(k=>selSido.add(new Option(k,k)));
+selSido.onchange=()=>{
+  selSgg.innerHTML='<option value="">시·군·구</option>';
+  selDong.innerHTML='<option value="">읍·면·동</option>';
+  const sg=ADM[selSido.value]; if(!sg){ map.setView([36.4,127.9],7); return; }
+  Object.keys(sg).forEach(k=>selSgg.add(new Option(k,k)));
+  const all=[]; Object.values(sg).forEach(v=>all.push(...v));
+  map.setView(centerOf(all), SIDO_Z[selSido.value]||9);
+};
+selSgg.onchange=()=>{
+  selDong.innerHTML='<option value="">읍·면·동</option>';
+  const ds=(ADM[selSido.value]||{})[selSgg.value]; if(!ds) return;
+  ds.forEach(d=>selDong.add(new Option(d.n,d.n)));
+  map.setView(centerOf(ds),13);
+};
+selDong.onchange=()=>{
+  const ds=(ADM[selSido.value]||{})[selSgg.value]; if(!ds) return;
+  const d=ds.find(x=>x.n===selDong.value); if(!d) return;
+  map.setView([d.lat,d.lng],16);
+};
+$('#btnAddr').onclick=searchAddr;
+$('#qAddr').addEventListener('keydown',e=>{ if(e.key==='Enter') searchAddr(); });
+async function searchAddr(){
+  const q=$('#qAddr').value.trim(); if(!q) return;
+  const st=state.stations.find(s=>s.name===q||s.name===q.replace(/역$/,''));
+  if(st){ map.setView([st.lat,st.lng],17); toast(st.name+'역으로 이동'); return; }
+  toast('검색 중…');
+  try{
+    const r=await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=kr&q=${encodeURIComponent(q)}`);
+    const j=await r.json();
+    if(!j.length){ toast('찾지 못했습니다. 위의 지역 메뉴를 쓰세요'); return; }
+    map.setView([+j[0].lat,+j[0].lon],17);
+  }catch(e){ toast('검색을 쓸 수 없습니다. 지역 메뉴로 이동하세요'); }
+}
+
+/* ── 지하철역 ── */
+(function loadBuiltin(){
+  for(const s of STN_RAW.split(';')){
+    if(!s) continue;
+    const p=s.split('|');
+    state.stations.push({id:'b'+p[0]+p[1],name:p[0],lat:+p[1],lng:+p[2]});
+  }
+})();
+function refreshStations(){
+  gStations.clearLayers();
+  const hint=$('#stnhint');
+  if(!showStations){ hint.classList.add('hidden'); return; }
+  if(map.getZoom()<10){ hint.classList.remove('hidden'); return; }
+  hint.classList.add('hidden');
+  const label=map.getZoom()>=14, b=map.getBounds();
+  let n=0;
+  for(const s of state.stations){
+    if(!b.contains([s.lat,s.lng])) continue;
+    const m=L.marker([s.lat,s.lng],{zIndexOffset:-500,
+      icon:L.divIcon({className:'',html:'<div class="stn"></div>',iconSize:[15,15],iconAnchor:[7.5,7.5]})});
+    if(label&&n<120) m.bindTooltip(esc(s.name),{permanent:true,direction:'right',offset:[9,0],className:'stnlab'});
+    else m.bindTooltip(esc(s.name),{direction:'top',offset:[0,-8]});
+    m.addTo(gStations);
+    if(++n>400) break;
+  }
+}
+$('#btnStn').onclick=()=>{
+  showStations=!showStations;
+  $('#btnStn').classList.toggle('on',showStations);
+  $('#btnStn').textContent=showStations?'지하철역 표시 중':'지하철역 숨김';
+  $('#lgStn').classList.toggle('hidden',!showStations);
+  refreshStations();
+};
+$('#btnStnLoad').onclick=async ()=>{
+  if(map.getZoom()<10){ toast('먼저 그 지역까지 지도를 확대한 뒤 눌러 주세요'); return; }
+  toast('이 지역 역을 찾는 중…');
+  await loadExtraStations();
+};
+async function loadExtraStations(){
+  const b=map.getBounds();
+  const bbox=`${b.getSouth().toFixed(4)},${b.getWest().toFixed(4)},${b.getNorth().toFixed(4)},${b.getEast().toFixed(4)}`;
+  const q=`[out:json][timeout:25];node["railway"="station"](${bbox});out body 500;`;
+  for(const ep of ['https://overpass-api.de/api/interpreter','https://overpass.kumi.systems/api/interpreter']){
+    try{
+      const r=await fetch(ep+'?data='+encodeURIComponent(q));
+      if(!r.ok) continue;
+      const j=await r.json();
+      let add=0;
+      for(const el of (j.elements||[])){
+        const nm=(el.tags&&(el.tags['name:ko']||el.tags.name))||'역';
+        if(state.stations.some(s=>Math.abs(s.lat-el.lat)<0.004&&Math.abs(s.lng-el.lon)<0.004)) continue;
+        state.stations.push({id:'o'+el.id,name:nm,lat:el.lat,lng:el.lon}); add++;
+      }
+      refreshStations();
+      toast(add?`역 ${add}곳을 추가했습니다`:'이 지역에서 추가할 역을 찾지 못했습니다');
+      return true;
+    }catch(e){}
+  }
+  toast('추가 역 자료를 불러오지 못했습니다');
+  return false;
+}
+
+/* ── EXIF ── */
+function parseTiff(dv,base){
+  const little=dv.getUint16(base)===0x4949;
+  const g16=o=>dv.getUint16(o,little), g32=o=>dv.getUint32(o,little);
+  if(g16(base+2)!==0x002A) return null;
+  const ifd0=base+g32(base+4);
+  let gpsOff=null,exifOff=null;
+  const n=g16(ifd0);
+  for(let i=0;i<n;i++){
+    const e=ifd0+2+i*12, tag=g16(e);
+    if(tag===0x8825) gpsOff=base+g32(e+8);
+    if(tag===0x8769) exifOff=base+g32(e+8);
+  }
+  const out={};
+  const readStr=e=>{ const cnt=g32(e+4); let vo=e+8; if(cnt>4) vo=base+g32(e+8);
+    let s=''; for(let k=0;k<cnt-1;k++){ const c=dv.getUint8(vo+k); if(c) s+=String.fromCharCode(c); } return s; };
+  if(exifOff){
+    const m=g16(exifOff);
+    for(let i=0;i<m;i++){ const e=exifOff+2+i*12, tag=g16(e);
+      if((tag===0x9003||tag===0x9004)&&!out.dt) out.dt=readStr(e); }
+  }
+  if(gpsOff){
+    const m=g16(gpsOff), t={};
+    for(let i=0;i<m;i++){
+      const e=gpsOff+2+i*12, tag=g16(e), type=g16(e+2), cnt=g32(e+4);
+      if(type===2) t[tag]=readStr(e);
+      else if(type===5){ const vo=base+g32(e+8), arr=[];
+        for(let k=0;k<cnt;k++){ const nu=g32(vo+k*8), de=g32(vo+k*8+4); arr.push(de?nu/de:0); } t[tag]=arr; }
+    }
+    if(t[2]&&t[4]&&t[2].length>=3&&t[4].length>=3){
+      const dms=a=>a[0]+a[1]/60+a[2]/3600;
+      let lat=dms(t[2]), lng=dms(t[4]);
+      if((t[1]||'N').toUpperCase().startsWith('S')) lat=-lat;
+      if((t[3]||'E').toUpperCase().startsWith('W')) lng=-lng;
+      if(isFinite(lat)&&isFinite(lng)&&Math.abs(lat)>0.0001){ out.lat=lat; out.lng=lng; }
+    }
+  }
+  return out;
+}
+function readExif(buf){
+  try{
+    const dv=new DataView(buf);
+    if(dv.getUint16(0)!==0xFFD8) return null;
+    let off=2;
+    while(off+4<=dv.byteLength){
+      if(dv.getUint8(off)!==0xFF) break;
+      const mk=dv.getUint8(off+1);
+      if(mk===0xD8||mk===0x01||(mk>=0xD0&&mk<=0xD7)){ off+=2; continue; }
+      if(mk===0xDA||mk===0xD9) break;
+      const size=dv.getUint16(off+2);
+      if(mk===0xE1&&dv.getUint32(off+4)===0x45786966) return parseTiff(dv,off+10);
+      off+=2+size;
+    }
+  }catch(e){}
+  return null;
+}
+async function compress(file){
+  let bmp;
+  try{ bmp=await createImageBitmap(file,{imageOrientation:'from-image'}); }
+  catch(e){ bmp=await new Promise((res,rej)=>{ const i=new Image();
+    i.onload=()=>res(i); i.onerror=rej; i.src=URL.createObjectURL(file); }); }
+  const MAX=1080, w0=bmp.width||bmp.naturalWidth, h0=bmp.height||bmp.naturalHeight;
+  const sc=Math.min(1,MAX/Math.max(w0,h0));
+  const cv=document.createElement('canvas');
+  cv.width=Math.round(w0*sc); cv.height=Math.round(h0*sc);
+  cv.getContext('2d').drawImage(bmp,0,0,cv.width,cv.height);
+  return cv.toDataURL('image/jpeg',0.72);
+}
+$('#file').onchange=async ev=>{
+  const f=ev.target.files[0]; if(!f) return;
+  $('#dropTitle').textContent='사진 처리 중…';
+  try{
+    const buf=await f.arrayBuffer();
+    const ex=readExif(buf);
+    state.draft.photo=await compress(f);
+    $('#thumb').src=state.draft.photo;
+    $('#photoBox').classList.remove('hidden');
+    $('#dropTitle').textContent='다른 사진으로 바꾸기';
+    const box=$('#exif');
+    if(ex&&ex.lat){
+      setPoint(ex.lat,ex.lng,'exif');
+      map.setView([ex.lat,ex.lng],18);
+      box.className='exif ok';
+      box.textContent=`사진에서 좌표를 읽었습니다 · ${ex.lat.toFixed(5)}, ${ex.lng.toFixed(5)}`;
+    }else{
+      box.className='exif no';
+      box.textContent='사진에 좌표가 없습니다 · 위치를 직접 지정하세요';
+      if(state.draft.lat==null) startPick();
+    }
+    if(ex&&ex.dt){
+      const m=ex.dt.match(/^(\d{4}):(\d{2}):(\d{2})[ T](\d{2}):(\d{2})/);
+      if(m) $('#dt').value=`${m[1]}-${m[2]}-${m[3]}T${m[4]}:${m[5]}`;
+    }
+  }catch(e){
+    $('#dropTitle').textContent='사진 선택 · 촬영';
+    toast('사진을 읽지 못했습니다');
+  }
+};
+
+/* ── 위치 ── */
+function setPoint(lat,lng,src){
+  state.draft.lat=lat; state.draft.lng=lng; state.draft.src=src||'manual';
+  $('#coord').className='coord';
+  $('#coord').innerHTML=`<span><b>${lat.toFixed(5)}</b>, <b>${lng.toFixed(5)}</b></span>
+    <span style="font-size:10.5px;color:var(--mute)">${src==='exif'?'사진 좌표':'직접 지정'}</span>`;
+  if(draftMarker) map.removeLayer(draftMarker);
+  draftMarker=L.marker([lat,lng],{draggable:true,zIndexOffset:1000,
+    icon:L.divIcon({className:'',html:'<div class="draft"></div>',iconSize:[22,22],iconAnchor:[11,11]})}).addTo(map);
+  draftMarker.on('dragend',()=>{ const p=draftMarker.getLatLng(); setPoint(p.lat,p.lng,'manual'); });
+}
+function startPick(){
+  state.picking=true; document.body.classList.add('picking');
+  $('#pickbar').classList.remove('hidden'); $('#btnPick').classList.add('on');
+}
+function stopPick(){
+  state.picking=false; document.body.classList.remove('picking');
+  $('#pickbar').classList.add('hidden'); $('#btnPick').classList.remove('on');
+}
+$('#btnPick').onclick=()=>state.picking?stopPick():startPick();
+map.on('click',e=>{ if(!state.picking) return; setPoint(e.latlng.lat,e.latlng.lng,'manual'); stopPick(); });
+$('#btnGeo').onclick=()=>{
+  if(!navigator.geolocation||!window.isSecureContext){
+    toast('이 화면에서는 현재 위치를 쓸 수 없습니다. https 주소로 열면 작동합니다');
+    return;
+  }
+  toast('위치를 확인하는 중…');
+  navigator.geolocation.getCurrentPosition(
+    p=>{ setPoint(p.coords.latitude,p.coords.longitude,'gps'); map.setView([p.coords.latitude,p.coords.longitude],18); },
+    err=>{
+      const msg = err.code===1 ? '위치 권한이 거부되었습니다. 이 화면(미리보기)에서는 대개 막혀 있으니 지도에서 직접 찍어 주세요'
+                : err.code===3 ? '위치 확인이 너무 오래 걸립니다. 지도에서 직접 찍어 주세요'
+                : '위치를 알 수 없습니다. 지도에서 직접 찍어 주세요';
+      toast(msg);
+    },
+    {enableHighAccuracy:true,timeout:9000});
+};
+
+/* ── 유형 체크박스 ── */
+(function buildCats(){
+  const grp=(list,title,sub,col,cls)=>{
+    let h=`<div class="catgrp"><div class="gh"><i style="background:${col}"></i>${title} <small>${sub}</small></div>`;
+    for(const c of list) h+=`<label class="chk ${cls}"><input type="checkbox" name="cat" value="${c.id}">
+      <span>${c.label}${c.sub?`<small>${c.sub}</small>`:''}</span></label>`;
+    return h+'</div>';
+  };
+  $('#cats').innerHTML =
+    grp(CATS_T,'견인될 수 있어요','법으로 정한 즉시견인 구역',COL_T,'t') +
+    grp(CATS_W,'지나가기 불편해요','견인 대상은 아니지만 보행 방해',COL_W,'w');
+  document.querySelectorAll('input[name=cat]').forEach(i=>i.addEventListener('change',updateChkSum));
+  const fc=$('#filtCat');
+  CATS.forEach(c=>fc.add(new Option((c.tow?'[견인] ':'[방해] ')+c.label,c.id)));
+})();
+function pickedCats(){
+  return [...document.querySelectorAll('input[name=cat]:checked')].map(i=>i.value);
+}
+function updateChkSum(){
+  const p=pickedCats();
+  const t=p.filter(x=>CAT[x].tow).length;
+  $('#chksum').textContent = p.length
+    ? `${p.length}개 선택${t?` · 즉시견인 대상 ${t}개 포함`:' · 견인 대상은 아님'}`
+    : '아직 고르지 않았습니다';
+}
+
+function resetForm(){
+  state.draft={lat:null,lng:null,photo:null,src:null};
+  state.editing=null;
+  $('#file').value=''; $('#photoBox').classList.add('hidden');
+  $('#dropTitle').textContent='사진 선택 · 촬영';
+  $('#coord').className='coord empty'; $('#coord').innerHTML='<span>아직 위치가 없습니다</span>';
+  document.querySelectorAll('input[name=cat]').forEach(i=>i.checked=false);
+  updateChkSum();
+  $('#dt').value=nowLocal();
+  if(draftMarker){ map.removeLayer(draftMarker); draftMarker=null; }
+  $('#btnSave').textContent='이 지점 등록하기';
+  $('#btnCancel').classList.add('hidden');
+  stopPick();
+}
+function nowLocal(){
+  const d=new Date(); d.setMinutes(d.getMinutes()-d.getTimezoneOffset());
+  return d.toISOString().slice(0,16);
+}
+$('#btnSave').onclick=async ()=>{
+  const cats=pickedCats();
+  if(state.draft.lat==null){ toast('위치를 먼저 지정하세요'); return; }
+  if(!cats.length){ toast('무엇이 문제인지 하나 이상 골라 주세요'); return; }
+  const dt=$('#dt').value||nowLocal();
+  const btn=$('#btnSave'); btn.disabled=true; btn.textContent='저장 중…';
+  const was=state.editing;
+  const rec = was ? state.entries.find(e=>e.id===was)
+    : {id:`${state.me.sid}-${Date.now().toString(36)}`,sid:state.me.sid,
+       name:state.me.name,klass:state.me.klass,created:new Date().toISOString()};
+  rec.lat=state.draft.lat; rec.lng=state.draft.lng; rec.src=state.draft.src||'manual';
+  rec.ts=new Date(dt).toISOString(); rec.cats=cats; rec.updated=new Date().toISOString();
+  if(state.draft.photo){ await Store.set(kPho(rec.id),state.draft.photo,true); rec.hasPhoto=true; }
+  if(!was) state.entries.push(rec);
+  await saveMine();
+  drawEntries(); renderList(); resetForm();
+  btn.disabled=false; btn.textContent='이 지점 등록하기';
+  toast(was?'수정했습니다':'등록했습니다');
+};
+$('#btnCancel').onclick=resetForm;
+
+async function saveMine(){
+  const mine=state.entries.filter(e=>e.sid===state.me.sid)
+    .map(({id,sid,name,klass,lat,lng,ts,cats,src,hasPhoto,created,updated})=>
+      ({id,sid,name,klass,lat,lng,ts,cats,src,hasPhoto,created,updated}));
+  await Store.set(kStu(state.me.sid),
+    JSON.stringify({sid:state.me.sid,name:state.me.name,klass:state.me.klass,entries:mine}),true);
+}
+window.editEntry=id=>{
+  const e=state.entries.find(x=>x.id===id); if(!e||e.sid!==state.me.sid) return;
+  showTab('in');
+  state.editing=id;
+  state.draft={lat:e.lat,lng:e.lng,photo:null,src:e.src};
+  setPoint(e.lat,e.lng,e.src);
+  const d=new Date(e.ts); d.setMinutes(d.getMinutes()-d.getTimezoneOffset());
+  $('#dt').value=d.toISOString().slice(0,16);
+  document.querySelectorAll('input[name=cat]').forEach(i=>i.checked=catsOf(e).includes(i.value));
+  updateChkSum();
+  $('#btnSave').textContent='수정 내용 저장';
+  $('#btnCancel').classList.remove('hidden');
+  if(e.hasPhoto) Store.get(kPho(e.id),true).then(d=>{ if(d){ $('#thumb').src=d;
+    $('#photoBox').classList.remove('hidden'); $('#exif').className='exif';
+    $('#exif').textContent='기존 사진 · 바꾸려면 새 사진을 고르세요'; }});
+  map.setView([e.lat,e.lng],18);
+  $('#panelIn').scrollTop=0;
+  toast('수정 모드입니다');
+};
+window.delEntry=async id=>{
+  const e=state.entries.find(x=>x.id===id); if(!e||e.sid!==state.me.sid) return;
+  if(!confirm('이 지점을 지울까요? 되돌릴 수 없습니다.')) return;
+  state.entries=state.entries.filter(x=>x.id!==id);
+  if(e.hasPhoto) await Store.del(kPho(id),true);
+  await saveMine(); map.closePopup(); drawEntries(); renderList();
+  toast('삭제했습니다');
+};
+
+function renderList(){
+  if(!state.me) return;
+  const box=$('#list'), fw=$('#filtWho').value;
+  const rows=state.entries.filter(e=>passFilter(e)&&(fw==='all'||e.sid===state.me.sid))
+    .sort((a,b)=>(b.updated||b.ts).localeCompare(a.updated||a.ts));
+  $('#cntAll').textContent=`${rows.length} / ${state.entries.length}건`;
+  if(!rows.length){ box.innerHTML='<div class="empty">보여 줄 지점이 없습니다.<br>사진을 올리고 위치를 찍어 첫 지점을 만들어 보세요.</div>'; return; }
+  box.innerHTML=rows.map(e=>{
+    const own=e.sid===state.me.sid;
+    return `<div class="entry">
+      ${e.hasPhoto?`<img class="ph" id="th-${e.id}" alt="현장 사진">`
+        :`<div class="ph" style="display:flex;align-items:center;justify-content:center;font-size:9px;color:#9A9A94;text-align:center">사진<br>없음</div>`}
+      <div class="meta">
+        <div class="tt">${catsOf(e).map(c=>CAT[c]?`<div><span class="tag" style="background:${
+          CAT[c].tow?COL_T:COL_W}">${CAT[c].tow?'견인':'방해'}</span>${esc(CAT[c].label)}</div>`:'').join('')}</div>
+        <div class="sub">${esc(e.name)}${e.klass?' · '+esc(e.klass):''} · ${esc(fmtDT(e.ts))}${
+          state.bufOn?` · ${esc(e._sn||'')} ${Math.round(e._nd)}m`:''}</div>
+        <div class="acts">
+          <button class="btn ghost sm" onclick="flyTo('${e.id}')">지도에서 보기</button>
+          ${own?`<button class="btn ghost sm" onclick="editEntry('${e.id}')">수정</button>
+                 <button class="btn danger sm" onclick="delEntry('${e.id}')">삭제</button>`:''}
+        </div></div></div>`;
+  }).join('');
+  rows.forEach(async e=>{
+    if(!e.hasPhoto) return;
+    const d=await Store.get(kPho(e.id),true);
+    const el=document.getElementById('th-'+e.id); if(el&&d) el.src=d;
+  });
+}
+window.flyTo=id=>{
+  const e=state.entries.find(x=>x.id===id); if(!e) return;
+  map.setView([e.lat,e.lng],18);
+  gEntries.eachLayer(l=>{ const p=l.getLatLng&&l.getLatLng();
+    if(p&&Math.abs(p.lat-e.lat)<1e-9&&Math.abs(p.lng-e.lng)<1e-9) openPopup(e,l); });
+};
+$('#filtCat').onchange=()=>{ state.filterCat=$('#filtCat').value; drawEntries(); renderList(); renderBarsOnly();
+  if(state.gridSize) drawGrid(state.gridSize); if(heatLayer) makeHeat(false); };
+$('#filtWho').onchange=()=>{ drawEntries(); renderList(); };
+
+async function syncAll(){
+  const keys=await Store.list(`pkb:${state.proj}:s:`,true);
+  const all=[];
+  for(const k of keys){
+    const raw=await Store.get(k,true); if(!raw) continue;
+    try{ const o=JSON.parse(raw); (o.entries||[]).forEach(e=>{
+      if(!e.cats){
+        const c=[];
+        if(e.catA) c.push(OLD_MAP[e.catA]||e.catA);
+        if(e.catB) c.push(OLD_MAP[e.catB]||e.catB);
+        if(!c.length&&e.cat) c.push(OLD_MAP[e.cat]||e.cat);
+        e.cats=c;
+      }
+      all.push(e); }); }catch(e){}
+  }
+  state.entries=all;
+  drawEntries(); renderList(); renderAnalysis();
+}
+$('#btnSync').onclick=async ()=>{ toast('불러오는 중…'); await syncAll(); toast(`전체 ${state.entries.length}건`); };
+
+/* ── 분석 ── */
+function dist(a,b,c,d){
+  const R=6371000,r=Math.PI/180;
+  const p1=(c-a)*r,p2=(d-b)*r;
+  const x=Math.sin(p1/2)**2+Math.cos(a*r)*Math.cos(c*r)*Math.sin(p2/2)**2;
+  return 2*R*Math.asin(Math.sqrt(x));
+}
+function drawBars(el,list,counts,n,col){
+  const items=list.filter(c=>counts[c.id]).sort((a,b)=>counts[b.id]-counts[a.id]);
+  if(!items.length){ el.innerHTML='<div class="hint">해당 유형으로 기록된 지점이 없습니다.</div>'; return; }
+  el.innerHTML=items.map(c=>{
+    const v=counts[c.id], pct=n?v/n*100:0;
+    return `<button class="bar${state.filterCat===c.id?' act':''}" data-cat="${c.id}">
+      <div class="bl"><b>${c.label}</b><span>${v}건 ${Math.round(pct)}%</span></div>
+      <div class="bt"><div class="bf" style="width:${pct}%;background:${col}"></div></div></button>`;
+  }).join('')+`<div class="scale"><span>0%</span><span>전체 ${n}건 기준</span><span>100%</span></div>`;
+  el.querySelectorAll('.bar').forEach(b=>b.onclick=()=>{
+    const id=b.dataset.cat;
+    state.filterCat = state.filterCat===id ? 'all' : id;
+    $('#filtCat').value=state.filterCat;
+    drawEntries(); renderList(); renderBarsOnly();
+    if(state.gridSize) drawGrid(state.gridSize);
+    if(heatLayer) makeHeat(false);
+  });
+}
+function counts(){
+  const cc={};
+  state.entries.forEach(e=>catsOf(e).forEach(c=>cc[c]=(cc[c]||0)+1));
+  return cc;
+}
+function renderBarsOnly(){
+  const n=state.entries.length, cc=counts();
+  drawBars($('#barsT'),CATS_T,cc,n,COL_T);
+  drawBars($('#barsW'),CATS_W,cc,n,COL_W);
+}
+function renderAnalysis(){
+  const n=state.entries.length, need=state.minCount;
+  const g=$('#gateBox');
+  if(n<need){
+    g.innerHTML=`<div class="gate">
+      <div style="font-weight:800;font-size:14px">자료를 조금 더 모아 주세요</div>
+      <div class="prog"><i style="width:${Math.min(100,n/need*100)}%"></i></div>
+      <div class="hint"><b style="font-family:var(--mono);color:var(--ink)">${n} / ${need}</b>건 ·
+      최소 ${need}건이 모이면 히트맵과 버퍼 분석이 열립니다.</div>
+      <div style="margin-top:10px;font-size:11.5px;color:var(--mute)">기준 건수
+        <input type="number" id="minC" value="${need}" min="1" max="200" style="width:64px;padding:3px 6px;display:inline-block">
+        <button class="btn ghost sm" id="minCB">바꾸기</button></div></div>`;
+    $('#minCB').onclick=()=>{ state.minCount=Math.max(1,+$('#minC').value||10); renderAnalysis(); };
+  }else{
+    g.innerHTML=`<div class="note calm"><b>${n}건</b>이 모였습니다 · 참여 학생 ${new Set(state.entries.map(e=>e.sid)).size}명 · 아래 도구를 차례로 써 보세요.</div>`;
+  }
+  const on=n>=need;
+  $('#btnHeat').disabled=!on; $('#btnBuf').disabled=!on;
+
+  const nT=state.entries.filter(isTow).length;
+  const avg=n?(state.entries.reduce((a,e)=>a+catsOf(e).length,0)/n):0;
+  $('#statBox').innerHTML=`
+    <div class="stat"><div class="v">${n}</div><div class="k">전체 지점</div></div>
+    <div class="stat"><div class="v" style="color:${COL_T}">${n?Math.round(nT/n*100):0}<span style="font-size:12px">%</span></div><div class="k">견인 대상 포함</div></div>
+    <div class="stat"><div class="v">${avg.toFixed(1)}</div><div class="k">지점당 문제 수</div></div>`;
+  renderBarsOnly();
+
+  const hb=new Array(6).fill(0), labels=['00-04','04-08','08-12','12-16','16-20','20-24'];
+  state.entries.forEach(e=>{ const h=new Date(e.ts).getHours(); if(!isNaN(h)) hb[Math.floor(h/4)]++; });
+  $('#barsH').innerHTML=hb.map((v,i)=>`
+    <div class="bar" style="cursor:default"><div class="bl"><b>${labels[i]}시</b><span>${v}건 ${n?Math.round(v/n*100):0}%</span></div>
+    <div class="bt"><div class="bf" style="width:${n?v/n*100:0}%;background:var(--calm)"></div></div></div>`).join('')
+    +`<div class="scale"><span>0%</span><span>전체 ${n}건 기준</span><span>100%</span></div>`;
+
+  const cc=counts();
+  const topT=CATS_T.filter(c=>cc[c.id]).sort((a,b)=>cc[b.id]-cc[a.id])[0];
+  const topW=CATS_W.filter(c=>cc[c.id]).sort((a,b)=>cc[b.id]-cc[a.id])[0];
+  state.lastStats=Object.assign({},state.lastStats||{},
+    {n,towRate:n?Math.round(nT/n*100):0,
+     topT:topT?`${topT.label} ${cc[topT.id]}건`:null, topW:topW?`${topW.label} ${cc[topW.id]}건`:null});
+  $('#stnInfo').textContent=`내장 지하철역 ${state.stations.length}곳(수도권 전철 기준). 다른 지역은 버퍼를 그릴 때 자동으로 더 찾아봅니다.`;
+  checkReport();
+}
+
+/* 히트맵 */
+$('#btnHeat').onclick=()=>{
+  if(heatLayer){ map.removeLayer(heatLayer); heatLayer=null;
+    $('#btnHeat').classList.remove('on'); $('#btnHeat').textContent='히트맵 켜기';
+    $('#heatMsg').textContent=''; drawEntries(); return; }
+  makeHeat(true); $('#btnHeat').classList.add('on'); $('#btnHeat').textContent='히트맵 끄기';
+  drawEntries();
+};
+function makeHeat(fit){
+  if(heatLayer) map.removeLayer(heatLayer);
+  const src=state.entries.filter(passFilter);
+  const pts=src.map(e=>[e.lat,e.lng,1]);
+  if(!pts.length){ $('#heatMsg').textContent='그릴 지점이 없습니다.'; return; }
+  heatLayer=L.heatLayer(pts,{radius:+$('#heatR').value,blur:+$('#heatB').value,max:1.0,
+    minOpacity:0.45,maxZoom:17,
+    gradient:{0.2:'#2C6E6A',0.45:'#7FB069',0.65:'#F5C518',0.85:'#DE8A2C',1:'#D93B2B'}}).addTo(map);
+  if(fit) map.fitBounds(L.latLngBounds(pts.map(p=>[p[0],p[1]])).pad(0.3));
+  $('#heatMsg').innerHTML = pts.length<20
+    ? `지점이 ${pts.length}건이라 색이 흩어져 보일 수 있습니다. 반경을 키우거나 <b>−</b> 로 지도를 축소해 보세요.`
+    : `${pts.length}건을 겹쳐 그렸습니다. 붉은 곳이 가장 밀집한 지점입니다.`;
+}
+$('#heatR').oninput=()=>{ $('#heatRv').textContent=$('#heatR').value; if(heatLayer) makeHeat(false); };
+$('#heatB').oninput=()=>{ $('#heatBv').textContent=$('#heatB').value; if(heatLayer) makeHeat(false); };
+
+/* ── 격자 집계 ── */
+const gGrid=L.layerGroup();
+function drawGrid(size){
+  gGrid.clearLayers();
+  $('#gridOut').innerHTML='';
+  if(!size){ if(map.hasLayer(gGrid)) map.removeLayer(gGrid); return; }
+  const src=state.entries.filter(passFilter);
+  if(!src.length){ $('#gridOut').innerHTML='<div class="hint">집계할 지점이 없습니다.</div>'; return; }
+  const lat0=src.reduce((a,e)=>a+e.lat,0)/src.length;
+  const dLat=size/111320, dLng=size/(111320*Math.cos(lat0*Math.PI/180));
+  const cells={};
+  for(const e of src){
+    const gx=Math.floor(e.lng/dLng), gy=Math.floor(e.lat/dLat);
+    const k=gx+','+gy;
+    (cells[k]=cells[k]||{gx,gy,n:0,tow:0}).n++;
+    if(isTow(e)) cells[k].tow++;
+  }
+  const list=Object.values(cells).sort((a,b)=>b.n-a.n);
+  const mx=list[0].n;
+  const scale=v=>{ const t=v/mx;
+    return t>0.75?'#D93B2B':t>0.5?'#DE8A2C':t>0.25?'#F5C518':'#7FB069'; };
+  for(const c of list){
+    const b=[[c.gy*dLat,c.gx*dLng],[(c.gy+1)*dLat,(c.gx+1)*dLng]];
+    L.rectangle(b,{color:scale(c.n),weight:1.2,fillColor:scale(c.n),
+      fillOpacity:0.18+0.42*(c.n/mx),interactive:false}).addTo(gGrid);
+    L.marker([(c.gy+0.5)*dLat,(c.gx+0.5)*dLng],{interactive:false,
+      icon:L.divIcon({className:'',html:`<div class="grid-lab">${c.n}</div>`,iconSize:[20,14],iconAnchor:[10,7]})}).addTo(gGrid);
+  }
+  if(!map.hasLayer(gGrid)) gGrid.addTo(map);
+  const occupied=list.length, n=src.length;
+  const top3=list.slice(0,3).reduce((a,c)=>a+c.n,0);
+  $('#gridOut').innerHTML=`
+    <div class="stats">
+      <div class="stat"><div class="v">${occupied}</div><div class="k">지점이 있는 칸</div></div>
+      <div class="stat"><div class="v" style="color:${COL_T}">${mx}</div><div class="k">가장 많은 칸</div></div>
+      <div class="stat"><div class="v">${Math.round(top3/n*100)}<span style="font-size:12px">%</span></div><div class="k">상위 3칸 집중도</div></div>
+    </div>
+    <div class="hint">${size}m 칸 ${occupied}개에 ${n}건이 흩어져 있고, 가장 많은 칸에 ${mx}건이 모여 있습니다.
+      칸 하나에 평균 ${(n/occupied).toFixed(1)}건입니다.</div>`;
+  state.lastStats=Object.assign({},state.lastStats||{},
+    {gridSize:size,gridCells:occupied,gridMax:mx,gridTop3:Math.round(top3/n*100)});
+}
+$('#gridSegs').querySelectorAll('button').forEach(b=>b.onclick=()=>{
+  $('#gridSegs').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
+  state.gridSize=+b.dataset.g;
+  drawGrid(state.gridSize);
+});
+
+/* ── 최근접이웃 분석 ── */
+$('#btnNni').onclick=()=>{
+  const src=state.entries.filter(passFilter);
+  const n=src.length;
+  if(n<5){ $('#nniOut').innerHTML='<div class="note">지점이 5건 이상 있어야 계산할 수 있습니다.</div>'; return; }
+  let sum=0;
+  for(const a of src){
+    let best=Infinity;
+    for(const b of src){ if(a===b) continue; const d=dist(a.lat,a.lng,b.lat,b.lng); if(d<best) best=d; }
+    sum+=best;
+  }
+  const dObs=sum/n;
+  const lats=src.map(e=>e.lat), lngs=src.map(e=>e.lng);
+  const lat0=(Math.min(...lats)+Math.max(...lats))/2;
+  const h=(Math.max(...lats)-Math.min(...lats))*111320;
+  const w=(Math.max(...lngs)-Math.min(...lngs))*111320*Math.cos(lat0*Math.PI/180);
+  const A=Math.max(h*w,1);
+  const dExp=0.5*Math.sqrt(A/n);
+  const R=dObs/dExp;
+  const verdict = R<0.7?'뚜렷하게 뭉쳐 있음':R<1.0?'다소 뭉쳐 있음':R<1.3?'무작위에 가까움':'고르게 흩어져 있음';
+  const col = R<0.7?COL_T:R<1.0?COL_W:'#2C6E6A';
+  $('#nniOut').innerHTML=`
+    <div class="stats">
+      <div class="stat"><div class="v" style="color:${col}">${R.toFixed(2)}</div><div class="k">군집도 R</div></div>
+      <div class="stat"><div class="v">${Math.round(dObs)}<span style="font-size:12px">m</span></div><div class="k">실제 이웃거리</div></div>
+      <div class="stat"><div class="v">${Math.round(dExp)}<span style="font-size:12px">m</span></div><div class="k">무작위였다면</div></div>
+    </div>
+    <div class="note calm">가장 가까운 이웃까지 평균 <b>${Math.round(dObs)}m</b>인데, 같은 넓이에 무작위로 흩어졌다면
+      <b>${Math.round(dExp)}m</b>였을 것입니다. R = ${R.toFixed(2)} → <b>${verdict}</b>.
+      <br><span style="font-size:11px">R이 1보다 작을수록 뭉침, 1 근처면 무작위, 1보다 크면 고른 분포입니다.</span></div>`;
+  state.lastStats=Object.assign({},state.lastStats||{},{nni:+R.toFixed(2),nniTxt:verdict,dObs:Math.round(dObs)});
+};
+
+/* 버퍼 */
+const RING_COL=['#0F5C57','#2C6E6A'];
+function ringOf(d){ for(let i=0;i<state.rings.length;i++) if(d<=state.rings[i]) return i+1; return 0; }
+$('#btnBufOff').onclick=()=>{
+  gBuffers.clearLayers(); if(map.hasLayer(gBuffers)) map.removeLayer(gBuffers);
+  state.bufOn=false; state.filterRing='all'; $('#bufOut').innerHTML=''; drawEntries(); renderList();
+};
+$('#btnBufC').onclick=()=>{
+  const v=prompt('버퍼 반경을 미터 단위로, 쉼표로 나눠 적으세요. 예: 100,250,500', state.rings.join(','));
+  if(!v) return;
+  const r=v.split(',').map(x=>parseInt(x.trim(),10)).filter(x=>x>=20&&x<=3000).sort((a,b)=>a-b).slice(0,3);
+  if(!r.length){ toast('20~3000 사이의 숫자를 넣어 주세요'); return; }
+  state.rings=r;
+  $('#btnBuf').textContent=r.map(x=>x+'m').join(' · ')+' 버퍼 그리기';
+  $('#btnBuf').click();
+};
+$('#btnBuf').onclick=async ()=>{
+  if(!state.entries.length) return;
+  const near=state.stations.filter(s=>state.entries.some(e=>dist(e.lat,e.lng,s.lat,s.lng)<3000));
+  if(!near.length&&!state.extraLoaded){
+    state.extraLoaded=true;
+    map.fitBounds(L.latLngBounds(state.entries.map(e=>[e.lat,e.lng])).pad(0.3));
+    toast('이 지역 역을 찾는 중…');
+    await loadExtraStations();
+  }
+  const use=state.stations.filter(s=>state.entries.some(e=>dist(e.lat,e.lng,s.lat,s.lng)<5000));
+  const pool=use.length?use:state.stations;
+  if(!pool.length){ toast('역 자료가 없어 버퍼를 그릴 수 없습니다'); return; }
+
+  for(const e of state.entries){
+    let best=Infinity,nm='';
+    for(const s of pool){ const d=dist(e.lat,e.lng,s.lat,s.lng); if(d<best){best=d;nm=s.name;} }
+    e._nd=best; e._sn=nm; e._ring=ringOf(best);
+  }
+  const outer=state.rings[state.rings.length-1];
+
+  gBuffers.clearLayers();
+  if(!map.hasLayer(gBuffers)) gBuffers.addTo(map);
+  showStations=true; $('#btnStn').classList.add('on');
+  $('#btnStn').textContent='지하철역 표시 중'; $('#lgStn').classList.remove('hidden'); refreshStations();
+
+  const per=pool.map(s=>({s,c:state.rings.map(()=>0)}));
+  for(const e of state.entries){
+    if(!e._ring) continue;
+    let bi=-1,best=Infinity;
+    per.forEach((p,i)=>{ const d=dist(e.lat,e.lng,p.s.lat,p.s.lng); if(d<best){best=d;bi=i;} });
+    if(bi>=0) per[bi].c[e._ring-1]++;
+  }
+  for(const p of per){
+    const hit=p.c.some(x=>x);
+    state.rings.forEach((r,i)=>{
+      L.circle([p.s.lat,p.s.lng],{radius:r,color:RING_COL[i]||'#2C6E6A',weight:i===0?1.6:1,
+        fillColor:RING_COL[i]||'#2C6E6A',fillOpacity:hit?(i===0?0.20:0.07):0.03,
+        dashArray:i===0?null:'4 4',interactive:false}).addTo(gBuffers);
+    });
+  }
+  state.bufOn=true; drawEntries(); renderList();
+
+  const n=state.entries.length;
+  const cnt=state.rings.map((r,i)=>state.entries.filter(e=>e._ring===i+1).length);
+  const out=state.entries.filter(e=>!e._ring).length;
+  const sorted=state.entries.map(e=>e._nd).sort((a,b)=>a-b);
+  const med=sorted.length?Math.round(sorted[Math.floor(sorted.length/2)]):0;
+  const top=per.map(p=>({s:p.s,tot:p.c.reduce((a,b)=>a+b,0),c:p.c}))
+    .filter(p=>p.tot).sort((a,b)=>b.tot-a.tot).slice(0,6);
+  const pct=v=>n?Math.round(v/n*100):0;
+  const bands=state.rings.map((r,i)=>({
+    label:i===0?`0~${r}m`:`${state.rings[i-1]}~${r}m`, v:cnt[i], col:RING_COL[i]||'#2C6E6A'}));
+  bands.push({label:`${outer}m 밖`,v:out,col:'#9A9A94'});
+
+  $('#bufOut').innerHTML=`
+    <div class="stats" style="grid-template-columns:repeat(${bands.length},1fr)">
+      ${bands.map(b=>`<div class="stat"><div class="v" style="color:${b.col}">${b.v}</div>
+        <div class="k">${b.label} · ${pct(b.v)}%</div></div>`).join('')}
+    </div>
+    <div class="note calm" style="margin-bottom:9px">역에서 <b>${outer}m 안</b>에 전체의
+      <b>${pct(n-out)}%</b>(${n-out}건)가 들어옵니다 · 최근접역까지 거리 중앙값 <b>${med}m</b></div>
+    <div class="segs" id="ringSegs">
+      <button data-r="all" class="on">전체 보기</button>
+      ${state.rings.map((r,i)=>`<button data-r="${i+1}">${i===0?'':state.rings[i-1]+'~'}${r}m</button>`).join('')}
+      <button data-r="out">${outer}m 밖</button>
+    </div>
+    ${top.length?`<table class="mini" style="margin-top:10px"><tr><th>역 이름</th>${
+      state.rings.map((r,i)=>`<th style="text-align:right">${i===0?'':state.rings[i-1]+'~'}${r}m</th>`).join('')}</tr>
+      ${top.map(p=>`<tr><td>${esc(p.s.name)}</td>${p.c.map(x=>`<td class="n">${x||'·'}</td>`).join('')}</tr>`).join('')}</table>`
+      :`<div class="hint" style="margin-top:10px">${outer}m 안에 들어오는 지점이 없습니다.</div>`}
+    ${cmpBox()}
+    <div class="hint" style="margin-top:7px">조사 지역 주변 역 ${pool.length}곳 기준 · 지도에서 진한 테두리가 ${state.rings[0]}m 안, 점선 테두리가 ${outer}m 안 지점입니다.</div>`;
+  $('#ringSegs').querySelectorAll('button').forEach(b=>b.onclick=()=>{
+    state.filterRing=b.dataset.r;
+    $('#ringSegs').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
+    drawEntries(); renderList();
+  });
+  state.lastStats=Object.assign({},state.lastStats||{},
+    {rings:state.rings.slice(),ringCnt:cnt.slice(),ringOut:out,bufMed:med,
+     topStations:top.map(p=>`${p.s.name}(${p.tot})`).join(', ')});
+  checkReport();
+  toast(`${state.rings[0]}m 안 ${cnt[0]}건 · ${outer}m 안 ${n-out}건`);
+};
+
+function cmpBox(){
+  const tow=state.entries.filter(isTow), oth=state.entries.filter(e=>!isTow(e));
+  if(!tow.length||!oth.length) return '';
+  const m=a=>Math.round(a.reduce((x,e)=>x+e._nd,0)/a.length);
+  const a=m(tow), b=m(oth);
+  const mx=Math.max(a,b,1);
+  state.lastStats=Object.assign({},state.lastStats||{},{dTow:a,dOth:b});
+  return `<h3 style="margin-top:14px">유형별 역까지 거리</h3>
+    <div class="bar" style="cursor:default"><div class="bl"><b>견인 대상 포함 ${tow.length}건</b><span>평균 ${a}m</span></div>
+      <div class="bt"><div class="bf" style="width:${a/mx*100}%;background:${COL_T}"></div></div></div>
+    <div class="bar" style="cursor:default"><div class="bl"><b>보행 방해만 ${oth.length}건</b><span>평균 ${b}m</span></div>
+      <div class="bt"><div class="bf" style="width:${b/mx*100}%;background:${COL_W}"></div></div></div>
+    <div class="hint">${a<b?'견인 대상 지점이 역에 더 가깝습니다':a>b?'보행 방해 지점이 오히려 역에 더 가깝습니다':'두 유형의 역거리가 비슷합니다'} (차이 ${Math.abs(a-b)}m).</div>`;
+}
+
+/* ── 보고서 ── */
+function countSentences(t){
+  return t.split(/[.!?。？！]+|\n+/).map(s=>s.trim()).filter(s=>s.length>=5).length;
+}
+function checkReport(){
+  const t=$('#report').value.trim();
+  const s=countSentences(t), c=t.length;
+  const el=$('#repCount');
+  el.textContent=`${s}문장 · ${c}자${s>=4&&s<=6?' · 좋습니다':''}`;
+  el.className='counter'+(s>=4&&c>=80?' ok':'');
+  const ok = s>=4 && c>=80 && state.entries.length>=state.minCount && $('#rTitle').value.trim().length>=2;
+  $('#btnSubmit').disabled=!ok;
+  $('#btnSubmit').textContent = ok ? '보고서 제출하기'
+    : (!$('#rTitle').value.trim() ? '제목을 먼저 입력하세요'
+       : s<4 ? '분석 결과를 4문장 이상 쓰세요' : '보고서 제출하기');
+}
+$('#rTitle').oninput=checkReport;
+$('#report').oninput=checkReport;
+function statLine(){
+  const s=state.lastStats||{};
+  const bits=[`전체 ${s.n||0}건`, `견인 대상 포함 ${s.towRate||0}%`];
+  if(s.topT) bits.push(`최다 견인유형 ${s.topT}`);
+  if(s.topW) bits.push(`최다 방해유형 ${s.topW}`);
+  if(s.gridSize) bits.push(`${s.gridSize}m 격자 ${s.gridCells}칸, 최대 ${s.gridMax}건, 상위 3칸 ${s.gridTop3}%`);
+  if(s.nni) bits.push(`군집도 R=${s.nni}(${s.nniTxt})`);
+  if(s.rings) bits.push(s.rings.map((r,i)=>`${i===0?'0~':s.rings[i-1]+'~'}${r}m ${s.ringCnt[i]}건`).join(', ')
+    +`, ${s.rings[s.rings.length-1]}m 밖 ${s.ringOut}건, 최근접역 중앙값 ${s.bufMed}m`);
+  if(s.dTow) bits.push(`역거리 평균 견인 ${s.dTow}m / 방해 ${s.dOth}m`);
+  return bits.join(' · ');
+}
+
+/* ── 지도 화면을 그림으로 담기 ── */
+async function captureMap(){
+  const size=map.getSize();
+  const W=Math.min(size.x,1000), H=Math.min(size.y,700);
+  const cv=document.createElement('canvas');
+  cv.width=W; cv.height=H;
+  const ctx=cv.getContext('2d');
+  ctx.fillStyle='#E8E6E0'; ctx.fillRect(0,0,W,H);
+  const ox=(size.x-W)/2, oy=(size.y-H)/2;
+  const z=map.getZoom();
+  const tl=map.containerPointToLayerPoint([ox,oy]);
+  const origin=map.layerPointToLatLng(tl);
+  const p0=map.project(origin,z);
+  const P=ll=>{ const q=map.project(ll,z); return [q.x-p0.x, q.y-p0.y]; };
+  const t0x=Math.floor(p0.x/256), t0y=Math.floor(p0.y/256);
+  const t1x=Math.floor((p0.x+W)/256), t1y=Math.floor((p0.y+H)/256);
+  const subs=['a','b','c'];
+  await Promise.all((()=>{ const jobs=[];
+    for(let x=t0x;x<=t1x;x++) for(let y=t0y;y<=t1y;y++){
+      jobs.push(new Promise(res=>{
+        const img=new Image(); img.crossOrigin='anonymous';
+        img.onload=()=>{ try{ ctx.drawImage(img, x*256-p0.x, y*256-p0.y); }catch(e){} res(); };
+        img.onerror=()=>res();
+        img.src=`https://${subs[(x+y)%3]}.tile.openstreetmap.org/${z}/${x}/${y}.png`;
+      }));
+    }
+    return jobs; })());
+
+  const mpp=40075016.686*Math.cos(map.getCenter().lat*Math.PI/180)/(256*Math.pow(2,z));
+  // 버퍼
+  if(state.bufOn){
+    const pool=state.stations.filter(st=>state.entries.some(e=>dist(e.lat,e.lng,st.lat,st.lng)<5000));
+    for(const st of (pool.length?pool:[])){
+      const [x,y]=P([st.lat,st.lng]);
+      state.rings.forEach((r,i)=>{
+        ctx.beginPath(); ctx.arc(x,y,r/mpp,0,Math.PI*2);
+        ctx.fillStyle=i===0?'rgba(15,92,87,.16)':'rgba(44,110,106,.07)'; ctx.fill();
+        ctx.strokeStyle=i===0?'#0F5C57':'#2C6E6A'; ctx.lineWidth=1;
+        ctx.setLineDash(i===0?[]:[4,4]); ctx.stroke(); ctx.setLineDash([]);
+      });
+    }
+  }
+  // 격자
+  if(state.gridSize){
+    const src=state.entries.filter(passFilter);
+    if(src.length){
+      const lat0=src.reduce((a,e)=>a+e.lat,0)/src.length;
+      const dLat=state.gridSize/111320, dLng=state.gridSize/(111320*Math.cos(lat0*Math.PI/180));
+      const cells={};
+      src.forEach(e=>{ const k=Math.floor(e.lng/dLng)+','+Math.floor(e.lat/dLat);
+        cells[k]=cells[k]||{gx:Math.floor(e.lng/dLng),gy:Math.floor(e.lat/dLat),n:0}; cells[k].n++; });
+      const vals=Object.values(cells), mx=Math.max(...vals.map(c=>c.n));
+      const sc=v=>{const t=v/mx; return t>0.75?'#D93B2B':t>0.5?'#DE8A2C':t>0.25?'#F5C518':'#7FB069';};
+      ctx.font='700 12px ui-monospace, monospace'; ctx.textAlign='center'; ctx.textBaseline='middle';
+      for(const c of vals){
+        const [x1,y1]=P([(c.gy+1)*dLat, c.gx*dLng]);
+        const [x2,y2]=P([c.gy*dLat, (c.gx+1)*dLng]);
+        ctx.fillStyle=sc(c.n); ctx.globalAlpha=0.18+0.42*(c.n/mx);
+        ctx.fillRect(x1,y1,x2-x1,y2-y1); ctx.globalAlpha=1;
+        ctx.strokeStyle=sc(c.n); ctx.lineWidth=1.2; ctx.strokeRect(x1,y1,x2-x1,y2-y1);
+        ctx.fillStyle='#fff'; ctx.shadowColor='rgba(0,0,0,.6)'; ctx.shadowBlur=3;
+        ctx.fillText(String(c.n),(x1+x2)/2,(y1+y2)/2); ctx.shadowBlur=0;
+      }
+    }
+  }
+  // 히트맵(캔버스 그대로 합성)
+  if(heatLayer && heatLayer._canvas){
+    try{
+      const hp=map.latLngToContainerPoint(map.containerPointToLatLng([0,0]));
+      ctx.globalAlpha=0.85;
+      ctx.drawImage(heatLayer._canvas, -ox, -oy);
+      ctx.globalAlpha=1;
+    }catch(e){}
+  }
+  // 지하철역
+  if(showStations && z>=10){
+    const b=map.getBounds();
+    let k=0;
+    for(const st of state.stations){
+      if(!b.contains([st.lat,st.lng])) continue;
+      const [x,y]=P([st.lat,st.lng]);
+      if(x<-20||y<-20||x>W+20||y>H+20) continue;
+      ctx.beginPath(); ctx.arc(x,y,6,0,Math.PI*2);
+      ctx.fillStyle='#12456F'; ctx.fill();
+      ctx.strokeStyle='#fff'; ctx.lineWidth=2.5; ctx.stroke();
+      if(z>=14&&k<60){
+        ctx.font='700 11px sans-serif'; ctx.textAlign='left'; ctx.textBaseline='middle';
+        ctx.strokeStyle='#fff'; ctx.lineWidth=3; ctx.strokeText(st.name,x+10,y);
+        ctx.fillStyle='#12456F'; ctx.fillText(st.name,x+10,y);
+      }
+      if(++k>250) break;
+    }
+  }
+  // 조사 지점
+  for(const e of state.entries){
+    if(!passFilter(e)) continue;
+    const [x,y]=P([e.lat,e.lng]);
+    if(x<-20||y<-20||x>W+20||y>H+20) continue;
+    ctx.beginPath(); ctx.arc(x,y,7,0,Math.PI*2);
+    ctx.fillStyle=isTow(e)?COL_T:COL_W; ctx.fill();
+    if(state.bufOn&&e._ring===1){ ctx.strokeStyle='#0F5C57'; ctx.lineWidth=3.5; }
+    else if(state.bufOn&&e._ring){ ctx.strokeStyle='#2C6E6A'; ctx.lineWidth=2.5; }
+    else { ctx.strokeStyle='#fff'; ctx.lineWidth=2; }
+    ctx.stroke();
+  }
+  // 축척 막대
+  const barM=[50,100,200,500,1000,2000].find(v=>v/mpp>60)||1000;
+  const bw=barM/mpp;
+  ctx.fillStyle='rgba(255,255,255,.9)'; ctx.fillRect(10,H-30,bw+70,22);
+  ctx.strokeStyle='#14171A'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(18,H-14); ctx.lineTo(18+bw,H-14); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(18,H-19); ctx.lineTo(18,H-9); ctx.moveTo(18+bw,H-19); ctx.lineTo(18+bw,H-9); ctx.stroke();
+  ctx.fillStyle='#14171A'; ctx.font='700 11px sans-serif'; ctx.textAlign='left'; ctx.textBaseline='middle';
+  ctx.fillText(barM>=1000?(barM/1000)+'km':barM+'m', 24+bw, H-14);
+  try{ return cv.toDataURL('image/jpeg',0.75); }
+  catch(e){ toast('지도 그림을 만들지 못했습니다'); return null; }
+}
+state.shots=[];
+$('#btnShot').onclick=async ()=>{
+  if(state.shots.length>=3){ toast('그림은 최대 3장까지 담을 수 있습니다'); return; }
+  const btn=$('#btnShot'); btn.disabled=true; btn.textContent='담는 중…';
+  const img=await captureMap();
+  btn.disabled=false; btn.textContent='지금 지도 담기';
+  if(!img) return;
+  state.shots.push({img, cap:$('#shotCap').value.trim()||`그림 ${state.shots.length+1}`});
+  $('#shotCap').value='';
+  renderShots(); toast('지도를 담았습니다');
+};
+function renderShots(){
+  $('#shotCnt').textContent=`${state.shots.length}/3`;
+  $('#shots').innerHTML = state.shots.length ? state.shots.map((s,i)=>`
+    <div class="shot"><img src="${s.img}" alt="담은 지도">
+      <div class="c"><b>${esc(s.cap)}</b>
+        <div style="margin-top:5px;display:flex;gap:5px">
+          <button class="btn ghost sm" onclick="renameShot(${i})">설명 고치기</button>
+          <button class="btn danger sm" onclick="delShot(${i})">빼기</button>
+        </div></div></div>`).join('')
+    : '<div class="empty">담은 지도가 없습니다.</div>';
+}
+window.delShot=i=>{ state.shots.splice(i,1); renderShots(); };
+window.renameShot=i=>{ const v=prompt('그림 설명',state.shots[i].cap); if(v!==null){ state.shots[i].cap=v.trim()||('그림 '+(i+1)); renderShots(); } };
+
+/* ── 보고서 문서 만들기 ── */
+function areaName(){
+  if(!state.entries.length) return '';
+  const lat=state.entries.reduce((a,e)=>a+e.lat,0)/state.entries.length;
+  const lng=state.entries.reduce((a,e)=>a+e.lng,0)/state.entries.length;
+  let best=null,bd=Infinity;
+  for(const sido in ADM) for(const sgg in ADM[sido]) for(const d of ADM[sido][sgg]){
+    const q=(d.lat-lat)**2+(d.lng-lng)**2;
+    if(q<bd){ bd=q; best=`${sido} ${sgg} ${d.n}`; }
+  }
+  return best||'';
+}
+function periodTxt(){
+  if(!state.entries.length) return '';
+  const ts=state.entries.map(e=>e.ts).sort();
+  const f=x=>fmtDT(x).slice(0,10);
+  return f(ts[0])===f(ts[ts.length-1]) ? f(ts[0]) : `${f(ts[0])} ~ ${f(ts[ts.length-1])}`;
+}
+function buildDoc(r){
+  const s=r.stats||{};
+  const cc=r.counts||{};
+  const n=s.n||0;
+  const barRow=(list,col)=>list.filter(c=>cc[c.id]).sort((a,b)=>cc[b.id]-cc[a.id]).map(c=>`
+    <div><div style="display:flex;justify-content:space-between;font-size:12px"><span>${c.label}</span>
+      <span style="font-family:var(--mono);color:#6B7076">${cc[c.id]}건 ${n?Math.round(cc[c.id]/n*100):0}%</span></div>
+    <div class="b"><i style="width:${n?cc[c.id]/n*100:0}%;background:${col}"></i></div></div>`).join('');
+  const rows=[];
+  if(s.gridSize) rows.push(['격자 집계',`${s.gridSize}m 칸 ${s.gridCells}개 · 가장 많은 칸 ${s.gridMax}건 · 상위 3칸에 ${s.gridTop3}%`]);
+  if(s.nni) rows.push(['군집도 R',`${s.nni} — ${s.nniTxt} (실제 이웃거리 ${s.dObs}m)`]);
+  if(s.rings) rows.push(['지하철역 버퍼',
+    s.rings.map((x,i)=>`${i===0?'0~':s.rings[i-1]+'~'}${x}m ${s.ringCnt[i]}건`).join(' · ')
+    +` · ${s.rings[s.rings.length-1]}m 밖 ${s.ringOut}건 · 최근접역 중앙값 ${s.bufMed}m`]);
+  if(s.dTow) rows.push(['유형별 역거리',`견인 대상 평균 ${s.dTow}m · 보행 방해 평균 ${s.dOth}m`]);
+  let k=0; const H=t=>`<h2>${++k}. ${t}</h2>`;
+  const parts=[];
+  if(r.aim) parts.push(H('조사 목적')+`<p>${esc(r.aim).replace(/\n/g,'<br>')}</p>`);
+  parts.push(H('조사 개요')+`<div class="kv">
+      <div><span>조사 지역</span>${esc(r.area||'-')}</div>
+      <div><span>조사 기간</span>${esc(r.period||'-')}</div>
+      <div><span>조사 인원</span>${r.people||0}명</div>
+      <div><span>기록 지점</span>${n}건</div>
+      <div><span>견인 대상 포함</span>${s.towRate||0}%</div>
+      <div><span>지점당 문제 수</span>${(r.avg||0).toFixed(1)}개</div>
+    </div>`);
+  if(r.shots&&r.shots.length) parts.push(H('지도')+r.shots.map((x,i)=>
+    `<figure><img src="${x.img}" alt="지도 그림"><figcaption>그림 ${i+1}. ${esc(x.cap)}</figcaption></figure>`).join(''));
+  parts.push(H('유형별 분포')
+    +(barRow(CATS_T,'#D93B2B')||'<p style="font-size:12.5px;color:#6B7076">견인 대상 유형 없음</p>')
+    +'<div style="height:6px"></div>'
+    +(barRow(CATS_W,'#DE8A2C')||'<p style="font-size:12.5px;color:#6B7076">보행 방해 유형 없음</p>'));
+  if(rows.length) parts.push(H('공간 분석 결과')
+    +`<table>${rows.map(x=>`<tr><th style="width:26%">${x[0]}</th><td>${esc(x[1])}</td></tr>`).join('')}</table>`);
+  parts.push(H('분석과 해석')+`<p>${esc(r.text||'').replace(/\n/g,'<br>')}</p>`);
+  if(r.sug) parts.push(H('제언')+`<p>${esc(r.sug).replace(/\n/g,'<br>')}</p>`);
+  return `<div class="doc">
+    <h1>${esc(r.title||'전동킥보드 주차 실태 조사 보고서')}</h1>
+    <div class="by">${esc(r.name)}${r.klass?' · '+esc(r.klass):''} · 과제 ${esc(r.proj||'')} · 작성 ${esc(fmtDT(r.at))}</div>
+    ${parts.join('')}
+  </div>`;
+}
+function collectReport(){
+  return {
+    sid:state.me.sid, name:state.me.name, klass:state.me.klass, proj:state.projLabel,
+    title:$('#rTitle').value.trim(), aim:$('#rAim').value.trim(),
+    text:$('#report').value.trim(), sug:$('#rSug').value.trim(),
+    shots:state.shots, stats:state.lastStats||{}, counts:counts(),
+    area:areaName(), period:periodTxt(),
+    people:new Set(state.entries.map(e=>e.sid)).size,
+    avg:state.entries.length?state.entries.reduce((a,e)=>a+catsOf(e).length,0)/state.entries.length:0,
+    at:new Date().toISOString()
+  };
+}
+$('#btnPrev').onclick=()=>{
+  const r=collectReport();
+  const m=modal(`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <b style="font-size:12px;letter-spacing:.06em">완성본 미리보기</b>
+      <button class="btn ghost sm" id="pvClose">닫기</button></div>
+    ${buildDoc(r)}`);
+  m.querySelector('#pvClose').onclick=()=>m.remove();
+};
+$('#btnSubmit').onclick=async ()=>{
+  const r=collectReport();
+  const ok=await Store.set(kRep(state.me.sid), JSON.stringify(r), true);
+  if(ok===false) return;
+  toast('보고서를 제출했습니다');
+  loadReports();
+  $('#repState').innerHTML=`<div class="note calm">제출 완료 · ${esc(fmtDT(r.at))} · 다시 눌러 덮어쓸 수 있습니다.</div>`;
+};
+$('#btnDl').onclick=()=>{
+  const r=collectReport();
+  if(!r.text){ toast('먼저 분석 결과를 쓰세요'); return; }
+  const css=[...document.querySelectorAll('style')].map(x=>x.textContent).join('\n');
+  const html=`<!doctype html><html lang="ko"><meta charset="utf-8">
+<title>${esc(r.title||'전동킥보드 주차 실태 조사 보고서')}</title>
+<style>${css}
+body{background:#fff;display:block;height:auto;overflow:visible;padding:36px 24px;max-width:760px;margin:0 auto}
+@media print{body{padding:0}}</style>
+${buildDoc(r)}</html>`;
+  dl(new Blob([html],{type:'text/html'}), `보고서_${r.name}.html`);
+};
+$('#btnCsv').onclick=()=>{
+  const head=['id','학생','학반','일시','위도','경도','좌표출처','유형수','유형코드','유형이름','견인대상','최근접역','역거리m'];
+  const rows=[head];
+  state.entries.forEach(e=>{
+    const cs=catsOf(e);
+    rows.push([e.id,e.name,e.klass||'',e.ts,e.lat,e.lng,e.src||'',cs.length,
+      cs.join(';'), cs.map(c=>CAT[c]?CAT[c].label:c).join(';'), isTow(e)?'Y':'N',
+      e._sn||'', e._nd!=null?Math.round(e._nd):'']);
+  });
+  const csv='\uFEFF'+rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  dl(new Blob([csv],{type:'text/csv'}),`킥보드_자료_${state.projLabel}.csv`);
+};
+async function loadReports(){
+  const keys=await Store.list(`pkb:${state.proj}:r:`,true);
+  const rs=[];
+  for(const k of keys){ const raw=await Store.get(k,true); if(!raw) continue;
+    try{ rs.push(JSON.parse(raw)); }catch(e){} }
+  rs.sort((a,b)=>b.at.localeCompare(a.at));
+  window.__reps=rs;
+  $('#repList').innerHTML=rs.length?rs.map((r,i)=>`
+    <div class="entry"><div class="meta">
+      <div class="tt">${esc(r.title||'제목 없음')}</div>
+      <div class="sub">${esc(r.name)}${r.klass?' · '+esc(r.klass):''} · ${esc(fmtDT(r.at))}${
+        r.shots&&r.shots.length?` · 지도 ${r.shots.length}장`:''}</div>
+      <div class="acts"><button class="btn ghost sm" onclick="viewRep(${i})">보고서 열기</button></div>
+    </div></div>`).join('') : '<div class="empty">아직 제출된 보고서가 없습니다.</div>';
+}
+window.viewRep=i=>{
+  const r=(window.__reps||[])[i]; if(!r) return;
+  const m=modal(`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <b style="font-size:12px;letter-spacing:.06em">제출된 보고서</b>
+      <button class="btn ghost sm" id="pvClose">닫기</button></div>${buildDoc(r)}`);
+  m.querySelector('#pvClose').onclick=()=>m.remove();
+};
+function dl(blob,name){
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+
+/* ── 탭 ── */
+function showTab(w){
+  const isIn=w==='in', isAn=w==='an', isRep=w==='rep';
+  $('#tabIn').setAttribute('aria-selected',isIn);
+  $('#tabAn').setAttribute('aria-selected',isAn);
+  $('#tabRep').setAttribute('aria-selected',isRep);
+  $('#panelIn').classList.toggle('hidden',!isIn);
+  $('#panelAn').classList.toggle('hidden',!isAn);
+  $('#panelRep').classList.toggle('hidden',!isRep);
+  $('#btnStn').classList.toggle('hidden',isIn);
+  showStations=!isIn;
+  $('#lgStn').classList.toggle('hidden',isIn);
+  $('#btnStn').classList.toggle('on',showStations);
+  $('#btnStn').textContent=showStations?'지하철역 표시 중':'지하철역 숨김';
+  refreshStations();
+  if(isIn){ state.filterRing='all'; drawEntries(); renderList(); }
+  else stopPick();
+  if(isAn) renderAnalysis();
+  if(isRep){ renderShots(); loadReports(); checkReport(); }
+  setTimeout(()=>map.invalidateSize(),80);
+}
+$('#tabIn').onclick=()=>showTab('in');
+$('#tabAn').onclick=()=>showTab('an');
+$('#tabRep').onclick=()=>showTab('rep');
+
+$('#btnHelp').onclick=()=>{
+  modal(`<h1>무엇이 잘못된 주차일까?</h1>
+  <p class="hint" style="margin:0 0 14px">두 가지를 함께 봅니다. 하나는 <b>법으로 견인할 수 있는가</b>, 다른 하나는 <b>사람이 지나가기 불편한가</b>입니다. 둘 다 해당하는 경우가 많으니 해당하는 것을 모두 고르세요.</p>
+  <h3 style="color:${COL_T}">견인될 수 있어요</h3>
+  <table class="mini" style="margin-bottom:14px">
+    <tr><th style="width:52%">고르는 항목</th><th>서울시 조례 기준</th></tr>
+    <tr><td><b>차가 다니는 길에 세움</b></td><td>보·차도가 구분된 도로의 차도, 자전거도로</td></tr>
+    <tr><td><b>지하철역 입구 바로 앞</b></td><td>진·출입구 전면 5m 이내</td></tr>
+    <tr><td><b>버스·택시 타는 곳 앞</b></td><td>버스정류소·택시승강장 5m 이내</td></tr>
+    <tr><td><b>횡단보도 앞·안전지대 위</b></td><td>횡단보도 3m 이내, 교통섬 내부</td></tr>
+    <tr><td><b>노란 점자블록 위·엘리베이터 입구</b></td><td>점자블록 위, 교통약자 엘리베이터 진입로</td></tr>
+    <tr><td><b>학교 앞 어린이 보호구역</b></td><td>주정차 금지된 어린이·노인·장애인 보호구역</td></tr>
+  </table>
+  <div class="note" style="margin-bottom:14px"><b>거리를 자로 잴 필요는 없습니다.</b> 5m는 어른 걸음으로 다섯 걸음, 3m는 세 걸음쯤입니다. 애매하면 "이 정도면 입구를 막는다" 싶은지로 판단하고, 사진에 주변 바닥이 함께 나오게 찍어 두면 나중에 다시 확인할 수 있습니다.</div>
+  <h3 style="color:${COL_W}">지나가기 불편해요</h3>
+  <p style="font-size:13px;margin:0 0 14px">보도 한가운데를 차지하거나, 가게 입구를 막거나, 쓰러져 있는 경우입니다. 법으로는 견인 대상이 아니어도 유모차·휠체어·흰지팡이 이용자에게는 똑같은 장벽이 됩니다. <b>이 둘의 차이를 견주어 보는 것</b>이 이번 조사의 핵심입니다.</p>
+  <h3>사진을 찍을 때</h3>
+  <ul style="font-size:13px;margin:0;padding-left:20px;line-height:1.8">
+    <li>킥보드만이 아니라 <b>주변 바닥</b>이 함께 보이게 찍으세요. 점자블록, 차선, 보도 경계가 근거가 됩니다.</li>
+    <li>사람 얼굴, 차량 번호판, 킥보드 QR의 개인정보가 찍히지 않게 하세요.</li>
+    <li>도로 한가운데로 들어가지 말고 <b>안전한 곳</b>에서 찍으세요.</li>
+  </ul>`);
+};
+function modal(inner,opts={}){
+  const d=document.createElement('div'); d.className='modal';
+  d.innerHTML=`<div class="box"><div class="dots"></div><div class="bd">${inner}</div></div>`;
+  document.body.appendChild(d);
+  if(!opts.sticky) d.addEventListener('click',e=>{ if(e.target===d) d.remove(); });
+  return d;
+}
+
+async function boot(){
+  $('#dt').value=nowLocal();
+  $('#zLv').textContent=map.getZoom();
+  const saved=await Store.get('pkb:me',false);
+  let me=null; try{ me=saved?JSON.parse(saved):null; }catch(e){}
+  const d=modal(`<h1>과제에 참여하기</h1>
+    <p class="hint" style="margin:0 0 14px">같은 <b>과제 코드</b>를 입력한 사람끼리 하나의 지도를 함께 작성합니다. 선생님이 알려 준 코드를 그대로 넣으세요.</p>
+    <label class="f" for="iProj">과제 코드</label>
+    <input type="text" id="iProj" placeholder="예: 3학년2반-킥보드" value="${esc(me?me.proj:'')}">
+    <div style="height:11px"></div>
+    <div class="row">
+      <div><label class="f" for="iName">이름</label><input type="text" id="iName" placeholder="김지리" value="${esc(me?me.name:'')}"></div>
+      <div><label class="f" for="iKlass">학반·모둠 <span>선택</span></label><input type="text" id="iKlass" placeholder="2반 3모둠" value="${esc(me?me.klass:'')}"></div>
+    </div>
+    <button class="btn wide" id="iGo" style="margin-top:14px">들어가기</button>
+    <p class="hint" style="margin:11px 0 0">입력한 이름은 내가 올린 지점 위에 표시됩니다.
+    ${HAS_SHARED?'':'<br><b>주의</b> 지금은 이 브라우저에만 저장되는 혼자 쓰기 모드입니다.'}</p>`,{sticky:true});
+  const go=async ()=>{
+    const p=d.querySelector('#iProj').value.trim(), n=d.querySelector('#iName').value.trim();
+    if(!p||!n){ toast('과제 코드와 이름을 모두 넣어 주세요'); return; }
+    state.projLabel=p; state.proj=codeKey(p);
+    const sid = me&&me.name===n&&me.proj===p ? me.sid : `${slug(n)}-${Math.random().toString(36).slice(2,6)}`;
+    state.me={sid,name:n,klass:d.querySelector('#iKlass').value.trim()};
+    await Store.set('pkb:me',JSON.stringify({sid,name:n,klass:state.me.klass,proj:p}),false);
+    $('#chipProj').innerHTML=`과제 <b>${esc(p)}</b>`;
+    $('#chipMe').innerHTML=`<b>${esc(n)}</b>${state.me.klass?' · '+esc(state.me.klass):''}`;
+    d.remove();
+    await syncAll();
+    if(state.entries.length) map.fitBounds(L.latLngBounds(state.entries.map(e=>[e.lat,e.lng])).pad(0.3));
+    const r=await Store.get(kRep(state.me.sid),true);
+    if(r){ try{ const o=JSON.parse(r);
+      $('#report').value=o.text||''; $('#rTitle').value=o.title||'';
+      $('#rAim').value=o.aim||''; $('#rSug').value=o.sug||'';
+      state.shots=o.shots||[]; renderShots(); checkReport();
+      $('#repState').innerHTML=`<div class="note calm">지난 제출 · ${esc(fmtDT(o.at))}</div>`; }catch(e){} }
+    toast(`${n} 님, 시작합니다`);
+  };
+  d.querySelector('#iGo').onclick=go;
+  d.querySelectorAll('input').forEach(i=>i.addEventListener('keydown',e=>{ if(e.key==='Enter') go(); }));
+  d.querySelector('#iProj').focus();
+}
+$('#chipProj').onclick=$('#chipMe').onclick=boot;
+boot();
+</script>
