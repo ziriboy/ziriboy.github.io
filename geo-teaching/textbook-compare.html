@@ -1,0 +1,468 @@
+<style>
+  :root {
+    --ground:#ECEDEF; --panel:#FFF; --ink:#1B1D21; --ink-soft:#5A6068; --ink-faint:#8D939B;
+    --line:#D3D7DC; --rule:#E4E7EA;
+    --kr:#2A6B62; --kr-soft:#DCE9E7; --uk:#6E4A96; --uk-soft:#E6DEF0;
+  }
+  *{box-sizing:border-box}
+  #app{
+    font-family:"Pretendard",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;
+    color:var(--ink);background:var(--ground);min-height:100vh;padding:24px 18px 70px;line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:880px;margin:0 auto}
+  h1{font-size:24px;font-weight:700;letter-spacing:-.02em;margin:0 0 6px}
+  h2{font-size:16px;font-weight:700;margin:0 0 10px}
+  p{margin:0 0 12px}
+  .lede{color:var(--ink-soft);font-size:14px;margin-bottom:22px;max-width:62ch}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:20px;margin-bottom:14px}
+  label.field{display:block;font-size:13px;font-weight:600;margin-bottom:6px}
+  .hint{font-size:12.5px;color:var(--ink-faint);margin-top:10px}
+  input[type=text],select,textarea{width:100%;font:inherit;font-size:15px;padding:10px 12px;
+    border:1px solid var(--line);border-radius:7px;background:#FBFBFC;color:var(--ink)}
+  textarea{min-height:96px;resize:vertical;line-height:1.6}
+  input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+  button{font:inherit;font-size:15px;font-weight:600;padding:11px 20px;border:1px solid var(--ink);
+    border-radius:7px;background:var(--ink);color:#fff;cursor:pointer}
+  button:disabled{opacity:.4;cursor:not-allowed}
+  button.ghost{background:transparent;color:var(--ink)}
+  button.small{font-size:13px;padding:8px 14px}
+  .row2{display:flex;gap:12px;flex-wrap:wrap}
+  .row2>*{flex:1 1 200px}
+
+  /* 자료 보기 창 */
+  .viewer{position:sticky;top:0;z-index:30;background:var(--ground);padding-top:8px;
+    border-bottom:1px solid var(--line);margin-bottom:14px}
+  .vtabs{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+  .vtab{font-size:13px;font-weight:600;padding:7px 14px;border-radius:6px 6px 0 0;
+    border:1px solid var(--line);border-bottom:none;background:#F4F5F6;color:var(--ink-soft);cursor:pointer}
+  .vtab.on.kr{background:var(--kr);border-color:var(--kr);color:#fff}
+  .vtab.on.uk{background:var(--uk);border-color:var(--uk);color:#fff}
+  .vtools{margin-left:auto;display:flex;gap:6px;align-items:center}
+  .vtools a,.vtools button.tiny{font-size:12.5px;font-weight:600;padding:6px 11px;border-radius:6px;
+    border:1px solid var(--line);background:var(--panel);color:var(--ink-soft);text-decoration:none;cursor:pointer}
+  .frame{background:#fff;border:1px solid var(--line);border-radius:0 8px 8px 8px;overflow:hidden;height:56vh;min-height:300px}
+  .frame.tall{height:82vh}
+  .frame iframe{width:100%;height:100%;border:0;display:block}
+  .frame .blank{display:flex;height:100%;align-items:center;justify-content:center;
+    text-align:center;padding:24px;color:var(--ink-faint);font-size:13.5px;line-height:1.7}
+  .vprog{display:flex;justify-content:space-between;font-size:12.5px;color:var(--ink-soft);margin:8px 0 6px}
+  .track{height:3px;background:var(--line);border-radius:2px;overflow:hidden}
+  .fill{height:100%;background:var(--ink);transition:width .2s ease}
+
+  /* 표 */
+  .grid{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .ghead{display:grid;grid-template-columns:1fr 132px 132px;padding:9px 16px;font-size:12px;
+    font-weight:700;color:var(--ink-soft);border-bottom:1px solid var(--line);background:#F7F8F9}
+  .ghead span:nth-child(2),.ghead span:nth-child(3){text-align:center}
+  .gsec{padding:10px 16px 6px;font-size:12px;font-weight:700;color:var(--ink-faint);
+    background:#FAFBFC;border-bottom:1px solid var(--rule)}
+  .grow{display:grid;grid-template-columns:1fr 132px 132px;align-items:center;gap:8px;
+    padding:11px 16px;border-bottom:1px solid var(--rule)}
+  .grow:last-child{border-bottom:none}
+  .q{font-size:14px;font-weight:600;letter-spacing:-.01em}
+  .poles{font-size:12px;color:var(--ink-faint);margin-top:3px}
+  .poles b{font-weight:600;color:var(--ink-soft)}
+  .set{display:flex;gap:4px;justify-content:center}
+  .dot{width:28px;height:30px;padding:0;border-radius:5px;border:1px solid var(--line);
+    background:#FBFBFC;font-size:12px;font-weight:600;color:var(--ink-faint);cursor:pointer}
+  .dot.on.kr{background:var(--kr);border-color:var(--kr);color:#fff}
+  .dot.on.uk{background:var(--uk);border-color:var(--uk);color:#fff}
+  .rowlabel{display:none;font-size:11px;font-weight:700;color:var(--ink-faint)}
+
+  /* 결과 */
+  .res-item{margin-bottom:16px}
+  .res-q{font-size:13.5px;font-weight:600;margin-bottom:6px}
+  .res-line{display:flex;align-items:center;gap:9px;margin-bottom:4px;font-size:12px}
+  .res-name{flex:0 0 30px;color:var(--ink-soft)}
+  .res-track{flex:1;height:18px;background:#F3F4F6;border-radius:4px;position:relative}
+  .res-fill{position:absolute;top:0;left:0;height:100%;border-radius:4px}
+  .res-fill.kr{background:var(--kr)} .res-fill.uk{background:var(--uk)}
+  .res-num{flex:0 0 30px;text-align:right;color:var(--ink-soft)}
+  .quote{border-left:3px solid var(--line);padding:4px 0 4px 14px;margin:0 0 15px;font-size:14px;white-space:pre-wrap}
+  .quote-by{font-size:12px;color:var(--ink-faint);margin-top:5px}
+  .note{background:#FBFBFC;border:1px dashed var(--line);border-radius:8px;padding:12px 15px;
+    font-size:13px;color:var(--ink-soft);margin-bottom:14px}
+  .err{background:#FDF2F2;border:1px solid #E8C4C4;color:#8B2F2F;border-radius:7px;
+    padding:11px 14px;font-size:13.5px;margin-bottom:14px}
+  .hidden{display:none}
+
+  @media (max-width:620px){
+    #app{padding:18px 12px 60px}
+    .ghead{display:none}
+    .grow{grid-template-columns:1fr;gap:6px}
+    .rowlabel{display:block;margin-bottom:2px}
+    .set{justify-content:flex-start}
+    .dot{flex:1;width:auto}
+    .frame{height:46vh}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div id="app"><div class="wrap" id="screen"></div></div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ============ 설정: 링크만 채우면 됩니다 ============
+     구글 드라이브 '링크 복사'로 나온 주소를 그대로 넣으세요.
+     .../view?usp=sharing 형태여도 자동으로 창 안에 보이게 바꿔 줍니다. */
+
+  // 깃허브 페이지 등에서 결과를 모으려면 앱스 스크립트 배포 주소를 넣으세요.
+  // 비워 두면 대화창 안에서만 결과가 모입니다.
+  var ENDPOINT = "https://script.google.com/macros/s/AKfycbxpsGx28QRijOF2U5v-xV8Lb2o3Z46NrlOcGj3KN9cbY6TmvwgYTrMCnSWzNfCUDaE/exec";
+
+  var PAIRS = [
+    { id:"m1", uk:"Football (94–99)",            kr:"초국적 기업 (사회① 92–97)",
+      ukUrl:"https://drive.google.com/file/d/1TczcBKPHoTvUINlanPTofDvzeJk1QNxh/view?usp=drive_link", krUrl:"https://drive.google.com/file/d/1WjH1TNgfWF5yVYZjaQ9H-028w0aN7lWN/view?usp=drive_link" },
+    { id:"m2", uk:"Food for the future (66–71)", kr:"식량 자원 (사회② 200–205)",
+      ukUrl:"https://drive.google.com/file/d/1HrScjBZZk-JqrTmgB4BnAjUP9sgUyDVp/view?usp=drive_link", krUrl:"https://drive.google.com/file/d/183BLmzo5By44CiZSQxUuBzJHJ7kXqFk6/view?usp=drive_link" },
+    { id:"m3", uk:"Crime (90–95)",               kr:"지속가능한 도시 (사회① 56–61)",
+      ukUrl:"https://drive.google.com/file/d/1J_xzGWT26MVjMdaq_qiSmnvsJsSdO9D7/view?usp=drive_link", krUrl:"https://drive.google.com/file/d/1yeDY2ZDQB1Yja54buGBhRFQM2T9fDakt/view?usp=drive_link" },
+    { id:"m4", uk:"Your place…and mine! (8–13)", kr:"내가 사는 장소 (사회② 112–117)",
+      ukUrl:"https://drive.google.com/file/d/16Mm2Y3Yk23s-r8RE_yGJWqN8NEsPhGl2/view?usp=drive_link", krUrl:"https://drive.google.com/file/d/155xFe8J_vGQR897PMA3DipNpnuLeNELk/view?usp=drive_link" }
+  ];
+
+  var AREAS = [
+    { name:"1. 도입 및 동기 유발", items:[
+      { id:"i11", q:"단원의 제목이 학생의 호기심과 흥미를 유발하는가?",
+        left:"제목만으로는 흥미가 생기지 않는다", right:"제목이 궁금증을 불러일으킨다" },
+      { id:"i12", q:"학습 동기를 부여하는 질문·이야기·시각 자료가 효과적으로 제시되었는가? (→일상성)",
+        left:"동기를 부여하는 장치가 거의 없다", right:"효과적으로 제시된다" },
+      { id:"i13", q:"배워야 할 내용이 명확하고 이해하기 쉽게 제시되었는가?",
+        left:"분명하지 않다", right:"명확하고 이해하기 쉽다" }
+    ]},
+    { name:"2. 시각 자료 (사진, 지도, 그래프 등)", items:[
+      { id:"i21", q:"자료가 본문 이해를 돕는 필수 요소인가, 아니면 단순한 장식에 그치는가?",
+        left:"단순한 장식에 그친다", right:"본문 이해에 꼭 필요하다" },
+      { id:"i22", q:"자료의 크기가 충분히 크고, 해상도가 선명하며, 설명(캡션·범례)이 명확한가?",
+        left:"작거나 흐릿하고 설명이 부족하다", right:"크고 선명하며 설명이 명확하다" },
+      { id:"i23", q:"최신 사진, 다양한 주제의 지도, 인포그래픽 등 다채로운 자료를 활용하는가? (→실제성)",
+        left:"자료의 종류가 단조롭다", right:"자료의 종류가 다채롭다" }
+    ]},
+    { name:"3. 본문 텍스트 및 내용 구성", items:[
+      { id:"i31", q:"백과사전처럼 정보를 나열하는가, 아니면 이야기나 설명 중심으로 서술되었는가?",
+        left:"백과사전처럼 나열한다", right:"이야기와 설명으로 이끈다" },
+      { id:"i32", q:"좁은 지면에 너무 많은 개념과 정보를 압축적으로 제시하지는 않는가?",
+        left:"좁은 지면에 압축돼 있다", right:"여유 있게 전개된다" },
+      { id:"i33", q:"어려운 지리 용어를 학생 눈높이에 맞춰 친절하게 설명해 주는가?",
+        left:"용어만 제시한다", right:"눈높이에 맞춰 설명한다" }
+    ]},
+    { name:"4. 학습 활동 및 탐구 과제", items:[
+      { id:"i41", q:"제시된 활동이 실제 수업 시간 안에 수행하기에 적합한가?",
+        left:"시간 안에 하기 어렵다", right:"수업 시간에 적합하다" },
+      { id:"i42", q:"정보를 찾아 요약하는 수준인가, 아니면 자료를 해석하고 자신의 주장을 만들게 하는가? (→Doing Geography)",
+        left:"정보를 찾아 요약한다", right:"해석하고 주장을 만든다" },
+      { id:"i43", q:"제시된 과제가 현실 세계의 문제와 맞닿아 있는 \'진짜\' 과제인가? (→실제성)",
+        left:"교과서 안에서 끝난다", right:"현실의 문제와 닿는다" }
+    ]}
+  ];
+
+  var OPEN_Q = "두 교과서가 학생에게 요구하는 일은 어떻게 다른가? 근거가 된 쪽수를 함께 적어 주세요.";
+
+  /* ============ 동작 ============ */
+
+  var SHARED = !!(window.storage && window.storage.set);
+  var REMOTE = false;              // ENDPOINT 사용 여부
+  try { REMOTE = /^https:\/\//.test(ENDPOINT); } catch (e) {}
+  var POOLED = REMOTE || SHARED;   // 여러 모둠 결과가 모이는 상태인가
+
+  var screen = document.getElementById("screen");
+  var session=null, answers={}, openText="", side="uk", tall=false, resMode="all";
+
+  function esc(s){return String(s).replace(/[&<>"']/g,function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+  function el(id){return document.getElementById(id);}
+  function items(){return AREAS.reduce(function(a,s){return a.concat(s.items);},[]);}
+  function pairOf(id){for(var i=0;i<PAIRS.length;i++)if(PAIRS[i].id===id)return PAIRS[i];
+    return {uk:id,kr:"",ukUrl:"",krUrl:""};}
+  function pairLabel(id){var p=pairOf(id);return p.uk+" ↔ "+p.kr;}
+
+  function embeddable(url){
+    if(!url) return "";
+    var m = url.match(/drive\.google\.com\/file\/d\/([^/]+)/);
+    if(m) return "https://drive.google.com/file/d/"+m[1]+"/preview";
+    m = url.match(/drive\.google\.com\/open\?id=([^&]+)/);
+    if(m) return "https://drive.google.com/file/d/"+m[1]+"/preview";
+    return url;
+  }
+
+  function keyFor(c,g){return "tbc:"+c+":"+g;}
+  function sortRows(r){return r.sort(function(a,b){
+    return String(a.group).localeCompare(String(b.group),"ko");});}
+
+  function save(c,g,d){
+    if(REMOTE){
+      return fetch(ENDPOINT,{
+        method:"POST",
+        headers:{"Content-Type":"text/plain;charset=utf-8"},
+        body:JSON.stringify({code:c,group:g,pair:d.pair,answers:d.answers,open:d.open})
+      }).then(function(r){return r.json();}).then(function(j){
+        if(!j || !j.ok) throw new Error(j && j.error || "저장 실패");
+        return true;
+      });
+    }
+    var t=JSON.stringify(d);
+    if(SHARED) return window.storage.set(keyFor(c,g),t,true);
+    localStorage.setItem(keyFor(c,g),t); return Promise.resolve(true);
+  }
+
+  function loadAll(code){
+    if(REMOTE){
+      var u = ENDPOINT+(ENDPOINT.indexOf("?")<0?"?":"&")+"code="+encodeURIComponent(code);
+      return fetch(u).then(function(r){return r.json();}).then(function(j){
+        if(!j || !j.ok) throw new Error(j && j.error || "불러오기 실패");
+        return sortRows(j.rows||[]);
+      });
+    }
+    var prefix="tbc:"+code+":";
+    if(!SHARED){var o=[];for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);
+      if(k.indexOf(prefix)===0){try{o.push(JSON.parse(localStorage.getItem(k)));}catch(e){}}}
+      return Promise.resolve(sortRows(o));}
+    return window.storage.list(prefix,true).then(function(l){
+      return Promise.all(((l&&l.keys)||[]).map(function(k){
+        return window.storage.get(k,true)
+          .then(function(r){try{return JSON.parse(r.value);}catch(e){return null;}})
+          .catch(function(){return null;});}));
+    }).then(function(rows){return sortRows(rows.filter(Boolean));});
+  }
+
+  /* ---------- 시작 ---------- */
+
+  function renderStart(){
+    screen.innerHTML =
+      "<h1>교과서 비교 활동</h1>"+
+      '<p class="lede">한국 교과서와 영국 교과서를 같은 12개 항목으로 읽고, 두 책이 학생에게 무엇을 '+
+      "요구하는지 비교합니다. 2~3명이 한 모둠으로 함께 논의하며 입력하세요.</p>"+
+      (POOLED?"":'<div class="note">지금은 이 브라우저에만 저장됩니다. '+
+        "강의실 전체 결과를 모으려면 대화창 안에서 열어 주세요.</div>")+
+      '<div class="card">'+
+        '<div class="row2" style="margin-bottom:16px">'+
+          '<div><label class="field" for="f-code">수업 코드</label>'+
+          '<input id="f-code" type="text" placeholder="예: geo2026"></div>'+
+          '<div><label class="field" for="f-group">모둠 이름</label>'+
+          '<input id="f-group" type="text" placeholder="예: 1모둠"></div>'+
+        "</div>"+
+        '<label class="field" for="f-pair">배정받은 비교 대상</label>'+
+        '<select id="f-pair">'+PAIRS.map(function(p){
+          return '<option value="'+p.id+'">'+esc(p.uk+" ↔ "+p.kr)+"</option>";}).join("")+"</select>"+
+        '<div id="f-err"></div>'+
+        '<div class="row2" style="margin-top:20px">'+
+          '<button id="f-go">비교 시작하기</button>'+
+          '<button id="f-view" class="ghost">전체 결과 보기</button>'+
+        "</div>"+
+        '<div class="hint">같은 수업 코드를 쓰는 모든 모둠의 응답이 함께 모입니다. '+
+        "입력한 내용은 강의실 전체에 공개됩니다.</div>"+
+      "</div>";
+
+    function begin(mode){
+      var code=el("f-code").value.trim(), group=el("f-group").value.trim();
+      if(!code){el("f-err").innerHTML='<div class="err" style="margin:16px 0 0">수업 코드를 입력해 주세요.</div>';return;}
+      if(mode==="fill"&&!group){el("f-err").innerHTML='<div class="err" style="margin:16px 0 0">모둠 이름을 입력해 주세요.</div>';return;}
+      session={code:code,group:group,pair:el("f-pair").value};
+      answers={};openText="";side="uk";tall=false;
+      if(mode==="fill")renderFill();else renderResults();
+    }
+    el("f-go").onclick=function(){begin("fill");};
+    el("f-view").onclick=function(){begin("view");};
+  }
+
+  /* ---------- 입력 ---------- */
+
+  function paintViewer(){
+    var p=pairOf(session.pair);
+    var raw = side==="kr" ? p.krUrl : p.ukUrl;
+    var url = embeddable(raw);
+    var frame=el("v-frame");
+    frame.className = "frame"+(tall?" tall":"");
+    frame.innerHTML = url
+      ? '<iframe src="'+esc(url)+'" allow="autoplay" title="교과서 지면"></iframe>'
+      : '<div class="blank">이 자료의 링크가 아직 설정되지 않았습니다.<br>'+
+        "파일 위쪽 설정 부분의 "+(side==="kr"?"krUrl":"ukUrl")+" 에 주소를 넣어 주세요.</div>";
+    el("v-kr").className="vtab kr"+(side==="kr"?" on":"");
+    el("v-uk").className="vtab uk"+(side==="uk"?" on":"");
+    var open=el("v-open");
+    if(raw){open.classList.remove("hidden");open.href=raw;}else{open.classList.add("hidden");}
+    el("v-size").textContent = tall ? "창 줄이기" : "창 키우기";
+  }
+
+  function renderFill(){
+    var total=items().length*2, p=pairOf(session.pair);
+
+    var body=AREAS.map(function(area){
+      var rows=area.items.map(function(it){
+        function set(s){
+          var name=s==="kr"?"한국":"영국";
+          var dots=[1,2,3,4].map(function(n){
+            return '<button class="dot '+s+'" data-i="'+it.id+'" data-s="'+s+'" data-v="'+n+'" '+
+                   'aria-label="'+name+" "+n+'점">'+n+"</button>";}).join("");
+          return '<div><div class="rowlabel">'+name+'</div><div class="set">'+dots+"</div></div>";
+        }
+        return '<div class="grow"><div><div class="q">'+esc(it.q)+"</div>"+
+               '<div class="poles">1 <b>'+esc(it.left)+"</b> — <b>"+esc(it.right)+"</b> 4</div></div>"+
+               set("kr")+set("uk")+"</div>";
+      }).join("");
+      return '<div class="gsec">'+esc(area.name)+"</div>"+rows;
+    }).join("");
+
+    screen.innerHTML =
+      '<div class="viewer">'+
+        '<div class="vtabs">'+
+          '<button id="v-uk" class="vtab uk on">'+esc(p.uk)+"</button>"+
+          '<button id="v-kr" class="vtab kr">'+esc(p.kr)+"</button>"+
+          '<div class="vtools">'+
+            '<button id="v-size" class="tiny">창 키우기</button>'+
+            '<a id="v-open" href="#" target="_blank" rel="noopener" class="hidden">새 탭 ↗</a>'+
+          "</div>"+
+        "</div>"+
+        '<div id="v-frame" class="frame"></div>'+
+        '<div class="vprog"><span>'+esc(session.group)+"</span>"+
+        '<span id="p-count">0 / '+total+"</span></div>"+
+        '<div class="track"><div class="fill" id="p-fill" style="width:0%"></div></div>'+
+      "</div>"+
+      '<p class="lede">위 창에서 두 교과서 지면을 번갈아 보며, 각 항목에서 어느 쪽에 가까운지 고르세요. '+
+      "좋고 나쁨이 아니라 <strong>무엇을 요구하는가</strong>를 고르는 척도입니다.</p>"+
+      '<div class="grid"><div class="ghead"><span>항목</span><span>한국</span><span>영국</span></div>'+
+      body+"</div>"+
+      '<div class="card" style="margin-top:14px"><label class="field" for="f-open">'+esc(OPEN_Q)+"</label>"+
+      '<textarea id="f-open" placeholder="예: 한국 교과서는 … (00쪽), 영국 교과서는 … (00쪽)"></textarea></div>'+
+      '<div id="s-err"></div>'+
+      '<div class="row2"><button id="f-submit" disabled>제출하고 전체 결과 보기</button>'+
+      '<button id="f-back" class="ghost">처음으로</button></div>'+
+      '<div class="hint" id="f-note">12개 항목을 두 교과서 모두 고르고 서술 문항을 채우면 제출할 수 있습니다.</div>';
+
+    paintViewer();
+    el("v-uk").onclick=function(){side="uk";paintViewer();};
+    el("v-kr").onclick=function(){side="kr";paintViewer();};
+    el("v-size").onclick=function(){tall=!tall;paintViewer();};
+
+    function refresh(){
+      var done=Object.keys(answers).length;
+      el("p-count").textContent=done+" / "+total;
+      el("p-fill").style.width=(done/total)*100+"%";
+      var ready=done===total&&openText.trim().length>0;
+      el("f-submit").disabled=!ready;
+      el("f-note").className=ready?"hint hidden":"hint";
+    }
+
+    Array.prototype.forEach.call(screen.querySelectorAll(".dot"),function(b){
+      b.onclick=function(){
+        var i=b.dataset.i,s=b.dataset.s;
+        answers[i+"_"+s]=Number(b.dataset.v);
+        Array.prototype.forEach.call(
+          screen.querySelectorAll('.dot[data-i="'+i+'"][data-s="'+s+'"]'),
+          function(o){o.classList.remove("on");});
+        b.classList.add("on");refresh();
+      };
+    });
+
+    el("f-open").oninput=function(){openText=this.value;refresh();};
+    el("f-back").onclick=renderStart;
+    el("f-submit").onclick=function(){
+      var btn=this;btn.disabled=true;btn.textContent="제출하는 중…";
+      save(session.code,session.group,{group:session.group,pair:session.pair,
+        answers:answers,open:openText.trim(),at:Date.now()})
+        .then(function(ok){if(!ok)throw new Error("no");renderResults();})
+        .catch(function(){
+          el("s-err").innerHTML='<div class="err">저장하지 못했습니다. 잠시 뒤 다시 눌러 주세요. '+
+            "입력한 내용은 그대로 남아 있습니다.</div>";
+          btn.disabled=false;btn.textContent="제출하고 전체 결과 보기";});
+    };
+  }
+
+  /* ---------- 결과 ---------- */
+
+  function renderResults(){
+    screen.innerHTML='<p class="lede">결과를 불러오는 중…</p>';
+    loadAll(session.code).then(function(rows){ paintResults(rows); })
+      .catch(function(){
+        screen.innerHTML='<div class="err">결과를 불러오지 못했습니다.</div>'+
+          '<button id="r-back" class="ghost small">처음으로</button>';
+        el("r-back").onclick=renderStart;
+      });
+  }
+
+  function avg(list){
+    var v=list.filter(function(x){return !!x;});
+    if(!v.length) return null;
+    return v.reduce(function(a,b){return a+b;},0)/v.length;
+  }
+  function barRow(name,v,cls){
+    return '<div class="res-line"><span class="res-name">'+name+'</span>'+
+      '<div class="res-track"><div class="res-fill '+cls+'" style="width:'+
+      (v?((v-1)/3)*100:0)+'%"></div></div>'+
+      '<span class="res-num">'+(v?v.toFixed(1):"–")+'</span></div>';
+  }
+
+  function chartAll(rows){
+    return AREAS.map(function(area){
+      return '<div class="gsec" style="background:none;border:none;padding:18px 0 6px">'+esc(area.name)+"</div>"+
+        area.items.map(function(it){
+          var lines=[["kr","한국"],["uk","영국"]].map(function(s2){
+            return barRow(s2[1], avg(rows.map(function(r){
+              return r.answers&&r.answers[it.id+"_"+s2[0]];})), s2[0]);
+          }).join("");
+          return '<div class="res-item"><div class="res-q">'+esc(it.q)+"</div>"+lines+
+            '<div class="poles" style="margin-left:39px">'+esc(it.left)+" — "+esc(it.right)+"</div></div>";
+        }).join("");
+    }).join("");
+  }
+
+  function chartByGroup(rows){
+    return rows.map(function(r){
+      var body=AREAS.map(function(area){
+        var lines=[["kr","한국"],["uk","영국"]].map(function(s2){
+          return barRow(s2[1], avg(area.items.map(function(it){
+            return r.answers&&r.answers[it.id+"_"+s2[0]];})), s2[0]);
+        }).join("");
+        return '<div class="res-item"><div class="res-q">'+esc(area.name)+"</div>"+lines+"</div>";
+      }).join("");
+      var whole=[["kr","한국"],["uk","영국"]].map(function(s2){
+        return barRow(s2[1], avg(items().map(function(it){
+          return r.answers&&r.answers[it.id+"_"+s2[0]];})), s2[0]);
+      }).join("");
+      return '<div class="card"><h2>'+esc(r.group)+"</h2>"+
+        '<p class="hint" style="margin:-6px 0 14px">'+esc(pairLabel(r.pair))+"</p>"+
+        body+
+        '<div class="res-item" style="border-top:1px solid var(--rule);padding-top:12px">'+
+        '<div class="res-q">12개 항목 전체</div>'+whole+"</div>"+
+        '<div class="quote" style="margin-top:14px">'+esc(r.open)+"</div></div>";
+    }).join("");
+  }
+
+  function paintResults(rows){
+    var byGroup = resMode==="group";
+    var quotes=rows.map(function(r){
+      return '<div class="quote">'+esc(r.open)+
+        '<div class="quote-by">'+esc(r.group)+" · "+esc(pairLabel(r.pair))+"</div></div>";}).join("");
+
+    screen.innerHTML=
+      "<h1>강의실 전체 결과</h1>"+
+      '<p class="lede">수업 코드 <strong>'+esc(session.code)+"</strong> · 제출한 모둠 "+rows.length+
+      "개. 막대가 오른쪽으로 갈수록 항목의 오른쪽 서술에 가깝다는 뜻입니다.</p>"+
+      (rows.length===0
+        ? '<div class="note">아직 제출한 모둠이 없습니다. 첫 모둠이 제출하면 여기에 나타납니다.</div>'
+        : '<div class="vtabs" style="margin-bottom:12px">'+
+            '<button id="t-all" class="vtab kr'+(byGroup?"":" on")+'" style="border-radius:6px;border-bottom:1px solid var(--line)">전체 평균</button>'+
+            '<button id="t-grp" class="vtab kr'+(byGroup?" on":"")+'" style="border-radius:6px;border-bottom:1px solid var(--line)">모둠별</button>'+
+          "</div>"+
+          (byGroup
+            ? chartByGroup(rows)
+            : '<div class="card"><h2>항목별 비교</h2>'+chartAll(rows)+"</div>"+
+              '<div class="card"><h2>모둠이 쓴 답</h2><p class="hint" style="margin:-4px 0 16px">'+
+              esc(OPEN_Q)+"</p>"+quotes+"</div>"))+
+      '<div class="row2"><button id="r-again" class="ghost small">새로 고침</button>'+
+      '<button id="r-back" class="ghost small">처음으로</button></div>';
+
+    if(rows.length){
+      el("t-all").onclick=function(){resMode="all";paintResults(rows);};
+      el("t-grp").onclick=function(){resMode="group";paintResults(rows);};
+    }
+    el("r-again").onclick=renderResults;
+    el("r-back").onclick=renderStart;
+  }
+
+  renderStart();
+})();
+</script>
