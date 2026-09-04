@@ -1,1 +1,601 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>지리교과교육론 1강 · 지리교육의 목적과 목표</title>
+<style>
+/* ═══════════════════════════════════════════════════════════
+   수업자료 공통 스타일 v1  —  매주 이 블록을 그대로 재사용
+   토큰: --ink 본문 / --mid 보조 / --soft 흐림 / --line 선
+        --wash 옅은 배경 / --acc 강조(짙은 청록) / --acc-w 강조 배경
+   컴포넌트: .menu .mcard / .lead / .concept / .step / .opt
+            .panel(예시·적용 동급 블록) / .out / .foot
+   새 자료를 만들 때: MENU 배열과 각 활동 함수만 교체
+   ═══════════════════════════════════════════════════════════ */
+:root{
+  --ink:#111517; --mid:#525C60; --soft:#8A9296;
+  --line:#E2E5E2; --line2:#EFF1EE; --wash:#F5F7F5;
+  --acc:#0E5A50; --acc-w:#E2EFEA; --red:#A03A26;
+  --y1:#CFE6DC; --y2:#F3E3C8; --y3:#D6E2F2;
+  --f:Pretendard,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --w:1120px;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:#fff;color:var(--ink);font-family:var(--f);font-size:16px;
+  line-height:1.75;-webkit-font-smoothing:antialiased;letter-spacing:-.005em}
+button,input,textarea{font-family:inherit;font-size:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
 
+header{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.96);
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.hin{max-width:var(--w);margin:0 auto;padding:9px 30px;display:flex;align-items:center;gap:18px}
+.brand{background:none;border:none;cursor:pointer;padding:0;text-align:left;line-height:1.3}
+.brand .c{display:block;font-size:11.5px;color:var(--soft)}
+.brand .n{display:block;font-size:14.5px;font-weight:600}
+.switch{margin-left:auto;display:flex;gap:4px}
+.switch button{background:none;border:1px solid transparent;border-radius:6px;cursor:pointer;
+  padding:5px 12px;font-size:13.5px;color:var(--mid);white-space:nowrap}
+.switch button:hover{border-color:var(--line);color:var(--ink)}
+.switch button[aria-current="true"]{background:var(--acc-w);color:var(--acc);font-weight:600}
+.switch b{color:var(--soft);font-weight:600;margin-right:6px}
+.switch button[aria-current="true"] b{color:var(--acc)}
+
+main{max-width:var(--w);margin:0 auto;padding:44px 30px 110px}
+.stage{font-size:13px;color:var(--acc);font-weight:600;letter-spacing:.06em;margin:0 0 6px}
+h1{font-size:33px;font-weight:700;letter-spacing:-.03em;line-height:1.25;margin:0 0 14px}
+.lead{color:var(--mid);font-size:16.5px;margin:0 0 34px;max-width:66ch}
+
+.menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px;margin-top:30px}
+.mcard{text-align:left;background:none;border:1px solid var(--line);border-radius:12px;
+  padding:24px;cursor:pointer;transition:border-color .12s}
+.mcard:hover{border-color:var(--acc)}
+.mcard .k{font-size:12.5px;color:var(--acc);font-weight:600;letter-spacing:.06em}
+.mcard h3{margin:6px 0 8px;font-size:20px;font-weight:700;letter-spacing:-.02em;line-height:1.3}
+.mcard p{margin:0;color:var(--mid);font-size:14.5px;line-height:1.65}
+.mcard .m{margin-top:14px;font-size:13px;color:var(--soft)}
+
+.mission{border:1px solid var(--acc);background:var(--acc-w);border-radius:10px;
+  padding:18px 22px;max-width:760px;margin-bottom:32px}
+.mission .l{font-size:12.5px;color:var(--acc);font-weight:600;letter-spacing:.06em;margin-bottom:4px}
+.mission p{margin:0;font-size:16.5px;font-weight:600}
+.mission .s{margin-top:4px;font-size:14.5px;font-weight:400;color:var(--mid)}
+
+.concept{background:var(--wash);border-radius:10px;padding:20px 24px;max-width:760px;margin-bottom:32px}
+.concept h3{margin:0 0 10px;font-size:13px;color:var(--acc);font-weight:600;letter-spacing:.04em}
+.concept dl{display:grid;grid-template-columns:96px minmax(0,1fr);gap:6px 16px;margin:0;font-size:15px}
+.concept dt{font-weight:600}
+.concept dd{margin:0;color:var(--mid)}
+.concept p{margin:12px 0 0;font-size:14.5px;color:var(--mid)}
+.concept p b{color:var(--ink)}
+
+.step{margin-bottom:38px}
+.step>h3{margin:0 0 3px;font-size:17px;font-weight:700;letter-spacing:-.02em}
+.step>h3 b{color:var(--acc);margin-right:9px}
+.step>.d{margin:0 0 16px;color:var(--mid);font-size:14.5px;max-width:70ch}
+
+.opt{background:none;border:1px solid var(--line);border-radius:6px;cursor:pointer;
+  padding:6px 13px;font-size:14px;color:var(--mid)}
+.opt:hover{border-color:var(--acc);color:var(--ink)}
+.opt[aria-pressed="true"]{background:var(--acc);border-color:var(--acc);color:#fff}
+textarea,input[type=text]{width:100%;background:none;border:1px solid var(--line);border-radius:6px;
+  padding:10px 13px;resize:vertical;line-height:1.7}
+textarea:focus,input[type=text]:focus{border-color:var(--acc)}
+
+.out{border-left:3px solid var(--acc);background:var(--acc-w);border-radius:0 8px 8px 0;
+  padding:16px 20px;max-width:760px;font-size:15.5px;margin-top:8px}
+.out h3{margin:0 0 5px;font-size:13px;color:var(--acc);font-weight:600;letter-spacing:.04em}
+
+/* 고르기 */
+.pick{border-top:1px solid var(--line2);max-width:900px}
+.pick .row{display:flex;gap:13px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line2)}
+.pick .row.off{opacity:.4}
+.chk{width:22px;height:22px;flex-shrink:0;margin-top:4px;border:1px solid var(--line);border-radius:5px;
+  background:none;cursor:pointer;font-size:12px;line-height:20px;color:#fff;padding:0}
+.chk[aria-pressed="true"]{background:var(--acc);border-color:var(--acc)}
+.chk:disabled{cursor:not-allowed}
+.pick .tx{flex:1;font-size:15.5px;line-height:1.6}
+.pick .sc{display:block;color:var(--soft);font-size:12.5px;margin-top:1px}
+.count{font-size:15px;margin-top:16px;color:var(--mid)}
+.count b{color:var(--acc);font-weight:700;font-size:19px}
+
+/* 정렬·분류 */
+.sorttools{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:14px;
+  font-size:14px;color:var(--mid)}
+.list{border-top:1px solid var(--line);max-width:900px}
+.item{display:flex;gap:12px;align-items:flex-start;padding:11px 4px;border-bottom:1px solid var(--line2)}
+.item.dragover{background:var(--acc-w)}
+.item .rank{width:24px;flex-shrink:0;text-align:center;font-variant-numeric:tabular-nums;
+  color:var(--acc);font-weight:700;padding-top:2px}
+.item .gt{flex:1;font-size:15.5px;line-height:1.6;min-width:0}
+.item .gt .sc{display:block;color:var(--soft);font-size:12.5px}
+.item .ct{display:flex;gap:6px;flex-shrink:0}
+.item .mv{display:flex;flex-direction:column;gap:2px;flex-shrink:0}
+.item .mv button{width:26px;height:19px;border:1px solid var(--line);background:none;border-radius:4px;
+  cursor:pointer;font-size:10px;color:var(--soft);padding:0;line-height:1}
+.item .mv button:hover{border-color:var(--ink);color:var(--ink)}
+.tagbtn{border:1px solid var(--line);background:none;border-radius:6px;cursor:pointer;
+  padding:5px 11px;font-size:13.5px;color:var(--mid)}
+.tagbtn[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.empty{color:var(--soft);padding:24px 0;font-size:15px}
+.keynote{margin-top:5px;font-size:13.5px;color:var(--mid);border-left:2px solid var(--line);padding-left:10px}
+.keynote b{color:var(--acc)}
+.keynote .diff{color:var(--red)}
+.refbox{border:1px dashed var(--line);border-radius:10px;padding:18px 22px;margin:6px 0 26px;max-width:900px}
+.refbox .l{font-size:12.5px;color:var(--acc);font-weight:600;letter-spacing:.06em;margin-bottom:8px}
+.refbox .body{font-size:16.5px;line-height:2.05;max-width:76ch}
+.refbox .body mark{padding:2px 0;border-radius:3px}
+.refbox .cav{margin:12px 0 0;font-size:13.5px;color:var(--mid)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--mid);margin-bottom:10px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px}
+
+/* 예시 · 적용 동급 패널 */
+.pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:26px;margin-bottom:34px}
+.panel{border:1px solid var(--line);border-radius:10px;padding:22px 24px}
+.panel>.k{font-size:12.5px;color:var(--acc);font-weight:600;letter-spacing:.06em}
+.panel>h3{margin:4px 0 14px;font-size:18px;font-weight:700;letter-spacing:-.02em}
+.arrow{display:grid;grid-template-columns:64px minmax(0,1fr);gap:7px 14px;font-size:15px;margin:0}
+.arrow dt{color:var(--soft);font-size:13.5px;padding-top:2px}
+.arrow dd{margin:0;line-height:1.6}
+.arrow dd b{color:var(--acc)}
+.task{font-size:15px;color:var(--mid);margin:0 0 12px}
+.task b{color:var(--ink)}
+.check{border-top:1px solid var(--line2);margin-top:16px}
+.check .c{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid var(--line2);align-items:flex-start}
+.check .mk{width:20px;flex-shrink:0;font-size:16px;text-align:center;line-height:1.5}
+.check .mk.ok{color:var(--acc)}
+.check .mk.no{color:#C9CFCA}
+.check .mk.half{color:#C9962E}
+.check .t{font-weight:600;font-size:14.5px}
+.check .h{color:var(--mid);font-size:13.5px;margin-top:1px}
+.score{font-size:15px;margin:14px 0 0;color:var(--mid)}
+.score b{font-size:21px;color:var(--acc);font-weight:700}
+
+/* 하이라이트 */
+.pens{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.pen{border:1px solid var(--line);border-radius:20px;cursor:pointer;padding:6px 15px;font-size:14px}
+.pen[aria-pressed="true"]{border-color:var(--ink);font-weight:600}
+.pen i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:8px;vertical-align:-1px}
+.lens{display:flex;margin-bottom:16px}
+.lens button{background:none;border:1px solid var(--line);border-right:none;cursor:pointer;
+  padding:6px 15px;font-size:13.5px;color:var(--mid)}
+.lens button:first-child{border-radius:6px 0 0 6px}
+.lens button:last-child{border-right:1px solid var(--line);border-radius:0 6px 6px 0}
+.lens button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.doc{margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--line2)}
+.doc h4{margin:0 0 1px;font-size:15px;font-weight:600}
+.doc .src{color:var(--soft);font-size:12.5px;margin-bottom:8px}
+.doc .body{font-size:16.5px;line-height:2.05;max-width:76ch;cursor:text}
+.doc .body mark{padding:2px 0;border-radius:3px;cursor:pointer}
+
+.foot{margin-top:52px;padding-top:16px;border-top:1px solid var(--line);
+  display:flex;align-items:center;gap:18px;font-size:14px;color:var(--mid);flex-wrap:wrap}
+.foot button{background:none;border:none;cursor:pointer;color:var(--mid);padding:0}
+.foot button:hover{color:var(--ink)}
+.foot button.p{color:var(--acc);font-weight:600}
+.foot .msg{color:var(--acc)}
+canvas{display:none}
+
+@media (max-width:820px){
+  .hin,main{padding-left:16px;padding-right:16px}
+  .brand .c{display:none}
+  h1{font-size:26px}
+  .switch button{padding:5px 9px;font-size:12.5px}
+  .switch .lb{display:none}
+  .item{flex-wrap:wrap}
+  .item .ct{width:100%;padding-left:36px}
+}
+@media print{
+  header,.foot,.chk,.mv,.pens,.lens,.sorttools,.opt,.tagbtn{display:none!important}
+  main{padding:0;max-width:none}
+  .item .ct{display:none}
+}
+</style>
+</head>
+<body>
+
+<header><div class="hin">
+  <button class="brand" id="brand"><span class="c">지리교과교육론</span><span class="n" id="hn">1강 지리교육의 목적과 목표</span></button>
+  <div class="switch" id="sw"></div>
+</div></header>
+
+<main id="main"></main>
+<canvas id="cv"></canvas>
+
+<script>
+/* ═════ 자료 ═════ */
+var SENT=[
+ {id:'s1',t:'지구의 아름다움과 함께 장소 및 경관이 어떻게 형성되는지 이해하고 감상한다.',s:'IGU 국제 지리교육헌장'},
+ {id:'s2',t:'세계 여러 지역의 자연환경과 인문환경을 체계적, 종합적으로 이해한다.',s:'세계시민과 지리'},
+ {id:'s3',t:'인간과 환경의 상호작용 방식과 일상적인 공간적 결정이 어떤 결과를 낳는지 파악한다.',s:'IGU 국제 지리교육헌장'},
+ {id:'s4',t:'지도, 현장 조사, 지리정보시스템(GIS)과 같은 탐구 도구를 습득한다.',s:'IGU 국제 지리교육헌장'},
+ {id:'s5',t:'세상에 대한 호기심을 자극하고 스스로 질문을 만들며 지적으로 성장한다.',s:'IGU 국제 지리교육헌장'},
+ {id:'s6',t:'우리 사회의 특징과 세계의 여러 모습을 종합적으로 이해한다.',s:'사회과 교육과정 목표'},
+ {id:'s7',t:'지리, 역사, 제 사회과학의 기본 개념과 원리를 발견하고 탐구하는 능력을 익힌다.',s:'사회과 교육과정 목표'},
+ {id:'s8',t:'현대 사회의 문제를 창의적, 합리적으로 해결하는 데 적극적으로 참여하는 능력과 태도를 기른다.',s:'사회과 교육과정 목표'},
+ {id:'s9',t:'지역사회·국가·세계의 발전에 기여할 수 있는 책임 있는 시민이 된다.',s:'사회과 교육과정 목표'},
+ {id:'s10',t:'지리적 이슈와 쟁점에 관심을 갖고 탐구를 통해 대안을 제시한다.',s:'한국지리 탐구'},
+ {id:'s11',t:'국토환경의 지속가능하고 균형적인 발전을 위해 필요한 로컬 시민성, 다문화 시민성, 생태 시민성을 함양한다.',s:'한국지리 탐구'},
+ {id:'s12',t:'문화 다양성을 포용하는 세계시민으로서 바람직한 가치관과 태도를 형성한다.',s:'세계시민과 지리'},
+ {id:'s13',t:'자연환경과 타인에 대한 책임감을 기르고 모든 생명체와 조화롭게 공존한다.',s:'IGU 국제 지리교육헌장'},
+ {id:'s14',t:'지속 가능한 미래 세계를 위해 현명한 가치 판단을 하며 적극적으로 행동한다.',s:'세계시민과 지리'}];
+var MAX=5;
+
+var DOCS=[
+ {id:'d1',n:'IGU 국제 지리교육헌장',s:'지리교육의 가치와 기여',
+  t:'지구의 아름다움과 함께 장소 및 경관이 어떻게 형성되는지 이해하고 감상하는 능력을 길러 준다. 인간과 환경의 상호작용 방식과 우리의 일상적인 공간적 결정이 어떤 결과를 낳는지 파악하게 한다. 기후 변화, 물 관리, 식량 안보, 도시화 등 현대 사회의 복잡한 문제들을 지리적 관점을 통해 깊이 있게 이해하도록 돕는다. 세상에 대한 호기심을 자극하고 스스로 질문을 만들며 지적으로 성장하도록 돕는다. 지도, 현장 조사, 지리정보시스템(GIS)과 같은 독특하고 강력한 탐구 도구와 21세기 핵심 기술을 습득하게 한다.'},
+ {id:'d2',n:'사회과 교육과정 목표',s:'2022 개정 교육과정',
+  t:'사회과는 학생들이 시민으로서의 자질을 함양할 수 있도록 사회현상에 관한 기초적 지식을 습득함은 물론, 지리, 역사, 제 사회과학의 기본 개념과 원리를 발견하고 탐구하는 능력을 익혀 우리 사회의 특징과 세계의 여러 모습을 종합적으로 이해하게 한다. 또한 사회과는 다양한 정보를 활용하여 현대 사회의 문제를 창의적, 합리적으로 해결하는 데 적극적으로 참여하는 능력과 태도를 기르는 것을 목표로 한다. 이를 통해 사회과는 개인의 성장은 물론, 지역사회·국가·세계의 발전에 기여할 수 있는 책임 있는 시민을 기른다.'},
+ {id:'d3',n:'세계시민과 지리',s:'고등학교 일반선택 과목',
+  t:'세계시민과 지리는 세계 여러 지역의 자연환경과 인문환경을 체계적, 종합적으로 이해하고 지속 가능한 미래 세계를 위해 현명한 가치 판단을 하며 적극적으로 행동하는 시민의 양성을 목표로 한다. 자연환경 및 인문환경의 공간적 다양성을 염두에 둔 상호 공존의 세계를 추구하고, 빠르게 변화하는 현대 세계에 능동적으로 대처하며, 문화 다양성을 포용하는 세계시민으로서 바람직한 가치관과 태도를 형성하고자 한다.'},
+ {id:'d4',n:'한국지리 탐구',s:'고등학교 진로선택 과목',
+  t:'한국지리 탐구의 목표는 국토환경 및 지역이 당면한 지리적 이슈와 쟁점에 관심을 갖고, 탐구를 통해 대안을 제시할 수 있는 책임감 있는 시민을 양성하는 것이다. 이를 통해 국토와 지역에 대한 지리적 이해, 이슈와 문제에 대한 탐구능력, 환경의 지속가능한 활용, 국토의 균형적 발전을 중시하는 태도를 함양하고자 한다.'}];
+
+var LENS={
+ abc:{n:'지식·이해 / 과정·기능 / 가치·태도',pens:[
+   {k:'know',t:'지식·이해',c:'#CFE6DC'},{k:'skill',t:'과정·기능',c:'#D6E2F2'},{k:'value',t:'가치·태도',c:'#F3E3C8'}]},
+ io:{n:'내재적 / 외재적',pens:[{k:'in',t:'내재적',c:'#CFE6DC'},{k:'ex',t:'외재적',c:'#F3E3C8'}]}};
+
+/* 활동 1 참고 분류 — 정답이 아니라 판단의 근거를 보여 주는 자료 */
+var KEY={
+ s1:['in','장소와 경관을 이해하고 감상하는 것 자체가 목적입니다.'],
+ s2:['in','세계를 이해하는 방식이 달라지는 것 자체가 목적입니다.'],
+ s3:['in','인간과 환경의 관계를 파악하는 지리적 이해입니다.'],
+ s4:['both','도구를 다루는 것이 지리적으로 보는 방식이면 내재적, 진로나 다른 과제를 위한 수단이면 외재적입니다.'],
+ s5:['in','호기심과 질문은 배움 자체의 가치에 가깝습니다.'],
+ s6:['in','사회와 세계를 종합적으로 이해하는 것이 목적입니다.'],
+ s7:['in','개념과 원리를 탐구하는 방식 안으로 들어가는 것입니다.'],
+ s8:['ex','지리를 통해 사회문제 해결에 참여하게 하려는 목적입니다.'],
+ s9:['ex','책임 있는 시민을 기르는 것은 교과 밖의 목적입니다.'],
+ s10:['both','탐구 자체는 내재적이지만, 대안 제시와 참여는 외재적입니다.'],
+ s11:['ex','시민성 함양은 대표적인 외재적 목적입니다.'],
+ s12:['ex','세계시민의 가치관 형성을 목적으로 삼습니다.'],
+ s13:['ex','책임감과 공존은 지리를 통해 기르려는 태도입니다.'],
+ s14:['ex','판단과 행동으로 나아가는 것이 목적입니다.']};
+var KEYN={in:'내재적',ex:'외재적',both:'둘 다 가능'};
+
+/* 활동 2 예시 답안 — IGU 헌장 */
+var REF={
+ abc:[
+  ['장소 및 경관이 어떻게 형성되는지 이해하고','know'],
+  ['감상하는 능력','value'],
+  ['인간과 환경의 상호작용 방식과 우리의 일상적인 공간적 결정이 어떤 결과를 낳는지 파악하게','know'],
+  ['복잡한 문제들을 지리적 관점을 통해 깊이 있게 이해하도록','know'],
+  ['세상에 대한 호기심을 자극하고','value'],
+  ['스스로 질문을 만들며','skill'],
+  ['탐구 도구와 21세기 핵심 기술을 습득하게','skill']],
+ io:[
+  ['지구의 아름다움과 함께 장소 및 경관이 어떻게 형성되는지 이해하고 감상하는 능력을 길러 준다','in'],
+  ['인간과 환경의 상호작용 방식과 우리의 일상적인 공간적 결정이 어떤 결과를 낳는지 파악하게 한다','in'],
+  ['현대 사회의 복잡한 문제들을 지리적 관점을 통해 깊이 있게 이해하도록 돕는다','in'],
+  ['세상에 대한 호기심을 자극하고 스스로 질문을 만들며 지적으로 성장하도록 돕는다','in'],
+  ['21세기 핵심 기술을 습득하게 한다','ex']]};
+
+var MENU=[
+ {k:'m1',n:'활동 1',lb:'목표 분류',h:'지리교육 목표의 이해와 분류',
+  d:'중·고등학생을 위한 지리교육의 목표를 다섯 개 고릅니다. 우선순위를 정하고 내재적·외재적으로 나눈 뒤 결과를 이미지로 내려받습니다.',m:'25분'},
+ {k:'m2',n:'활동 2',lb:'문장 읽기',h:'교육과정 목표 문장을 뜯어 읽는다',
+  d:'교육과정 목표 문단에서 필요한 부분만 드래그해 표시합니다. 지식·기능·태도로 한 번, 내재적·외재적으로 한 번 읽습니다.',m:'15분'},
+ {k:'m3',n:'활동 3',lb:'행동목표',h:'행동목표로 바꾸어 본다',
+  d:'모호한 목표 한 문장을 메이거 방식의 행동목표로 고쳐 씁니다. 행동·기준·조건이 들어갔는지 쓰는 동안 바로 확인됩니다.',m:'20분'}];
+
+/* ═════ 상태 ═════ */
+function blank(){return {scr:'home',
+  m1:{on:{},order:[],tag:{},rank:true,key:false},
+  m2:{lens:'abc',pen:'know',marks:{abc:{},io:{}},key:false,more:false},
+  m3:{txt:''}};}
+var S=blank(),dirty=false;
+function $(s){return document.querySelector(s);}
+function esc(s){return (s||'').replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function set(p,v){var k=p.split('.'),o=S;for(var i=0;i<k.length-1;i++)o=o[k[i]];o[k[k.length-1]]=v;dirty=true;}
+function chosen(){
+  var a=SENT.filter(function(x){return S.m1.on[x.id];}),r=[];
+  S.m1.order.forEach(function(id){for(var i=0;i<a.length;i++)if(a[i].id===id){r.push(a[i]);a.splice(i,1);break;}});
+  return r.concat(a);}
+function sync(){S.m1.order=chosen().map(function(x){return x.id;});}
+
+/* ═════ 화면 ═════ */
+function home(){
+  return '<p class="stage">지리교과교육론 1강</p><h1>지리교육의 목적과 목표</h1>'+
+  '<div class="menu">'+MENU.map(function(m){
+    return '<button class="mcard" data-go="'+m.k+'"><div class="k">'+m.n+'</div>'+
+      '<h3>'+m.h+'</h3><p>'+m.d+'</p><div class="m">'+m.m+'</div></button>';}).join('')+'</div>';
+}
+
+/* ── 활동 1 ── */
+function keyNote(id){
+  var k=KEY[id];if(!k)return '';
+  var mine=S.m1.tag[id],diff=mine&&k[0]!=='both'&&mine!==k[0];
+  return '<div class="keynote"><b>참고 · '+KEYN[k[0]]+'</b> — '+k[1]+
+    (diff?' <span class="diff">내 선택과 다릅니다. 어느 쪽이 맞는지 근거를 들어 보십시오.</span>':'')+'</div>';
+}
+function m1(){
+  var list=chosen(),n=list.length,full=n>=MAX;
+  var rows=SENT.map(function(g){
+    var on=!!S.m1.on[g.id];
+    return '<div class="row '+(!on&&full?'off':'')+'">'+
+      '<button class="chk" aria-pressed="'+on+'" data-on="'+g.id+'"'+(!on&&full?' disabled':'')+'>✓</button>'+
+      '<div class="tx">'+esc(g.t)+'<span class="sc">'+g.s+'</span></div></div>';}).join('');
+  var body=n?list.map(function(x,i){
+      return '<div class="item" draggable="true" data-id="'+x.id+'">'+
+        '<div class="mv"><button data-mv="'+x.id+'" data-dir="-1" title="위로">▲</button>'+
+        '<button data-mv="'+x.id+'" data-dir="1" title="아래로">▼</button></div>'+
+        (S.m1.rank?'<div class="rank">'+(i+1)+'</div>':'')+
+        '<div class="gt">'+esc(x.t)+'<span class="sc">'+x.s+'</span>'+
+          (S.m1.key?keyNote(x.id):'')+'</div>'+
+        '<div class="ct">'+
+         '<button class="tagbtn" aria-pressed="'+(S.m1.tag[x.id]==='in')+'" data-tg="'+x.id+'" data-v="in">내재적</button>'+
+         '<button class="tagbtn" aria-pressed="'+(S.m1.tag[x.id]==='ex')+'" data-tg="'+x.id+'" data-v="ex">외재적</button>'+
+        '</div></div>';}).join('')
+    :'<div class="empty">위에서 문장을 고르면 여기에 나타납니다.</div>';
+  var ci=list.filter(function(x){return S.m1.tag[x.id]==='in';}).length;
+  var ce=list.filter(function(x){return S.m1.tag[x.id]==='ex';}).length;
+
+  return '<p class="stage">활동 1</p><h1>지리교육 목표의 이해와 분류</h1>'+
+  '<div class="mission"><div class="l">미션</div>'+
+   '<p>중·고등학생을 대상으로 지리교육의 목표를 만든다. 총 다섯 개를 고르자.</p>'+
+   '<div class="s">아래 문장은 모두 IGU 국제 지리교육헌장과 2022 개정 교육과정에 실제로 쓰인 표현입니다.</div></div>'+
+
+  '<div class="step"><h3><b>1</b>다섯 개를 고른다</h3>'+
+   '<div class="pick">'+rows+'</div>'+
+   '<p class="count"><b>'+n+'</b> / '+MAX+' 선택'+(full?' — 다섯 개를 채웠습니다. 바꾸려면 하나를 풀고 다시 고르십시오.':'')+'</p></div>'+
+
+  '<div class="step"><h3><b>2</b>우선순위를 정하고 분류한다</h3>'+
+   '<p class="d">▲▼로 옮기거나 문장을 끌어 옮깁니다. 각 문장이 내재적 목적인지 외재적 목적인지 고릅니다.</p>'+
+   '<div class="sorttools"><button class="opt" aria-pressed="'+S.m1.rank+'" id="rk">우선순위 번호 '+(S.m1.rank?'켜짐':'꺼짐')+'</button>'+
+    '<button class="opt" aria-pressed="'+S.m1.key+'" id="ky">참고 분류 '+(S.m1.key?'보는 중':'보기')+'</button>'+
+    '<span>내재적 '+ci+' · 외재적 '+ce+' · 미분류 '+(n-ci-ce)+'</span></div>'+
+   '<div class="list">'+body+'</div></div>'+
+
+  '<div class="concept"><h3>1분 개념</h3><dl>'+
+   '<dt>내재적 목적</dt><dd>지리를 배우는 경험 자체에서 생기는 가치. 세계를 지리적으로 보고 장소와 관계를 이해하게 되는 것.</dd>'+
+   '<dt>외재적 목적</dt><dd>지리를 이용해 다른 가치나 목적을 이루는 것. 시민성, 진로, 사회문제 해결 등.</dd></dl>'+
+   '<p>둘 중 하나가 더 옳다는 뜻이 아닙니다. <b>목적의 성격이 다르다</b>는 뜻입니다.</p></div>'+
+
+  '<div class="out"><h3>활동을 마치면</h3><div>맨 위에 놓은 목표는 내재적입니까, 외재적입니까? 다섯 개 중 어느 쪽이 더 많습니까?</div></div>';
+}
+
+/* ── 활동 2 ── */
+function segsOf(d){
+  var mk=(S.m2.marks[S.m2.lens][d.id]||[]).slice().sort(function(a,b){return a.s-b.s;});
+  var out='',p=0,t=d.t;
+  mk.forEach(function(m,i){
+    if(m.s>p)out+='<span data-s="'+p+'">'+esc(t.slice(p,m.s))+'</span>';
+    var pen=null;LENS[S.m2.lens].pens.forEach(function(x){if(x.k===m.k)pen=x;});
+    out+='<mark data-s="'+m.s+'" data-mi="'+i+'" style="background:'+(pen?pen.c:'#eee')+'">'+esc(t.slice(m.s,m.e))+'</mark>';
+    p=m.e;});
+  if(p<t.length)out+='<span data-s="'+p+'">'+esc(t.slice(p))+'</span>';
+  return out;
+}
+function refSegs(d,lens){
+  var arr=[];
+  (REF[lens]||[]).forEach(function(x){
+    var i=d.t.indexOf(x[0]);if(i>=0)arr.push({s:i,e:i+x[0].length,k:x[1]});});
+  arr.sort(function(a,b){return a.s-b.s;});
+  var out='',p=0;
+  arr.forEach(function(m){
+    if(m.s>p)out+=esc(d.t.slice(p,m.s));
+    var pen=null;LENS[lens].pens.forEach(function(y){if(y.k===m.k)pen=y;});
+    out+='<mark style="background:'+(pen?pen.c:'#eee')+'">'+esc(d.t.slice(m.s,m.e))+'</mark>';
+    p=m.e;});
+  if(p<d.t.length)out+=esc(d.t.slice(p));
+  return out;
+}
+function docBlock(d){
+  return '<div class="doc"><h4>'+d.n+'</h4><div class="src">'+d.s+'</div>'+
+    '<div class="body" data-doc="'+d.id+'">'+segsOf(d)+'</div></div>';
+}
+function m2(){
+  var L=LENS[S.m2.lens],igu=DOCS[0];
+  var ref=S.m2.key?'<div class="refbox"><div class="l">예시 답안 · IGU 국제 지리교육헌장</div>'+
+    '<div class="legend">'+L.pens.map(function(p){
+      return '<span><i style="background:'+p.c+'"></i>'+p.t+'</span>';}).join('')+'</div>'+
+    '<div class="body">'+refSegs(igu,S.m2.lens)+'</div>'+
+    '<p class="cav">하나의 정답은 아닙니다. \'감상하는 능력\'을 지식으로 볼지 태도로 볼지처럼, 나누기 어려운 곳이 오히려 논의할 지점입니다. 내가 칠한 곳과 다른 부분을 찾아 왜 다른지 말해 보십시오.</p></div>':'';
+  var more=S.m2.more?DOCS.slice(1).map(docBlock).join(''):'';
+  return '<p class="stage">활동 2</p><h1>교육과정 목표 문장을 뜯어 읽는다</h1>'+
+  '<div class="concept"><h3>1분 개념</h3><dl>'+
+   '<dt>지식·이해</dt><dd>학생이 알아야 할 사실·개념·원리</dd>'+
+   '<dt>과정·기능</dt><dd>학생이 할 수 있어야 할 일 — 탐구하고 분석하고 도구를 다루는 것</dd>'+
+   '<dt>가치·태도</dt><dd>학생이 갖기를 바라는 관심·책임감·참여 의지</dd></dl>'+
+   '<p>렌즈를 <b>내재적 / 외재적</b>으로 바꾸면 같은 문단을 활동 1의 눈으로 다시 읽게 됩니다.</p></div>'+
+  '<div class="lens">'+Object.keys(LENS).map(function(k){
+    return '<button aria-pressed="'+(S.m2.lens===k)+'" data-lens="'+k+'">'+LENS[k].n+'</button>';}).join('')+'</div>'+
+  '<div class="pens">'+L.pens.map(function(p){
+    return '<button class="pen" aria-pressed="'+(S.m2.pen===p.k)+'" data-pen="'+p.k+'"><i style="background:'+p.c+'"></i>'+p.t+'</button>';}).join('')+'</div>'+
+  '<div style="margin-top:18px">'+docBlock(igu)+'</div>'+
+  '<div class="sorttools"><button class="opt" aria-pressed="'+S.m2.key+'" id="rf">'+(S.m2.key?'예시 답안 닫기':'예시 답안 보기')+'</button>'+
+   '<button class="opt" aria-pressed="'+S.m2.more+'" id="mo">'+(S.m2.more?'다른 문서 닫기':'다른 문서도 해보기')+'</button></div>'+
+  ref+more+
+  '<div class="out"><h3>활동을 마치면</h3><div>헌장 한 문단 안에서 지식·기능·태도가 어떤 비율로 섞여 있습니까? 렌즈를 내재적·외재적으로 바꾸면 같은 자리가 다르게 보입니까?</div></div>';
+}
+
+/* ── 활동 3 ── */
+var VAGUE=/(안다|알게 된다|이해한다|이해할 수 있다|인식한다|깨닫는다|감상한다|즐긴다|믿는다|느낀다|파악한다)/;
+var ACT=/(설명|비교|분석|분류|제시|작성|표시|나열|계산|해결|구별|평가|제안|해석|측정|조사|발표|정리|표현|적용|판단|그린|그리|찾아|만든|산출)/;
+var CRIT=/([0-9]|두 가지|세 가지|네 가지|이상|이하|이내|정확하게|모두|각각|빠짐없이)/;
+var COND=/(활용하여|이용하여|바탕으로|주어졌을 때|참고하여|사용하여|자료를|지도에서|자료에서|통계를|을 보고|를 보고|를 통해|을 통해)/;
+function rules(){
+  var t=S.m3.txt.trim();
+  return [
+   {t:'관찰 가능한 행동 동사',h:"'이해한다·안다·파악한다' 대신 밖에서 볼 수 있는 행동으로",
+    ok:!!t&&ACT.test(t)&&!VAGUE.test(t),half:!!t&&ACT.test(t)&&VAGUE.test(t)},
+   {t:'무엇을 다루는지',h:'어떤 지리적 내용을 배우는지가 문장 안에 있어야 합니다',
+    ok:t.length>18,half:t.length>0&&t.length<=18},
+   {t:'성공 기준',h:"'두 가지 이상', '10개 중 8개' 처럼 어느 정도 잘해야 하는지",
+    ok:!!t&&CRIT.test(t),half:false},
+   {t:'수행 조건',h:"'○○ 자료를 활용하여', '지도가 주어졌을 때' 처럼 어떤 상황에서",
+    ok:!!t&&COND.test(t),half:false}];
+}
+function checkHTML(){
+  var r=rules(),sc=r.filter(function(x){return x.ok;}).length;
+  return '<div class="check">'+r.map(function(x){
+      var m=x.ok?'<span class="mk ok">●</span>':(x.half?'<span class="mk half">◐</span>':'<span class="mk no">○</span>');
+      return '<div class="c">'+m+'<div><div class="t">'+x.t+'</div><div class="h">'+x.h+'</div></div></div>';}).join('')+'</div>'+
+    '<p class="score">네 가지 중 <b>'+sc+'</b>개. 낱말만 보고 판정하므로 마지막 판단은 직접 하십시오.</p>';
+}
+function m3(){
+
+  return '<p class="stage">활동 3</p><h1>행동목표로 바꾸어 본다</h1>'+
+  '<p class="lead">메이거는 학습목표를 수업이 끝난 뒤 학생이 보여 주는, 관찰하고 측정할 수 있는 행동으로 쓰라고 했습니다. 행동·기준·조건 세 가지를 차례로 더합니다.</p>'+
+  '<div class="pair">'+
+   '<div class="panel"><div class="k">예시</div><h3>지도를 이해한다</h3>'+
+    '<dl class="arrow">'+
+     '<dt>1 행동</dt><dd>지도에 특정 장소를 <b>표시할 수 있다.</b></dd>'+
+     '<dt>2 기준</dt><dd>특정 장소를 <b>10개 중 8개 이상</b> 정확하게 표시할 수 있다.</dd>'+
+     '<dt>3 조건</dt><dd><b>세계지도에서 위도와 경도가 주어졌을 때</b>, 특정 장소를 10개 중 8개 이상 정확하게 표시할 수 있다.</dd>'+
+    '</dl></div>'+
+   '<div class="panel"><div class="k">적용</div><h3>우리나라 자연재해의 지리적 특성을 파악하고</h3>'+
+    '<p class="task">성취기준의 이 부분을 행동목표 한 문장으로 바꾸십시오.</p>'+
+    '<textarea rows="4" id="mtx" placeholder="학생은 ○○ 자료를 활용하여 … 할 수 있다.">'+esc(S.m3.txt)+'</textarea>'+
+    '<div id="chk">'+checkHTML()+'</div>'+
+   '</div></div>'+
+  '<div class="out"><h3>생각해 볼 것</h3><div>네 가지를 모두 채우면 좋은 목표입니까? 조건과 기준을 촘촘하게 넣을수록 학생이 할 수 있는 일이 좁아지지는 않습니까?</div></div>';
+}
+
+var V={home:home,m1:m1,m2:m2,m3:m3};
+function foot(){
+  if(S.scr==='home')return '';
+  var ex=S.scr==='m1'?'<button class="p" id="png">이미지로 저장</button>':'';
+  return '<div class="foot">'+ex+'<button id="print">인쇄 · PDF</button>'+
+    '<button id="save">작업 저장</button><button id="load">불러오기</button>'+
+    '<span class="msg" id="msg"></span><input type="file" id="file" accept=".json" hidden></div>';
+}
+function switcher(){
+  $('#sw').innerHTML=MENU.map(function(m,i){
+    return '<button aria-current="'+(S.scr===m.k)+'" data-go="'+m.k+'"><b>'+(i+1)+'</b><span class="lb">'+m.lb+'</span></button>';}).join('');
+  Array.prototype.forEach.call($('#sw').querySelectorAll('[data-go]'),function(b){
+    b.onclick=function(){go(b.dataset.go);};});
+}
+function paint(){
+  $('#main').innerHTML=V[S.scr]()+foot();
+  $('#hn').textContent=S.scr==='home'?'1강 지리교육의 목적과 목표'
+    :MENU.filter(function(m){return m.k===S.scr;})[0].h;
+  switcher();bind();
+}
+function go(k){S.scr=k;paint();window.scrollTo(0,0);}
+$('#brand').onclick=function(){go('home');};
+
+/* ═════ 이벤트 ═════ */
+var dragId=null;
+function bind(){
+  var m=$('#main'),q=function(s){return Array.prototype.slice.call(m.querySelectorAll(s));};
+  q('[data-go]').forEach(function(b){b.onclick=function(){go(b.dataset.go);};});
+  if($('#mtx'))$('#mtx').oninput=function(){S.m3.txt=this.value;dirty=true;
+    $('#chk').innerHTML=checkHTML();};
+  q('[data-on]').forEach(function(b){b.onclick=function(){var id=b.dataset.on;
+    if(S.m1.on[id]){delete S.m1.on[id];}
+    else{if(chosen().length>=MAX)return;S.m1.on[id]=1;}
+    dirty=true;sync();paint();};});
+  if($('#rk'))$('#rk').onclick=function(){S.m1.rank=!S.m1.rank;paint();};
+  if($('#ky'))$('#ky').onclick=function(){S.m1.key=!S.m1.key;paint();};
+  if($('#rf'))$('#rf').onclick=function(){S.m2.key=!S.m2.key;paint();};
+  if($('#mo'))$('#mo').onclick=function(){S.m2.more=!S.m2.more;paint();};
+  q('[data-mv]').forEach(function(b){b.onclick=function(){
+    sync();var o=S.m1.order,i=o.indexOf(b.dataset.mv),j=i+(+b.dataset.dir);
+    if(j<0||j>=o.length)return;var x=o[i];o[i]=o[j];o[j]=x;dirty=true;paint();};});
+  q('[data-tg]').forEach(function(b){b.onclick=function(){var id=b.dataset.tg;
+    S.m1.tag[id]=S.m1.tag[id]===b.dataset.v?'':b.dataset.v;dirty=true;paint();};});
+  q('.item').forEach(function(el){
+    el.ondragstart=function(e){dragId=el.dataset.id;e.dataTransfer.effectAllowed='move';};
+    el.ondragover=function(e){e.preventDefault();el.classList.add('dragover');};
+    el.ondragleave=function(){el.classList.remove('dragover');};
+    el.ondrop=function(e){e.preventDefault();el.classList.remove('dragover');
+      if(!dragId||dragId===el.dataset.id)return;
+      sync();var o=S.m1.order,f=o.indexOf(dragId);o.splice(f,1);
+      o.splice(o.indexOf(el.dataset.id),0,dragId);dragId=null;dirty=true;paint();};});
+  q('[data-lens]').forEach(function(b){b.onclick=function(){
+    S.m2.lens=b.dataset.lens;S.m2.pen=LENS[S.m2.lens].pens[0].k;paint();};});
+  q('[data-pen]').forEach(function(b){b.onclick=function(){S.m2.pen=b.dataset.pen;paint();};});
+  q('.doc .body').forEach(function(el){
+    el.onmouseup=function(){setTimeout(function(){hlSelect(el);},0);};
+    el.onclick=function(e){var s=window.getSelection();
+      if(s&&!s.isCollapsed)return;
+      if(e.target.tagName==='MARK'){var a=S.m2.marks[S.m2.lens][el.dataset.doc];
+        a.sort(function(x,y){return x.s-y.s;});a.splice(+e.target.dataset.mi,1);dirty=true;paint();}};});
+  if($('#print')){$('#print').onclick=function(){window.print();};
+    $('#save').onclick=save;$('#load').onclick=function(){$('#file').click();};
+    $('#file').onchange=load;}
+  if($('#png'))$('#png').onclick=png;
+}
+function offsetIn(el,node,off){
+  var host=(node.nodeType===3)?node.parentNode:node;
+  if(!host||host.dataset.s===undefined)return null;
+  return (+host.dataset.s)+off;
+}
+function hlSelect(el){
+  var s=window.getSelection();
+  if(!s||s.isCollapsed||!s.rangeCount)return;
+  var r=s.getRangeAt(0);
+  if(!el.contains(r.startContainer)||!el.contains(r.endContainer))return;
+  var a=offsetIn(el,r.startContainer,r.startOffset),b=offsetIn(el,r.endContainer,r.endOffset);
+  if(a===null||b===null||a===b)return;
+  var st=Math.min(a,b),en=Math.max(a,b);
+  var store=S.m2.marks[S.m2.lens];
+  if(!store[el.dataset.doc])store[el.dataset.doc]=[];
+  var arr=store[el.dataset.doc].filter(function(m){return m.e<=st||m.s>=en;});
+  arr.push({s:st,e:en,k:S.m2.pen});
+  store[el.dataset.doc]=arr;dirty=true;s.removeAllRanges();paint();
+}
+
+/* ═════ 저장 · 내보내기 ═════ */
+function flash(t){var e=$('#msg');if(e){e.textContent=t;setTimeout(function(){e.textContent='';},2500);}}
+function stamp(){var d=new Date();return ''+d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');}
+function save(){var b=new Blob([JSON.stringify(S,null,2)],{type:'application/json'}),a=document.createElement('a');
+  a.href=URL.createObjectURL(b);a.download='1강_'+S.scr+'_'+stamp()+'.json';a.click();
+  URL.revokeObjectURL(a.href);dirty=false;flash('저장했습니다');}
+function load(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();
+  r.onload=function(){try{var d=JSON.parse(r.result),b=blank();
+    S=Object.assign(b,d);S.m1=Object.assign(b.m1,d.m1||{});S.m2=Object.assign(b.m2,d.m2||{});
+    S.m2.marks=Object.assign({abc:{},io:{}},S.m2.marks||{});S.m3=Object.assign(b.m3,d.m3||{});
+    dirty=false;paint();flash('불러왔습니다');
+  }catch(x){flash('이 화면에서 저장한 파일인지 확인하세요');}e.target.value='';};
+  r.readAsText(f);}
+
+function png(){
+  var list=chosen();
+  if(!list.length){flash('먼저 목표를 고르세요');return;}
+  var W=1000,P=56,c=$('#cv'),g=c.getContext('2d'),SC=2;
+  var FF=getComputedStyle(document.body).fontFamily;
+  function wrap(txt,max,font){g.font=font;var out=[],l=txt;
+    while(g.measureText(l).width>max){var cut=l.length;
+      while(cut>1&&g.measureText(l.slice(0,cut)).width>max)cut--;
+      var sp=l.lastIndexOf(' ',cut);if(sp>cut*0.6)cut=sp+1;
+      out.push(l.slice(0,cut).trim());l=l.slice(cut);}
+    out.push(l);return out;}
+  var F3='600 19px '+FF;
+  var rows=list.map(function(x,i){var ln=wrap(x.t,W-P*2-130,F3);
+    return {i:i+1,ln:ln,src:x.s,tag:S.m1.tag[x.id],h:ln.length*29+26};});
+  var H=P+92+rows.reduce(function(a,b){return a+b.h;},0)+P;
+  c.width=W*SC;c.height=H*SC;g.setTransform(SC,0,0,SC,0,0);
+  g.fillStyle='#fff';g.fillRect(0,0,W,H);
+  g.fillStyle='#111517';g.font='700 30px '+FF;g.fillText('지리교육의 목표 — 나의 선택',P,P+22);
+  g.fillStyle='#8A9296';g.font='400 15px '+FF;
+  g.fillText(new Date().toLocaleDateString('ko-KR')+' · 지리교과교육론 1강',P,P+50);
+  var y=P+92;
+  rows.forEach(function(r){
+    g.strokeStyle='#EFF1EE';g.beginPath();g.moveTo(P,y-14);g.lineTo(W-P,y-14);g.stroke();
+    if(S.m1.rank){g.fillStyle='#0E5A50';g.font='700 18px '+FF;g.fillText(String(r.i),P,y+8);}
+    g.fillStyle='#111517';g.font=F3;
+    r.ln.forEach(function(l,k){g.fillText(l,P+32,y+8+k*29);});
+    g.fillStyle='#8A9296';g.font='400 14px '+FF;
+    g.fillText(r.src,P+32,y+8+r.ln.length*29);
+    if(r.tag){var lb=r.tag==='in'?'내재적':'외재적';
+      g.font='600 14px '+FF;var tw=g.measureText(lb).width;
+      g.fillStyle=r.tag==='in'?'#CFE6DC':'#F3E3C8';
+      var bx=W-P-tw-24;
+      if(g.roundRect){g.beginPath();g.roundRect(bx,y-8,tw+24,28,14);g.fill();}
+      else g.fillRect(bx,y-8,tw+24,28);
+      g.fillStyle='#111517';g.fillText(lb,bx+12,y+11);}
+    y+=r.h;});
+  g.strokeStyle='#EFF1EE';g.beginPath();g.moveTo(P,y-14);g.lineTo(W-P,y-14);g.stroke();
+  c.toBlob(function(b){var a=document.createElement('a');
+    a.href=URL.createObjectURL(b);a.download='지리교육의목표_'+stamp()+'.png';a.click();
+    URL.revokeObjectURL(a.href);flash('이미지를 내려받았습니다');});
+}
+window.addEventListener('beforeunload',function(e){if(dirty){e.preventDefault();e.returnValue='';}});
+paint();
+</script>
+</body>
+</html>
