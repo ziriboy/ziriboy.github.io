@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>배추게임</title>
+<style>
+:root{
+  --paper:#F2F4EF;
+  --card:#FFFFFF;
+  --ink:#16241B;
+  --muted:#5F6C62;
+  --faint:#93A096;
+  --line:#D2DACD;
+  --cabbage:#35703F;
+  --sky:#D3E5F0;
+  --storm:#2C3841;
+  --storm-ink:#E6ECF0;
+  --fail:#AF3A2C;
+  --font:"Apple SD Gothic Neo","Malgun Gothic","맑은 고딕",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--paper);color:var(--ink);
+  -webkit-font-smoothing:antialiased;line-height:1.6}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+button:focus-visible,input:focus-visible{outline:3px solid var(--cabbage);outline-offset:2px}
+input{font-family:inherit}
+[hidden]{display:none !important}
+h1,h2,h3{letter-spacing:-.025em;line-height:1.2}
+
+.btn{background:var(--ink);color:#fff;padding:.75rem 1.6rem;border-radius:3px;
+  font-size:1.05rem;font-weight:700;transition:background .15s;white-space:nowrap}
+.btn:hover{background:var(--cabbage)}
+.btn-block{display:block;width:100%;text-align:center;font-size:1.15rem;padding:.9rem}
+.btn-ghost{color:var(--muted);padding:.5rem .9rem;font-size:.9rem;font-weight:600;
+  border:1px solid var(--line);border-radius:3px;background:var(--card);white-space:nowrap}
+.btn-ghost:hover{color:var(--ink);border-color:var(--muted)}
+.btn-ghost.block{display:block;width:100%;text-align:center;margin-top:.6rem}
+
+/* ================= 설정 화면 ================= */
+.page{max-width:68rem;margin:0 auto;padding:0 1.5rem 5rem}
+.hero{padding:4rem 0 2.4rem;border-bottom:2px solid var(--ink)}
+.hero h1{font-size:clamp(2.8rem,7vw,4rem);font-weight:800;margin-bottom:.5rem}
+.hero .tag{font-size:1.15rem;color:var(--muted);max-width:34rem}
+
+.cols{display:grid;grid-template-columns:minmax(0,1fr) 19rem;gap:3.5rem;
+  align-items:start;padding-top:2.8rem}
+
+.doc section{margin-bottom:2.8rem}
+.doc h2{font-size:1.05rem;font-weight:800;color:var(--cabbage);margin-bottom:.9rem}
+.doc p{color:var(--muted);margin-bottom:1rem;max-width:34rem}
+.doc p:last-child{margin-bottom:0}
+
+ol.steps{list-style:none;counter-reset:s}
+ol.steps li{counter-increment:s;position:relative;padding-left:2.3rem;
+  margin-bottom:.8rem;color:var(--muted);max-width:34rem}
+ol.steps li::before{content:counter(s);position:absolute;left:0;top:.2rem;
+  width:1.55rem;height:1.55rem;border-radius:50%;background:var(--ink);color:#fff;
+  font-size:.78rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+ol.steps li b{color:var(--ink)}
+
+table.payout{border-collapse:collapse;width:100%;max-width:34rem;font-size:.93rem;margin-bottom:1rem}
+table.payout th,table.payout td{border:1px solid var(--line);padding:.5rem .3rem;text-align:center}
+table.payout th{background:#E6EBE1;font-weight:700;font-size:.8rem;line-height:1.35}
+table.payout td.c{font-weight:700;background:#FAFBF8;text-align:left;padding-left:.7rem}
+table.payout td.up{font-weight:800;color:var(--cabbage)}
+table.payout td.zero{font-weight:800;color:var(--fail)}
+
+.note{border-left:3px solid var(--line);padding-left:1.1rem;color:var(--muted);
+  font-size:.95rem;max-width:34rem}
+.note b{color:var(--ink)}
+
+/* 설정 카드 */
+.setbox{position:sticky;top:1.5rem;background:var(--card);border:1px solid var(--line);
+  border-radius:4px;padding:1.6rem 1.5rem}
+.setbox h2{font-size:.82rem;font-weight:700;color:var(--faint);margin-bottom:1.3rem}
+.f{margin-bottom:1.2rem}
+.f label{display:block;font-size:.9rem;font-weight:700;color:var(--muted);margin-bottom:.25rem}
+.f .row{display:flex;align-items:baseline;gap:.5rem}
+.f input{font-size:1.9rem;font-weight:800;width:4.6rem;text-align:center;border:none;
+  border-bottom:2px solid var(--ink);background:none;color:var(--ink);padding:.1rem 0}
+.f .u{font-size:.92rem;color:var(--muted)}
+
+.limits{border-top:1px solid var(--line);margin:1.4rem 0;padding-top:1.2rem}
+.lim{display:flex;justify-content:space-between;align-items:baseline;gap:.6rem;
+  padding:.42rem 0;font-size:.9rem}
+.lim .k{color:var(--muted)}
+.lim .v{font-weight:800;font-size:1.02rem;white-space:nowrap}
+.lim.short .v{color:var(--cabbage)}
+.lim.over .v{color:var(--fail)}
+
+/* ================= 보드 ================= */
+.bar{display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  padding:1.3rem 0;border-bottom:2px solid var(--ink);flex-wrap:wrap}
+.bar .title{font-size:1.2rem;font-weight:800}
+.bar .meta{font-size:.9rem;color:var(--muted)}
+.bar .meta b{color:var(--ink)}
+.bar .tools{display:flex;gap:.5rem}
+
+.drawer{background:var(--card);border:1px solid var(--line);border-radius:4px;
+  padding:1.3rem 1.4rem;margin-top:1.2rem}
+.drawer h3{font-size:.95rem;font-weight:800;margin-bottom:.8rem}
+
+/* 조작 패널: 세 영역 고정 */
+.stage{display:grid;grid-template-columns:11rem minmax(0,1fr) auto;gap:2rem;
+  align-items:center;padding:1.7rem 2rem;margin:1.4rem 0;min-height:11.5rem;
+  background:#E5EBE0;border-radius:4px;transition:background-color .4s ease,color .4s ease}
+.stage.good{background:var(--sky)}
+.stage.bad{background:var(--storm);color:var(--storm-ink)}
+
+.zone-a{text-align:center}
+.zone-a .when{font-size:.9rem;font-weight:700;color:var(--muted);margin-bottom:.5rem}
+.stage.bad .zone-a .when{color:#A9B8C4}
+.wx{display:inline-flex;align-items:center;gap:.4rem;margin-top:.6rem;
+  padding:.32rem .7rem;border-radius:999px;font-size:.86rem;font-weight:800}
+.wx svg{width:20px;height:20px;flex:none}
+.wx.good{background:#FBF0D8;color:#8A5E12}
+.wx.bad{background:#54646F;color:#F0F5F8}
+.wx .num{font-weight:700;opacity:.75}
+.dice{width:104px;height:104px}
+.dice rect{fill:#fff;stroke:var(--ink);stroke-width:5}
+.stage.bad .dice rect{fill:#F2F6F8;stroke:#1a222a}
+.dice circle{fill:var(--ink)}
+.rolling{animation:shake .5s ease-in-out infinite}
+@keyframes shake{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}
+@media (prefers-reduced-motion:reduce){.rolling{animation:none;opacity:.55}}
+
+.zone-b .head{font-size:clamp(1.6rem,3.6vw,2.3rem);font-weight:800}
+.zone-b .head.over{color:var(--fail)}
+.zone-b .head.short{color:var(--cabbage)}
+.stage.bad .zone-b .head.over{color:#EFA096}
+.zone-b .sub{font-size:.98rem;color:var(--muted);margin-top:.3rem}
+.stage.bad .zone-b .sub{color:#A9B8C4}
+
+.counter{display:flex;align-items:center;gap:.9rem;margin-top:.7rem}
+.counter button{width:46px;height:46px;border:2px solid currentColor;border-radius:50%;
+  font-size:1.4rem;font-weight:700;line-height:1;flex:none}
+.counter input{font-size:3rem;font-weight:800;width:5.4rem;text-align:center;border:none;
+  background:none;color:inherit;-moz-appearance:textfield}
+.counter input::-webkit-outer-spin-button,.counter input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+
+/* 공급 구간 표시 */
+.zones{display:flex;gap:2px;margin-top:.9rem;max-width:26rem}
+.zones span{flex:1;text-align:center;padding:.45rem .3rem;border-radius:3px;
+  background:rgba(255,255,255,.55);font-size:.82rem;font-weight:700;color:var(--faint);
+  line-height:1.35;transition:background .2s,color .2s}
+.zones span small{display:block;font-size:.72rem;font-weight:600;opacity:.85}
+.stage.bad .zones span{background:rgba(255,255,255,.1);color:#8FA0AD}
+.zones span.on{color:#fff}
+.zones span.on[data-z="short"]{background:var(--cabbage)}
+.zones span.on[data-z="base"]{background:var(--ink)}
+.zones span.on[data-z="over"]{background:var(--fail)}
+
+/* 작물별 수익 */
+.crops{display:flex;gap:2px;margin-top:.9rem;max-width:30rem}
+.crops .c{flex:1;background:rgba(255,255,255,.62);border-radius:3px;padding:.6rem .7rem;text-align:center}
+.stage.bad .crops .c{background:rgba(255,255,255,.1)}
+.crops .c .n{display:block;font-size:.82rem;font-weight:700;color:var(--muted);margin-bottom:.15rem}
+.stage.bad .crops .c .n{color:#A9B8C4}
+.crops .c .v{display:block;font-size:1.45rem;font-weight:800;letter-spacing:-.02em}
+.crops .c .v small{font-size:.8rem;font-weight:700}
+.crops .c.lead .v{font-size:1.9rem;color:var(--cabbage)}
+.stage.bad .crops .c.lead .v{color:#8CC79A}
+.crops .c.lead.zero .v{color:var(--fail)}
+.stage.bad .crops .c.lead.zero .v{color:#EFA096}
+.crops .c.off .v{font-size:.92rem;font-weight:700;color:var(--faint);line-height:2}
+
+.zone-c{display:flex;flex-direction:column;gap:.6rem;align-items:stretch;min-width:11rem}
+.stage.bad .zone-c .btn{background:#fff;color:var(--storm)}
+.stage.bad .zone-c .btn:hover{background:#C5D6BE}
+.stage.bad .zone-c .btn-ghost{background:transparent;color:#A9B8C4;border-color:#586772}
+.stage.bad .zone-c .btn-ghost:hover{color:#fff;border-color:#fff}
+
+/* 기록표 */
+.log{border-collapse:collapse;width:100%;font-size:.98rem;background:var(--card)}
+.log th{font-size:.78rem;font-weight:700;color:var(--faint);padding:.6rem .5rem;
+  border-bottom:2px solid var(--ink);text-align:center;background:var(--paper)}
+.log th.l,.log td.l{text-align:left;padding-left:.9rem}
+.log td{padding:.62rem .5rem;text-align:center;border-bottom:1px solid var(--line);color:var(--faint)}
+.log tr.filled td{color:var(--ink)}
+.log tr.now td{background:#EDF1E9}
+.log tr.newyear td{border-top:1px solid var(--ink)}
+.log td.when{font-weight:700;white-space:nowrap}
+.log th.s,.log td.s{width:4.5rem;white-space:nowrap}
+.log td.s{font-weight:600}
+.log td.cab{font-weight:800;color:var(--cabbage)}
+.log tr.over td.cab{color:var(--fail)}
+.log tr.over td.sup{color:var(--fail);font-weight:700}
+.log tr.short td.sup{color:var(--cabbage);font-weight:700}
+.log tr.filled td.side{color:var(--muted)}
+
+.endzone{margin-top:3rem;padding-top:2.2rem;border-top:2px solid var(--ink)}
+.endzone h2{font-size:1.7rem;font-weight:800;margin-bottom:.5rem}
+.endzone p{color:var(--muted);margin-bottom:1.8rem;max-width:36rem}
+.chart{width:100%;height:auto}
+
+/* ================= 인쇄물 ================= */
+#sheets{display:none;background:#E6E6E2;min-height:100vh}
+body.sheets-open #app{display:none}
+body.sheets-open #sheets{display:block}
+.printbar{position:sticky;top:0;z-index:10;background:#1B1B1B;color:#fff;padding:1rem 1.4rem;
+  display:flex;gap:1.1rem;align-items:center;flex-wrap:wrap}
+.printbar .t{font-weight:800}
+.printbar .hint{font-size:.85rem;color:#9A9A9A}
+.printbar .go{background:#fff;color:#1B1B1B;padding:.55rem 1.3rem;border-radius:3px;font-weight:700}
+.printbar .back{border:1px solid #666;color:#ddd;padding:.5rem 1.1rem;border-radius:3px;font-weight:600;font-size:.9rem}
+.sheet{width:210mm;min-height:297mm;background:#fff;margin:1.2rem auto;padding:18mm 17mm;
+  box-shadow:0 2px 10px rgba(0,0,0,.18);color:#111;font-size:10.5pt;line-height:1.55}
+.sheet-label{font-size:9pt;color:#666;margin-bottom:6mm}
+.sheet h1{font-size:20pt;font-weight:800;color:#2F6B3C;text-align:center;margin-bottom:5mm}
+.sheet h2{font-size:13pt;font-weight:800;margin:7mm 0 2.5mm}
+.frame{border:1.2pt solid #2F6B3C;padding:7mm}
+.sheet p{margin-bottom:3mm}
+ul.rules{list-style:none}
+ul.rules li{padding-left:5.5mm;text-indent:-5.5mm;margin-bottom:2.5mm}
+ul.rules li::before{content:"◇ ";font-weight:700}
+.sheet table{border-collapse:collapse;width:100%;margin:3mm 0 4mm;font-size:10pt}
+.sheet th,.sheet td{border:.6pt solid #999;padding:1.8mm 2mm;text-align:center}
+.sheet th{background:#F0F0EC;font-weight:700}
+.sheet td.blank{height:9mm}
+.sheet td.crop{font-weight:700;background:#FAFAF7}
+.hi{color:#2F6B3C;font-weight:700}
+.cal td,.cal th{padding:1.2mm;font-size:9pt}
+.cal .cl{background:#FAFAF7;font-weight:700;width:16mm}
+.cal .sow{background:#2F6B3C;color:#fff;font-weight:700}
+.cal .grow{background:#DCE8DE}
+.cal .harvest{background:#C9922A;color:#fff;font-weight:700}
+.problem{border-top:.6pt solid #ccc;padding:3.5mm 0}
+.problem:first-child{border-top:none}
+.problem h3{font-size:11.5pt;font-weight:800;color:#2F6B3C;margin-bottom:1.5mm}
+.problem p{margin-bottom:0;font-size:10pt}
+.prompt{margin:5mm 0 3mm;font-weight:700}
+.answer{border:1.2pt solid #2F6B3C;height:105mm;padding:5mm}
+.answer .lines{height:100%;background:repeating-linear-gradient(to bottom,transparent 0,
+  transparent 11mm,#ccc 11mm,#ccc 11.2mm)}
+.name-row{display:flex;gap:8mm;justify-content:flex-end;font-size:10pt;color:#666;margin-bottom:4mm}
+.name-row span{border-bottom:.6pt solid #999;min-width:32mm;padding-bottom:1mm}
+.checklist th:first-child,.checklist td:first-child{text-align:left}
+.checklist td.sc{width:14mm}
+.total td{font-weight:700;background:#F0F0EC}
+
+@media print{
+  body{background:#fff}
+  .printbar,.bar .tools,.zone-c{display:none !important}
+  body.sheets-open #sheets{background:#fff}
+  .sheet{margin:0;box-shadow:none;width:auto;min-height:0;padding:0;page-break-after:always}
+  .sheet:last-child{page-break-after:auto}
+  @page{size:A4;margin:16mm 15mm}
+}
+
+@media (max-width:900px){
+  .cols{grid-template-columns:1fr;gap:2.4rem}
+  .setbox{position:static;order:-1}
+}
+@media (max-width:820px){.sheet{width:auto;padding:8mm}}
+@media (max-width:700px){
+  .stage{grid-template-columns:1fr;gap:1.2rem;padding:1.3rem;text-align:left}
+  .zone-a{display:flex;align-items:center;gap:1rem;text-align:left}
+  .zone-a .when{margin-bottom:0}
+  .dice{width:72px;height:72px}
+  .zone-c{min-width:0}
+  .counter input{font-size:2.4rem;width:4.4rem}
+  .counter button{width:40px;height:40px;font-size:1.2rem}
+  .log{font-size:.86rem}
+  .log td,.log th{padding:.45rem .25rem}
+  .log th.l,.log td.l{padding-left:.4rem}
+}
+</style>
+</head>
+<body>
+
+<main id="app">
+
+<!-- ================= 설정 ================= -->
+<section id="setup">
+  <div class="page">
+    <div class="hero">
+      <h1>배추게임</h1>
+      <p class="tag">고창의 농부가 되어 5년 동안 무엇을 심을지 결정하는 교실 시뮬레이션</p>
+    </div>
+
+    <div class="cols">
+      <div class="doc">
+        <section>
+          <h2>어떤 활동인가</h2>
+          <p>학생 한 명이 밭 하나를 가진 농부가 됩니다. 배추, 무, 고구마 중 하나를 골라 심는데, 배추와 무는 1년에 두 번, 고구마는 재배 기간이 길어 한 번만 심을 수 있습니다. 5년 동안 5천만원을 넘기지 못하면 농부의 가족이 곤경에 처합니다.</p>
+          <p>수익을 가르는 것은 두 가지입니다. 하나는 기후이고, 다른 하나는 다른 농부들의 선택입니다. 배추를 심은 사람이 너무 많으면 값이 폭락하고, 너무 적으면 폭등합니다. 배추를 재배하는 한국 농부가 당면한 문제를 이해하고 그 삶에 공감하는 것이 목표입니다.</p>
+        </section>
+
+        <section>
+          <h2>한 시기가 돌아가는 순서</h2>
+          <ol class="steps">
+            <li><b>학생이 먼저 적습니다.</b> 이번 봄(또는 가을)에 심을 작물을 활동지에 적습니다. 아직 아무것도 공개되지 않습니다.</li>
+            <li><b>주사위를 굴립니다.</b> 1–4면 좋은 기후, 5–6이면 나쁜 기후입니다. 화면 색이 함께 바뀝니다.</li>
+            <li><b>배추를 심은 학생이 손을 듭니다.</b> 손든 수를 세어 입력합니다. 나쁜 기후에서는 이 단계를 건너뜁니다.</li>
+            <li><b>공급 상황이 판정됩니다.</b> 결과가 아래 기록표에 한 줄씩 쌓입니다.</li>
+            <li><b>각자 수익을 적습니다.</b> 이것을 열 번 반복하면 5년이 지납니다.</li>
+          </ol>
+        </section>
+
+        <section>
+          <h2>작물별 수익</h2>
+          <table class="payout">
+            <tr>
+              <th rowspan="2">작물</th>
+              <th colspan="3">기후가 좋을 때 (1–4)</th>
+              <th rowspan="2">기후가 나쁠 때<br>(5, 6)</th>
+            </tr>
+            <tr>
+              <th>기본</th>
+              <th>공급 부족<br><span class="p-low">8</span>명 이하</th>
+              <th>공급 과잉<br><span class="p-high">18</span>명 이상</th>
+            </tr>
+            <tr><td class="c">배추</td><td>600만원</td><td class="up">1,200만원</td><td class="zero">0원</td><td>200만원</td></tr>
+            <tr><td class="c">무</td><td colspan="3">400만원</td><td>300만원</td></tr>
+            <tr><td class="c">고구마</td><td colspan="3">800만원</td><td>700만원</td></tr>
+          </table>
+          <p>고구마는 가을 기후만 따릅니다. 봄에 심은 학생은 봄 칸을 비워 두고 가을에 한 번만 적습니다. 공급 과잉과 부족은 기후가 좋을 때만 일어납니다.</p>
+        </section>
+
+        <section>
+          <h2>진행할 때</h2>
+          <p class="note">참가자의 10% 정도만 연평균 1,000만원을 올릴 수 있도록 설계된 게임입니다. 5년 동안 공급 과잉이나 부족이 최소 한 번은 일어납니다. 학생들이 다음 해 작물을 미리 상의해 공급을 조절하려 들 때가 있는데, 이것은 막을 일이 아니라 다룰 일입니다. 시도가 나오지 않으면 넌지시 힌트를 주고, 계획적으로 공급 부족을 만들었다면 <b>그 방법이 정당한지, 피해를 보는 쪽은 없는지</b> 물어보세요.</p>
+        </section>
+      </div>
+
+      <aside class="setbox">
+        <h2>게임 설정</h2>
+        <div class="f">
+          <label for="cs">학급 인원</label>
+          <div class="row"><input id="cs" type="number" min="6" max="60" value="24"><span class="u">명</span></div>
+        </div>
+        <div class="f">
+          <label for="sy">시작 연도</label>
+          <div class="row"><input id="sy" type="number" min="2000" max="2100" value="2025"><span class="u">년부터 5년</span></div>
+        </div>
+
+        <div class="limits">
+          <div class="lim short"><span class="k">공급 부족</span><span class="v"><span id="t-low">8</span>명 이하</span></div>
+          <div class="lim"><span class="k">기본</span><span class="v" id="t-mid">9–17명</span></div>
+          <div class="lim over"><span class="k">공급 과잉</span><span class="v"><span id="t-high">18</span>명 이상</span></div>
+        </div>
+
+        <button class="btn btn-block" id="start">게임 시작</button>
+        <button class="btn-ghost block" id="toSheets1">활동지 인쇄</button>
+        <button class="btn-ghost block" id="resume" hidden>이어서 하기</button>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 보드 ================= -->
+<section id="board" hidden>
+  <div class="page">
+    <div class="bar">
+      <div class="title" id="b-title">배추게임</div>
+      <div class="meta" id="b-meta"></div>
+      <div class="tools">
+        <button class="btn-ghost" id="toggleRules">수익표</button>
+        <button class="btn-ghost" id="toSheets2">활동지 인쇄</button>
+        <button class="btn-ghost" id="reset">처음부터</button>
+      </div>
+    </div>
+
+    <div class="drawer" id="rules" hidden>
+      <h3>작물별 수익</h3>
+      <table class="payout">
+        <tr>
+          <th rowspan="2">작물</th>
+          <th colspan="3">기후가 좋을 때 (1–4)</th>
+          <th rowspan="2">기후가 나쁠 때<br>(5, 6)</th>
+        </tr>
+        <tr>
+          <th>기본</th>
+          <th>공급 부족<br><span class="p-low">8</span>명 이하</th>
+          <th>공급 과잉<br><span class="p-high">18</span>명 이상</th>
+        </tr>
+        <tr><td class="c">배추</td><td>600만원</td><td class="up">1,200만원</td><td class="zero">0원</td><td>200만원</td></tr>
+        <tr><td class="c">무</td><td colspan="3">400만원</td><td>300만원</td></tr>
+        <tr><td class="c">고구마</td><td colspan="3">800만원</td><td>700만원</td></tr>
+      </table>
+      <p class="note">고구마는 가을 기후만 따릅니다. 공급 과잉과 부족은 기후가 좋을 때만 일어납니다.</p>
+    </div>
+
+    <div class="stage" id="stage"></div>
+
+    <table class="log">
+      <thead><tr>
+        <th class="l">연도</th><th class="s">계절</th><th>기후</th><th>배추 선택</th><th>공급 상황</th>
+        <th>배추</th><th>무</th><th>고구마</th>
+      </tr></thead>
+      <tbody id="log"></tbody>
+    </table>
+
+    <div class="endzone" id="endzone" hidden></div>
+  </div>
+</section>
+</main>
+
+<!-- ================= 인쇄물 ================= -->
+<div id="sheets">
+  <div class="printbar">
+    <span class="t">활동지</span>
+    <button class="go" id="doPrint">인쇄하기</button>
+    <button class="back" id="closeSheets">게임 화면으로</button>
+    <span class="hint">자료①·활동지①은 학생 수만큼, 활동지②·체크리스트는 모둠 수만큼 인쇄하세요.</span>
+  </div>
+
+  <section class="sheet">
+    <div class="sheet-label">자료 ①</div>
+    <div class="frame">
+      <h1>배추게임</h1>
+      <p>난 전북 고창군의 농부야. 우리 고장에서는 배추, 무, 양파, 고추, 땅콩, 고구마 등 많은 농작물들이 잘 자라는데 난 주로 배추를 재배하고 있단다. 참, 고창은 수박으로 유명하기도 해. 사람들은 가끔 정 많고 풍요로운 농촌에 사는 내가 부럽다 말해. 이런 말을 들을 때면 내려와서 한 달만 살아보라고 얘기하고 싶어.</p>
+      <p>배추는 해마다 가격변동이 커서 위험 부담이 큰 작물이야. 다른 작물과 마찬가지로 배추도 기후에 영향을 많이 받아. 그러다보니 생산량의 변화가 크고 자연스럽게 가격 변동도 큰 편이야. 배추 말고 다른 작물을 재배하면 되지 않냐고? 우리 고장에서는 배추 대신 무, 땅콩, 양파, 수박을 재배할 수 있지만 배추만큼 수익이 많진 않아. 배추보다 기후의 영향을 덜 받는 고구마를 재배할 수도 있지만 재배기간이 길어 고구마는 일 년에 한 번만 재배할 수 있어.</p>
+      <table class="cal">
+        <tr><th class="cl">월<br>작물</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th>
+          <th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th></tr>
+        <tr><td class="cl">배추</td><td></td><td></td><td class="sow">파종</td><td class="grow"></td>
+          <td class="grow"></td><td class="harvest">수확</td><td></td><td class="sow">파종</td>
+          <td class="grow"></td><td class="grow"></td><td class="harvest">수확</td><td></td></tr>
+        <tr><td class="cl">무</td><td></td><td></td><td class="sow">파종</td><td class="grow"></td>
+          <td class="grow"></td><td class="harvest">수확</td><td></td><td class="sow">파종</td>
+          <td class="grow"></td><td class="harvest">수확</td><td></td><td></td></tr>
+        <tr><td class="cl">고구마</td><td></td><td></td><td class="sow">파종</td><td class="grow"></td>
+          <td class="grow"></td><td class="grow"></td><td class="grow"></td><td class="grow"></td>
+          <td class="grow"></td><td class="harvest">수확</td><td></td><td></td></tr>
+      </table>
+      <p>배추 농사가 잘 되도 돈을 많이 버는 것은 아니야. 배추값이 올랐다 싶으면 너도나도 배추를 재배하는 바람에 다음 해엔 배추값이 뚝 떨어지곤 하지. 농사는 1년을 미리 계획하는 일인데 매년 공급량을 예측하는 게 가장 힘들어.</p>
+      <p>마지막으로 한 가지 말해두고 싶은 게 있어. 작년에 배추값이 천정부지로 치솟은 적이 있어. 평년에 비해 5배가 올랐다고 하던데, 그렇다고 나 같은 생산자가 그만큼 이익을 본 것도 아니야. 그 돈들은 전부 어디로 갔을까?</p>
+      <p style="margin-bottom:0"><span class="hi">[미션]</span> 우리 가족을 부양하기 위해서는 일 년에 최소 1,000만원의 수익이 필요해. 여러분들이 나를 대신해 연평균 1,000만원의 수익을 올려주길 바래!</p>
+    </div>
+  </section>
+
+  <section class="sheet">
+    <div class="sheet-label">활동지 ①</div>
+    <div class="name-row"><span>학년 반 번호</span><span>이름</span></div>
+    <h1>배추게임</h1>
+    <ul class="rules">
+      <li>모든 학생은 동일한 크기의 밭을 소유하고 있으며, 이 밭에 배추, 무, 고구마 중에서 하나의 작물을 선택해서 재배할 수 있다. 배추와 무는 1년에 2회, 고구마는 1년에 1회만 재배 가능하다.</li>
+      <li>5년 동안 작물을 재배해 가장 많은 수익을 남기는 학생이 우승자가 된다. 단, 5년 동안 5천만원 이상의 수익을 올리지 못한다면 실패!</li>
+      <li>학생들이 재배할 작물을 결정하면 교사는 주사위를 던져 기후를 결정한다(좋은 기후 1~4, 나쁜 기후 5~6). 기후 조건에 따라 작물별 수익이 달라진다. 단, 고구마는 가을 기후에만 영향을 받는다.</li>
+      <li>우리 반은 모두 <span class="hi s-class">24</span>명이다. <span class="hi s-high">18</span>명 이상이 배추를 재배할 경우 <b>공급 과잉</b>으로 배추 가격은 폭락한다(수익 0원). 반대로 <span class="hi s-low">8</span>명 이하가 배추를 재배할 경우 <b>공급 부족</b>으로 배추 가격은 폭등한다(수익 1,200만원). 단, 날씨가 좋은 조건(주사위 1~4)에서만 공급 과잉 및 공급 부족 상황이 발생한다.</li>
+    </ul>
+    <h2>작물별 예상 수익</h2>
+    <table>
+      <tr><th rowspan="2">작물</th><th colspan="3">기후가 좋을 때 (주사위 1~4)</th>
+        <th rowspan="2">기후가 나쁠 때<br>(주사위 5, 6)</th></tr>
+      <tr><th>기본 조건</th><th>공급 부족<br>(<span class="s-low">8</span>명 이하 선택)</th>
+        <th>공급 과잉<br>(<span class="s-high">18</span>명 이상 선택)</th></tr>
+      <tr><td class="crop">배추</td><td>600만원</td><td>1,200만원</td><td>0원</td><td>200만원</td></tr>
+      <tr><td class="crop">무</td><td colspan="3">400만원</td><td>300만원</td></tr>
+      <tr><td class="crop">고구마</td><td colspan="3">800만원</td><td>700만원</td></tr>
+    </table>
+    <h2>작물의 선정과 기후 조건에 따른 수익 (예시)</h2>
+    <table>
+      <tr><th>시기</th><th></th><th>재배 작물</th><th>기후 조건</th><th>공급 상황</th><th>수익</th></tr>
+      <tr><td rowspan="2">2014년</td><td>봄</td><td>배추</td><td>3 (좋음)</td><td>기본</td><td>600만원</td></tr>
+      <tr><td>가을</td><td>무</td><td>6 (나쁨)</td><td></td><td>300만원</td></tr>
+      <tr><td rowspan="2">2015년</td><td>봄</td><td>배추</td><td>1 (좋음)</td><td>공급 과잉</td><td>0원</td></tr>
+      <tr><td>가을</td><td>배추</td><td>2 (좋음)</td><td>공급 부족</td><td>1,200만원</td></tr>
+      <tr><td rowspan="2">2016년</td><td>봄</td><td>고구마</td><td></td><td></td><td></td></tr>
+      <tr><td>가을</td><td>고구마</td><td>5 (나쁨)</td><td></td><td>700만원</td></tr>
+    </table>
+    <h2>재배할 작물을 선정해 보자!</h2>
+    <table id="tbl-play"></table>
+    <table><tr><th style="width:40%">5년 총수익</th><td class="blank"></td>
+      <th style="width:20%">연평균</th><td class="blank"></td></tr></table>
+  </section>
+
+  <section class="sheet">
+    <div class="sheet-label">활동지 ②</div>
+    <div class="name-row"><span>모둠</span><span>모둠원</span></div>
+    <div class="frame">
+      <div class="problem"><h3>생산량을 예측하기가 어려워</h3>
+        <p>전국적으로 재배되는 배추의 생산량을 예측할 수 없으니 재배 작물의 선정이 주먹구구식으로 이루어져. 농부들을 전부 단톡방으로 초대할 수도 없고 말야.</p></div>
+      <div class="problem"><h3>중간 도매상들의 폭리</h3>
+        <p>배추 가격이 폭등을 하면 중간도매상들만 이익을 보는 것 같아. 농민은 포기당 1,500원을 받고 파는 배추가 산지 수집인과 도매상, 소매상을 거치면 마트에서 6,000원에 팔려. 배추의 유통구조를 개혁해야할 것 같아.</p></div>
+      <div class="problem"><h3>수요와 공급의 비탄력성</h3>
+        <p>배추가 비싸다고 김치를 아예 안 먹을 수도 없고(→ 수요가 비탄력적이야), 대체할 수 있는 상품도 한정적이야(→ 공급이 비탄력적이야). 생산량이 부족해 새로 심으려 해도 그땐 너무 늦어. 재배해서 수확하기까지 어느 정도 시간이 필요하거든.</p></div>
+      <div class="problem"><h3>기후 조건에 민감한 배추</h3>
+        <p>배추는 노지 재배가 많고, 뿌리가 얕아 기후 영향을 많이 받는 작물이야. 기후 조건에 따라 작황이 결정되는 경우가 많다보니 가격 변동이 심해.</p></div>
+    </div>
+    <p class="prompt">여러분은 모둠별로 배추의 공급과 가격을 안정화시킬 수 있는 대책을 제안해 봅시다. 여러분이 제시하는 대책은 위에서 제시된 4가지 문제 중 최소 2가지 이상을 해결할 수 있어야 합니다.</p>
+    <div class="answer"><div class="lines"></div></div>
+  </section>
+
+  <section class="sheet">
+    <div class="sheet-label">평가 체크리스트</div>
+    <div class="name-row"><span>모둠</span><span>이름</span></div>
+    <h2>모둠활동 평가</h2>
+    <table class="checklist">
+      <tr><th>평가 항목</th><th class="sc">탁월</th><th class="sc">우수</th><th class="sc">보통</th><th class="sc">미흡</th></tr>
+      <tr><td>대책이 논리적인가?</td><td>5</td><td>4</td><td>3</td><td>2</td></tr>
+      <tr><td>대책은 배추의 공급 및 가격을 안정화시킬 수 있는가? (제시된 2가지 이상의 문제를 해결할 수 있는가?)</td><td>5</td><td>4</td><td>3</td><td>2</td></tr>
+      <tr><td>대책은 실현 가능한가?</td><td>5</td><td>4</td><td>3</td><td>2</td></tr>
+      <tr><td>대책은 바람직한가? (혹시 더 심각한 문제를 유발하지는 않는가?)</td><td>5</td><td>4</td><td>3</td><td>2</td></tr>
+      <tr class="total"><td>총점</td><td colspan="4"></td></tr>
+    </table>
+    <h2>자기평가</h2>
+    <table class="checklist">
+      <tr><th style="width:16%">평가영역</th><th>평가 항목</th><th class="sc">탁월</th><th class="sc">우수</th><th class="sc">보통</th><th class="sc">미흡</th></tr>
+      <tr><td>교과목표</td><td>농작물의 생산과 가격에 영향을 미치는 요인(예: 기후, 공급과 수요, 중간상인 등)에 대해 잘 알게 되었다.</td><td>5</td><td>4</td><td>3</td><td>2</td></tr>
+      <tr><td rowspan="3">창의인성</td><td>배추의 공급 및 가격을 안정화시킬 수 있는 대책을 수립하는데 기여하였다.</td><td>5</td><td>4</td><td>3</td><td>2</td></tr>
+      <tr><td>배추를 재배하는 농부가 겪는 어려움을 잘 이해하게 되었다.</td><td>5</td><td>4</td><td>3</td><td>2</td></tr>
+      <tr><td>정직하게 게임의 규칙을 적용하였다.</td><td>5</td><td>4</td><td>3</td><td>2</td></tr>
+      <tr class="total"><td colspan="2">총점</td><td colspan="4"></td></tr>
+    </table>
+  </section>
+</div>
+
+<script>
+(function(){
+"use strict";
+var SEASONS=["봄","가을"], KEY="baechu-game-v4";
+var S={classSize:24,startYear:2025,low:8,high:18,step:"dice",dice:null,count:0,rounds:[]};
+var started=false;
+
+function save(){try{localStorage.setItem(KEY,JSON.stringify({S:S,started:started}));}catch(e){}}
+function load(){try{var r=localStorage.getItem(KEY);if(!r)return;var o=JSON.parse(r);
+  if(o&&o.S&&typeof o.S.classSize==="number"){S=o.S;started=!!o.started;}}catch(e){}}
+function clearSave(){try{localStorage.removeItem(KEY);}catch(e){}}
+
+function th(n){return{low:Math.floor(n/3),high:Math.ceil(n*3/4)};}
+function periodAt(i){return{year:S.startYear+Math.floor(i/2),season:SEASONS[i%2]};}
+function judge(d,c){
+  var good=d<=4,sup="기본",cab;
+  if(!good){sup="—";cab=200;}
+  else if(c<=S.low){sup="공급 부족";cab=1200;}
+  else if(c>=S.high){sup="공급 과잉";cab=0;}
+  else{cab=600;}
+  return{good:good,supply:sup,cabbage:cab,radish:good?400:300,potato:good?800:700};
+}
+function won(v){return v.toLocaleString("ko-KR");}
+var PIPS={1:[[50,50]],2:[[28,28],[72,72]],3:[[28,28],[50,50],[72,72]],
+  4:[[28,28],[72,28],[28,72],[72,72]],5:[[28,28],[72,28],[50,50],[28,72],[72,72]],
+  6:[[28,26],[72,26],[28,50],[72,50],[28,74],[72,74]]};
+function diceSVG(n,roll){
+  var d=(PIPS[n]||PIPS[1]).map(function(p){return '<circle cx="'+p[0]+'" cy="'+p[1]+'" r="8.5"/>';}).join("");
+  return '<svg class="dice'+(roll?" rolling":"")+'" viewBox="0 0 100 100" aria-hidden="true">'+
+    '<rect x="6" y="6" width="88" height="88" rx="14"/>'+d+'</svg>';
+}
+
+function wxBadge(dice){
+  var good=dice<=4;
+  var icon=good
+    ? '<svg viewBox="0 0 24 24" fill="none" stroke="#C98A16" stroke-width="2.1" stroke-linecap="round" aria-hidden="true">'+
+      '<circle cx="12" cy="12" r="4.4" fill="#E9B23C" stroke="none"/>'+
+      '<path d="M12 2.4v2.2M12 19.4v2.2M2.4 12h2.2M19.4 12h2.2M5.2 5.2l1.6 1.6M17.2 17.2l1.6 1.6M18.8 5.2l-1.6 1.6M6.8 17.2l-1.6 1.6"/></svg>'
+    : '<svg viewBox="0 0 24 24" fill="none" stroke="#DDE7ED" stroke-width="2.1" stroke-linecap="round" aria-hidden="true">'+
+      '<path d="M6.8 15.2a3.6 3.6 0 0 1 .5-7.16 5 5 0 0 1 9.6 1.06 3.3 3.3 0 0 1-.6 6.1z" fill="#8FA3B1" stroke="none"/>'+
+      '<path d="M8.4 18.2l-1 2.4M12.2 18.2l-1 2.4M16 18.2l-1 2.4"/></svg>';
+  return '<div class="wx '+(good?"good":"bad")+'">'+icon+
+    (good?"좋은 기후":"나쁜 기후")+'<span class="num">'+dice+'</span></div>';
+}
+
+function fillSheets(){
+  var n=S.classSize,t=th(n),y=S.startYear,i;
+  document.querySelectorAll(".s-class").forEach(function(e){e.textContent=n;});
+  document.querySelectorAll(".s-low").forEach(function(e){e.textContent=t.low;});
+  document.querySelectorAll(".s-high").forEach(function(e){e.textContent=t.high;});
+  var h='<tr><th style="width:16%">시기</th><th style="width:10%"></th><th style="width:20%">재배 작물</th>'+
+    '<th style="width:18%">기후 조건</th><th style="width:18%">공급 상황</th><th style="width:18%">수익</th></tr>';
+  for(i=0;i<5;i++){
+    h+='<tr><td rowspan="2">'+(y+i)+'년</td><td>봄</td><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr>'+
+       '<tr><td>가을</td><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr>';
+  }
+  document.getElementById("tbl-play").innerHTML=h;
+}
+function openSheets(){fillSheets();document.body.classList.add("sheets-open");window.scrollTo(0,0);}
+
+/* ---------- 기록표 ---------- */
+function renderLog(){
+  var out="",i;
+  for(i=0;i<10;i++){
+    var p=periodAt(i), r=S.rounds[i], cls=[];
+    if(r)cls.push("filled");
+    if(i===S.rounds.length && S.rounds.length<10)cls.push("now");
+    if(i%2===0 && i>0)cls.push("newyear");
+    if(r&&r.supply==="공급 과잉")cls.push("over");
+    if(r&&r.supply==="공급 부족")cls.push("short");
+    var yr=(i%2===0)?p.year+"년":"";
+    var sn=p.season;
+    if(!r){
+      out+='<tr class="'+cls.join(" ")+'"><td class="l when">'+yr+'</td><td class="s">'+sn+'</td>'+
+        '<td>·</td><td>·</td><td>·</td><td>·</td><td>·</td><td>·</td></tr>';
+    }else{
+      out+='<tr class="'+cls.join(" ")+'"><td class="l when">'+yr+'</td><td class="s">'+sn+'</td>'+
+        '<td>'+r.dice+' '+(r.dice<=4?"좋음":"나쁨")+'</td>'+
+        '<td>'+(r.count===null?"—":r.count+"명")+'</td>'+
+        '<td class="sup">'+r.supply+'</td>'+
+        '<td class="cab">'+won(r.cabbage)+'</td>'+
+        '<td class="side">'+won(r.radish)+'</td>'+
+        '<td class="side">'+(p.season==="가을"?won(r.potato):"—")+'</td></tr>';
+    }
+  }
+  document.getElementById("log").innerHTML=out;
+}
+
+/* ---------- 조작 패널 ---------- */
+function zone(a,b,c){
+  return '<div class="zone-a">'+a+'</div><div class="zone-b">'+b+'</div><div class="zone-c">'+c+'</div>';
+}
+function renderStage(){
+  var el=document.getElementById("stage");
+  el.className="stage";
+  var idx=S.rounds.length;
+
+  if(idx>=10 && S.step!=="result"){
+    el.innerHTML=zone('','<div class="head">5년이 끝났습니다</div>'+
+      '<div class="sub">각자 활동지의 총수익과 연평균을 계산해 보세요. 연평균 1,000만원을 넘긴 사람이 있나요?</div>','');
+    return;
+  }
+
+  if(S.step==="result"){
+    var last=S.rounds[idx-1], good=last.dice<=4;
+    el.className="stage "+(good?"good":"bad");
+    var cls=last.supply==="공급 과잉"?" over":(last.supply==="공급 부족"?" short":"");
+    var head=good?(last.supply==="기본"?"평년 수준":last.supply):"나쁜 기후";
+    var sub;
+    if(!good)sub="주사위 "+last.dice+" · 작황이 나빴습니다.";
+    else if(last.supply==="공급 과잉")sub=last.count+"명이 배추를 심어 값이 폭락했습니다.";
+    else if(last.supply==="공급 부족")sub=last.count+"명만 배추를 심어 값이 폭등했습니다.";
+    else sub=last.count+"명이 배추를 심었습니다.";
+
+    var crops='<div class="crops">'+
+      '<div class="c lead'+(last.cabbage===0?" zero":"")+'"><span class="n">배추</span>'+
+        '<span class="v">'+won(last.cabbage)+'<small>만원</small></span></div>'+
+      '<div class="c"><span class="n">무</span>'+
+        '<span class="v">'+won(last.radish)+'<small>만원</small></span></div>'+
+      (last.season==="가을"
+        ?'<div class="c"><span class="n">고구마</span><span class="v">'+won(last.potato)+'<small>만원</small></span></div>'
+        :'<div class="c off"><span class="n">고구마</span><span class="v">가을에 수확</span></div>')+
+      '</div>';
+
+    el.innerHTML=zone(
+      '<div class="when">'+last.year+'년 '+last.season+'</div>'+diceSVG(last.dice,false)+wxBadge(last.dice),
+      '<div class="head'+cls+'">'+head+'</div><div class="sub">'+sub+'</div>'+crops,
+      '<button class="btn" id="next">'+(idx>=10?"5년 마치기":"다음 시기로")+'</button>'+
+      '<button class="btn-ghost" id="undo2">이 결과 취소</button>');
+
+    document.getElementById("next").addEventListener("click",function(){
+      S.step="dice"; S.dice=null; S.count=0; save(); paint();
+      var z=document.getElementById("endzone");
+      if(S.rounds.length>=10 && !z.hidden) z.scrollIntoView({behavior:"smooth"});
+    });
+    document.getElementById("undo2").addEventListener("click",function(){
+      S.rounds.pop(); S.step="dice"; S.dice=null; save(); paint();
+    });
+    return;
+  }
+
+  var p=periodAt(idx);
+
+  if(S.step==="dice"){
+    el.innerHTML=zone(
+      '<div class="when">'+p.year+'년 '+p.season+'</div>'+diceSVG(1,false),
+      '<div class="head">올해 날씨는?</div>'+
+      '<div class="sub">심을 작물을 활동지에 모두 적었는지 확인한 뒤 굴리세요. 1–4는 좋은 기후, 5–6은 나쁜 기후입니다.</div>',
+      '<button class="btn" id="roll">주사위 굴리기</button>'+
+      (idx>0?'<button class="btn-ghost" id="undo">이전 시기 취소</button>':''));
+    document.getElementById("roll").addEventListener("click",doRoll);
+    var u=document.getElementById("undo");
+    if(u)u.addEventListener("click",function(){
+      S.rounds.pop(); S.step="dice"; S.dice=null; S.count=0; save(); paint();
+    });
+    return;
+  }
+
+  if(S.step==="count"){
+    var g=S.dice<=4;
+    el.className="stage "+(g?"good":"bad");
+    if(!g){
+      el.innerHTML=zone(
+        '<div class="when">'+p.year+'년 '+p.season+'</div>'+diceSVG(S.dice,false)+wxBadge(S.dice),
+        '<div class="head">기후가 나쁩니다</div>'+
+        '<div class="sub">나쁜 기후에서는 공급 과잉도 공급 부족도 일어나지 않습니다. 배추는 200만원에 그칩니다.</div>',
+        '<button class="btn" id="ok">기록하기</button>'+
+        '<button class="btn-ghost" id="reroll">다시 굴리기</button>');
+      document.getElementById("ok").addEventListener("click",function(){commit(null);});
+    }else{
+      el.innerHTML=zone(
+        '<div class="when">'+p.year+'년 '+p.season+'</div>'+diceSVG(S.dice,false)+wxBadge(S.dice),
+        '<div class="head">기후가 좋습니다</div>'+
+        '<div class="sub">배추를 심은 학생은 손을 드세요. 전체 '+S.classSize+'명 중 손든 수를 입력합니다.</div>'+
+        '<div class="counter"><button type="button" data-d="-1" aria-label="한 명 줄이기">−</button>'+
+        '<input id="cnt" type="number" min="0" max="'+S.classSize+'" value="'+S.count+'" aria-label="배추를 선택한 학생 수">'+
+        '<button type="button" data-d="1" aria-label="한 명 늘리기">+</button></div>'+
+        '<div class="zones" id="zones" aria-live="polite">'+
+          '<span data-z="short">공급 부족<small>'+S.low+'명 이하</small></span>'+
+          '<span data-z="base">기본<small>'+(S.low+1)+'–'+(S.high-1)+'명</small></span>'+
+          '<span data-z="over">공급 과잉<small>'+S.high+'명 이상</small></span>'+
+        '</div>',
+        '<button class="btn" id="ok">공급 상황 판정</button>'+
+        '<button class="btn-ghost" id="reroll">다시 굴리기</button>');
+      var input=document.getElementById("cnt");
+      function markZone(){
+        var v=parseInt(input.value,10); if(isNaN(v))v=0;
+        var z=v<=S.low?"short":(v>=S.high?"over":"base");
+        el.querySelectorAll("#zones span").forEach(function(sp){
+          sp.classList.toggle("on", sp.getAttribute("data-z")===z);
+        });
+      }
+      input.addEventListener("input",markZone);
+      el.querySelectorAll(".counter button").forEach(function(b){
+        b.addEventListener("click",function(){
+          var v=(parseInt(input.value,10)||0)+parseInt(b.getAttribute("data-d"),10);
+          input.value=Math.max(0,Math.min(S.classSize,v));
+          markZone();
+        });
+      });
+      markZone();
+      document.getElementById("ok").addEventListener("click",function(){
+        var v=parseInt(input.value,10);
+        if(isNaN(v)||v<0||v>S.classSize){alert("0명에서 "+S.classSize+"명 사이로 입력하세요.");return;}
+        commit(v);
+      });
+      input.focus(); input.select();
+    }
+    document.getElementById("reroll").addEventListener("click",function(){
+      S.step="dice"; S.dice=null; save(); paint();
+    });
+  }
+}
+
+function doRoll(){
+  var btn=document.getElementById("roll"); btn.disabled=true;
+  var n=1+Math.floor(Math.random()*6),k=0;
+  var iv=setInterval(function(){
+    var d=document.querySelector("#stage .dice");
+    if(d)d.outerHTML=diceSVG(1+Math.floor(Math.random()*6),true);
+    if(++k>11){clearInterval(iv);S.dice=n;S.step="count";save();paint();}
+  },90);
+}
+
+function commit(count){
+  var p=periodAt(S.rounds.length), r=judge(S.dice,count===null?0:count);
+  S.rounds.push({year:p.year,season:p.season,dice:S.dice,count:count,supply:r.supply,
+    cabbage:r.cabbage,radish:r.radish,potato:r.potato});
+  S.step="result"; save(); paint();
+}
+
+/* ---------- 그래프 ---------- */
+function chartSVG(){
+  var W=900,H=310,L=52,R=18,T=18,B=48,iw=W-L-R,ih=H-T-B;
+  var n=S.rounds.length,maxY=S.classSize,i;
+  function x(i){return L+(n===1?iw/2:iw*i/(n-1));}
+  function y(v){return T+ih-ih*v/maxY;}
+  var oy=y(S.high),sy=y(S.low),pts=[];
+  var s='<svg class="chart" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="배추 선택 인원 추이">';
+  s+='<rect x="'+L+'" y="'+T+'" width="'+iw+'" height="'+(oy-T)+'" fill="#F6E8E5"/>';
+  s+='<rect x="'+L+'" y="'+sy+'" width="'+iw+'" height="'+(T+ih-sy)+'" fill="#E6F0E8"/>';
+  s+='<line x1="'+L+'" y1="'+oy+'" x2="'+(W-R)+'" y2="'+oy+'" stroke="#AF3A2C" stroke-width="1.5" stroke-dasharray="5 4"/>';
+  s+='<line x1="'+L+'" y1="'+sy+'" x2="'+(W-R)+'" y2="'+sy+'" stroke="#35703F" stroke-width="1.5" stroke-dasharray="5 4"/>';
+  s+='<text x="'+(W-R)+'" y="'+(oy-8)+'" text-anchor="end" font-size="14" fill="#AF3A2C" font-weight="700">공급 과잉</text>';
+  s+='<text x="'+(W-R)+'" y="'+(sy+19)+'" text-anchor="end" font-size="14" fill="#35703F" font-weight="700">공급 부족</text>';
+  s+='<line x1="'+L+'" y1="'+(T+ih)+'" x2="'+(W-R)+'" y2="'+(T+ih)+'" stroke="#16241B" stroke-width="2"/>';
+  s+='<line x1="'+L+'" y1="'+T+'" x2="'+L+'" y2="'+(T+ih)+'" stroke="#16241B" stroke-width="2"/>';
+  s+='<text x="'+(L-10)+'" y="'+(T+6)+'" text-anchor="end" font-size="13" fill="#5F6C62">'+maxY+'명</text>';
+  s+='<text x="'+(L-10)+'" y="'+(T+ih+5)+'" text-anchor="end" font-size="13" fill="#5F6C62">0</text>';
+  for(i=0;i<n;i++)pts.push(x(i)+","+y(S.rounds[i].count===null?0:S.rounds[i].count));
+  s+='<polyline points="'+pts.join(" ")+'" fill="none" stroke="#16241B" stroke-width="3" stroke-linejoin="round"/>';
+  for(i=0;i<n;i++){
+    var rd=S.rounds[i],v=rd.count===null?0:rd.count;
+    var f=rd.supply==="공급 과잉"?"#AF3A2C":(rd.supply==="공급 부족"?"#35703F":"#16241B");
+    s+='<circle cx="'+x(i)+'" cy="'+y(v)+'" r="7" fill="'+f+'"/>';
+    if(rd.dice>4)s+='<circle cx="'+x(i)+'" cy="'+y(v)+'" r="12" fill="none" stroke="#5F6C62" stroke-width="2"/>';
+    s+='<text x="'+x(i)+'" y="'+(T+ih+21)+'" text-anchor="middle" font-size="13" fill="#5F6C62">'+rd.season+'</text>';
+    if(i%2===0)s+='<text x="'+(x(i)+(n>1?iw/(n-1)/2:0))+'" y="'+(T+ih+41)+'" text-anchor="middle" font-size="14" fill="#16241B" font-weight="700">'+rd.year+'</text>';
+  }
+  return s+'</svg>';
+}
+
+function renderEnd(){
+  var z=document.getElementById("endzone");
+  if(S.rounds.length<10 || S.step==="result"){z.hidden=true;z.innerHTML="";return;}
+  z.hidden=false;
+  z.innerHTML='<h2>'+S.startYear+'–'+(S.startYear+4)+'년, 우리 반 배추밭</h2>'+
+    '<p>선은 해마다 배추를 심은 학생 수입니다. 테두리가 있는 점은 기후가 나빴던 시기입니다. 이 곡선을 띄워 두고 물어보세요. 왜 배추 값은 안정적이지 않을까요?</p>'+
+    chartSVG();
+}
+
+function paint(){renderStage();renderLog();renderEnd();}
+
+function showBoard(){
+  started=true;
+  document.getElementById("setup").hidden=true;
+  document.getElementById("board").hidden=false;
+  document.getElementById("b-title").textContent=S.startYear+"–"+(S.startYear+4)+"년 배추게임";
+  document.getElementById("b-meta").innerHTML=
+    "전체 "+S.classSize+"명 · 공급 부족 <b>"+S.low+"명 이하</b> · 공급 과잉 <b>"+S.high+"명 이상</b>";
+  window.scrollTo(0,0);
+  paint(); save();
+}
+
+var cs=document.getElementById("cs"), sy=document.getElementById("sy");
+function paintTh(){
+  var n=parseInt(cs.value,10)||24,t=th(n);
+  document.getElementById("t-low").textContent=t.low;
+  document.getElementById("t-high").textContent=t.high;
+  document.getElementById("t-mid").textContent=(t.low+1)+"–"+(t.high-1)+"명";
+  document.querySelectorAll(".p-low").forEach(function(e){e.textContent=t.low;});
+  document.querySelectorAll(".p-high").forEach(function(e){e.textContent=t.high;});
+}
+cs.addEventListener("input",paintTh);
+
+document.getElementById("start").addEventListener("click",function(){
+  var n=parseInt(cs.value,10),y=parseInt(sy.value,10);
+  if(!n||n<6){alert("학급 인원을 6명 이상으로 입력하세요.");return;}
+  S.classSize=n; S.startYear=y||2025;
+  var t=th(n); S.low=t.low; S.high=t.high;
+  S.rounds=[]; S.step="dice"; S.dice=null; S.count=0;
+  showBoard();
+});
+document.getElementById("toSheets1").addEventListener("click",function(){
+  S.classSize=parseInt(cs.value,10)||24; S.startYear=parseInt(sy.value,10)||2025; openSheets();
+});
+document.getElementById("toSheets2").addEventListener("click",openSheets);
+document.getElementById("toggleRules").addEventListener("click",function(){
+  var d=document.getElementById("rules");
+  d.hidden=!d.hidden;
+  this.textContent=d.hidden?"수익표":"수익표 닫기";
+});
+document.getElementById("reset").addEventListener("click",function(){
+  if(!confirm("기록을 지우고 처음부터 시작할까요?"))return;
+  clearSave(); location.reload();
+});
+document.getElementById("doPrint").addEventListener("click",function(){window.print();});
+document.getElementById("closeSheets").addEventListener("click",function(){
+  document.body.classList.remove("sheets-open");
+});
+
+load();
+cs.value=S.classSize; sy.value=S.startYear; paintTh(); fillSheets();
+if(started){
+  var rs=document.getElementById("resume");
+  rs.hidden=false;
+  rs.textContent="이어서 하기 ("+S.rounds.length+"/10)";
+  rs.addEventListener("click",showBoard);
+}
+})();
+</script>
+</body>
+</html>
