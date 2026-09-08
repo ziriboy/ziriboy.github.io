@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>지리교과교육론 2강 · 지리교육의 이데올로기와 패러다임</title>
+<style>
+/* ═══ 수업자료 공통 스타일 v1 — 매주 이 블록을 그대로 재사용 ═══ */
+:root{
+  --ink:#111517; --mid:#525C60; --soft:#8A9296;
+  --line:#E2E5E2; --line2:#EFF1EE; --wash:#F5F7F5;
+  --acc:#0E5A50; --acc-w:#E2EFEA; --red:#A03A26;
+  --mark:#F6E7B8;
+  --warn-l:#E7D8B6; --warn-b:#FCF7EB; --warn-t:#6D5421;
+  --f:Pretendard,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --w:1120px;
+}
+*{box-sizing:border-box} html,body{margin:0}
+body{background:#fff;color:var(--ink);font-family:var(--f);font-size:16px;
+  line-height:1.75;-webkit-font-smoothing:antialiased;letter-spacing:-.005em}
+button,input,textarea{font-family:inherit;font-size:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+
+header{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.96);
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.hin{max-width:var(--w);margin:0 auto;padding:9px 30px;display:flex;align-items:center;gap:18px}
+.brand{background:none;border:none;cursor:pointer;padding:0;text-align:left;line-height:1.3}
+.brand .c{display:block;font-size:11.5px;color:var(--soft)}
+.brand .n{display:block;font-size:14.5px;font-weight:600}
+.switch{margin-left:auto;display:flex;gap:4px;overflow:auto}
+.switch button{background:none;border:1px solid transparent;border-radius:6px;cursor:pointer;
+  padding:5px 11px;font-size:13.5px;color:var(--mid);white-space:nowrap}
+.switch button:hover{border-color:var(--line);color:var(--ink)}
+.switch button[aria-current="true"]{background:var(--acc-w);color:var(--acc);font-weight:600}
+.switch b{color:var(--soft);font-weight:600;margin-right:5px}
+.switch button[aria-current="true"] b{color:var(--acc)}
+
+main{max-width:var(--w);margin:0 auto;padding:44px 30px 110px}
+.stage{font-size:13px;color:var(--acc);font-weight:600;letter-spacing:.06em;margin:0 0 6px}
+h1{font-size:33px;font-weight:700;letter-spacing:-.03em;line-height:1.25;margin:0 0 14px}
+.lead{color:var(--mid);font-size:16.5px;margin:0 0 32px;max-width:70ch}
+.lead b{color:var(--ink)}
+
+.menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:18px;margin-top:28px}
+.mcard{text-align:left;background:none;border:1px solid var(--line);border-radius:12px;
+  padding:24px;cursor:pointer;transition:border-color .12s}
+.mcard:hover{border-color:var(--acc)}
+.mcard .k{font-size:12.5px;color:var(--acc);font-weight:600;letter-spacing:.06em}
+.mcard h3{margin:6px 0 8px;font-size:19px;font-weight:700;letter-spacing:-.02em;line-height:1.35}
+.mcard p{margin:0;color:var(--mid);font-size:14.5px;line-height:1.65}
+.mcard .m{margin-top:14px;font-size:13px;color:var(--soft)}
+.arc{max-width:860px;margin:34px 0 0;padding-top:20px;border-top:1px solid var(--line2);
+  font-size:14.5px;color:var(--mid);display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.arc span{background:var(--wash);border-radius:6px;padding:4px 10px;color:var(--ink)}
+.arc i{font-style:normal;color:var(--soft)}
+
+.mission{border:1px solid var(--acc);background:var(--acc-w);border-radius:10px;
+  padding:18px 22px;margin-bottom:26px}
+.mission .l{font-size:12.5px;color:var(--acc);font-weight:600;letter-spacing:.06em;margin-bottom:4px}
+.mission p{margin:0;font-size:16.5px;font-weight:600;line-height:1.6}
+.mission .s{margin-top:6px;font-size:14.5px;font-weight:400;color:var(--mid)}
+
+.concept{background:var(--wash);border-radius:10px;padding:20px 24px;margin:22px 0 26px}
+.concept h3{margin:0 0 10px;font-size:13px;color:var(--acc);font-weight:600;letter-spacing:.04em}
+.concept dl{display:grid;grid-template-columns:150px minmax(0,1fr);gap:7px 16px;margin:0;font-size:15px}
+.concept dt{font-weight:600}
+.concept dd{margin:0;color:var(--mid)}
+.concept p{margin:12px 0 0;font-size:14.5px;color:var(--mid)}
+.concept p b{color:var(--ink)}
+
+.step{margin-bottom:40px}
+.step>h3{margin:0 0 3px;font-size:17px;font-weight:700;letter-spacing:-.02em}
+.step>h3 b{color:var(--acc);margin-right:9px}
+.step>.d{margin:0 0 16px;color:var(--mid);font-size:14.5px;max-width:74ch}
+
+.opt,.tag{background:none;border:1px solid var(--line);border-radius:6px;cursor:pointer;
+  padding:6px 12px;font-size:14px;color:var(--mid)}
+.opt:hover,.tag:hover{border-color:var(--acc);color:var(--ink)}
+.opt[aria-pressed="true"],.tag[aria-pressed="true"]{background:var(--acc);border-color:var(--acc);color:#fff}
+textarea{width:100%;min-height:84px;border:1px solid var(--line);border-radius:7px;
+  padding:11px 13px;resize:vertical;background:none;line-height:1.7}
+textarea:focus{border-color:var(--acc)}
+
+.out{border-left:3px solid var(--acc);background:var(--acc-w);border-radius:0 8px 8px 0;
+  padding:16px 20px;font-size:15.5px;margin-top:10px}
+.out h3{margin:0 0 5px;font-size:13px;color:var(--acc);font-weight:600;letter-spacing:.04em}
+.notice{border:1px solid var(--warn-l);background:var(--warn-b);border-radius:9px;
+  padding:14px 18px;color:var(--warn-t);font-size:14.5px;margin:18px 0}
+
+/* 제안서 카드 */
+.plans{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;align-items:stretch}
+.plan{display:flex;flex-direction:column}
+.plan .egbox{margin-top:auto}
+.plan .body:first-of-type{margin-bottom:22px}
+.plan{border:1px solid var(--line);border-radius:10px;padding:22px 24px}
+.plan .no{font-size:12.5px;color:var(--acc);font-weight:600;letter-spacing:.06em}
+.plan .body{white-space:pre-line;font-size:15.5px;line-height:1.95;margin-top:8px;cursor:text}
+.plan .body .ut{font-weight:700;font-size:18px}
+.plan .body mark{padding:1px 0;border-radius:3px;cursor:pointer}
+.sub{font-size:13px;color:var(--soft);margin:20px 0 7px;padding-top:14px;border-top:1px solid var(--line2)}
+.sub b{color:var(--acc);font-weight:600}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{background:none;border:1px solid var(--line);border-radius:20px;cursor:pointer;
+  padding:4px 11px;font-size:12.5px;color:var(--mid)}
+.chip:hover{border-color:var(--acc);color:var(--ink)}
+.chip[aria-pressed="true"]{background:var(--acc);border-color:var(--acc);color:#fff}
+.chip:disabled{opacity:.32;cursor:not-allowed}
+.trads{display:flex;flex-wrap:wrap}
+.trads button{background:none;border:1px solid var(--line);border-right:none;cursor:pointer;
+  padding:6px 10px;font-size:12.5px;color:var(--mid)}
+.trads button:first-child{border-radius:6px 0 0 6px}
+.trads button:last-child{border-right:1px solid var(--line);border-radius:0 6px 6px 0}
+.trads button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.ans{margin-top:11px;font-size:14px;color:var(--mid)}
+.ans b{color:var(--acc)} .ans .diff{color:var(--red)}
+.ans .kw{color:var(--soft);font-size:13px;display:block;margin-top:3px}
+.plan.mine{border-color:var(--acc);box-shadow:0 0 0 3px var(--acc-w)}
+.plan .no em{font-style:normal;background:var(--acc);color:#fff;border-radius:4px;padding:1px 7px;margin-left:6px}
+.plan .motto{font-size:19px;font-weight:700;letter-spacing:-.02em;margin:4px 0 12px}
+.plan .body{margin-top:0}
+.egbox{margin-top:26px;border:1px solid var(--line);border-radius:8px;padding:16px 20px 18px;background:var(--wash)}
+.egl{font-size:12px;color:var(--acc);font-weight:600;letter-spacing:.06em;margin-bottom:6px}
+.egbox .body{white-space:normal;line-height:1.7}
+.egbox .egu{font-size:17px;font-weight:700;letter-spacing:-.02em;margin:0 0 6px}
+.egk{font-size:12.5px;color:var(--soft);font-weight:600;margin:14px 0 4px;letter-spacing:.03em}
+.egul{margin:0;padding-left:18px}
+.egul li{font-size:14.5px;margin:2px 0}
+.egul li .body{display:inline}
+.egbox .ege{font-size:14.5px;color:var(--mid)}
+.mt{border-collapse:collapse;max-width:900px;width:100%;font-size:14.5px}
+.mt th,.mt td{border-bottom:1px solid var(--line2);padding:8px 10px;text-align:center;vertical-align:middle}
+.mt thead th{border-bottom:1px solid var(--line);color:var(--mid);font-weight:600;font-size:13.5px}
+.mt tbody th{text-align:left;font-weight:400;color:var(--ink)}
+.mt tbody th b{color:var(--acc);margin-right:8px}
+.mt td.hit{background:var(--acc-w)}
+.tag.hit{border-color:var(--acc);color:var(--acc);font-weight:600}
+.lenscard .lp{font-size:12.5px;color:var(--soft);font-weight:600;letter-spacing:.06em;margin-bottom:4px}
+.lnav{display:flex;justify-content:space-between;margin-top:20px;padding-top:16px;border-top:1px solid var(--line2)}
+.mainans{font-size:15px;font-weight:600;margin-bottom:10px}
+.mainans .mk{display:inline-block;font-size:11.5px;font-weight:600;color:#fff;background:var(--acc);
+  border-radius:4px;padding:2px 7px;margin-right:8px;vertical-align:2px}
+.mainans .mk.sub{background:var(--soft);margin-left:16px}
+.evlist{display:grid;gap:5px;padding:10px 14px;background:var(--wash);border-radius:8px}
+.evi{font-size:13.5px;color:var(--mid)}
+.evi .ar{color:var(--soft);margin:0 4px}
+.evi .ek{color:var(--acc);font-weight:600}
+.cau{margin-top:10px;font-size:13.5px;color:var(--mid);line-height:1.7}
+.toolbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;border:1px solid var(--line);
+  border-radius:10px;padding:12px 18px;margin-bottom:22px;background:var(--wash)}
+.toolbar .tl{font-size:12.5px;color:var(--acc);font-weight:600;letter-spacing:.06em}
+.toolbar .pens{margin:0}
+.toolbar .tc{margin-left:auto;font-size:13px;color:var(--soft)}
+.toolbar .tt{font-size:14px;color:var(--mid)}
+.slist{display:grid;gap:14px}
+.slist .item{max-width:none;margin:0}
+.slist .txt{cursor:text}
+.slist .txt mark{padding:1px 0;border-radius:3px;cursor:pointer}
+.ct{border-collapse:separate;border-spacing:0;width:100%;font-size:14px;margin-top:6px;
+  table-layout:fixed;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.ct col{width:20%}
+.ct th,.ct td{border-bottom:1px solid var(--line2);padding:11px 13px;text-align:left;vertical-align:top;
+  word-break:keep-all}
+.ct tbody tr:last-child th,.ct tbody tr:last-child td{border-bottom:none}
+.ct thead th{background:var(--wash);border-bottom:1px solid var(--line);color:var(--mid);
+  font-weight:600;font-size:12.5px;letter-spacing:.02em}
+.ct thead th:first-child{color:var(--acc)}
+.ct tbody td:first-child{font-weight:700;color:var(--ink);border-right:1px solid var(--line2);
+  background:#FBFCFA}
+.ct tbody tr:hover td{background:#F9FBF9}
+.ct tbody tr:hover td:first-child{background:var(--acc-w)}
+
+.jwrap{overflow-x:auto}
+.jt{border-collapse:separate;border-spacing:0;width:100%;min-width:760px;font-size:13.5px;
+  table-layout:fixed;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.jt th,.jt td{border-bottom:1px solid var(--line2);padding:7px 6px;text-align:center;vertical-align:middle}
+.jt tbody tr:last-child th,.jt tbody tr:last-child td{border-bottom:none}
+.jt thead th{font-weight:600;font-size:12px;color:var(--mid);line-height:1.35;padding:8px 5px}
+.jt thead th.g1{background:#EAF2EE}
+.jt thead th.g2{background:#F5F1E8}
+.jt thead tr:first-child th.g1,.jt thead tr:first-child th.g2{font-size:12.5px;color:var(--ink)}
+.jt thead tr:first-child th.g1{border-left:1px solid var(--line)}
+.jt thead tr:first-child th.g2{border-left:1px solid var(--line)}
+.jt th.ph{text-align:left;font-weight:400;width:26%;background:#FBFCFA;color:var(--ink)}
+.jt thead th.ph{background:var(--wash);color:var(--acc);font-weight:600}
+.jt tbody th.ph b{color:var(--acc);margin-right:8px;font-weight:700}
+.jt tbody td:nth-child(6){border-left:1px solid var(--line)}
+.jt td.hit{background:var(--acc-w)}
+.twol{margin-top:16px;padding-top:14px;border-top:1px solid var(--line2);font-size:14.5px;color:var(--mid);display:grid;gap:3px}
+.twol b{color:var(--ink)}
+.twol .s{color:var(--soft);margin-top:5px}
+.jlist{border-top:1px solid var(--line);margin-top:22px}
+.jrow{padding:16px 2px;border-bottom:1px solid var(--line2)}
+.jh{font-size:16px;margin-bottom:10px}
+.jh b{color:var(--acc);margin-right:10px}
+.jg{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:7px}
+.jk{font-size:12.5px;color:var(--soft);min-width:92px}
+.jans{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:14.5px}
+.jans b{color:var(--acc)}
+.jans .d2{color:var(--red);font-size:13.5px}
+.jl{color:var(--mid);font-size:14px;margin-top:4px}
+.jl.s{color:var(--soft)}
+.cell{width:38px;height:34px;border:1px solid var(--line);border-radius:6px;background:none;cursor:pointer;
+  color:var(--acc);font-size:14px}
+.cell:hover{border-color:var(--acc)}
+.cell[aria-pressed="true"]{border-color:var(--acc);background:#fff}
+.mycard{border:1px solid var(--acc);background:var(--acc-w);border-radius:10px;padding:15px 18px;
+  max-width:700px;margin-top:16px;font-size:15.5px}
+.mycard .l{font-size:12px;color:var(--acc);font-weight:600;letter-spacing:.06em;margin-bottom:3px}
+.mycard .mm{font-size:14px;color:var(--mid);margin-top:4px}
+.pens{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.pen{border:1px solid var(--line);border-radius:20px;cursor:pointer;padding:6px 15px;font-size:14px;background:none}
+.pen[aria-pressed="true"]{border-color:var(--ink);font-weight:600}
+.pen i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:8px;vertical-align:-1px}
+label.fl{display:block;font-size:14.5px;font-weight:600;margin:18px 0 5px}
+label.fl em{font-style:normal;font-weight:400;color:var(--soft);font-size:13.5px;margin-left:8px}
+.names{max-width:900px;border-top:1px solid var(--line)}
+.nrow{padding:15px 2px;border-bottom:1px solid var(--line2)}
+.nh{font-size:16px;margin-bottom:3px}
+.nh b{color:var(--acc);margin-right:8px}
+.nm{font-size:13.5px;color:var(--mid);margin-bottom:2px}
+.nrow .trads{margin-top:9px}
+
+/* 판별 */
+.item{border:1px solid var(--line);border-radius:10px;padding:18px 22px}
+.item .num{font-size:12px;color:var(--soft);font-weight:600}
+.item .num em{font-style:normal;color:var(--acc);margin-left:7px}
+.item .txt{margin:4px 0 13px;font-size:15.5px;line-height:1.6}
+.item .fb{margin-top:11px;font-size:13.5px;color:var(--mid)}
+.item.ok{border-color:var(--acc)}
+.item.no{border-color:#D8B6AD}
+
+/* 렌즈 */
+.lenses{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:10px;margin-bottom:20px}
+.lensbtn{border:1px solid var(--line);border-radius:9px;background:none;text-align:left;
+  padding:15px;cursor:pointer}
+.lensbtn:hover{border-color:var(--acc)}
+.lensbtn[aria-pressed="true"]{border-color:var(--acc);background:var(--acc-w)}
+.lensbtn b{display:block;font-size:16.5px}
+.lensbtn span{display:block;font-size:12.5px;color:var(--soft);margin-top:1px}
+.lenscard{max-width:900px;border:1px solid var(--line);border-radius:10px;padding:24px}
+.lenscard h2{margin:0 0 3px;font-size:22px;letter-spacing:-.02em}
+.lenscard .sb{color:var(--mid);margin-bottom:18px;font-size:14.5px}
+.mx{display:grid;grid-template-columns:130px minmax(0,1fr);gap:9px 16px;font-size:15px}
+.mx .l{color:var(--soft)}
+.mx .v{font-weight:600}
+.flow{margin-top:18px;padding-top:15px;border-top:1px solid var(--line2);
+  display:flex;flex-wrap:wrap;gap:7px;align-items:center;font-size:14px}
+.flow span{background:var(--wash);border-radius:6px;padding:5px 10px}
+.flow i{font-style:normal;color:var(--soft)}
+.cmp{overflow:auto;margin-top:22px}
+.cmp table{border-collapse:collapse;min-width:820px;width:100%;font-size:14px}
+.cmp th,.cmp td{border-bottom:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top}
+.cmp th{color:var(--soft);font-weight:600}
+.cmp td:first-child{font-weight:700}
+
+.foot{margin-top:54px;padding-top:16px;border-top:1px solid var(--line);
+  display:flex;align-items:center;gap:18px;font-size:14px;color:var(--mid);flex-wrap:wrap}
+.foot button{background:none;border:none;cursor:pointer;color:var(--mid);padding:0}
+.foot button:hover{color:var(--ink)}
+.foot .msg{color:var(--acc)}
+
+@media(max-width:860px){
+  .hin,main{padding-left:16px;padding-right:16px}
+  .brand .c{display:none} h1{font-size:26px} .switch .lb{display:none}
+  .plans{grid-template-columns:1fr}
+  .plan .egbox{margin-top:20px}
+  .mx{grid-template-columns:1fr} .mx .l{margin-top:6px}
+  .concept dl{grid-template-columns:1fr}
+}
+@media print{
+  header,.foot,.opt,.tag,.lensbtn,.trads,.chips{display:none!important}
+  main{padding:0;max-width:none}
+}
+</style>
+</head>
+<body>
+
+<header><div class="hin">
+  <button class="brand" id="brand"><span class="c">지리교과교육론</span><span class="n" id="hn">2강 지리교육의 이데올로기와 패러다임</span></button>
+  <div class="switch" id="sw"></div>
+</div></header>
+<main id="main"></main>
+
+<script>
+/* ═════ 활동 1 — 네 제안서 ═════ */
+var LB=['A','B','C','D'];
+var PLANS=[
+ {id:'p0',para:'pos',ideo:'lib',motto:'공간의 규칙을 찾아 설명하다',
+  belief:'저는 지리교육이 눈앞의 현상을 나열하는 데 그치지 않고, 공간에 나타나는 패턴과 관계를 찾아 그 원인을 설명할 수 있게 해야 한다고 생각합니다. 도시가 어디로 성장하는지, 상업시설은 왜 특정 지역에 집중되는지, 인구와 교통은 어떤 관계를 갖는지를 자료를 통해 확인할 수 있습니다. 지리 수업은 학생이 관찰과 측정을 바탕으로 가설을 세우고, 자료를 분석하여 공간적 질서를 설명하게 해야 합니다.',
+  unit:'자료로 발견하는 용인의 공간 구조 — 분포, 입지, 관계',
+  content:['용인의 인구와 시가지가 어디에 집중되어 있는지 분포 파악하기',
+           '교통망과 상업시설·인구 분포 사이의 관계 분석하기',
+           '용인의 도시 성장이 특정 방향으로 나타난 원인 설명하기'],
+  act:['인구·교통·토지이용 자료를 지도에 표현하고 공간적 패턴 찾기',
+       '“교통 접근성이 높은 지역일수록 상업시설이 많을 것이다”와 같은 가설 세우기',
+       '자료를 분석해 가설을 검토하고 용인의 공간 구조를 일반화하기'],
+  assess:'자료에서 공간적 패턴과 관계를 발견하고 그 원인을 근거 있게 설명할 수 있는가'},
+ {id:'p1',para:'hum',ideo:'child',motto:'사람들이 경험하는 장소를 이해하다',
+  belief:'저는 지리교육이 위치와 거리만으로는 설명할 수 없는 사람들의 장소 경험과 의미를 이해하게 해야 한다고 생각합니다. 같은 동네도 누구에게는 편안한 고향이고, 다른 사람에게는 낯설거나 불편한 장소일 수 있습니다. 학생 역시 이미 자신의 생활공간에 기억과 감정, 의미를 부여하며 살아갑니다. 지리 수업은 자신의 장소 경험을 성찰하고, 같은 장소를 다르게 경험하는 사람들의 관점을 이해하는 기회를 제공해야 합니다.',
+  unit:'나의 하루, 우리의 용인 — 서로 다른 장소 경험',
+  content:['나의 일상 동선과 생활공간을 지도에 표현하기',
+           '나에게 의미 있는 장소와 그곳에 부여한 감정·기억 살펴보기',
+           '같은 장소를 서로 다른 사람들이 어떻게 경험하는지 비교하기'],
+  act:['나의 생활권과 의미 있는 장소를 심상지도로 표현하기',
+       '한 장소를 사진과 글로 기록하고 그것이 나에게 갖는 의미 설명하기',
+       '친구나 지역주민의 장소 이야기를 듣고 나의 경험과 비교하기'],
+  assess:'자신과 타인의 장소 경험을 구체적으로 표현하고 그 의미를 해석할 수 있는가'},
+ {id:'p2',para:'crit',ideo:'recon',motto:'누가 공간을 만들고 누가 그 결과를 감당하는가',
+  belief:'저는 지리교육이 공간을 자연스럽게 주어진 결과로 받아들이지 않고, 그 공간을 만들어 낸 사회구조와 권력 관계를 질문하게 해야 한다고 생각합니다. 어떤 지역에는 좋은 교통과 공원이 집중되고 다른 지역은 그렇지 않은 이유, 개발의 혜택과 비용이 누구에게 돌아가는지를 살펴봐야 합니다. 학생은 공간적 불평등의 원인을 분석하고, 현재의 공간을 더 공정하게 바꿀 수 있는 대안을 모색할 수 있어야 합니다.',
+  unit:'용인의 두 얼굴 — 개발, 권력 그리고 공간적 불평등',
+  content:['신도시와 구도심의 주거·교통·공공서비스 여건 비교하기',
+           '개발 과정에서 지역 간 격차가 만들어진 구조적 원인 분석하기',
+           '개발의 혜택과 부담이 어떤 집단에 돌아가는지 살펴보기'],
+  act:['지역별 교통·공원·생활서비스 접근성의 차이를 지도화하기',
+       '개발계획과 통계·기사 자료를 통해 주요 이해관계자와 권력 관계 분석하기',
+       '지역 격차를 줄이기 위한 정책을 제안하고 서로의 대안 평가하기'],
+  assess:'공간적 불평등을 만들어 낸 구조와 이해관계를 근거로 설명하고 타당한 대안을 제시할 수 있는가'},
+ {id:'p3',para:'post',ideo:'',motto:'하나의 용인은 없다 — 누가 어떻게 말하고 있는가',
+  belief:'저는 지리교육이 지역을 하나의 객관적 모습으로만 제시해서는 안 된다고 생각합니다. 같은 장소도 누가 바라보고 어떻게 표현하느냐에 따라 서로 다른 모습으로 만들어집니다. ‘첨단산업도시’, ‘살기 좋은 신도시’, ‘개발에서 소외된 지역’이라는 표현은 모두 용인의 특정 모습을 강조하고 다른 모습은 가릴 수 있습니다. 학생은 지도와 교과서뿐 아니라 뉴스, 광고, 관광자료와 SNS 속 재현을 비교하고, 누구의 관점이 드러나며 누구의 목소리가 보이지 않는지를 질문할 수 있어야 합니다.',
+  unit:'서로 다른 용인 — 이미지, 재현 그리고 목소리',
+  content:['언론·시정홍보·부동산 광고·SNS가 용인을 어떻게 다르게 표현하는지 비교하기',
+           '같은 장소에 사용되는 이미지와 언어가 어떤 의미를 만들어 내는지 분석하기',
+           '어떤 사람과 장소의 목소리가 강조되거나 주변화되는지 살펴보기'],
+  act:['같은 지역을 다룬 홍보자료·뉴스·주민 SNS 게시물 비교하기',
+       '‘첨단도시’, ‘베드타운’, ‘농촌지역’ 등 서로 다른 지역 표현이 무엇을 강조하고 가리는지 분석하기',
+       '기존 자료에서 잘 보이지 않았던 사람의 관점에서 새로운 지역 소개자료 만들기'],
+  assess:'지역에 대한 서로 다른 재현을 비교하고, 각 표현에 담긴 관점과 생략된 목소리를 근거를 들어 설명할 수 있는가'}];
+PLANS.forEach(function(p){
+  p.t1=p.belief;
+});
+var PENS=[{k:'pro',t:'찬성하는 대목',c:'#CFE6DC'},{k:'con',t:'반박할 대목',c:'#F6D9CF'}];
+
+var PARA=[
+ {k:'pos',n:'실증주의',world:'측정 가능한 공간적 질서',know:'패턴, 관계, 법칙과 일반화',
+  aim:'설명과 예측',role:'자료를 분석하고 가설을 검증한다',
+  ok:'개념과 자료로 공간 구조를 설명할 언어를 갖게 됩니다. 이것이 없으면 답사를 다녀와도 본 것을 말로 옮기지 못합니다.',
+  no:'현실을 변수와 모형으로 추상화하면서 장소의 특수성과 사람의 경험이 약해집니다.'},
+ {k:'hum',n:'인간주의',world:'인간이 경험하고 의미를 부여하는 장소',know:'장소 경험, 장소감, 개인적 의미',
+  aim:'자기인식과 상호이해',role:'경험을 표현하고 해석한다',
+  ok:'학생 자신의 경험에서 출발하므로 지리가 남의 이야기가 되지 않습니다.',
+  no:'그 경험을 만들어 낸 사회구조는 경험 안에서 보이지 않습니다.'},
+ {k:'crit',n:'구조주의·급진주의',world:'사회구조와 권력에 의해 만들어진 공간',know:'구조, 불평등, 이해관계',
+  aim:'비판과 사회정의',role:'불평등의 원인을 분석하고 대안을 모색한다',
+  ok:'학생이 시민으로서 판단할 근거를 갖게 됩니다. 지역 문제를 다루며 이 질문을 빼면 오히려 현 상태를 편드는 셈입니다.',
+  no:'개념과 자료의 기초 없이 비판부터 하면 근거 없는 구호가 됩니다.'},
+ {k:'post',n:'포스트모더니즘',world:'다양한 관점과 담론 속에서 구성되는 공간',know:'재현, 차이, 관점성',
+  aim:'관점과 재현에 대한 성찰',role:'서로 다른 재현을 비교하고 해체한다',
+  ok:'지역이 하나의 객관적 모습으로 주어지지 않는다는 것, 지식에도 관점이 있다는 것을 배웁니다.',
+  no:'모든 설명이 관점일 뿐이라고 하면, 서로 다른 주장의 타당성을 가릴 기준이 흐려집니다.'}];
+var PLAB={pos:'실증주의',hum:'인간주의',crit:'구조주의·급진주의',post:'포스트모더니즘'};
+function PA(k){for(var i=0;i<PARA.length;i++)if(PARA[i].k===k)return PARA[i];}
+
+var IDEO=[
+ {k:'lib',n:'자유주의적 인문주의',imp:'가치 있는 학문적 지식과 개념',aim:'지적 이해와 교양의 형성',
+  exp:'학문적 지식의 세계에 입문한다',role:'중요한 지식과 개념을 체계적으로 가르친다'},
+ {k:'child',n:'아동 중심',imp:'학생의 경험, 관심과 발달',aim:'개인의 성장과 자율적 탐구',
+  exp:'자신의 경험에서 출발해 의미를 구성한다',role:'학생의 경험과 탐구를 지원한다'},
+ {k:'prag',n:'실용주의',imp:'생활과 사회에 활용할 수 있는 지식과 기능',aim:'실제 문제 해결과 생활·진로에의 활용',
+  exp:'지식을 실제 상황에 적용하고 판단한다',role:'실제적 문제와 활용 상황을 제공한다'},
+ {k:'recon',n:'재건주의',imp:'사회문제, 불평등과 정의',aim:'사회 비판과 더 나은 사회의 형성',
+  exp:'문제의 원인과 이해관계를 분석하고 대안을 모색한다',role:'사회문제를 드러내고 비판적 탐구를 촉진한다'}];
+var ILAB={};IDEO.forEach(function(x){ILAB[x.k]=x.n;});
+
+/* 2022 개정 교육과정 지리 선택과목 — 성격·목표에서 발췌 */
+var SUBJ=[
+ {id:'s1',n:'세계시민과 지리',type:'일반 선택',
+  t:'공존과 갈등의 요인으로 작동하는 다양한 자연·인문적 환경 및 다중 스케일의 역동적 상호 작용을 이해하고, 나와 세계 여러 지역 및 사람들이 밀접하게 연계되어 있다는 관계적 사고를 증진한다. 기후변화, 식량 및 에너지 자원의 불평등한 분배, 글로벌 노동 분업의 불합리한 구조를 다루며, 다양한 삶에 대한 이해와 공감을 바탕으로 지속가능한 미래 세계를 위해 현명한 가치 판단을 하고 적극적으로 행동하는 시민의 양성을 목표로 한다.',
+  main:'crit',sub:'hum',
+  ev:[['“불평등한 분배”, “불합리한 구조”','crit'],['“다양한 삶에 대한 이해와 공감”','hum']],
+  cau:'가장 확실한 답은 구조주의·급진주의입니다. "불평등한 분배", "불합리한 구조"라는 표현 자체가 강한 근거입니다. 인간주의도 가능하지만 2순위입니다. 한편 "적극적으로 행동하는 시민"은 <b>교육 목적</b>에 대한 진술이지 패러다임의 근거가 아닙니다.'},
+ {id:'s2',n:'한국지리 탐구',type:'진로 선택',
+  t:'‘탐구를 통한 학습’을 지향한다. 국토와 지역의 문제를 탐구하기 위해 지리적 관점에서 질문을 던지고, 근거를 찾아 답하고, 탐구과정의 적절성을 성찰한다. 지리탐구의 효과적인 수행을 위해 지리정보기술, 공공 빅 데이터, 야외조사를 적극적으로 활용한다.',
+  main:'pos',sub:'',
+  ev:[['“질문을 던지고, 근거를 찾아 답하고”','pos'],['“탐구과정의 적절성을 성찰한다”','pos']],
+  cau:'다섯 과목 중 가장 애매합니다. <b>GIS·빅데이터·야외조사를 쓴다는 것은 근거가 되지 못합니다.</b> 그것은 방법입니다. 질문 → 근거 → 답 → 탐구과정 검토라는 <b>지식 구성 방식</b> 때문에 네 패러다임 가운데 실증주의가 가장 가깝습니다.'},
+ {id:'s3',n:'도시의 미래 탐구',type:'진로 선택',
+  t:'‘나는 어떤 도시에 살고 싶은가?’와 같은 탐구 주제를 제시하여 학생들이 거주하고 있는 도시에 대한 장소감을 형성하도록 한다. 한편 도시의 변화와 집중을 이끄는 힘은 다양한 도시 문제와 공간 불평등을 초래하였으며, 학생들이 이를 고찰할 수 있는 비판적 사고력을 함양한다.',
+  main:'hum',sub:'crit',
+  ev:[['“장소감을 형성”','hum'],['“공간 불평등”, “비판적 사고”','crit']],
+  cau:'가장 좋은 복수정답 사례입니다. 장소감은 인간주의가, 공간 불평등과 비판적 사고는 구조주의·급진주의가 명확합니다. <b>한 과목에 둘 이상의 패러다임이 공존할 수 있음</b>을 보여 줍니다.'},
+ {id:'s4',n:'여행지리',type:'융합 선택',
+  t:'여행을 통해 자신과 공동체를 성찰하고, 그 관계에 주목하면서 개인 및 공동체의 행복과 공정하고 평화로운 공존을 위하여 필요한 태도를 기른다. 개인의 행복과 삶의 의미에 대한 성찰, 공동체와 환경에 대한 공감과 이해를 아우른다. 한편 인류의 여행은 직접 여행 외에도 TV나 인터넷 매체, 증강현실에서 제공하는 정보를 통한 간접여행으로 진화하고 있다.',
+  main:'hum',sub:'',
+  ev:[['“자신과 공동체를 성찰”','hum'],['“행복과 삶의 의미”, “공감과 이해”','hum']],
+  cau:'발췌문만 보면 인간주의가 가장 분명합니다. TV·인터넷·증강현실이 나온다고 해서 포스트모더니즘으로 보기는 어렵습니다. "<b>매체가 여행지를 어떻게 재현하는가</b>", "<b>누구의 시선으로 장소가 표현되는가</b>"가 들어갔다면 그때 포스트모더니즘까지 인정할 수 있습니다.'},
+ {id:'s5',n:'기후변화와 지속가능한 세계',type:'융합 선택',
+  t:'기후변화가 유발하는 다양한 사회·생태적 문제에 대한 탐색을 통해 기후변화 문제를 비판적으로 성찰하며, 이를 해결하기 위하여 적극적으로 참여하고 실천하는 생태시민을 육성하는 데 목적을 둔다.',
+  main:'crit',sub:'',
+  ev:[['“사회·생태적 문제를 비판적으로 성찰”','crit']],
+  cau:'구조주의·급진주의가 가장 가깝습니다. 다만 "참여하고 실천하는 생태시민"은 패러다임의 근거라기보다 <b>교육 목적</b>에 가깝습니다. 핵심 근거는 사회·생태적 문제를 비판적으로 성찰한다는 표현입니다.'}];
+
+var MENU=[
+ {k:'m1',lb:'협의회',h:'지리교사 협의회',
+  d:'네 교사의 제안서를 읽고 찬성할 대목과 반박할 대목을 표시합니다.',m:'25분'},
+ {k:'m2',lb:'정리',h:'제안서 뒤에 있는 것',
+  d:'지리교육의 패러다임과 교육적 이데올로기를 정리한 뒤, 네 제안서를 두 축으로 판단합니다.',m:'25분'},
+ {k:'m3',lb:'교육과정',h:'교육과정은 어떤 지리를 택했는가',
+  d:'2022 개정 지리 선택과목의 성격과 목표를 읽고, 각 과목이 어떤 패러다임에 서 있는지 판별합니다.',m:'20분'}];
+
+/* ═════ 상태 ═════ */
+function blank(){return {scr:'home',
+  m1:{pen:'pro',marks:{}},
+  m2:{gp:{},gi:{},key:false,txt:''},
+  m3:{pick:{},marks:{},key:false,txt:''}};}
+var S=blank(),dirty=false;
+function $(s){return document.querySelector(s);}
+function esc(s){return String(s||'').replace(/[&<>"]/g,function(c){
+  return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+
+
+/* ═════ 화면 ═════ */
+function home(){
+  return '<p class="stage">지리교과교육론 2강</p><h1>지리교육의 이데올로기와 패러다임</h1>'+
+  '<p class="lead">중심 질문 — <b>학교에서 가르치는 지리는 누가, 무엇을 기준으로 선택하는가?</b><br>'+
+  '네 교사의 제안서를 놓고 회의하듯 읽은 뒤, 각 제안 뒤에 있는 교육 전통과 지식관을 정리합니다.</p>'+
+  '<div class="menu">'+MENU.map(function(m,i){
+    return '<button class="mcard" data-go="'+m.k+'"><div class="k">활동 '+(i+1)+'</div>'+
+      '<h3>'+m.h+'</h3><p>'+m.d+'</p><div class="m">'+m.m+'</div></button>';}).join('')+'</div>'+
+  '<div class="arc"><span>읽고 표시한다</span><i>→</i><span>이름을 붙이고 정리한다</span><i>→</i><span>교육과정에 적용한다</span></div>';
+}
+
+/* ── 활동 1 ── */
+function segs(id,t){
+  var mk=(S.m1.marks[id]||[]).slice().sort(function(a,b){return a.s-b.s;});
+  var out='',c=0;
+  function color(k){for(var i=0;i<PENS.length;i++)if(PENS[i].k===k)return PENS[i].c;return '#eee';}
+  mk.forEach(function(m,i){
+    if(m.s>c)out+='<span data-s="'+c+'">'+esc(t.slice(c,m.s))+'</span>';
+    out+='<mark data-s="'+m.s+'" data-mi="'+i+'" style="background:'+color(m.k)+'">'+esc(t.slice(m.s,m.e))+'</mark>';
+    c=m.e;});
+  if(c<t.length)out+='<span data-s="'+c+'">'+esc(t.slice(c))+'</span>';
+  return out;
+}
+function planCard(p,i){
+  function hb(id,t,cls){return '<div class="body '+(cls||'')+'" data-doc="'+id+'">'+segs(id,t)+'</div>';}
+  function li(id,t){return '<li><div class="body" data-doc="'+id+'">'+segs(id,t)+'</div></li>';}
+  return '<div class="plan"><div class="no">제안서 '+LB[i]+'</div>'+
+   '<div class="motto">'+esc(p.motto)+'</div>'+
+   hb(p.id+'a',p.t1)+
+   '<div class="egbox"><div class="egl">첫 단원 예시</div>'+
+    hb(p.id+'u',p.unit,'egu')+
+    '<div class="egk">학습 내용</div><ul class="egul">'+p.content.map(function(t,k){return li(p.id+'c'+k,t);}).join('')+'</ul>'+
+    '<div class="egk">주요 활동</div><ul class="egul">'+p.act.map(function(t,k){return li(p.id+'a'+k,t);}).join('')+'</ul>'+
+    '<div class="egk">평가</div>'+hb(p.id+'e',p.assess,'ege')+
+   '</div></div>';
+}
+function m1(){
+  var nmark=0;Object.keys(S.m1.marks).forEach(function(k){nmark+=S.m1.marks[k].length;});
+  return '<p class="stage">활동 1</p><h1>지리교사 협의회</h1>'+
+  '<div class="mission"><div class="l">상황</div>'+
+   '<p>"여러분은 용인 수지고등학교 지리과 교사 네 명입니다."</p>'+
+   '<div class="s">새로 개설할 지역지리 선택과목 〈우리 동네, 용인 다시 보기〉를 <b>어떤 방향으로 설계하고 운영할지</b> 오늘 정합니다. 네 사람이 각자 제안서를 냈습니다. 첫 단원 예시는 그 방향이 실제 수업에서 어떤 모습이 되는지 보여 주기 위한 것입니다.</div>'+
+   '<div class="s" style="margin-top:10px"><b>모둠 활동</b> — 네 명이 한 모둠입니다. 각자 제안서 하나를 맡아 그 교사가 되십시오. 자기 제안서에서 회의 때 읽을 대목을, 나머지 세 제안서에서 반박할 대목을 표시한 뒤 회의를 시작합니다.</div></div>'+
+
+  '<div class="toolbar"><div class="tl">형광펜</div>'+
+   '<div class="pens">'+PENS.map(function(x){
+     return '<button class="pen" aria-pressed="'+(S.m1.pen===x.k)+'" data-pen="'+x.k+'"><i style="background:'+x.c+'"></i>'+x.t+'</button>';}).join('')+'</div>'+
+   '<div class="tc">'+nmark+'곳 표시함 · 표시한 곳을 다시 누르면 지워집니다</div></div>'+
+   '<div class="plans">'+PLANS.map(function(p,i){return planCard(p,i);}).join('')+'</div>'+
+
+  '';
+}
+
+/* ── 활동 2 · 정리 ── */
+var LINK={
+ C:{para:'pos',pn:'실증주의',q:'어디에 두는 것이 가장 합리적인가',
+    role:'자료를 분석하고 기준에 따라 판단한다',
+    miss:'왜 그 문제가 생겼는지, 왜 하필 그 지역인지는 묻지 않게 됩니다.'},
+ A:{para:'pos',pn:'실증주의',q:'용인의 공간 구조는 어떤 원리로 설명되는가',
+    role:'개념을 익히고 패턴을 설명한다',
+    miss:'개념이 학생의 경험과 만나지 않으면 남의 동네 이야기로 남습니다.'},
+ D:{para:'crit',pn:'구조주의·급진주의',q:'누가 이익을 얻고 누가 비용을 치르는가',
+    role:'구조를 분석하고 대안을 제안한다',
+    miss:'개념과 자료의 기초 없이 비판부터 하면 근거 없는 구호가 됩니다.'},
+ B:{para:'hum',pn:'인간주의',q:'이 장소는 나에게 무엇인가',
+    role:'경험을 표현하고 서로의 경험을 견준다',
+    miss:'경험을 만들어 낸 구조는 경험 안에서 보이지 않습니다.'}};
+
+function m2(){
+  var t1='<table class="ct"><colgroup><col><col><col><col><col></colgroup><thead><tr><th>패러다임</th><th>지리적 세계</th><th>중요한 지식</th><th>교육의 목적</th><th>학생의 역할</th></tr></thead><tbody>'+
+   PARA.map(function(x){return '<tr><td>'+x.n+'</td><td>'+x.world+'</td><td>'+x.know+'</td><td>'+x.aim+'</td><td>'+x.role+'</td></tr>';}).join('')+'</tbody></table>';
+  var t2='<table class="ct"><colgroup><col><col><col><col><col></colgroup><thead><tr><th>교육적 이데올로기</th><th>교육에서 중요한 것</th><th>교육의 목적</th><th>학생의 경험</th><th>교사의 역할</th></tr></thead><tbody>'+
+   IDEO.map(function(x){return '<tr><td>'+x.n+'</td><td>'+x.imp+'</td><td>'+x.aim+'</td><td>'+x.exp+'</td><td>'+x.role+'</td></tr>';}).join('')+'</tbody></table>';
+  var doneP=PLANS.filter(function(p){return S.m2.gp[p.id];}).length;
+  var doneI=PLANS.filter(function(p){return S.m2.gi[p.id];}).length;
+  function jcell(p,x,sel,attr,ansKey){
+    var mine=sel[p.id]||'',hit=S.m2.key&&x.k===p[ansKey];
+    return '<td class="'+(hit?'hit':'')+'"><button class="cell" aria-pressed="'+(mine===x.k)+'" data-'+attr+'="'+p.id+'" data-v="'+x.k+'" title="'+x.n+'">'+(mine===x.k?'●':'')+'</button></td>';
+  }
+  var jt='<div class="jwrap"><table class="jt"><thead>'+
+   '<tr><th rowspan="2" class="ph">제안서</th><th colspan="4" class="g1">① 지리교육의 패러다임</th>'+
+   '<th colspan="4" class="g2">② 교육적 이데올로기</th></tr><tr>'+
+   PARA.map(function(x){return '<th class="g1">'+x.n+'</th>';}).join('')+
+   IDEO.map(function(x){return '<th class="g2">'+x.n+'</th>';}).join('')+'</tr></thead><tbody>'+
+   PLANS.map(function(p,i){
+     return '<tr><th class="ph"><b>'+LB[i]+'</b> '+esc(p.motto)+'</th>'+
+       PARA.map(function(x){return jcell(p,x,S.m2.gp,'gp','para');}).join('')+
+       IDEO.map(function(x){return jcell(p,x,S.m2.gi,'gi','ideo');}).join('')+'</tr>';}).join('')+
+   '</tbody></table></div>';
+
+  var rows=S.m2.key?'<div class="jlist">'+PLANS.map(function(p,i){var x=PA(p.para);
+     return '<div class="jrow"><div class="jh"><b>'+LB[i]+'</b>'+x.n+
+       (p.ideo?' · '+ILAB[p.ideo]:' · 대응하는 이데올로기 없음')+'</div>'+
+      '<div class="jl">'+esc(x.ok)+'</div><div class="jl s">다만 '+esc(x.no)+'</div></div>';}).join('')+'</div>':'';
+
+  return '<p class="stage">활동 2</p><h1>제안서 뒤에 있는 것</h1>'+
+  '<p class="lead">네 제안서의 차이는 수업 방법의 차이가 아닙니다. <b>지리적 세계를 어떻게 이해하는가</b>와 <b>무엇을 가치 있는 교육으로 보는가</b>, 서로 다른 두 축의 차이입니다.</p>'+
+  '<div class="step"><h3><b>1</b>지리교육의 패러다임</h3>'+
+   '<p class="d">지리적 세계를 무엇으로 보고 무엇을 타당한 지리 지식으로 인정하는가에 대한 서로 다른 입장입니다.</p>'+t1+'</div>'+
+  '<div class="step"><h3><b>2</b>월포드의 교육적 이데올로기</h3>'+
+   '<p class="d">학교에서 무엇을 가치 있는 교육으로 보고 왜 가르치는가에 대한 서로 다른 입장입니다.</p>'+t2+
+   '<div class="twol"><div><b>패러다임</b>은 지리적 세계와 지식을 어떻게 이해하는가에 초점을 둔다.</div>'+
+    '<div><b>교육적 이데올로기</b>는 무엇을 가치 있는 교육으로 보고 왜 가르치는가에 초점을 둔다.</div>'+
+    '<div class="s">두 축은 자주 함께 가지만 일대일로 대응하지 않는다.</div></div></div>'+
+  '<div class="step"><h3><b>3</b>제안서를 두 축으로 판단한다</h3>'+
+   '<p class="d">제안서마다 ① 가장 강하게 드러나는 패러다임을 고르고, ② 그것이 어떤 교육적 이데올로기와 이어지는지 고르십시오.</p>'+
+   jt+
+   '<div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:20px">'+
+    '<button class="opt" aria-pressed="'+S.m2.key+'" id="ky2">'+(S.m2.key?'닫기':'확인하기')+'</button>'+
+    '<span style="color:var(--mid);font-size:14px">패러다임 '+doneP+' / 4 · 이데올로기 '+doneI+' / 4</span></div>'+rows+
+   (S.m2.key?'<div class="notice" style="margin-top:20px"><b>두 가지를 눈여겨보십시오.</b><br>'+
+     '① 제안서 D는 월포드의 네 전통 중 <b>짝이 없습니다.</b> 이 분류는 포스트모던 지리학이 교육에 들어오기 전에 만들어졌습니다.<br>'+
+     '② 네 제안서 중 <b>실용주의</b>에 해당하는 것도 없습니다. 지도와 GIS를 실제 문제 해결에 쓰자는 교사가 다섯 번째로 앉는다면, 그의 제안서는 어떤 패러다임에 설까요?</div>':'')+'</div>'+
+  '<div class="step"><h3>한 문장으로 남기기</h3>'+
+   '<p class="d">지금까지 내가 받은 지리 수업은 네 제안서 중 어디에 가까웠습니까? 거의 만나지 못한 것은 무엇입니까?</p>'+
+   '<textarea id="sum" placeholder="내가 배운 지리는 주로 제안서 …에 가까웠고, …는 거의 만나지 못했다. 내가 가르친다면 …">'+esc(S.m2.txt)+'</textarea></div>';
+}
+
+function segs3(id,t){
+  var mk=(S.m3.marks[id]||[]).slice().sort(function(a,b){return a.s-b.s;});
+  var out='',c=0;
+  mk.forEach(function(m,i){
+    if(m.s>c)out+='<span data-s="'+c+'">'+esc(t.slice(c,m.s))+'</span>';
+    out+='<mark data-s="'+m.s+'" data-mi="'+i+'" style="background:#F6E7B8">'+esc(t.slice(m.s,m.e))+'</mark>';
+    c=m.e;});
+  if(c<t.length)out+='<span data-s="'+c+'">'+esc(t.slice(c))+'</span>';
+  return out;
+}
+function m3(){
+  var pick=S.m3.pick;
+  var done=SUBJ.filter(function(x){return Object.keys(pick[x.id]||{}).length;}).length;
+  var nm=0;Object.keys(S.m3.marks).forEach(function(k){nm+=S.m3.marks[k].length;});
+  return '<p class="stage">활동 3</p><h1>교육과정은 어떤 지리를 택했는가</h1>'+
+  '<p class="lead">2022 개정 교육과정의 고등학교 지리 선택과목입니다. 성격과 목표에서 발췌했습니다. 정답 하나를 맞히는 문제가 아니라, <b>교육과정의 표현을 근거로 가장 두드러진 패러다임을 판단하는</b> 문제입니다.</p>'+
+  '<div class="toolbar"><div class="tl">형광펜</div>'+
+   '<div class="tt">패러다임을 판단할 근거가 되는 낱말과 어구를 긁어 표시하십시오</div>'+
+   '<div class="tc">'+nm+'곳 표시함 · 다시 누르면 지워집니다 · 판별 '+done+' / '+SUBJ.length+'</div></div>'+
+  '<div class="slist">'+SUBJ.map(function(x){
+    var sel=pick[x.id]||{};
+    var ans=S.m3.key?'<div class="fb"><div class="mainans"><span class="mk">주된 답</span>'+PLAB[x.main]+
+        (x.sub?'<span class="mk sub">함께 인정</span>'+PLAB[x.sub]:'')+'</div>'+
+      '<div class="evlist">'+x.ev.map(function(e){
+        return '<div class="evi">'+esc(e[0])+' <span class="ar">→</span> <span class="ek">'+PLAB[e[1]]+'</span></div>';}).join('')+'</div>'+
+      '<div class="cau">'+x.cau+'</div></div>':'';
+    return '<div class="item"><div class="num">'+esc(x.n)+'<em>'+x.type+'</em></div>'+
+     '<div class="txt" data-sdoc="'+x.id+'">'+segs3(x.id,x.t)+'</div>'+
+     '<div class="chips">'+PARA.map(function(pa){
+       var on=!!sel[pa.k],hit=S.m3.key&&(pa.k===x.main||pa.k===x.sub);
+       return '<button class="tag'+(hit?' hit':'')+'" aria-pressed="'+on+'" data-subj="'+x.id+'" data-pa="'+pa.k+'">'+pa.n+'</button>';}).join('')+'</div>'+
+     ans+'</div>';}).join('')+'</div>'+
+  '<div style="margin-top:24px"><button class="opt" aria-pressed="'+S.m3.key+'" id="ky3">'+
+   (S.m3.key?'모범답안 닫기':'모범답안 확인하기')+'</button></div>';
+}
+
+var V={home:home,m1:m1,m2:m2,m3:m3};
+function foot(){
+  if(S.scr==='home')return '';
+  return '<div class="foot"><button id="print">인쇄 · PDF</button>'+
+   '<button id="save">작업 저장</button><button id="load">불러오기</button>'+
+   '<span class="msg" id="msg"></span><input type="file" id="file" accept=".json" hidden></div>';
+}
+function switcher(){
+  $('#sw').innerHTML=MENU.map(function(m,i){
+    return '<button aria-current="'+(S.scr===m.k)+'" data-go="'+m.k+'"><b>'+(i+1)+'</b><span class="lb">'+m.lb+'</span></button>';}).join('');
+  Array.prototype.forEach.call($('#sw').querySelectorAll('[data-go]'),function(b){
+    b.onclick=function(){go(b.dataset.go);};});
+}
+function paint(){
+  $('#main').innerHTML=V[S.scr]()+foot();
+  switcher();bind();
+}
+function go(k){S.scr=k;paint();window.scrollTo(0,0);}
+$('#brand').onclick=function(){go('home');};
+
+/* ═════ 이벤트 ═════ */
+function txt(id,fn){var el=$('#'+id);if(el)el.oninput=function(){fn(el.value);dirty=true;};}
+function bind(){
+  var m=$('#main'),q=function(s){return Array.prototype.slice.call(m.querySelectorAll(s));};
+  q('[data-go]').forEach(function(b){b.onclick=function(){go(b.dataset.go);};});
+  q('[data-pen]').forEach(function(b){b.onclick=function(){S.m1.pen=b.dataset.pen;paint();};});
+  q('[data-gp]').forEach(function(b){b.onclick=function(){var id=b.dataset.gp;
+    S.m2.gp[id]=S.m2.gp[id]===b.dataset.v?'':b.dataset.v;dirty=true;paint();};});
+  q('[data-gi]').forEach(function(b){b.onclick=function(){var id=b.dataset.gi;
+    S.m2.gi[id]=S.m2.gi[id]===b.dataset.v?'':b.dataset.v;dirty=true;paint();};});
+  if($('#ky2'))$('#ky2').onclick=function(){S.m2.key=!S.m2.key;paint();};
+  if($('#ky3'))$('#ky3').onclick=function(){S.m3.key=!S.m3.key;paint();};
+  q('[data-subj]').forEach(function(b){b.onclick=function(){
+    var id=b.dataset.subj,k=b.dataset.pa;
+    if(!S.m3.pick[id])S.m3.pick[id]={};
+    if(S.m3.pick[id][k])delete S.m3.pick[id][k];
+    else{if(Object.keys(S.m3.pick[id]).length>=2)return;S.m3.pick[id][k]=1;}
+    dirty=true;paint();};});
+  txt('sum',function(v){S.m2.txt=v;});
+  txt('pm',function(v){S.m3.txt=v;});
+  q('.slist .txt').forEach(function(el){
+    el.onmouseup=function(){setTimeout(function(){hlSel3(el);},0);};
+    el.onclick=function(e){var sl=window.getSelection();
+      if(sl&&!sl.isCollapsed)return;
+      if(e.target.tagName==='MARK'){
+        var a=S.m3.marks[el.dataset.sdoc]||[];
+        a.sort(function(x,y){return x.s-y.s;});a.splice(+e.target.dataset.mi,1);
+        S.m3.marks[el.dataset.sdoc]=a;dirty=true;paint();}};});
+  q('.plan .body').forEach(function(el){
+    el.onmouseup=function(){setTimeout(function(){hlSel(el);},0);};
+    el.onclick=function(e){var s=window.getSelection();
+      if(s&&!s.isCollapsed)return;
+      if(e.target.tagName==='MARK'){
+        var a=S.m1.marks[el.dataset.doc]||[];
+        a.sort(function(x,y){return x.s-y.s;});a.splice(+e.target.dataset.mi,1);
+        S.m1.marks[el.dataset.doc]=a;dirty=true;paint();}};});
+  if($('#print')){$('#print').onclick=function(){window.print();};
+    $('#save').onclick=save;$('#load').onclick=function(){$('#file').click();};
+    $('#file').onchange=load;}
+}
+function offsetIn(node,off){
+  var host=(node.nodeType===3)?node.parentNode:node;
+  if(!host||host.dataset.s===undefined)return null;
+  return (+host.dataset.s)+off;
+}
+function hlSel3(el){
+  var sl=window.getSelection();
+  if(!sl||sl.isCollapsed||!sl.rangeCount)return;
+  var r=sl.getRangeAt(0);
+  if(!el.contains(r.startContainer)||!el.contains(r.endContainer))return;
+  var a=offsetIn(r.startContainer,r.startOffset),b=offsetIn(r.endContainer,r.endOffset);
+  if(a===null||b===null||a===b)return;
+  var st=Math.min(a,b),en=Math.max(a,b),id=el.dataset.sdoc;
+  var arr=(S.m3.marks[id]||[]).filter(function(m){return m.e<=st||m.s>=en;});
+  arr.push({s:st,e:en});
+  S.m3.marks[id]=arr;dirty=true;sl.removeAllRanges();paint();
+}
+function hlSel(el){
+  var s=window.getSelection();
+  if(!s||s.isCollapsed||!s.rangeCount)return;
+  var r=s.getRangeAt(0);
+  if(!el.contains(r.startContainer)||!el.contains(r.endContainer))return;
+  var a=offsetIn(r.startContainer,r.startOffset),b=offsetIn(r.endContainer,r.endOffset);
+  if(a===null||b===null||a===b)return;
+  var st=Math.min(a,b),en=Math.max(a,b),id=el.dataset.doc;
+  var arr=(S.m1.marks[id]||[]).filter(function(m){return m.e<=st||m.s>=en;});
+  arr.push({s:st,e:en,k:S.m1.pen});
+  S.m1.marks[id]=arr;dirty=true;s.removeAllRanges();paint();
+}
+
+/* ═════ 저장 ═════ */
+function flash(t){var e=$('#msg');if(e){e.textContent=t;setTimeout(function(){e.textContent='';},2400);}}
+function stamp(){var d=new Date();return ''+d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');}
+function save(){var b=new Blob([JSON.stringify(S,null,2)],{type:'application/json'}),a=document.createElement('a');
+  a.href=URL.createObjectURL(b);a.download='2강_패러다임_'+stamp()+'.json';a.click();
+  URL.revokeObjectURL(a.href);dirty=false;flash('저장했습니다');}
+function load(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();
+  r.onload=function(){try{var d=JSON.parse(r.result),b=blank();
+    S=Object.assign(b,d);
+    S.m1=Object.assign(b.m1,d.m1||{});
+    S.m1.marks=S.m1.marks||{};
+    S.m2=Object.assign(b.m2,d.m2||{});S.m2.gp=S.m2.gp||{};S.m2.gi=S.m2.gi||{};
+    S.m3=Object.assign(b.m3,d.m3||{});S.m3.pick=S.m3.pick||{};S.m3.marks=S.m3.marks||{};
+    dirty=false;paint();flash('불러왔습니다');
+  }catch(x){flash('이 화면에서 저장한 파일인지 확인하세요');}e.target.value='';};
+  r.readAsText(f);}
+window.addEventListener('beforeunload',function(e){if(dirty){e.preventDefault();e.returnValue='';}});
+paint();
+</script>
+</body>
+</html>
