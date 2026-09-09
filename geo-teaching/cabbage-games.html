@@ -40,7 +40,7 @@ h1,h2,h3{letter-spacing:-.025em;line-height:1.2}
 /* ================= 설정 화면 ================= */
 .page{max-width:68rem;margin:0 auto;padding:0 1.5rem 5rem}
 .hero{padding:4rem 0 2.4rem;border-bottom:2px solid var(--ink)}
-.hero h1{font-size:clamp(2.8rem,7vw,4rem);font-weight:800;margin-bottom:.5rem}
+.hero h1{font-size:clamp(1.9rem,4.2vw,2.5rem);font-weight:800;margin-bottom:.5rem}
 .hero .tag{font-size:1.15rem;color:var(--muted);max-width:34rem}
 
 .cols{display:grid;grid-template-columns:minmax(0,1fr) 19rem;gap:3.5rem;
@@ -77,7 +77,7 @@ table.payout td.zero{font-weight:800;color:var(--fail)}
 .f{margin-bottom:1.2rem}
 .f label{display:block;font-size:.9rem;font-weight:700;color:var(--muted);margin-bottom:.25rem}
 .f .row{display:flex;align-items:baseline;gap:.5rem}
-.f input{font-size:1.9rem;font-weight:800;width:4.6rem;text-align:center;border:none;
+.f input{font-size:1.9rem;font-weight:800;width:6.2rem;text-align:center;border:none;
   border-bottom:2px solid var(--ink);background:none;color:var(--ink);padding:.1rem 0}
 .f .u{font-size:.92rem;color:var(--muted)}
 
@@ -287,35 +287,16 @@ ul.rules li::before{content:"◇ ";font-weight:700}
 .letter p{margin-bottom:1.15rem}
 .letter .greet{font-size:1.06rem;font-weight:700;color:var(--ink);margin-bottom:1.4rem}
 .letter b{background:linear-gradient(transparent 62%,#DDECD2 62%);font-weight:700}
+.letter .ask{margin-top:1.6rem;background:#EFF5EB;border-left:3px solid var(--cabbage);
+  border-radius:0 4px 4px 0;padding:.9rem 1.1rem;font-weight:600;color:var(--ink)}
+.letter .ask b{background:none;color:var(--cabbage);font-weight:800;margin-right:.3rem}
 .letter .sign{margin:2rem 0 0;padding-top:1.2rem;border-top:1px dashed #DCE2D2;
   text-align:right;font-size:.92rem;color:var(--muted);line-height:1.8}
 .letter .sign span{font-size:1.06rem;font-weight:700;color:var(--ink)}
 
 .cal{max-width:40rem;margin:3rem auto 0;border:1px solid var(--line);border-radius:6px;
   padding:1.3rem 1.4rem;background:#fff}
-.cal-h{display:flex;align-items:center;gap:.45rem;font-size:.85rem;font-weight:700;
-  color:var(--cabbage);margin-bottom:.8rem}
-.calt{border-collapse:collapse;width:100%;font-size:.8rem;table-layout:fixed}
-.calt th,.calt td{border:1px solid var(--line);padding:.35rem 0;text-align:center;height:1.9rem}
-.calt th{background:#F3F5F0;font-weight:600;color:var(--muted);font-size:.72rem}
-.calt th.c,.calt td.c{width:4.6rem;text-align:left;padding-left:.6rem;font-weight:700;background:#FAFBF8}
-.calt td.s{color:var(--cabbage);font-weight:800}
-.calt td.e{color:#C08A2E;font-weight:800}
-.calt td.b{background:#EAF1E4}
-.cal-l{display:flex;gap:1.1rem;margin-top:.7rem;font-size:.78rem;color:var(--muted);flex-wrap:wrap}
-.cal-l .ls{color:var(--cabbage);font-weight:700}
-.cal-l .le{color:#C08A2E;font-weight:700}
-.cal-l .m{margin-left:auto}
 
-.mission{max-width:40rem;margin:1.8rem auto 0;border-radius:8px;
-  background:var(--cabbage);color:#fff;padding:1.6rem 1.8rem}
-.mission .mk{display:inline-flex;align-items:center;gap:.45rem;font-size:1rem;font-weight:800;
-  letter-spacing:.14em;margin-bottom:.9rem;padding:.3rem .9rem .3rem .7rem;
-  background:rgba(255,255,255,.16);border-radius:999px}
-.mission .mk .cabicon circle{fill:#fff}
-.mission .mk .cabicon path{stroke:var(--cabbage)}
-.mission p{font-size:.98rem;line-height:1.85}
-.mission b{border-bottom:2px solid rgba(255,255,255,.6)}
 
 .qbox{max-width:40rem;margin:2.2rem auto 2.6rem;border:1px solid var(--line);
   border-radius:6px;padding:1.3rem 1.5rem;background:#FAFBF8}
@@ -345,8 +326,31 @@ ul.rules li::before{content:"◇ ";font-weight:700}
 .parts b{opacity:.55;margin-right:.4rem;font-weight:800}
 .parts button[aria-current="true"] b{opacity:.75}
 
-.shead{padding:3rem 0 0;max-width:40rem;margin:0 auto}
-.shead h1{font-size:clamp(2rem,5vw,2.7rem);font-weight:800;margin:.4rem 0 .7rem;line-height:1.25}
+/* 해결책 페이지 — 미션 / 배경 자료 / 우선순위 */
+.task{border-left:3px solid var(--cabbage);padding:.1rem 0 .1rem 1.1rem;margin-top:1.4rem}
+.task .tk{font-size:.8rem;font-weight:800;color:var(--cabbage);letter-spacing:.08em;margin-bottom:.5rem}
+.task ol{margin:0;padding-left:1.1rem;color:var(--muted);font-size:.95rem;line-height:1.9}
+.task li::marker{color:var(--cabbage);font-weight:700}
+.task b{color:var(--ink)}
+.bgwrap{max-width:52rem;margin:3rem auto 0;background:#F7F9F5;border:1px solid var(--line);
+  border-radius:8px;padding:1.6rem 2rem 2rem}
+.bglabel{font-size:.78rem;font-weight:800;color:var(--cabbage);letter-spacing:.1em;
+  margin-bottom:1.4rem;text-align:center}
+.bgwrap .sblock{margin:2rem 0 0}
+.bgwrap .sblock:first-of-type{margin-top:0}
+.bgwrap .sblock{max-width:none}
+.bgwrap .stbl td.k,.bgwrap .stbl tbody tr:hover td{background:none}
+.bgwrap .cause,.bgwrap .stbl{background:#fff}
+.bgwrap .sh{font-size:1.15rem}
+.gfx{margin:1.3rem 0 1.5rem;background:#fff;border:1px solid var(--line);border-radius:6px;
+  padding:1.1rem 1rem .9rem;text-align:center}
+.gfx svg,.gfx img{display:block;width:100%;height:auto;margin:0 auto}
+.gfx figcaption{margin-top:.7rem;font-size:.8rem;color:var(--faint)}
+@media(max-width:760px){
+  .bgwrap{padding:1.3rem 1.2rem 1.6rem}
+}
+.shead{padding:3rem 0 0;max-width:52rem;margin:0 auto}
+.shead h1{font-size:clamp(1.5rem,3.4vw,2rem);font-weight:800;margin:.4rem 0 .9rem;line-height:1.35}
 .shead .tag{color:var(--muted);font-size:.94rem;line-height:1.85}
 .probs{max-width:40rem;margin:2.2rem auto 0;display:grid;gap:.9rem}
 .prob{position:relative;border:1px solid var(--line);border-left:4px solid var(--cabbage);
@@ -367,7 +371,7 @@ ul.rules li::before{content:"◇ ";font-weight:700}
 #setup .page,#board .page{max-width:82rem}
 #topnav .nv{max-width:82rem}
 
-.sblock{max-width:40rem;margin:2.8rem auto 0;padding-top:2rem;border-top:1px solid var(--line)}
+.sblock{max-width:52rem;margin:2.8rem auto 0;padding-top:2rem;border-top:1px solid var(--line)}
 .sblock:first-of-type{border-top:none;padding-top:0}
 .sh{display:flex;align-items:baseline;gap:.6rem;font-size:1.35rem;font-weight:800;margin-bottom:1rem}
 .sn{color:var(--cabbage);font-size:1.05rem;font-weight:800}
@@ -383,7 +387,8 @@ ul.rules li::before{content:"◇ ";font-weight:700}
 .think{display:flex;gap:.6rem;align-items:flex-start;background:#F3F7F1;border-left:3px solid var(--cabbage);
   border-radius:0 6px 6px 0;padding:.95rem 1.2rem;font-size:.93rem;line-height:1.8;color:var(--ink)}
 .think b{color:var(--cabbage);font-size:.82rem;letter-spacing:.06em}
-.causes{display:grid;gap:.8rem}
+.causes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem}
+@media(max-width:700px){.causes{grid-template-columns:1fr}}
 .cause{border:1px solid var(--line);border-radius:6px;padding:1.1rem 1.3rem 1.1rem 3.4rem;
   background:#fff;position:relative}
 .ch{font-size:1rem;font-weight:800;margin-bottom:.45rem;letter-spacing:-.01em}
@@ -403,19 +408,6 @@ ul.rules li::before{content:"◇ ";font-weight:700}
 .five{display:grid;gap:.5rem;margin:1.4rem 0}
 .fi{font-size:.94rem;color:var(--muted);line-height:1.7;padding-left:5.6rem;position:relative}
 .fi b{position:absolute;left:0;top:0;color:var(--cabbage);font-size:.86rem}
-.wsheet{border:1px solid var(--line);border-top:4px solid var(--cabbage);border-radius:6px;
-  padding:1.3rem 1.4rem;background:#fff}
-.wl{font-size:.82rem;font-weight:800;color:var(--cabbage);letter-spacing:.08em;margin-bottom:1rem}
-.wk{font-size:.85rem;font-weight:700;margin:1.1rem 0 .5rem}
-.wk:first-of-type{margin-top:0}
-.cks{display:flex;gap:.4rem;flex-wrap:wrap}
-.ck{background:#fff;border:1px solid var(--line);border-radius:999px;padding:.35rem .8rem;
-  font-size:.85rem;cursor:pointer;font-family:inherit;color:var(--muted)}
-.ck:hover{border-color:var(--cabbage);color:var(--ink)}
-.ck[aria-pressed="true"]{background:var(--cabbage);border-color:var(--cabbage);color:#fff;font-weight:600}
-.wa{width:100%;border:1px solid var(--line);border-radius:4px;padding:.6rem .7rem;
-  font-family:inherit;font-size:.95rem;line-height:1.7;margin-bottom:.4rem;resize:vertical}
-.wa:focus,.wi:focus{outline:none;border-color:var(--cabbage)}
 .plans{display:grid;gap:.9rem;margin-bottom:1.8rem}
 .pcard{display:flex;gap:1rem;border:1px solid var(--line);border-radius:8px;padding:1.2rem 1.3rem;background:#fff}
 .pk{flex:0 0 2rem;height:2rem;border-radius:50%;background:var(--cabbage);color:#fff;
@@ -423,29 +415,19 @@ ul.rules li::before{content:"◇ ";font-weight:700}
 .pb{flex:1;min-width:0}
 .pb h3{font-size:1.02rem;font-weight:800;margin-bottom:.45rem}
 .pd{color:var(--muted);font-size:.93rem;line-height:1.8}
-.ptags{display:flex;gap:.35rem;flex-wrap:wrap;margin:.7rem 0}
-.ptags span{background:#EFF5EB;color:#3F6B47;border-radius:999px;padding:.22rem .7rem;
-  font-size:.78rem;font-weight:700}
 .plim{font-size:.88rem;color:var(--muted);line-height:1.75;padding-top:.6rem;border-top:1px dashed var(--line)}
-.plim b{color:#B4593F;font-weight:800;margin-right:.3rem}
-.prate{display:grid;gap:.4rem;margin-top:.9rem}
-.pr{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap}
-.prk{font-size:.82rem;color:var(--muted);min-width:13.5rem}
-.lv{background:#fff;border:1px solid var(--line);border-radius:999px;padding:.25rem .8rem;
-  font-size:.82rem;cursor:pointer;font-family:inherit;color:var(--muted)}
-.lv:hover{border-color:var(--cabbage);color:var(--ink)}
-.lv[aria-pressed="true"]{background:var(--cabbage);border-color:var(--cabbage);color:#fff;font-weight:700}
-.flowline{font-size:.93rem;line-height:2.4;color:var(--muted);margin-top:.6rem}
+details.plim{padding-top:.6rem;border-top:1px dashed var(--line);margin-top:.7rem}
+details.plim summary{list-style:none;cursor:pointer;font-size:.82rem;font-weight:800;
+  color:#B4593F;display:inline-flex;align-items:center;gap:.3rem}
+details.plim summary::-webkit-details-marker{display:none}
+details.plim summary::before{content:"+";font-size:.9rem;line-height:1}
+details.plim[open] summary::before{content:"\2212"}
+details.plim p{margin-top:.5rem;font-size:.88rem;color:var(--muted);line-height:1.75}
 .hint{font-size:.86rem;color:var(--muted);line-height:1.7;margin:-.2rem 0 .7rem}
 .stbl.chk td{font-size:.9rem}
 .wj{width:100%;border:none;border-bottom:1px solid var(--line);background:transparent;
   font-family:inherit;font-size:.9rem;padding:.2rem 0}
 .wj:focus{outline:none;border-color:var(--cabbage)}
-.wsheet .mgrid{margin-bottom:.4rem}
-.wsheet .mcol{background:#fff}
-.wi{border:none;border-bottom:1.5px solid var(--cabbage);background:transparent;
-  font-family:inherit;font-size:.95rem;padding:.1rem .3rem;width:6rem;color:var(--ink)}
-.wi.wide{width:14rem}
 .lastq{margin-top:1.6rem;background:#2E3B2A;color:#fff;border-radius:6px;padding:1.2rem 1.4rem;
   font-size:1.05rem;line-height:1.7;font-weight:600}
 .lqk{font-size:.75rem;font-weight:700;letter-spacing:.1em;opacity:.7;margin-bottom:.4rem}
@@ -479,41 +461,24 @@ ul.rules li::before{content:"◇ ";font-weight:700}
         <p class="greet">안녕, 나는 전북 고창군의 농부야.</p>
         <p>우리 고장에서는 배추, 무, 양파, 고추, 땅콩, 고구마 등 많은 농작물이 잘 자라는데 난 주로 배추를 재배하고 있단다. 사람들은 가끔 정 많고 풍요로운 농촌에 사는 내가 부럽다고 말해. 그런 말을 들을 때면 내려와서 한 달만 살아보라고 얘기하고 싶어.</p>
         <p>배추는 해마다 가격 변동이 커서 위험 부담이 큰 작물이야. 다른 작물과 마찬가지로 배추도 기후의 영향을 많이 받아. 그러다 보니 생산량의 변화가 크고 자연스럽게 가격 변동도 큰 편이지. 배추 말고 다른 걸 심으면 되지 않냐고? 무, 땅콩, 양파, 수박을 심을 수는 있지만 배추만큼 수익이 많지는 않아. 기후의 영향을 덜 받는 고구마도 있지만 재배 기간이 길어 일 년에 한 번만 심을 수 있어.</p>
+        <figure class="gfx">
+<svg viewBox="0 0 560 168" xmlns="http://www.w3.org/2000/svg" role="img"
+     aria-label="배추와 무는 3월과 8월에 심어 6월과 11월에 거두고, 고구마는 3월에 심어 10월에 거둡니다">
+  <style>.cg text{font-family:inherit;fill:#6B7A66;font-size:11px}.cg .mo{text-anchor:middle}.cg .rl{font-size:12.5px;font-weight:700;fill:#22301F;text-anchor:end}.cg .nt{text-anchor:end}</style>
+  <g class="cg"><text class="mo" x="78.4" y="20">1</text><text class="mo" x="119.2" y="20">2</text><text class="mo" x="160.1" y="20">3</text><text class="mo" x="200.9" y="20">4</text><text class="mo" x="241.7" y="20">5</text><text class="mo" x="282.6" y="20">6</text><text class="mo" x="323.4" y="20">7</text><text class="mo" x="364.2" y="20">8</text><text class="mo" x="405.1" y="20">9</text><text class="mo" x="445.9" y="20">10</text><text class="mo" x="486.7" y="20">11</text><text class="mo" x="527.5" y="20">12</text><text class="rl" x="44" y="56">배추</text><line x1="58" y1="52" x2="548" y2="52" stroke="#E4E9DA" stroke-width="1"/><rect x="160.1" y="47" width="122.5" height="9" rx="4.5" fill="#DCE8DE"/><circle cx="160.1" cy="52" r="5.5" fill="#2F6B3C"/><rect x="278.1" y="47" width="9" height="9" fill="#C9922A"/><rect x="364.2" y="47" width="122.5" height="9" rx="4.5" fill="#DCE8DE"/><circle cx="364.2" cy="52" r="5.5" fill="#2F6B3C"/><rect x="482.2" y="47" width="9" height="9" fill="#C9922A"/><text class="rl" x="44" y="92">무</text><line x1="58" y1="88" x2="548" y2="88" stroke="#E4E9DA" stroke-width="1"/><rect x="160.1" y="83" width="122.5" height="9" rx="4.5" fill="#DCE8DE"/><circle cx="160.1" cy="88" r="5.5" fill="#2F6B3C"/><rect x="278.1" y="83" width="9" height="9" fill="#C9922A"/><rect x="364.2" y="83" width="122.5" height="9" rx="4.5" fill="#DCE8DE"/><circle cx="364.2" cy="88" r="5.5" fill="#2F6B3C"/><rect x="482.2" y="83" width="9" height="9" fill="#C9922A"/><text class="rl" x="44" y="128">고구마</text><line x1="58" y1="124" x2="548" y2="124" stroke="#E4E9DA" stroke-width="1"/><rect x="160.1" y="119" width="285.8" height="9" rx="4.5" fill="#DCE8DE"/><circle cx="160.1" cy="124" r="5.5" fill="#2F6B3C"/><rect x="441.4" y="119" width="9" height="9" fill="#C9922A"/>
+  <circle cx="63" cy="155" r="5" fill="#2F6B3C"/><text x="74" y="159">파종</text>
+  <rect x="124" y="150" width="9" height="9" fill="#C9922A"/><text x="140" y="159">수확</text>
+  <text class="nt" x="548" y="159">배추와 무는 두 번, 고구마는 한 번</text></g>
+</svg>
+  <figcaption>우리 고장에서 심을 수 있는 것</figcaption>
+</figure>
         <p><b>배추 농사가 잘 돼도 돈을 많이 버는 것은 아니야.</b> 배춧값이 올랐다 싶으면 너도나도 배추를 심는 바람에 다음 해엔 값이 뚝 떨어지곤 하지. 농사는 1년을 미리 계획하는 일인데, 매년 전국의 공급량을 예측하는 게 제일 힘들어.</p>
         <p>마지막으로 한 가지. 작년에 배춧값이 천정부지로 치솟은 적이 있어. 평년보다 5배가 올랐다던데, 그렇다고 나 같은 생산자가 그만큼 이익을 본 것도 아니야. <b>그 돈은 전부 어디로 갔을까?</b></p>
+        <p class="ask"><b>[미션]</b> 우리 가족을 부양하려면 일 년에 최소 1,000만원의 수익이 필요해. 여러분이 나를 대신해 5년 동안 연평균 1,000만원의 수익을 올려 주길 바래!</p>
         <p class="sign">전북 고창에서<br><span>배추 농부 김철수</span></p>
       </div>
     </div>
 
-    <div class="cal">
-      <div class="cal-h"><svg class="cabicon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="9" fill="#8FB37A"/><path d="M4 12q8-6 16 0M5 16q7 6 14 0M12 4v18" fill="none" stroke="#5E8850" stroke-width="1.4"/><path d="M12 4q3-3 6-2-1 3-4 3z" fill="#6E9A5B"/></svg>우리 고장에서 심을 수 있는 것</div>
-      <table class="calt">
-        <thead><tr><th class="c">작물</th>
-          <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th>
-          <th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th></tr></thead>
-        <tbody>
-          <tr><td class="c">배추</td><td></td><td></td>
-            <td class="s">●</td><td class="b"></td><td class="b"></td><td class="e">■</td>
-            <td></td><td class="s">●</td><td class="b"></td><td class="b"></td><td class="e">■</td><td></td></tr>
-          <tr><td class="c">무</td><td></td><td></td>
-            <td class="s">●</td><td class="b"></td><td class="b"></td><td class="e">■</td>
-            <td></td><td class="s">●</td><td class="b"></td><td class="b"></td><td class="e">■</td><td></td></tr>
-          <tr><td class="c">고구마</td><td></td><td></td>
-            <td class="s">●</td><td class="b"></td><td class="b"></td><td class="b"></td><td class="b"></td>
-            <td class="b"></td><td class="b"></td><td class="e">■</td><td></td><td></td></tr>
-        </tbody>
-      </table>
-      <div class="cal-l"><span class="ls">● 파종</span><span class="le">■ 수확</span>
-        <span class="m">배추와 무는 1년에 두 번, 고구마는 한 번</span></div>
-    </div>
-
-    <div class="mission">
-      <div class="mk"><svg class="cabicon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="9" fill="#8FB37A"/><path d="M4 12q8-6 16 0M5 16q7 6 14 0M12 4v18" fill="none" stroke="#5E8850" stroke-width="1.4"/><path d="M12 4q3-3 6-2-1 3-4 3z" fill="#6E9A5B"/></svg>미션</div>
-      <p>우리 가족을 부양하려면 일 년에 최소 <b>1,000만원</b>의 수익이 필요해.<br>
-      여러분이 나를 대신해 5년 동안 <b>연평균 1,000만원</b>의 수익을 올려 주길 바래!</p>
-    </div>
-
-    <button class="btn btn-block" id="toSetup">게임 준비하기</button>
   </div>
 </section>
 
@@ -536,8 +501,8 @@ ul.rules li::before{content:"◇ ";font-weight:700}
         <section>
           <h2>한 시기가 돌아가는 순서</h2>
           <ol class="steps">
-            <li><b>학생이 먼저 적습니다.</b> 이번 봄(또는 가을)에 심을 작물을 활동지에 적습니다. 아직 아무것도 공개되지 않습니다.</li>
-            <li><b>주사위를 굴립니다.</b> 1–4면 좋은 기후, 5–6이면 나쁜 기후입니다. 화면 색이 함께 바뀝니다.</li>
+            <li><b>학생이 먼저 적습니다.</b> 이번 봄(또는 가을)에 심을 작물을 활동지에 적습니다.</li>
+            <li><b>주사위를 굴립니다.</b> 1–4면 좋은 기후, 5–6이면 나쁜 기후입니다.</li>
             <li><b>배추를 심은 학생이 손을 듭니다.</b> 손든 수를 세어 입력합니다. 나쁜 기후에서는 이 단계를 건너뜁니다.</li>
             <li><b>공급 상황이 판정됩니다.</b> 결과가 아래 기록표에 한 줄씩 쌓입니다.</li>
             <li><b>각자 수익을 적습니다.</b> 이것을 열 번 반복하면 5년이 지납니다.</li>
@@ -564,10 +529,6 @@ ul.rules li::before{content:"◇ ";font-weight:700}
           <p>고구마는 가을 기후만 따릅니다. 봄에 심은 학생은 봄 칸을 비워 두고 가을에 한 번만 적습니다. 공급 과잉과 부족은 기후가 좋을 때만 일어납니다.</p>
         </section>
 
-        <section>
-          <h2>진행할 때</h2>
-          <p class="note">참가자의 10% 정도만 연평균 1,000만원을 올릴 수 있도록 설계된 게임입니다. 5년 동안 공급 과잉이나 부족이 최소 한 번은 일어납니다. 학생들이 다음 해 작물을 미리 상의해 공급을 조절하려 들 때가 있는데, 이것은 막을 일이 아니라 다룰 일입니다. 시도가 나오지 않으면 넌지시 힌트를 주고, 계획적으로 공급 부족을 만들었다면 <b>그 방법이 정당한지, 피해를 보는 쪽은 없는지</b> 물어보세요.</p>
-        </section>
       </div>
 
       <aside class="setbox">
@@ -648,27 +609,67 @@ ul.rules li::before{content:"◇ ";font-weight:700}
     <div class="shead">
       <p class="eyebrow">3 · 해결책 모색하기</p>
       <h1>기후변화 속에서도 배추를 안정적으로 공급하려면?</h1>
-      <p class="tag">게임에서는 농부의 작물 선택과 기후, 공급량에 따라 배추 가격이 크게 달라졌습니다. 현실의 배추 생산은 더 복잡합니다. 배추는 서늘한 기후를 좋아하고, 계절에 따라 생산지역이 달라지며, 수확 후 오래 저장하기도 어렵습니다. 여기에 폭염·집중호우 같은 이상기상과 농가의 재배 선택, 국내외 공급망까지 함께 영향을 미칩니다.</p>
+      <div class="task">
+        <div class="tk">이 페이지에서 할 일</div>
+        <ol>
+          <li>배추 공급이 왜 불안정한지 <b>배경 자료</b>에서 확인합니다.</li>
+          <li><b>대책 네 가지</b>를 읽고, 각각이 어떤 문제를 해결하는지 이야기한 뒤 <b>한계 확인</b>을 눌러 견주어 봅니다.</li>
+        </ol>
+      </div>
     </div>
 
-<div class="sblock"><h2 class="sh"><span class="sn">1</span>배추는 언제, 어디에서 생산될까?</h2><p class="sp">배추는 일 년 내내 같은 지역에서 생산되지 않습니다. 기온이 달라지면서 주요 생산지역도 계절에 따라 이동합니다.</p><table class="stbl"><thead><tr><th>시기</th><th>주요 작형</th><th>생산의 특징</th></tr></thead><tbody><tr><td class="k">봄</td><td>봄배추</td><td>봄철 기온을 이용해 여러 지역에서 생산</td></tr><tr><td class="k">여름</td><td>고랭지배추</td><td>평지가 너무 더워 강원 산지 등 서늘한 고지대에서 생산</td></tr><tr><td class="k">가을</td><td>가을배추</td><td>전국적으로 생산되며 김장철 공급의 중심</td></tr><tr><td class="k">겨울</td><td>월동배추</td><td>겨울이 온화한 전남 해남 등 남부지역에서 생산</td></tr></tbody></table><p class="sp">특히 여름배추는 7~9월 공급의 상당 부분을 강원도 고랭지에 의존합니다. 최근에는 폭염과 집중호우 위험이 커지면서 해발 400~600m의 준고랭지까지 생산지를 넓히고, 미세살수·저온성 필름 같은 고온 대응 기술을 적용하는 사업도 추진되고 있습니다.</p><div class="think"><svg class="cabicon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="9" fill="#8FB37A"/><path d="M4 12q8-6 16 0M5 16q7 6 14 0M12 4v18" fill="none" stroke="#5E8850" stroke-width="1.4"/><path d="M12 4q3-3 6-2-1 3-4 3z" fill="#6E9A5B"/></svg><div><b>생각해 보기</b><br>여름에는 산지로, 겨울에는 남쪽으로 생산지가 이동하는 이유는 무엇일까?</div></div></div>
+    <div class="bgwrap">
+      <p class="bglabel">배경 자료 &middot; 대책을 고르기 전에 알아야 할 것</p>
 
-<div class="sblock"><h2 class="sh"><span class="sn">2</span>배추 공급을 불안정하게 만드는 것은 무엇일까?</h2><div class="causes"><div class="cause"><div class="ch"><span class="cn">①</span>생산지가 특정 계절과 지역에 집중된다</div><p>배추가 잘 자랄 수 있는 기온의 범위가 제한되어 있기 때문에, 특정 계절에는 생산 가능한 지역도 제한됩니다. 여름배추는 강원 고랭지에 생산이 집중되므로 이 지역에 폭염이나 집중호우가 발생하면 <b>한 지역의 기상이 전국의 배추 공급</b>에 영향을 줍니다.</p><div class="cq">한 지역에 집중된 생산의 위험을 어떻게 줄일 수 있을까?</div></div><div class="cause"><div class="ch"><span class="cn">②</span>기후변화가 배추의 생육조건을 바꾸고 있다</div><p>고온, 가뭄, 집중호우는 배추의 생육을 불안정하게 합니다. 같은 지역에서 오래 반복 재배하면 토양 생태계와 병해충 문제도 누적됩니다. 최근 고랭지배추 연구에서도 연작에 따른 토양 미생물 다양성 감소가 확인되었습니다.</p><div class="cq">지금의 배추 산지와 재배방식은 앞으로도 유지될 수 있을까?</div></div><div class="cause"><div class="ch"><span class="cn">③</span>생산되는 시기와 필요한 시기가 어긋난다</div><p>소비는 연중 이어지지만 생산은 계절별 작형에 몰립니다. 곡물처럼 오래 보관할 수 있는 작물이 아니어서, 많을 때 저장해 두었다가 부족할 때 다 공급하기도 어렵습니다. 그래서 실제 수급정책에서는 비축·저장·출하시기 조절·작형 간 연계가 함께 쓰입니다.</p><div class="cq">계절별 생산량의 차이를 어떻게 연결할 수 있을까?</div></div><div class="cause"><div class="ch"><span class="cn">④</span>농가의 선택이 전체 공급량을 바꾼다</div><p>농가는 지난해 가격과 예상 수익, 기후를 보고 무엇을 심을지 정합니다. 그런데 여러 농가가 동시에 같은 판단을 하면 어떤 해에는 지나치게 많아지고 다른 해에는 부족해집니다. <b>게임에서 겪은 그 상황</b>입니다.</p><div class="cq">농가가 각자 결정하면서도 전체 생산량은 어떻게 조절할 수 있을까?</div></div><div class="cause"><div class="ch"><span class="cn">⑤</span>국내 생산만으로 해결되지 않는다</div><p>국내 공급이 부족하거나 값이 오르면 신선배추를 수입하거나, 소비자가 수입김치·상품김치로 옮겨 가기도 합니다. 한국농촌경제연구원은 수급을 계산할 때 김치를 배추로 환산한 수출입량까지 포함합니다. 2025년 배추 자급률 전망은 81.2%입니다.</p><div class="cq">국내 생산이 부족할 때 수입은 어느 정도까지 대안이 될 수 있을까?</div></div></div></div>
+      <div class="sblock bg"><h2 class="sh"><span class="sn">가</span>배추는 언제, 어디에서 생산될까?</h2><p class="sp">배추는 서늘한 기후에서 잘 자랍니다. 그래서 계절마다 재배할 수 있는 지역이 달라지고, 산지를 옮겨 가며 일 년 내내 공급이 이어집니다.</p>
+<figure class="gfx">
+<svg viewBox="0 0 760 178" xmlns="http://www.w3.org/2000/svg" role="img"
+     aria-label="계절에 따라 이동하는 배추 주산지">
+  <line x1="40" y1="72" x2="720" y2="72" stroke="#D8DFCE" stroke-width="1"/>
+  <g font-family="inherit" text-anchor="middle">
+    <g fill="#5A6B55" font-size="14" font-weight="700">
+      <text x="125" y="42">봄</text><text x="295" y="42">여름</text>
+      <text x="465" y="42">가을</text><text x="635" y="42">겨울</text>
+    </g>
+    <circle cx="125" cy="72" r="4.5" fill="#fff" stroke="#9DB08F" stroke-width="1.5"/>
+    <circle cx="295" cy="72" r="7"   fill="#3F6B47"/>
+    <circle cx="465" cy="72" r="4.5" fill="#fff" stroke="#9DB08F" stroke-width="1.5"/>
+    <circle cx="635" cy="72" r="4.5" fill="#fff" stroke="#9DB08F" stroke-width="1.5"/>
+    <g font-size="14" font-weight="700" fill="#22301F">
+      <text x="125" y="108">봄배추</text>
+      <text x="295" y="108" fill="#3F6B47">고랭지배추</text>
+      <text x="465" y="108">가을배추</text>
+      <text x="635" y="108">월동배추</text>
+    </g>
+    <g font-size="12.5" fill="#6B7A66">
+      <text x="125" y="132">전국 여러 지역</text>
+      <text x="295" y="132" fill="#3F6B47">강원 산지</text>
+      <text x="465" y="132">전국 · 김장철</text>
+      <text x="635" y="132">전남 해남 등 남부</text>
+      <text x="295" y="152" fill="#3F6B47">해발 600m 이상</text>
+    </g>
+  </g>
+</svg>
+  <figcaption>계절에 따라 이동하는 배추 주산지</figcaption>
+</figure>
+<p class="sp">여름배추는 7~9월 공급의 대부분을 강원도 고랭지 한 곳에 기대고 있습니다. 최근에는 그곳마저 더워져, 해발 400~600m의 조금 낮은 산지까지 밭을 넓히고 있습니다. 밭에 물을 안개처럼 뿌려 온도를 낮추거나 햇빛을 가려 주는 덮개를 씌우는 방법도 시도됩니다.</p></div>
 
-<div class="sblock"><h2 class="sh"><span class="sn">3</span>어떤 대책이 가능할까?</h2>
-<p class="sp">실제로 쓰이고 있거나 추진 중인 대책 네 가지입니다. 각 대책이 <b>어떤 문제를 다루고 무엇을 해결하지 못하는지</b> 읽고, 두 가지 기준으로 평가해 보십시오.</p>
-<div class="plans"><div class="pcard"><div class="pk">A</div><div class="pb"><h3>계약재배를 확대한다</h3><p class="pd">파종하기 전에 농협과 농가가 계약을 맺어 재배면적을 정하고, 농협이 출하를 책임집니다. 농가는 값이 폭락해도 계약 가격을 받고, 농협은 물량을 미리 확보합니다.</p><div class="ptags"><span>④ 농가의 재배 선택</span><span>③ 계절별 공급 차이</span></div><p class="plim"><b>한계</b> 고랭지배추의 계약 재배율은 20% 안팎이지만 김장철 가을배추는 3%에 못 미칩니다. 시장 가격이 계약 가격보다 높아지면 농가가 계약을 지킬 이유가 약해집니다.</p><div class="prate"><div class="pr"><span class="prk">문제 해결에 효과가 있는가</span><button class="lv" data-r="Aeff" data-v="낮음">낮음</button><button class="lv" data-r="Aeff" data-v="보통">보통</button><button class="lv" data-r="Aeff" data-v="높음">높음</button></div><div class="pr"><span class="prk">농가와 정부가 실제로 할 수 있는가</span><button class="lv" data-r="Afeas" data-v="낮음">낮음</button><button class="lv" data-r="Afeas" data-v="보통">보통</button><button class="lv" data-r="Afeas" data-v="높음">높음</button></div></div></div></div><div class="pcard"><div class="pk">B</div><div class="pb"><h3>저온저장과 비축을 늘린다</h3><p class="pd">산지에 배추 전용 저온저장고를 지어 저장 기간을 늘리고, 정부·농협이 값이 쌀 때 사들여 비축했다가 부족할 때 풀어 출하 시기를 조절합니다.</p><div class="ptags"><span>③ 계절별 공급 차이</span></div><p class="plim"><b>한계</b> 배추는 곡물처럼 오래 두기 어려워 저장에도 한계가 있습니다. 저장고 건설과 운영에 비용이 들고, 비축 물량을 언제 풀지 판단하기도 쉽지 않습니다.</p><div class="prate"><div class="pr"><span class="prk">문제 해결에 효과가 있는가</span><button class="lv" data-r="Beff" data-v="낮음">낮음</button><button class="lv" data-r="Beff" data-v="보통">보통</button><button class="lv" data-r="Beff" data-v="높음">높음</button></div><div class="pr"><span class="prk">농가와 정부가 실제로 할 수 있는가</span><button class="lv" data-r="Bfeas" data-v="낮음">낮음</button><button class="lv" data-r="Bfeas" data-v="보통">보통</button><button class="lv" data-r="Bfeas" data-v="높음">높음</button></div></div></div></div><div class="pcard"><div class="pk">C</div><div class="pb"><h3>생산지를 분산하고 품종을 바꾼다</h3><p class="pd">여름배추를 강원 고랭지에만 맡기지 않고 해발 400~600m 준고랭지까지 넓히며, 고온에 강한 품종과 미세살수·차광 같은 기술을 함께 씁니다.</p><div class="ptags"><span>① 생산지역 집중</span><span>② 기후변화</span></div><p class="plim"><b>한계</b> 새 품종을 개발해 보급하는 데는 여러 해가 걸립니다. 새로 여는 산지에서도 연작에 따른 토양·병해충 문제가 다시 생길 수 있고, 산지 개간은 또 다른 환경 문제를 낳습니다.</p><div class="prate"><div class="pr"><span class="prk">문제 해결에 효과가 있는가</span><button class="lv" data-r="Ceff" data-v="낮음">낮음</button><button class="lv" data-r="Ceff" data-v="보통">보통</button><button class="lv" data-r="Ceff" data-v="높음">높음</button></div><div class="pr"><span class="prk">농가와 정부가 실제로 할 수 있는가</span><button class="lv" data-r="Cfeas" data-v="낮음">낮음</button><button class="lv" data-r="Cfeas" data-v="보통">보통</button><button class="lv" data-r="Cfeas" data-v="높음">높음</button></div></div></div></div><div class="pcard"><div class="pk">D</div><div class="pb"><h3>수급 정보를 미리 알려 준다</h3><p class="pd">지역별 재배면적을 파종기에 조사하고, 작황과 기상 자료로 생산량을 예측해 농가에 알려 줍니다. 농가는 남들이 얼마나 심었는지 알고 판단할 수 있습니다.</p><div class="ptags"><span>① 생산지역 집중</span><span>④ 농가의 재배 선택</span></div><p class="plim"><b>한계</b> 정보가 있어도 유리한 작물로 쏠리는 판단은 남습니다. 예측이 빗나가면 오히려 잘못된 신호를 줄 수도 있습니다.</p><div class="prate"><div class="pr"><span class="prk">문제 해결에 효과가 있는가</span><button class="lv" data-r="Deff" data-v="낮음">낮음</button><button class="lv" data-r="Deff" data-v="보통">보통</button><button class="lv" data-r="Deff" data-v="높음">높음</button></div><div class="pr"><span class="prk">농가와 정부가 실제로 할 수 있는가</span><button class="lv" data-r="Dfeas" data-v="낮음">낮음</button><button class="lv" data-r="Dfeas" data-v="보통">보통</button><button class="lv" data-r="Dfeas" data-v="높음">높음</button></div></div></div></div></div>
+      <div class="sblock bg wide"><h2 class="sh"><span class="sn">나</span>배추 공급을 불안정하게 만드는 것은 무엇일까?</h2><div class="causes">
+  <div class="cause"><div class="ch"><span class="cn">①</span>산지가 한곳에 몰린다</div><p>여름 배추는 강원 고랭지에서 대부분 나옵니다. 이 지역에 폭염이나 호우가 오면 전국 공급이 흔들립니다.</p></div>
+  <div class="cause"><div class="ch"><span class="cn">②</span>기후변화로 재배 조건이 나빠진다</div><p>고온과 가뭄, 집중호우가 배추의 생육을 방해합니다. 같은 땅에서 오래 재배하면 병해충도 늘어납니다.</p></div>
+  <div class="cause"><div class="ch"><span class="cn">③</span>나오는 때와 필요한 때가 어긋난다</div><p>소비는 일 년 내내 이어지지만 생산은 계절에 몰립니다. 배추는 오래 저장하기 어려워 남는 때와 모자라는 때를 잇기 힘듭니다.</p></div>
+  <div class="cause"><div class="ch"><span class="cn">④</span>농가가 한꺼번에 같은 작물을 심는다</div><p>농가는 지난해 값이 좋았던 작물을 고릅니다. 그 판단이 겹치면 어떤 해는 남고 어떤 해는 모자랍니다. 게임에서 겪은 상황입니다.</p></div></div></div>
+    </div>
 
-<div class="wsheet">
-  <div class="wl"><svg class="cabicon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="9" fill="#8FB37A"/><path d="M4 12q8-6 16 0M5 16q7 6 14 0M12 4v18" fill="none" stroke="#5E8850" stroke-width="1.4"/><path d="M12 4q3-3 6-2-1 3-4 3z" fill="#6E9A5B"/></svg>우리 모둠의 선택</div>
-  <div class="wk">가장 먼저 시행해야 할 대책은 무엇입니까?</div>
-  <div class="cks"><button class="ck" data-ck="A">A · 계약재배를 확대한다</button><button class="ck" data-ck="B">B · 저온저장과 비축을 늘린다</button><button class="ck" data-ck="C">C · 생산지를 분산하고 품종을 바꾼다</button><button class="ck" data-ck="D">D · 수급 정보를 미리 알려 준다</button></div>
-  <div class="wk">그렇게 고른 이유와, 이 대책만으로는 해결되지 않는 것</div>
-  <textarea class="wa" id="w1" rows="3" placeholder="우리는 … 을 먼저 시행해야 한다고 본다. 다만 이 대책만으로는 … 문제가 남는다."></textarea>
-  <div class="wk">두 가지 이상을 묶는다면</div>
-  <div class="flowline"><input class="wi" id="wf1" placeholder="대책"> 과(와) <input class="wi" id="wf2" placeholder="대책"> 를 함께 쓰면 <input class="wi wide" id="wf3" placeholder="어떤 문제까지 해결되는가"> 까지 해결할 수 있다.</div>
+<div class="sblock"><h2 class="sh">어떤 대책이 가능할까?</h2>
+<p class="sp">실제로 쓰이고 있거나 추진 중인 대책 네 가지입니다.</p>
+<div class="plans">
+  <div class="pcard"><div class="pk">A</div><div class="pb"><h3>계약재배를 확대한다</h3><p class="pd">파종하기 전에 농협과 농가가 계약을 맺어 재배면적을 정하고, 농협이 출하를 책임집니다. 농가는 값이 폭락해도 계약 가격을 받고, 농협은 물량을 미리 확보합니다.</p><details class="plim"><summary>한계 확인</summary><p> 고랭지배추의 계약 재배율은 20% 안팎이지만 김장철 가을배추는 3%에 못 미칩니다. 시장 가격이 계약 가격보다 높아지면 농가가 계약을 지킬 이유가 약해집니다.</p></details></div></div>
+  <div class="pcard"><div class="pk">B</div><div class="pb"><h3>저온저장과 비축을 늘린다</h3><p class="pd">산지에 배추 전용 저온저장고를 지어 저장 기간을 늘리고, 정부·농협이 값이 쌀 때 사들여 비축했다가 부족할 때 풀어 출하 시기를 조절합니다.</p><details class="plim"><summary>한계 확인</summary><p> 배추는 곡물처럼 오래 두기 어려워 저장에도 한계가 있습니다. 저장고 건설과 운영에 비용이 들고, 비축 물량을 언제 풀지 판단하기도 쉽지 않습니다.</p></details></div></div>
+  <div class="pcard"><div class="pk">C</div><div class="pb"><h3>생산지를 분산하고 품종을 바꾼다</h3><p class="pd">여름배추를 강원 고랭지에만 맡기지 않고 해발 400~600m의 조금 낮은 산지까지 넓힙니다. 더위에 강한 품종을 쓰고, 물을 뿌리거나 햇빛을 가려 온도를 낮추는 방법도 함께 씁니다.</p><details class="plim"><summary>한계 확인</summary><p> 새 품종을 개발해 보급하는 데는 여러 해가 걸립니다. 새로 여는 산지에서도 연작에 따른 토양·병해충 문제가 다시 생길 수 있고, 산지 개간은 또 다른 환경 문제를 낳습니다.</p></details></div></div>
+  <div class="pcard"><div class="pk">D</div><div class="pb"><h3>수급 정보를 미리 알려 준다</h3><p class="pd">지역별 재배면적을 파종기에 조사하고, 작황과 기상 자료로 생산량을 예측해 농가에 알려 줍니다. 농가는 남들이 얼마나 심었는지 알고 판단할 수 있습니다.</p><details class="plim"><summary>한계 확인</summary><p> 정보가 있어도 유리한 작물로 쏠리는 판단은 남습니다. 예측이 빗나가면 오히려 잘못된 신호를 줄 수도 있습니다.</p></details></div></div></div>
 </div>
-</div>
+
   </div>
 </section>
 </main>
@@ -1113,6 +1114,7 @@ document.getElementById("closeSheets").addEventListener("click",function(){
 });
 
 function showPart(k){
+  if(k==="game"&&started){showBoard();return;}
   var ids={intro:false,setup:false,board:false,solve:false};
   if(k==="bg")ids.intro=true;
   else if(k==="game"){ if(started)ids.board=true; else ids.setup=true; }
@@ -1125,19 +1127,12 @@ function showPart(k){
 Array.prototype.forEach.call(document.querySelectorAll(".parts button"),function(b){
   b.addEventListener("click",function(){showPart(b.dataset.part);});
 });
-document.getElementById("toSetup").addEventListener("click",function(){showPart("game");});
-Array.prototype.forEach.call(document.querySelectorAll(".lv"),function(b){
-  b.setAttribute("aria-pressed","false");
-  b.addEventListener("click",function(){
-    Array.prototype.forEach.call(document.querySelectorAll('.lv[data-r="'+b.dataset.r+'"]'),
-      function(o){o.setAttribute("aria-pressed","false");});
-    b.setAttribute("aria-pressed","true");});
-});
-Array.prototype.forEach.call(document.querySelectorAll(".mitem,.ck"),function(b){
+Array.prototype.forEach.call(document.querySelectorAll(".mitem"),function(b){
   b.setAttribute("aria-pressed","false");
   b.addEventListener("click",function(){
     b.setAttribute("aria-pressed", b.getAttribute("aria-pressed")==="true"?"false":"true");});
 });
+
 
 load();
 cs.value=S.classSize; sy.value=S.startYear; paintTh(); fillSheets();
