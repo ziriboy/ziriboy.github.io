@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>왜 원곡동일까? — 조별 현장기록</title>
+<meta name="theme-color" content="#faf9f6" />
+<style>
+  :root{--ink:#1b1a18;--ink2:#5f5c56;--ink3:#8b877f;--line:#dedbd3;
+        --paper:#faf9f6;--card:#fff;--accent:#8c3b2e;--ok:#2f6b4f}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:var(--paper);color:var(--ink);
+       font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+       font-size:16px;line-height:1.6;-webkit-text-size-adjust:100%}
+  .wrap{max-width:680px;margin:0 auto;padding:0 16px 64px}
+
+  header{position:sticky;top:0;background:rgba(250,249,246,.97);backdrop-filter:blur(8px);
+         padding:13px 0 9px;border-bottom:1px solid var(--line);z-index:10}
+  .hrow{display:flex;align-items:baseline;gap:9px}
+  h1{font-size:17px;font-weight:700;letter-spacing:-.02em;margin:0}
+  .code{font-size:12.5px;color:var(--accent);font-weight:700}
+  .dot{width:7px;height:7px;border-radius:50%;background:#c9c6bf;display:inline-block;
+       margin-left:auto;flex:0 0 7px;align-self:center}
+  .dot.on{background:var(--ok)}
+  .bar{height:4px;background:#e8e5dd;border-radius:99px;margin-top:9px;overflow:hidden}
+  .bar i{display:block;height:100%;background:var(--ok);width:0;transition:width .3s}
+  .cnt{font-size:11.5px;color:var(--ink3);margin-top:5px;display:flex;gap:8px;flex-wrap:wrap}
+  .who{color:var(--ink2)}
+
+  input[type=text],textarea{width:100%;font:inherit;font-size:15px;color:var(--ink);
+    background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 11px}
+  textarea{resize:vertical;min-height:62px;line-height:1.55}
+  input:focus,textarea:focus{outline:2px solid #2a6ebb;outline-offset:1px}
+
+  .intro{font-size:13.5px;color:var(--ink2);line-height:1.7;margin:14px 0 2px}
+  .intro b{color:var(--ink)}
+
+  .item{background:var(--card);border:1px solid var(--line);border-radius:11px;
+        padding:14px;margin:13px 0}
+  .item.done{border-color:#c8d8ce}
+  .tag{font-size:12px;font-weight:700;color:var(--accent);letter-spacing:.03em;
+       display:flex;align-items:center;gap:8px}
+  .tag em{font-style:normal;font-size:11.5px;font-weight:500;color:var(--ink3);margin-left:auto}
+  .claim{font-size:15px;line-height:1.5;margin:6px 0 3px;font-weight:600}
+  .hint{font-size:12.5px;color:var(--ink3);margin:0 0 11px}
+  .shot{display:flex;gap:11px}
+  .thumb{width:104px;height:104px;flex:0 0 104px;border-radius:9px;overflow:hidden;
+         background:#efece4;border:1px solid var(--line);
+         display:flex;align-items:center;justify-content:center}
+  .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+  .thumb span{font-size:11.5px;color:var(--ink3);text-align:center;padding:0 6px}
+  .side{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
+
+  button{font:inherit;cursor:pointer}
+  .btn{font-size:13.5px;background:var(--card);border:1px solid var(--line);
+       border-radius:8px;padding:9px 12px;color:var(--ink)}
+  .btn:active{background:#f1eee6}
+  .btn.solid{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .btn.wide{width:100%;padding:13px}
+  .btn.warn{color:var(--accent)}
+
+  h2{font-size:16px;font-weight:700;margin:28px 0 8px;padding-top:20px;
+     border-top:1px solid var(--line)}
+  .q{margin:14px 0}
+  .q p{font-size:14.5px;font-weight:600;margin:0 0 6px}
+  .q .by{font-size:11.5px;color:var(--ink3);margin-top:4px}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{font-size:13.5px;padding:7px 12px;border-radius:999px;
+        border:1px solid var(--line);background:var(--card);color:var(--ink2)}
+  .chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+  /* 시작 화면 */
+  .gate{position:fixed;inset:0;background:var(--paper);z-index:100;
+        display:flex;align-items:center;justify-content:center;padding:22px}
+  .gate .box{max-width:380px;width:100%}
+  .gate h2{border:0;padding:0;margin:0 0 6px;font-size:19px}
+  .gate p{font-size:13.5px;color:var(--ink2);margin:0 0 16px;line-height:1.65}
+  .gate input{margin-bottom:9px}
+  .setup{font-size:13px;color:var(--ink2);line-height:1.75}
+  .setup code{background:#efece4;padding:1px 5px;border-radius:3px;font-size:12px}
+  .setup ol{padding-left:20px;margin:8px 0}
+  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;
+         background:rgba(27,26,24,.92);color:#fff;font-size:13px;padding:9px 15px;
+         border-radius:999px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:200}
+  .toast.show{opacity:1}
+</style>
+</head>
+<body>
+
+<div class="gate" id="gate">
+  <div class="box" id="gatebox"></div>
+</div>
+
+<div class="wrap" id="app" style="display:none">
+  <header>
+    <div class="hrow">
+      <h1>왜 원곡동일까?</h1>
+      <span class="code" id="codeTag"></span>
+      <span class="dot" id="conn" title="연결 상태"></span>
+    </div>
+    <div class="bar"><i id="pbar"></i></div>
+    <div class="cnt"><span id="ptxt">0 / 6</span><span class="who" id="whos"></span></div>
+  </header>
+
+  <p class="intro">
+    주민에게 묻지 않습니다. <b>"일자리를 구하기 쉽다"가 이유라면 인력사무소를 찍으면 됩니다.</b>
+    아래 여섯은 사람들이 원곡동에 모여 사는 이유에 대한 가설입니다.
+    조원이 나눠 맡아 한 장씩 채우면 조 보고서 한 편이 완성됩니다.
+  </p>
+
+  <div id="list"></div>
+
+  <h2>여섯 장을 놓고 — 함께 씁니다</h2>
+  <div class="q">
+    <p>가장 강해 보이는 이유는 무엇인가? 왜 그렇게 보았는가?</p>
+    <textarea data-k="strongest"></textarea><div class="by" data-by="strongest"></div>
+  </div>
+  <div class="q">
+    <p>이곳은 어느 쪽에 가깝다고 보는가?</p>
+    <div class="chips" id="verdict"></div><div class="by" data-by="verdict"></div>
+  </div>
+  <div class="q">
+    <p>오늘 본 장면 하나를 근거로 들어 보시오.</p>
+    <textarea data-k="why"></textarea><div class="by" data-by="why"></div>
+  </div>
+  <div class="q">
+    <p>현장에서 새로 생긴 궁금증</p>
+    <textarea data-k="openq"></textarea><div class="by" data-by="openq"></div>
+  </div>
+
+  <h2>제출</h2>
+  <button class="btn solid wide" onclick="exportReport()">조 보고서 파일 내려받기</button>
+  <div style="height:9px"></div>
+  <button class="btn wide" onclick="leave()">다른 조 코드로 들어가기</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+/* ================================================================
+   1) 아래 FIREBASE_CONFIG 에 Firebase 콘솔에서 복사한 값을 붙여 넣으세요.
+      비어 있으면 앱 대신 설정 안내가 뜹니다.
+   ================================================================ */
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyCuOQATa7VYXRJbiF8gzso14ASSIx-BcOI",
+  authDomain: "wongok-863fc.firebaseapp.com",
+  databaseURL: "https://wongok-863fc-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "wongok-863fc",
+  storageBucket: "wongok-863fc.firebasestorage.app",
+  messagingSenderId: "409772442710",
+  appId: "1:409772442710:web:2d2017e90a432da353a7f7"
+};
+
+const ITEMS=[
+ {t:"일자리", c:"급하게 일을 구하는 사람에게 일자리를 연결해 주는 곳이 있다.",
+  h:"인력사무소, 구인 안내문, 공단 방면 버스 정류장"},
+ {t:"살 곳", c:"방 하나 단위로 값싸게 빌릴 수 있는 집이 많다.",
+  h:"2~3층 다가구주택, 외국어로 적힌 부동산 매물"},
+ {t:"돈과 서류", c:"본국 송금과 체류 서류를 동네 안에서 해결할 수 있다.",
+  h:"환전소, 해외송금 창구, 행정사 사무소"},
+ {t:"먹을 것", c:"고향의 음식과 식재료를 구할 수 있다.",
+  h:"국적별 식당, 향신료·할랄 표시, 열대 과일 가판"},
+ {t:"자녀와 배움", c:"한국어를 배우고 아이를 맡길 곳이 있다.",
+  h:"한국어 교실, 어린이집, 지역아동센터, 다문화 도서관"},
+ {t:"사람", c:"같은 나라 사람들이 모이고 서로 돕는 자리가 있다.",
+  h:"성당·교회·이슬람 사원, 이주민 지원센터, 모임 안내문"},
+];
+const VERD=["외지인이 찾는 관광지","이주민의 생활공간","둘이 섞여 있다"];
+
+/* ---------- 상태 ---------- */
+let db=null, uid=null, myName="", roomCode="", roomRef=null;
+let D={items:{},txt:{},verdict:"",verdictBy:"",members:{}};
+let FB={};
+
+const $=s=>document.querySelector(s);
+const esc=s=>(s||"").replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const nl=s=>esc(s).replace(/\n/g,'<br>');
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),1600);}
+
+/* ---------- 시작 화면 ---------- */
+function gateSetup(){
+  $('#gatebox').innerHTML=`
+    <h2>설정이 필요합니다</h2>
+    <p>이 파일을 쓰려면 Firebase 프로젝트 하나를 만들어 설정값을 넣어야 합니다. 한 번만 하면 됩니다.</p>
+    <div class="setup">
+      <ol>
+        <li>console.firebase.google.com 에서 프로젝트를 만듭니다.</li>
+        <li>빌드 → <b>Realtime Database</b> → 데이터베이스 만들기 (위치는 아시아, 잠금 모드).</li>
+        <li>규칙 탭에 아래를 붙여 넣고 게시합니다.<br>
+          <code>{"rules":{"rooms":{"$c":{".read":"auth!=null",".write":"auth!=null"}}}}</code></li>
+        <li>빌드 → <b>Authentication</b> → 시작하기 → <b>익명</b> 사용 설정.</li>
+        <li>프로젝트 설정 → 내 앱 → 웹 앱 추가 → <code>firebaseConfig</code> 값을 복사.</li>
+        <li>이 HTML 파일 위쪽 <code>FIREBASE_CONFIG</code> 에 붙여 넣고 저장합니다.</li>
+      </ol>
+    </div>`;
+}
+function gateJoin(){
+  $('#gatebox').innerHTML=`
+    <h2>조 코드로 들어가기</h2>
+    <p>같은 코드를 넣은 사람끼리 하나의 보고서를 함께 씁니다. 조마다 다른 코드를 쓰세요.</p>
+    <input type="text" id="gcode" placeholder="조 코드 (예: 6jo)" autocapitalize="off" />
+    <input type="text" id="gname" placeholder="내 이름" />
+    <button class="btn solid wide" id="gbtn">들어가기</button>`;
+  const c=localStorage.getItem('wg-code')||"", n=localStorage.getItem('wg-name')||"";
+  $('#gcode').value=c; $('#gname').value=n;
+  $('#gbtn').onclick=()=>{
+    const code=$('#gcode').value.trim().replace(/[.#$\[\]\/]/g,'');
+    const name=$('#gname').value.trim();
+    if(!code||!name) return toast("조 코드와 이름을 모두 넣으세요");
+    localStorage.setItem('wg-code',code); localStorage.setItem('wg-name',name);
+    start(code,name);
+  };
+}
+window.leave=()=>{ localStorage.removeItem('wg-code'); location.reload(); };
+
+/* ---------- 사진 ---------- */
+function pick(cb){
+  const i=document.createElement('input');
+  i.type='file'; i.accept='image/*'; i.setAttribute('capture','environment');
+  i.onchange=()=>{const f=i.files[0]; if(!f)return;
+    const fr=new FileReader();
+    fr.onload=()=>{const im=new Image();
+      im.onload=()=>{const M=900,s=Math.min(1,M/Math.max(im.width,im.height));
+        const c=document.createElement('canvas');
+        c.width=Math.round(im.width*s); c.height=Math.round(im.height*s);
+        c.getContext('2d').drawImage(im,0,0,c.width,c.height);
+        cb(c.toDataURL('image/jpeg',0.6));};
+      im.src=fr.result;};
+    fr.readAsDataURL(f);};
+  i.click();
+}
+
+/* ---------- 그리기 ---------- */
+function draw(){
+  const host=$('#list');
+  ITEMS.forEach((it,i)=>{
+    const cur=D.items[i]||{};
+    let d=host.children[i];
+    if(!d){
+      d=document.createElement('div'); d.className='item';
+      d.innerHTML=`<div class="tag"><span>${it.t}</span><em></em></div>
+        <p class="claim">${it.c}</p><p class="hint">찾아볼 것 · ${it.h}</p>
+        <div class="shot"><div class="thumb"></div>
+          <div class="side"><button class="btn">사진 찍기</button>
+          <textarea placeholder="왜 이것이 증거인가 (한 줄)"></textarea></div></div>`;
+      host.appendChild(d);
+      d.querySelector('button').onclick=()=>pick(u=>{
+        const now=D.items[i]||{};
+        if(now.img && now.by!==uid && !confirm((now.byName||'다른 조원')+"가 올린 사진을 바꿉니다. 계속할까요?")) return;
+        push(i,{img:u});
+      });
+      d.querySelector('.thumb').onclick=()=>{
+        const now=D.items[i]||{};
+        if(now.img && confirm("이 사진을 지울까요?")) push(i,{img:""});
+      };
+      const ta=d.querySelector('textarea');
+      let t; ta.oninput=()=>{clearTimeout(t); t=setTimeout(()=>push(i,{note:ta.value}),700);};
+      ta.dataset.idx=i;
+    }
+    d.classList.toggle('done',!!cur.img);
+    d.querySelector('.tag em').textContent = cur.byName ? cur.byName+' 기록' : '아직 비어 있음';
+    const th=d.querySelector('.thumb');
+    const want = cur.img?`<img src="${cur.img}">`:`<span>사진 없음</span>`;
+    if(th.dataset.sig!==(cur.img?cur.img.length+'':'0')){ th.innerHTML=want; th.dataset.sig=cur.img?cur.img.length+'':'0'; }
+    const ta=d.querySelector('textarea');
+    if(document.activeElement!==ta && ta.value!==(cur.note||"")) ta.value=cur.note||"";
+  });
+  const n=ITEMS.filter((_,i)=>D.items[i]&&D.items[i].img).length;
+  $('#pbar').style.width=(n/ITEMS.length*100)+'%';
+  $('#ptxt').textContent=n+' / '+ITEMS.length;
+  const names=Object.values(D.members||{}).map(m=>m.name).filter(Boolean);
+  $('#whos').textContent = names.length? '접속 · '+names.join(', ') : '';
+
+  // 정리 칸
+  document.querySelectorAll('textarea[data-k]').forEach(x=>{
+    const k=x.dataset.k, v=(D.txt&&D.txt[k])||{};
+    if(document.activeElement!==x && x.value!==(v.v||"")) x.value=v.v||"";
+    const by=document.querySelector(`[data-by="${k}"]`);
+    if(by) by.textContent = v.by? v.by+' 씀' : '';
+  });
+  const el=$('#verdict'); el.innerHTML="";
+  VERD.forEach(v=>{const b=document.createElement('button');
+    b.className='chip'+(D.verdict===v?' on':''); b.textContent=v;
+    b.onclick=()=>pushTop({verdict:(D.verdict===v?"":v),verdictBy:myName});
+    el.appendChild(b);});
+  const vb=document.querySelector('[data-by="verdict"]');
+  if(vb) vb.textContent = D.verdictBy? D.verdictBy+' 고름' : '';
+}
+
+/* ---------- 쓰기 ---------- */
+async function push(i,patch){
+  const p=Object.assign({by:uid,byName:myName,at:Date.now()},patch);
+  D.items[i]=Object.assign(D.items[i]||{},p); draw();
+  try{ await FB.update(FB.ref(db,`rooms/${roomCode}/items/${i}`),p); }
+  catch(e){ toast("전송 실패 — 연결을 확인하세요"); }
+}
+async function pushTop(patch){
+  Object.assign(D,patch); draw();
+  try{ await FB.update(FB.ref(db,`rooms/${roomCode}`),patch); }catch(e){}
+}
+async function pushTxt(k,v){
+  D.txt=D.txt||{}; D.txt[k]={v,by:myName,at:Date.now()};
+  try{ await FB.update(FB.ref(db,`rooms/${roomCode}/txt/${k}`),D.txt[k]); }catch(e){}
+}
+
+/* ---------- 보고서 ---------- */
+window.exportReport=function(){
+  const body=ITEMS.map((it,i)=>{const e=D.items[i]||{};
+    return `<div class="it"><div class="tg">${it.t}${e.byName?` <em>· ${esc(e.byName)}</em>`:''}</div>
+      <p class="cl">${esc(it.c)}</p>
+      ${e.img?`<img src="${e.img}">`:'<p class="no">사진 없음</p>'}
+      <p>${nl(e.note)||'—'}</p></div>`;}).join('');
+  const T=D.txt||{}; const g=k=>(T[k]&&T[k].v)||'';
+  const names=Object.values(D.members||{}).map(m=>m.name).filter(Boolean).join(', ');
+  const html=`<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8">
+<title>원곡동 — ${esc(roomCode)}</title><style>
+body{font-family:"Pretendard","Malgun Gothic",system-ui,sans-serif;max-width:780px;margin:0 auto;
+padding:26px 18px 60px;background:#faf9f6;color:#1b1a18;line-height:1.65}
+h1{font-size:19px;margin:0 0 4px}h2{font-size:15px;margin:26px 0 6px;
+border-bottom:1px solid #dedbd3;padding-bottom:5px}
+.meta{font-size:13px;color:#5f5c56;margin:0 0 16px}
+.it{border:1px solid #dedbd3;background:#fff;border-radius:9px;padding:12px 14px;margin:10px 0}
+.tg{font-size:12px;font-weight:700;color:#8c3b2e;margin-bottom:4px}
+.tg em{font-style:normal;font-weight:500;color:#8b877f}
+.cl{font-size:14.5px;font-weight:600;margin:0 0 8px}
+.it img{max-width:100%;border-radius:7px;display:block;margin:8px 0}
+.no{font-size:12.5px;color:#8b877f}
+.qa{margin:12px 0}.qa b{display:block;font-size:14px;margin-bottom:3px}
+.qa p{margin:0;white-space:pre-wrap}
+@media print{body{background:#fff}}
+</style></head><body>
+<h1>왜 원곡동일까? — 조별 현장기록</h1>
+<p class="meta">${esc(roomCode)} · ${esc(names)} · ${new Date().toLocaleString('ko-KR')}</p>
+${body}
+<h2>정리</h2>
+<div class="qa"><b>가장 강해 보이는 이유</b><p>${nl(g('strongest'))||'—'}</p></div>
+<div class="qa"><b>이곳의 성격</b><p>${esc(D.verdict)||'—'}</p></div>
+<div class="qa"><b>근거</b><p>${nl(g('why'))||'—'}</p></div>
+<div class="qa"><b>남은 궁금증</b><p>${nl(g('openq'))||'—'}</p></div>
+</body></html>`;
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([html],{type:'text/html;charset=utf-8'}));
+  a.download='wongok-'+roomCode.replace(/[^\w]/g,'')+'.html';
+  a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+};
+
+/* ---------- 접속 ---------- */
+async function start(code,name){
+  roomCode=code; myName=name;
+  $('#gate').style.display='none'; $('#app').style.display='';
+  $('#codeTag').textContent=code;
+
+  // 오프라인 대비 : 마지막 화면을 먼저 그림
+  try{const c=localStorage.getItem('wg-cache-'+code); if(c){D=Object.assign(D,JSON.parse(c));}}catch(e){}
+  draw();
+
+  const [{initializeApp},dbm,authm]=await Promise.all([
+    import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"),
+    import("https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js"),
+    import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"),
+  ]);
+  FB=dbm;
+  const app=initializeApp(FIREBASE_CONFIG);
+  db=dbm.getDatabase(app);
+  const auth=authm.getAuth(app);
+  const cred=await authm.signInAnonymously(auth);
+  uid=cred.user.uid;
+
+  roomRef=dbm.ref(db,`rooms/${code}`);
+  const meRef=dbm.ref(db,`rooms/${code}/members/${uid}`);
+  await dbm.set(meRef,{name,at:Date.now()});
+  dbm.onDisconnect(meRef).remove();
+
+  dbm.onValue(dbm.ref(db,'.info/connected'),s=>{
+    $('#conn').classList.toggle('on',!!s.val());
+  });
+  dbm.onValue(roomRef,s=>{
+    const v=s.val()||{};
+    D.items=v.items||{}; D.txt=v.txt||{}; D.verdict=v.verdict||"";
+    D.verdictBy=v.verdictBy||""; D.members=v.members||{};
+    try{localStorage.setItem('wg-cache-'+code,JSON.stringify(D));}catch(e){}
+    draw();
+  });
+
+  // 정리 칸 입력
+  document.querySelectorAll('textarea[data-k]').forEach(x=>{
+    let t; x.oninput=()=>{clearTimeout(t); t=setTimeout(()=>pushTxt(x.dataset.k,x.value),700);};
+  });
+}
+
+/* ---------- 시작 ---------- */
+if(!FIREBASE_CONFIG.databaseURL){ gateSetup(); }
+else{
+  gateJoin();
+  const c=localStorage.getItem('wg-code'), n=localStorage.getItem('wg-name');
+  if(c&&n) start(c,n);
+}
+</script>
+</body>
+</html>
