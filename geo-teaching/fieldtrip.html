@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>답사 경로도 — 도로 경로</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+  :root{--ink:#1b1b1b;--ink2:#5f5c56;--line:#dcd9d1;--paper:#faf9f6;}
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;overflow:hidden}
+  body{font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+       color:var(--ink);background:var(--paper);display:flex}
+
+  #panel{width:340px;flex:0 0 340px;border-right:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
+  #panel header{padding:18px 20px 12px}
+  h1{font-size:18px;font-weight:700;letter-spacing:-.02em;margin:0 0 3px}
+  .sub{font-size:12.5px;color:var(--ink2);margin:0;line-height:1.5}
+  .tabs{display:flex;gap:16px;padding:0 20px;border-bottom:1px solid var(--line)}
+  .tab{appearance:none;background:none;border:0;padding:9px 0;font:inherit;font-size:13.5px;
+       color:var(--ink2);cursor:pointer;border-bottom:2px solid transparent}
+  .tab[aria-selected="true"]{color:var(--ink);font-weight:700;border-bottom-color:currentColor}
+  .tab:focus-visible{outline:2px solid #2a6ebb;outline-offset:2px}
+  #meta{padding:13px 20px 2px}
+  #meta .a{font-size:14px;font-weight:700;margin:0 0 2px}
+  #meta .b{font-size:12.5px;color:var(--ink2);margin:0;line-height:1.5}
+  #dist{font-size:12px;color:var(--ink2);margin:6px 0 0}
+  #list{flex:1;overflow-y:auto;padding:6px 10px 20px}
+  .grp{margin:12px 10px 2px;font-size:11.5px;font-weight:700}
+  .stop{display:grid;grid-template-columns:26px 1fr;gap:10px;width:100%;text-align:left;background:none;
+        border:0;font:inherit;padding:7px 10px;border-radius:6px;cursor:pointer;align-items:start}
+  .stop:hover{background:#efece4}
+  .stop:focus-visible{outline:2px solid #2a6ebb;outline-offset:-2px}
+  .num{width:22px;height:22px;border-radius:50%;color:#fff;font-size:11.5px;font-weight:700;
+       line-height:22px;text-align:center;margin-top:1px}
+  .dot{width:9px;height:9px;border-radius:50%;border:1.5px solid;background:#fff;margin:7px 0 0 6px}
+  .dia{width:10px;height:10px;background:#151515;transform:rotate(45deg);margin:7px 0 0 6px}
+  .nm{font-size:13.5px;font-weight:600;line-height:1.35;display:block}
+  .tm{font-size:11.5px;color:var(--ink2);display:block;margin-top:2px}
+  .th{font-size:11.5px;color:var(--ink2);display:block;margin-top:3px;line-height:1.45}
+  .stop.aux .nm{font-weight:500;color:var(--ink2)}
+  #opts{border-top:1px solid var(--line);padding:11px 20px 13px;font-size:12.5px;color:var(--ink2);
+        display:flex;flex-wrap:wrap;gap:12px 14px;align-items:center}
+  #opts label{display:flex;align-items:center;gap:6px;cursor:pointer}
+  #opts .msg{flex-basis:100%;font-size:11.5px;line-height:1.5}
+  button.mini{font:inherit;font-size:11.5px;background:#fff;border:1px solid var(--line);
+              border-radius:5px;padding:4px 9px;cursor:pointer;color:var(--ink)}
+  button.mini:hover{background:#f1eee6}
+
+  #map{flex:1;height:100%;background:#e9e6df}
+  .marker-num{width:26px;height:26px;border-radius:50%;color:#fff;text-align:center;
+              font:700 12.5px/26px "Pretendard","Malgun Gothic",sans-serif;box-shadow:0 0 0 2.5px #fff}
+  .marker-aux{width:12px;height:12px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px #fff}
+  .marker-ewha{width:15px;height:15px;background:#151515;transform:rotate(45deg);box-shadow:0 0 0 2.5px #fff}
+  .lbl{font:600 12.5px/1.25 "Pretendard","Malgun Gothic",sans-serif;color:#141414;white-space:nowrap;
+       text-shadow:0 0 3px #fff,0 0 3px #fff,0 0 3px #fff,0 0 4px #fff}
+  .lbl.sub{font-weight:500;font-size:11.5px;color:#4a4740}
+  .leaflet-container{font-family:inherit}
+  .leaflet-popup-content{margin:12px 14px;font-size:13px;line-height:1.55}
+  .leaflet-popup-content .pt{color:#5f5c56;font-size:12px}
+  .legend{background:rgba(250,249,246,.94);border:1px solid var(--line);border-radius:6px;
+          padding:9px 12px;font-size:12px;line-height:1.7}
+  .legend i{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:7px;vertical-align:-1px}
+  .legend .sq{border-radius:0;transform:rotate(45deg);width:9px;height:9px;margin-right:8px}
+  @media (max-width:820px){
+    body{flex-direction:column-reverse}
+    #panel{width:auto;flex:0 0 auto;height:46vh;border-right:0;border-top:1px solid var(--line)}
+    #map{flex:1;min-height:0}
+  }
+</style>
+</head>
+<body>
+
+<div id="panel">
+  <header>
+    <h1>답사 경로도</h1>
+    <p class="sub">2026. 9. 17.(목) ~ 9. 19.(토) · 2박 3일</p>
+  </header>
+  <div class="tabs" role="tablist" id="tabs"></div>
+  <div id="meta"><p class="a" id="mA"></p><p class="b" id="mB"></p><p id="dist"></p></div>
+  <div id="list"></div>
+  <div id="opts">
+    <label><input type="checkbox" id="cRoad" checked> 도로 경로</label>
+    <label><input type="checkbox" id="cAux" checked> 식사·숙박</label>
+    <label><input type="checkbox" id="cLab" checked> 이름표</label>
+    <label><input type="checkbox" id="cOsm"> OSM 기본지도</label>
+    <button class="mini" id="bSave">경로 좌표 내려받기</button>
+    <p class="msg" id="msg"></p>
+  </div>
+</div>
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+/* ============================================================
+   내려받은 경로 좌표를 아래에 붙여 넣으면 이후에는 서버를 부르지 않고
+   그 좌표를 그대로 씁니다. 비워 두면 열 때마다 OSRM에 다시 물어봅니다.
+   ============================================================ */
+const CACHED_ROUTES = {};   // 예: {"1":{d:187432,g:[[38.05,127.11],...]}, "2":{...}, "3":{...}}
+
+const EWHA={n:"이화여대·이대부고",lat:37.5620,lng:126.9469};
+
+const DAYS=[
+ {day:1,color:"#a8322a",date:"9월 17일(목)",area:"연천·철원",theme:"한탄강 화산지형과 접경지역의 경관",stops:[
+  {t:"08:00",n:"이대부고 출발",k:"hub",th:"출발",a:"서울 서대문구 대신동",lat:EWHA.lat,lng:EWHA.lng,lp:"r"},
+  {t:"10:00–10:45",n:"재인폭포",k:"site",th:"용암대지·주상절리·폭포 형성",a:"연천군 연천읍 부곡리 산235",lat:38.0587,lng:127.1176,lp:"r"},
+  {t:"11:00–11:30",n:"백의리층",k:"site",th:"용암 분출 이전 지형과 지층 관계",a:"연천군 연천읍 고문리 545-11",lat:38.0760,lng:127.0920,lp:"l"},
+  {t:"11:50–12:50",n:"이레양평해장국",k:"meal",th:"점심 식사",a:"연천군 연천읍 연천로42번길 31",lat:38.0958,lng:127.0745,lp:"l"},
+  {t:"13:30–14:40",n:"소이산 전망대",k:"site",th:"철원 용암대지와 평야 조망",a:"철원군 철원읍 사요리 산4",lat:38.2276,lng:127.2140,lp:"t"},
+  {t:"14:40–15:00",n:"노동당사·철원역사문화공원",k:"site",th:"전쟁·분단과 옛 철원 시가지",a:"철원군 철원읍 금강산로 265",lat:38.2258,lng:127.2116,lp:"b"},
+  {t:"15:20–16:00",n:"직탕폭포",k:"site",th:"현무암 하상과 하천 침식",a:"철원군 동송읍 장흥리 725",lat:38.2242,lng:127.2567,lp:"t"},
+  {t:"16:10–16:40",n:"고석정",k:"site",th:"한탄강 협곡과 침식지형",a:"철원군 동송읍 장흥리 725-13",lat:38.2081,lng:127.2681,lp:"r"},
+  {t:"17:25–18:25",n:"연천 미락",k:"meal",th:"저녁 식사",a:"연천군 전곡읍 은대성로 71",lat:38.0175,lng:127.0640,lp:"r"},
+  {t:"18:50",n:"백학자유로리조트",k:"stay",th:"1일차 숙박",a:"연천군 백학면 노아로491번길 283",lat:37.9990,lng:126.8790,lp:"b"}]},
+
+ {day:2,color:"#1d5f95",date:"9월 18일(금)",area:"인천·시흥·안산·대부도",theme:"수도권의 산업화와 환경 변화",stops:[
+  {t:"07:20",n:"백학자유로리조트 출발",k:"stay",th:"숙소 출발",a:"연천군 백학면",lat:37.9990,lng:126.8790,lp:"r"},
+  {t:"09:00–09:50",n:"수도권매립지",k:"site",th:"대도시 폐기물과 환경 부담의 공간적 불균형",a:"인천 서구 자원순환로 170",lat:37.5760,lng:126.6280,lp:"r"},
+  {t:"10:35–11:25",n:"옥구산·시화반월산업단지",k:"site",th:"간척지·산업단지·계획도시 조망",a:"시흥시 서해안로 277",lat:37.3418,lng:126.7150,lp:"l"},
+  {t:"11:55–12:35",n:"안산산업역사박물관",k:"site",th:"안산의 산업도시 형성과 변화",a:"안산시 단원구 화랑로 265",lat:37.3096,lng:126.8043,lp:"r"},
+  {t:"12:45–14:45",n:"원곡동 다문화거리",k:"site",th:"다문화 음식문화 · 이주노동과 다문화 생활공간",a:"안산시 단원구 원곡동 780-4",lat:37.3213,lng:126.7942,lp:"t"},
+  {t:"15:20–15:50",n:"시화나래 달전망대",k:"site",th:"시화방조제·시화호·조력발전·환경개조",a:"안산시 단원구 대부동동 2109",lat:37.3057,lng:126.6083,lp:"l"},
+  {t:"15:50–16:20",n:"방아머리",k:"site",th:"해안개발과 연안재해",a:"안산시 단원구 대부북동",lat:37.2925,lng:126.5810,lp:"l"},
+  {t:"17:05–17:35",n:"탄도항·누에섬 바닷길",k:"site",th:"조석·조차·갯벌·해안선 변화",a:"안산시 단원구 대부황금로 17-156",lat:37.1873,lng:126.6135,lp:"b"},
+  {t:"18:05–19:00",n:"바르미백합칼국수",k:"meal",th:"저녁 식사",a:"안산시 단원구 대부북동 1850-5",lat:37.2880,lng:126.5850,lp:"b"},
+  {t:"19:25 이후",n:"바코드펜션",k:"stay",th:"2일차 숙박",a:"안산시 단원구 부흥로 275",lat:37.2620,lng:126.5960,lp:"r"}]},
+
+ {day:3,color:"#2f6b4f",date:"9월 19일(토)",area:"평택·용인·판교",theme:"수도권 남부의 산업공간 재편",stops:[
+  {t:"08:00–08:40",n:"서래가든",k:"meal",th:"아침 식사",a:"안산시 단원구 대부황금로 700",lat:37.2400,lng:126.6100,lp:"l"},
+  {t:"09:30–10:00",n:"평택항 마린센터 전망대",k:"site",th:"수도권 항만·물류·배후산업단지·항만 입지",a:"평택시 포승읍 평택항만길 73",lat:36.9660,lng:126.8230,lp:"b"},
+  {t:"10:45–11:25",n:"송탄관광특구·미군기지 주변",k:"site",th:"미군기지와 기지촌 경제·다문화 경관",a:"평택시 신장동 302-298",lat:37.0768,lng:127.0475,lp:"b"},
+  {t:"12:30–12:40",n:"용인 반도체클러스터",k:"site",th:"첨단 제조업 입지·용수·전력·균형발전 (차창 조망)",a:"용인시 처인구 원삼면 죽능리",lat:37.1540,lng:127.3300,lp:"r"},
+  {t:"13:10–14:00",n:"대동한식뷔페",k:"meal",th:"점심 식사",a:"용인시 처인구 양지읍 주북로94번길 8",lat:37.2340,lng:127.2720,lp:"r"},
+  {t:"14:50–15:30",n:"판교테크노밸리",k:"site",th:"혁신산업·R&D 집적·클러스터 입지",a:"성남시 분당구 삼평동 641-1",lat:37.4020,lng:127.0980,lp:"l"},
+  {t:"17:00",n:"이대 도착",k:"hub",th:"도착",a:"서울 서대문구 대현동",lat:EWHA.lat,lng:EWHA.lng,lp:"l"}]}
+];
+
+/* ===================== 지도 ===================== */
+const map=L.map("map",{zoomControl:true,scrollWheelZoom:true});
+const carto=L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+  {maxZoom:19,detectRetina:true,attribution:"© OpenStreetMap contributors, © CARTO"}).addTo(map);
+const osm=L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+  {maxZoom:19,attribution:"© OpenStreetMap contributors"});
+L.control.scale({imperial:false}).addTo(map);
+
+const gRoute=L.layerGroup().addTo(map), gSite=L.layerGroup().addTo(map), gAux=L.layerGroup().addTo(map);
+const ROUTES={};      // day → {d:미터, g:[[lat,lng],…]}
+const mk={};
+let cur=1;
+
+function bearing(a,b){
+  const f1=a[0]*Math.PI/180,f2=b[0]*Math.PI/180,dl=(b[1]-a[1])*Math.PI/180;
+  return (Math.atan2(Math.sin(dl)*Math.cos(f2),
+    Math.cos(f1)*Math.sin(f2)-Math.sin(f1)*Math.cos(f2)*Math.cos(dl))*180/Math.PI+360)%360;
+}
+function anchor(lp,size,w){
+  const h=size/2+7;
+  if(lp==="l") return [w+h,9];
+  if(lp==="t") return [w/2,size/2+19];
+  if(lp==="b") return [w/2,-(size/2+8)];
+  return [-h,9];
+}
+
+/* OSRM 도로 경로 — 하루치 전 구간을 한 번에 요청 */
+async function loadRoute(d){
+  if(CACHED_ROUTES[d.day]) return CACHED_ROUTES[d.day];
+  if(ROUTES[d.day]) return ROUTES[d.day];
+  const c=d.stops.map(s=>s.lng+","+s.lat).join(";");
+  const url=`https://router.project-osrm.org/route/v1/driving/${c}?overview=full&geometries=geojson`;
+  const r=await fetch(url);
+  const j=await r.json();
+  if(j.code!=="Ok") throw new Error(j.code);
+  ROUTES[d.day]={d:j.routes[0].distance, g:j.routes[0].geometry.coordinates.map(p=>[p[1],p[0]])};
+  return ROUTES[d.day];
+}
+
+/* 경로선을 따라 일정 간격으로 진행 방향 화살표 */
+function arrows(g,color,n){
+  const cum=[0];
+  for(let i=1;i<g.length;i++) cum.push(cum[i-1]+L.latLng(g[i-1]).distanceTo(g[i]));
+  const total=cum[cum.length-1];
+  for(let k=1;k<=n;k++){
+    const target=total*k/(n+1);
+    let i=1; while(i<cum.length-1 && cum[i]<target) i++;
+    const ang=bearing(g[i-1],g[i]);
+    L.marker(g[i],{interactive:false,icon:L.divIcon({className:"",iconSize:[14,14],iconAnchor:[7,7],
+      html:`<svg width="14" height="14" viewBox="0 0 10 10" style="transform:rotate(${ang}deg)">
+            <path d="M5 0 L9 9.5 L5 7.2 L1 9.5 Z" fill="${color}"/></svg>`})}).addTo(gRoute);
+  }
+}
+
+let hubDrawn=false;
+function drawDay(d,dim){
+  const straight=d.stops.map(s=>[s.lat,s.lng]);
+  const road=(CACHED_ROUTES[d.day]||ROUTES[d.day]);
+  const useRoad=document.getElementById("cRoad").checked && road;
+  const g=useRoad?road.g:straight;
+
+  L.polyline(g,{color:d.color,weight:dim?1.6:2.8,opacity:dim?.3:.9,lineJoin:"round"}).addTo(gRoute);
+  if(!dim) arrows(g,d.color,useRoad?Math.min(10,d.stops.length):d.stops.length-1);
+
+  let no=0;
+  d.stops.forEach((s,i)=>{
+    const hub=s.k==="hub", aux=s.k!=="site"&&!hub;
+    if(!hub&&!aux) no++;
+    if(hub && hubDrawn && cur===0) return;
+    if(hub) hubDrawn=true;
+    const size=hub?15:(aux?12:26);
+    const layer=(hub||aux)?gAux:gSite;
+    const txt=hub?EWHA.n:((aux?"":no+". ")+s.n);
+    const html=hub?`<div class="marker-ewha"></div>`
+      :(aux?`<div class="marker-aux" style="border:2.5px solid ${d.color}"></div>`
+           :`<div class="marker-num" style="background:${d.color};opacity:${dim?.35:1}">${no}</div>`);
+    const m=L.marker([s.lat,s.lng],{zIndexOffset:hub?600:(aux?100:300),
+      icon:L.divIcon({className:"",html,iconSize:[size,size],iconAnchor:[size/2,size/2]})})
+      .bindPopup(`<b>${txt}</b><br><span class="pt">${d.day}일차 · ${s.t}</span><br>${s.th}<br><span class="pt">${s.a}</span>`);
+    m.addTo(hub?gSite:layer); mk[d.day+"-"+i]=m;
+    if(!dim){
+      L.marker([s.lat,s.lng],{interactive:false,zIndexOffset:500,
+        icon:L.divIcon({className:"",iconSize:[0,0],iconAnchor:anchor(s.lp,size,txt.length*12.8),
+          html:`<div class="lbl${aux?" sub":""}">${txt}</div>`})}).addTo(hub?gSite:layer);
+    }
+  });
+}
+
+function draw(){
+  [gRoute,gSite,gAux].forEach(l=>l.clearLayers());
+  hubDrawn=false;
+  DAYS.forEach(d=>{ if(cur===0) drawDay(d,false); else drawDay(d,d.day!==cur); });
+  if(!document.getElementById("cAux").checked) map.removeLayer(gAux); else gAux.addTo(map);
+  hideLabels(); fit(); showDist();
+}
+function fit(){
+  const src=(cur===0?DAYS:[DAYS[cur-1]]);
+  const p=src.flatMap(d=>{
+    const r=CACHED_ROUTES[d.day]||ROUTES[d.day];
+    return (document.getElementById("cRoad").checked&&r)?r.g:d.stops.map(s=>[s.lat,s.lng]);
+  });
+  map.fitBounds(L.latLngBounds(p).pad(.08));
+}
+function hideLabels(){
+  const on=document.getElementById("cLab").checked;
+  document.querySelectorAll(".lbl").forEach(el=>el.style.display=on?"":"none");
+}
+function showDist(){
+  const el=document.getElementById("dist");
+  const src=(cur===0?DAYS:[DAYS[cur-1]]);
+  let sum=0, ok=true;
+  src.forEach(d=>{const r=CACHED_ROUTES[d.day]||ROUTES[d.day]; if(r) sum+=r.d; else ok=false;});
+  el.textContent = (ok&&document.getElementById("cRoad").checked)
+    ? `버스 이동 거리 약 ${Math.round(sum/1000)}km` : "";
+}
+
+/* ===================== 패널 ===================== */
+const tabs=document.getElementById("tabs");
+[{v:1,l:"1일차"},{v:2,l:"2일차"},{v:3,l:"3일차"},{v:0,l:"전체"}].forEach((t,i)=>{
+  const b=document.createElement("button");
+  b.className="tab"; b.textContent=t.l; b.setAttribute("role","tab"); b.setAttribute("aria-selected",t.v===1);
+  b.onclick=()=>{cur=t.v;[...tabs.children].forEach((c,j)=>c.setAttribute("aria-selected",j===i));buildList();draw();};
+  tabs.appendChild(b);
+});
+function buildList(){
+  const el=document.getElementById("list"); el.innerHTML="";
+  const A=document.getElementById("mA"),B=document.getElementById("mB");
+  if(cur===0){
+    A.textContent="전체 일정"; A.style.color=""; B.textContent="일자를 고르면 해당 경로만 진하게 나타납니다.";
+    DAYS.forEach(d=>{const g=document.createElement("p");g.className="grp";g.style.color=d.color;
+      g.textContent=`${d.day}일차 · ${d.date} · ${d.area}`;el.appendChild(g);rows(el,d);});
+  }else{
+    const d=DAYS[cur-1];
+    A.textContent=`${d.day}일차 · ${d.date} · ${d.area}`; A.style.color=d.color; B.textContent=d.theme;
+    rows(el,d);
+  }
+}
+function rows(el,d){
+  let no=0;
+  d.stops.forEach((s,i)=>{
+    const hub=s.k==="hub", aux=s.k!=="site"&&!hub;
+    if(!hub&&!aux) no++;
+    const b=document.createElement("button"); b.className="stop"+((aux||hub)?" aux":"");
+    b.innerHTML=(hub?`<span class="dia"></span>`
+      :aux?`<span class="dot" style="border-color:${d.color}"></span>`
+           :`<span class="num" style="background:${d.color}">${no}</span>`)+
+      `<span><span class="nm">${s.n}</span><span class="tm">${s.t}</span><span class="th">${s.th}</span></span>`;
+    b.onclick=()=>{map.flyTo([s.lat,s.lng],13,{duration:.6});
+      const m=mk[d.day+"-"+i]; if(m) setTimeout(()=>m.openPopup(),650);};
+    el.appendChild(b);
+  });
+}
+
+/* ===================== 옵션 ===================== */
+document.getElementById("cAux").onchange=draw;
+document.getElementById("cLab").onchange=hideLabels;
+document.getElementById("cRoad").onchange=draw;
+document.getElementById("cOsm").onchange=e=>{
+  if(e.target.checked){map.removeLayer(carto);osm.addTo(map);} else {map.removeLayer(osm);carto.addTo(map);}};
+document.getElementById("bSave").onclick=()=>{
+  const out={};
+  DAYS.forEach(d=>{const r=CACHED_ROUTES[d.day]||ROUTES[d.day]; if(r) out[d.day]={d:Math.round(r.d),
+    g:r.g.map(p=>[+p[0].toFixed(5),+p[1].toFixed(5)])};});
+  const blob=new Blob(["const CACHED_ROUTES = "+JSON.stringify(out)+";"],{type:"text/plain"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+  a.download="cached_routes.js"; a.click();
+};
+
+const legend=L.control({position:"bottomright"});
+legend.onAdd=()=>{const d=L.DomUtil.create("div","legend");
+  d.innerHTML=`<i style="background:${DAYS[0].color}"></i>1일차 연천·철원<br>`+
+    `<i style="background:${DAYS[1].color}"></i>2일차 인천·시흥·안산<br>`+
+    `<i style="background:${DAYS[2].color}"></i>3일차 평택·용인·판교<br>`+
+    `<i class="sq" style="background:#151515"></i>이화여대(출발·도착)`; return d;};
+legend.addTo(map);
+
+/* ===================== 시작 ===================== */
+buildList(); draw();
+(async()=>{
+  const msg=document.getElementById("msg");
+  if(Object.keys(CACHED_ROUTES).length){msg.textContent="저장해 둔 도로 경로를 씁니다.";return;}
+  msg.textContent="도로 경로를 불러오는 중…";
+  let fail=0;
+  for(const d of DAYS){
+    try{ await loadRoute(d); draw(); }
+    catch(e){ fail++; }
+    await new Promise(r=>setTimeout(r,400));
+  }
+  msg.textContent = fail
+    ? "도로 경로를 불러오지 못한 구간이 있어 그 부분은 직선으로 표시합니다."
+    : "OSM 도로망 기준 자동차 경로입니다. 실제 버스 운행과 다를 수 있습니다.";
+})();
+</script>
+</body>
+</html>
