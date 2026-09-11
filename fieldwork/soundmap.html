@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>눈 감으면 보이는 것들 — 사운드 맵</title>
+<meta name="theme-color" content="#faf9f6" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+  :root{--ink:#1b1a18;--ink2:#5f5c56;--ink3:#8b877f;--line:#dedbd3;
+        --paper:#faf9f6;--card:#fff;--accent:#8c3b2e;--ok:#2f6b4f;--rec:#c0392b}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:var(--paper);color:var(--ink);
+       font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+       font-size:16px;line-height:1.6;-webkit-text-size-adjust:100%}
+  .wrap{max-width:680px;margin:0 auto;padding:0 16px 60px}
+
+  header{position:sticky;top:0;background:rgba(250,249,246,.97);backdrop-filter:blur(8px);
+         padding:12px 0 9px;border-bottom:1px solid var(--line);z-index:600}
+  .hrow{display:flex;align-items:center;gap:9px}
+  h1{font-size:17px;font-weight:700;letter-spacing:-.02em;margin:0}
+  .code{font-size:12.5px;color:var(--accent);font-weight:700}
+  .ver{font-size:11px;color:var(--ink3)}
+  .out{margin-left:auto;font-size:11.5px;color:var(--ink2);background:none;
+       border:1px solid var(--line);border-radius:999px;padding:3px 10px}
+  .dot{width:7px;height:7px;border-radius:50%;background:#c9c6bf;flex:0 0 7px}
+  .dot.on{background:var(--ok)}
+  .cnt{font-size:11.5px;color:var(--ink3);margin-top:5px}
+
+  #map{height:46vh;min-height:280px;border:1px solid var(--line);border-radius:11px;
+       margin:13px 0 10px;background:#e9e6df}
+  .leaflet-container{font-family:inherit}
+  .pin{width:26px;height:26px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);
+       border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35)}
+  .pin.mine{background:var(--accent)}
+  .pin.other{background:#4a6b8a}
+  .pin.draft{background:var(--ok)}
+
+  button{font:inherit;cursor:pointer}
+  .btn{font-size:14px;background:var(--card);border:1px solid var(--line);
+       border-radius:9px;padding:11px 14px;color:var(--ink)}
+  .btn:active{background:#f1eee6}
+  .btn.solid{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .btn.wide{width:100%}
+  .btn.warn{color:var(--accent)}
+  .btn:disabled{opacity:.45}
+  .row{display:flex;gap:8px}
+  .row>*{flex:1}
+
+  input[type=text],textarea{width:100%;font:inherit;font-size:15px;color:var(--ink);
+    background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 11px}
+  textarea{resize:vertical;min-height:72px;line-height:1.55}
+  input:focus,textarea:focus{outline:2px solid #2a6ebb;outline-offset:1px}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:11px;
+        padding:14px;margin:12px 0}
+  .card.draft{border-color:#bcd0c3;background:#f7fbf8}
+  .lab{font-size:12px;color:var(--ink3);margin:12px 0 5px}
+  .lab:first-child{margin-top:0}
+
+  .thumb{width:100%;height:160px;border-radius:9px;overflow:hidden;background:#efece4;
+         border:1px solid var(--line);display:flex;align-items:center;justify-content:center}
+  .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+  .thumb span{font-size:12.5px;color:var(--ink3)}
+
+  .recbar{display:flex;align-items:center;gap:11px}
+  .recbtn{width:56px;height:56px;flex:0 0 56px;border-radius:50%;border:2px solid var(--line);
+          background:var(--card);display:flex;align-items:center;justify-content:center;padding:0}
+  .recbtn i{display:block;width:20px;height:20px;border-radius:50%;background:var(--rec)}
+  .recbtn.on i{border-radius:3px;width:17px;height:17px}
+  .recbtn.on{border-color:var(--rec)}
+  .rectxt{font-size:13px;color:var(--ink2);flex:1}
+  audio{width:100%;margin-top:9px}
+
+  .pt{background:var(--card);border:1px solid var(--line);border-radius:11px;
+      padding:12px 13px;margin:9px 0;display:flex;gap:11px}
+  .pt.mine{border-color:#d8c3bd}
+  .pt img{width:78px;height:78px;flex:0 0 78px;object-fit:cover;border-radius:8px;background:#efece4}
+  .pt .m{flex:1;min-width:0}
+  .pt .tt{font-size:14.5px;font-weight:600;line-height:1.35}
+  .pt .who{font-size:11.5px;color:var(--ink3);margin-top:2px}
+  .pt .nt{font-size:13px;color:var(--ink2);margin-top:5px;line-height:1.5}
+  .pt audio{height:34px;margin-top:7px}
+
+  h2{font-size:16px;font-weight:700;margin:26px 0 6px;padding-top:18px;
+     border-top:1px solid var(--line)}
+  .hint{font-size:13px;color:var(--ink2);line-height:1.65;margin:6px 0 0}
+
+  .gate{position:fixed;inset:0;background:var(--paper);z-index:900;
+        display:flex;align-items:center;justify-content:center;padding:22px}
+  .gate .box{max-width:380px;width:100%}
+  .gate h2{border:0;padding:0;margin:0 0 4px;font-size:19px}
+  .gate p{font-size:13px;color:var(--ink2);margin:0 0 14px;line-height:1.65}
+  .gate input{margin-bottom:9px}
+  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;
+         background:rgba(27,26,24,.92);color:#fff;font-size:13px;padding:9px 15px;
+         border-radius:999px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:950}
+  .toast.show{opacity:1}
+  .pop img{width:100%;border-radius:7px;margin-bottom:6px}
+  .pop b{font-size:14px}
+  .pop .w{font-size:11.5px;color:var(--ink3)}
+  .pop p{margin:5px 0 0;font-size:13px}
+  .pop audio{width:210px;margin-top:6px}
+</style>
+</head>
+<body>
+
+<div class="gate" id="gate"><div class="box" id="gatebox"></div></div>
+
+<div class="wrap" id="app" style="display:none">
+  <header>
+    <div class="hrow">
+      <h1>사운드 맵</h1>
+      <span class="code" id="codeTag"></span>
+      <span class="ver">v1</span>
+      <button class="out" onclick="leave()">나가기</button>
+      <span class="dot" id="conn"></span>
+    </div>
+    <div class="cnt" id="cnt"></div>
+  </header>
+
+  <div id="map"></div>
+
+  <div class="row">
+    <button class="btn solid" id="bNew">이 자리에 지점 만들기</button>
+    <button class="btn" id="bCenter">내 위치로</button>
+  </div>
+  <p class="hint">위치가 어긋나면 지도의 초록 핀을 끌어서 옮기세요.</p>
+
+  <div id="editor"></div>
+
+  <h2>모인 소리</h2>
+  <div id="list"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js"></script>
+<script type="module">
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyCuOQATa7VYXRJbiF8gzso14ASSIx-BcOI",
+  authDomain: "wongok-863fc.firebaseapp.com",
+  databaseURL: "https://wongok-863fc-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "wongok-863fc",
+  storageBucket: "wongok-863fc.firebasestorage.app",
+  messagingSenderId: "409772442710",
+  appId: "1:409772442710:web:2d2017e90a432da353a7f7"
+};
+const HOME=[37.5620,126.9469];   // 이화여대
+const MAXSEC=10;                 // 녹음 길이 제한(초)
+
+let db=null,uid=null,myName="",team="",FB={};
+let P={};                        // 모든 지점
+let draft=null;                  // 작성 중인 지점
+let map,layer,draftMk=null,mks={};
+let rec=null,chunks=[],timer=null;
+
+const $=s=>document.querySelector(s);
+const esc=s=>(s||"").replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),1900);}
+
+/* ---------- 시작 ---------- */
+function gateJoin(){
+  $('#gatebox').innerHTML=`
+    <h2>모둠 코드로 들어가기</h2>
+    <p>모둠끼리 같은 코드를 쓰세요. 지도는 모든 모둠이 함께 봅니다.</p>
+    <input type="text" id="gcode" placeholder="모둠 코드 (예: mo1)" autocapitalize="off" />
+    <input type="text" id="gname" placeholder="내 이름" />
+    <button class="btn solid wide" id="gbtn">들어가기</button>`;
+  $('#gcode').value=localStorage.getItem('sm-team')||"";
+  $('#gname').value=localStorage.getItem('sm-name')||"";
+  $('#gbtn').onclick=()=>{
+    const c=$('#gcode').value.trim().replace(/[.#$\[\]\/\s]/g,'');
+    const n=$('#gname').value.trim();
+    if(!c||!n) return toast("모둠 코드와 이름을 넣으세요");
+    localStorage.setItem('sm-team',c); localStorage.setItem('sm-name',n);
+    start(c,n);
+  };
+}
+window.leave=()=>{localStorage.removeItem('sm-team');location.reload();};
+
+/* ---------- 사진 ---------- */
+function pickPhoto(cb){
+  const i=document.createElement('input');
+  i.type='file'; i.accept='image/*'; i.setAttribute('capture','environment');
+  i.onchange=()=>{const f=i.files[0]; if(!f)return;
+    const fr=new FileReader();
+    fr.onload=()=>{const im=new Image();
+      im.onload=()=>{const M=900,s=Math.min(1,M/Math.max(im.width,im.height));
+        const c=document.createElement('canvas');
+        c.width=Math.round(im.width*s); c.height=Math.round(im.height*s);
+        c.getContext('2d').drawImage(im,0,0,c.width,c.height);
+        cb(c.toDataURL('image/jpeg',0.6));};
+      im.src=fr.result;};
+    fr.readAsDataURL(f);};
+  i.click();
+}
+
+/* ---------- 녹음 : 어떤 기기에서도 들리도록 mp3로 바꿔 저장 ---------- */
+async function toMp3(blob){
+  if(typeof lamejs==='undefined') throw 0;
+  const buf=await blob.arrayBuffer();
+  const ac=new (window.AudioContext||window.webkitAudioContext)();
+  const dec=await ac.decodeAudioData(buf);
+  const src=dec.getChannelData(0), SR=22050;
+  const n=Math.floor(dec.length*SR/dec.sampleRate);
+  const pcm=new Int16Array(n);
+  for(let i=0;i<n;i++){
+    const v=src[Math.floor(i*dec.sampleRate/SR)];
+    pcm[i]=Math.max(-1,Math.min(1,v))*32767;
+  }
+  const enc=new lamejs.Mp3Encoder(1,SR,48), out=[];
+  for(let i=0;i<pcm.length;i+=1152){
+    const b=enc.encodeBuffer(pcm.subarray(i,i+1152));
+    if(b.length) out.push(new Int8Array(b));
+  }
+  const last=enc.flush(); if(last.length) out.push(new Int8Array(last));
+  ac.close();
+  return new Blob(out,{type:'audio/mpeg'});
+}
+function blob2url(b){return new Promise(r=>{const f=new FileReader();f.onload=()=>r(f.result);f.readAsDataURL(b);});}
+
+async function startRec(){
+  try{
+    const st=await navigator.mediaDevices.getUserMedia({audio:true});
+    rec=new MediaRecorder(st); chunks=[];
+    rec.ondataavailable=e=>chunks.push(e.data);
+    rec.onstop=async()=>{
+      st.getTracks().forEach(t=>t.stop());
+      const raw=new Blob(chunks,{type:rec.mimeType||'audio/webm'});
+      let out=raw;
+      try{ out=await toMp3(raw); }catch(e){ /* 변환 실패시 원본 */ }
+      draft.audio=await blob2url(out);
+      drawEditor();
+    };
+    rec.start();
+    let left=MAXSEC;
+    drawEditor(left);
+    timer=setInterval(()=>{
+      left--; drawEditor(left);
+      if(left<=0) stopRec();
+    },1000);
+  }catch(e){ toast("마이크를 쓸 수 없습니다"); }
+}
+function stopRec(){
+  clearInterval(timer); timer=null;
+  if(rec&&rec.state!=='inactive') rec.stop();
+  rec=null; drawEditor();
+}
+
+/* ---------- 지도 ---------- */
+function icon(kind){return L.divIcon({className:"",html:`<div class="pin ${kind}"></div>`,
+  iconSize:[26,26],iconAnchor:[13,26],popupAnchor:[0,-24]});}
+function initMap(){
+  map=L.map('map',{zoomControl:true}).setView(HOME,16);
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+    {maxZoom:19,detectRetina:true,attribution:"© OpenStreetMap contributors, © CARTO"}).addTo(map);
+  layer=L.layerGroup().addTo(map);
+  L.control.scale({imperial:false}).addTo(map);
+}
+function drawMap(){
+  layer.clearLayers(); mks={};
+  Object.keys(P).forEach(id=>{
+    const p=P[id]; if(typeof p.lat!=='number')return;
+    const mine=p.by===uid;
+    const m=L.marker([p.lat,p.lng],{icon:icon(mine?'mine':'other')}).addTo(layer);
+    m.bindPopup(`<div class="pop">${p.img?`<img src="${p.img}">`:''}
+      <b>${esc(p.title)||'제목 없음'}</b>
+      <div class="w">${esc(p.team)} · ${esc(p.byName)}</div>
+      ${p.audio?`<audio controls preload="none" src="${p.audio}"></audio>`:''}
+      <p>${esc(p.note)||''}</p></div>`,{maxWidth:260});
+    mks[id]=m;
+  });
+  if(draft){
+    if(draftMk) map.removeLayer(draftMk);
+    draftMk=L.marker([draft.lat,draft.lng],{icon:icon('draft'),draggable:true}).addTo(map);
+    draftMk.on('dragend',()=>{const c=draftMk.getLatLng();draft.lat=c.lat;draft.lng=c.lng;});
+  }else if(draftMk){ map.removeLayer(draftMk); draftMk=null; }
+}
+
+/* ---------- 작성 칸 ---------- */
+function drawEditor(recLeft){
+  const host=$('#editor');
+  if(!draft){ host.innerHTML=""; return; }
+  const recording = timer!==null;
+  host.innerHTML=`<div class="card draft">
+    <div class="lab">소리 이름</div>
+    <input type="text" id="dTitle" placeholder="예: 언덕길 오르는 마을버스" />
+    <div class="lab">녹음 (최대 ${MAXSEC}초)</div>
+    <div class="recbar">
+      <button class="recbtn ${recording?'on':''}" id="dRec"><i></i></button>
+      <div class="rectxt">${recording?`녹음 중 · ${recLeft??MAXSEC}초 남음`
+        :(draft.audio?'다시 누르면 새로 녹음합니다':'누르면 녹음이 시작됩니다')}</div>
+    </div>
+    ${draft.audio?`<audio controls src="${draft.audio}"></audio>`:''}
+    <div class="lab">사진</div>
+    <div class="thumb" id="dThumb">${draft.img?`<img src="${draft.img}">`:'<span>사진 없음</span>'}</div>
+    <div style="height:8px"></div>
+    <button class="btn wide" id="dShot">사진 찍기</button>
+    <div class="lab">왜 이 소리가 이곳을 나타내는가</div>
+    <textarea id="dNote" placeholder="두세 문장이면 충분합니다"></textarea>
+    <div style="height:12px"></div>
+    <div class="row">
+      <button class="btn solid" id="dSave">지도에 올리기</button>
+      <button class="btn warn" id="dCancel">취소</button>
+    </div>
+  </div>`;
+  $('#dTitle').value=draft.title||"";
+  $('#dNote').value=draft.note||"";
+  $('#dTitle').oninput=e=>draft.title=e.target.value;
+  $('#dNote').oninput=e=>draft.note=e.target.value;
+  $('#dRec').onclick=()=>recording?stopRec():startRec();
+  $('#dShot').onclick=()=>pickPhoto(u=>{draft.img=u;drawEditor();});
+  $('#dThumb').onclick=()=>{if(draft.img&&confirm("사진을 지울까요?")){draft.img="";drawEditor();}};
+  $('#dCancel').onclick=()=>{if(confirm("작성 중인 지점을 버릴까요?")){draft=null;drawEditor();drawMap();}};
+  $('#dSave').onclick=save;
+}
+
+async function save(){
+  if(!draft.title.trim()) return toast("소리 이름을 적어 주세요");
+  if(!draft.audio) return toast("녹음이 없습니다");
+  try{
+    const r=FB.push(FB.ref(db,'sound/points'));
+    await FB.set(r,{lat:draft.lat,lng:draft.lng,title:draft.title.trim(),
+      note:draft.note.trim(),img:draft.img||"",audio:draft.audio,
+      by:uid,byName:myName,team,at:Date.now()});
+    draft=null; drawEditor(); drawMap(); toast("지도에 올렸습니다");
+  }catch(e){ toast("전송 실패 — 연결을 확인하세요"); }
+}
+
+/* ---------- 목록 ---------- */
+function drawList(){
+  const ids=Object.keys(P).sort((a,b)=>{
+    const am=P[a].by===uid, bm=P[b].by===uid;
+    if(am!==bm) return am?-1:1;
+    return (P[b].at||0)-(P[a].at||0);
+  });
+  $('#cnt').textContent=`지점 ${ids.length}개 · 우리 모둠 ${ids.filter(i=>P[i].team===team).length}개`;
+  $('#list').innerHTML = ids.length? ids.map(id=>{
+    const p=P[id], mine=p.by===uid;
+    return `<div class="pt${mine?' mine':''}" data-id="${id}">
+      ${p.img?`<img src="${p.img}">`:'<img>'}
+      <div class="m"><div class="tt">${esc(p.title)}</div>
+        <div class="who">${esc(p.team)} · ${esc(p.byName)}</div>
+        ${p.audio?`<audio controls preload="none" src="${p.audio}"></audio>`:''}
+        <div class="nt">${esc(p.note)}</div>
+        ${mine?`<div style="height:6px"></div><button class="btn warn" data-del="${id}"
+           style="font-size:12.5px;padding:5px 10px">지우기</button>`:''}
+      </div></div>`;}).join('')
+    : `<p class="hint">아직 올라온 소리가 없습니다.</p>`;
+  $('#list').querySelectorAll('.pt').forEach(el=>{
+    el.onclick=e=>{
+      if(e.target.tagName==='AUDIO'||e.target.dataset.del) return;
+      const m=mks[el.dataset.id]; if(m){map.setView(m.getLatLng(),17);m.openPopup();
+        window.scrollTo({top:0,behavior:'smooth'});}
+    };
+  });
+  $('#list').querySelectorAll('[data-del]').forEach(b=>{
+    b.onclick=async()=>{ if(!confirm("이 지점을 지울까요?"))return;
+      try{ await FB.remove(FB.ref(db,'sound/points/'+b.dataset.del)); }catch(e){} };
+  });
+}
+
+/* ---------- 위치 ---------- */
+function locate(then){
+  if(!navigator.geolocation){ then(map.getCenter().lat,map.getCenter().lng); return; }
+  navigator.geolocation.getCurrentPosition(
+    p=>then(p.coords.latitude,p.coords.longitude),
+    ()=>{ toast("위치를 못 잡아 화면 가운데로 놓습니다");
+          then(map.getCenter().lat,map.getCenter().lng); },
+    {enableHighAccuracy:true,timeout:8000,maximumAge:0});
+}
+
+/* ---------- 접속 ---------- */
+async function start(code,name){
+  team=code; myName=name;
+  $('#gate').style.display='none'; $('#app').style.display='';
+  $('#codeTag').textContent=code;
+  initMap();
+
+  $('#bNew').onclick=()=>{
+    if(draft) return toast("작성 중인 지점을 먼저 올리거나 취소하세요");
+    locate((lat,lng)=>{ draft={lat,lng,title:"",note:"",img:"",audio:""};
+      map.setView([lat,lng],17); drawMap(); drawEditor();
+      document.getElementById('editor').scrollIntoView({behavior:'smooth',block:'start'}); });
+  };
+  $('#bCenter').onclick=()=>locate((lat,lng)=>map.setView([lat,lng],17));
+
+  const [{initializeApp},dbm,authm]=await Promise.all([
+    import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"),
+    import("https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js"),
+    import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"),
+  ]);
+  FB=dbm;
+  const app=initializeApp(FIREBASE_CONFIG);
+  db=dbm.getDatabase(app);
+  uid=(await authm.signInAnonymously(authm.getAuth(app))).user.uid;
+
+  dbm.onValue(dbm.ref(db,'.info/connected'),s=>$('#conn').classList.toggle('on',!!s.val()));
+  dbm.onValue(dbm.ref(db,'sound/points'),s=>{ P=s.val()||{}; drawMap(); drawList(); });
+}
+
+gateJoin();
+const c=localStorage.getItem('sm-team'), n=localStorage.getItem('sm-name');
+if(c&&n) start(c,n);
+</script>
+</body>
+</html>
