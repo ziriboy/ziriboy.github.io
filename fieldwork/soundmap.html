@@ -112,7 +112,7 @@
     <div class="hrow">
       <h1>사운드 맵</h1>
       <span class="code" id="codeTag"></span>
-      <span class="ver">v1</span>
+      <span class="ver">v2</span>
       <button class="out" onclick="leave()">나가기</button>
       <span class="dot" id="conn"></span>
     </div>
@@ -255,8 +255,8 @@ function icon(kind){return L.divIcon({className:"",html:`<div class="pin ${kind}
   iconSize:[26,26],iconAnchor:[13,26],popupAnchor:[0,-24]});}
 function initMap(){
   map=L.map('map',{zoomControl:true}).setView(HOME,16);
-  L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
-    {maxZoom:19,detectRetina:true,attribution:"© OpenStreetMap contributors, © CARTO"}).addTo(map);
+  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {maxZoom:19,attribution:"© OpenStreetMap contributors"}).addTo(map);
   layer=L.layerGroup().addTo(map);
   L.control.scale({imperial:false}).addTo(map);
 }
