@@ -35,6 +35,8 @@
   .pin.mine{background:var(--accent)}
   .pin.other{background:#4a6b8a}
   .pin.draft{background:var(--ok)}
+  .me{width:16px;height:16px;border-radius:50%;background:#2a6ebb;
+      border:3px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.25)}
 
   button{font:inherit;cursor:pointer}
   .btn{font-size:14px;background:var(--card);border:1px solid var(--line);
@@ -112,7 +114,7 @@
     <div class="hrow">
       <h1>사운드 맵</h1>
       <span class="code" id="codeTag"></span>
-      <span class="ver">v2</span>
+      <span class="ver">v3</span>
       <button class="out" onclick="leave()">나가기</button>
       <span class="dot" id="conn"></span>
     </div>
@@ -125,7 +127,8 @@
     <button class="btn solid" id="bNew">이 자리에 지점 만들기</button>
     <button class="btn" id="bCenter">내 위치로</button>
   </div>
-  <p class="hint">위치가 어긋나면 지도의 초록 핀을 끌어서 옮기세요.</p>
+  <p class="hint" id="acc">위치를 찾는 중입니다…</p>
+  <p class="hint">지점을 만든 뒤에는 초록 핀을 끌어서 자리를 고칠 수 있습니다.</p>
 
   <div id="editor"></div>
 
@@ -154,7 +157,8 @@ let db=null,uid=null,myName="",team="",FB={};
 let P={};                        // 모든 지점
 let draft=null;                  // 작성 중인 지점
 let map,layer,draftMk=null,mks={};
-let rec=null,chunks=[],timer=null;
+let recorder=null,chunks=[],recTimer=null;
+let myPos=null,myAcc=null,meMk=null,watchId=null;
 
 const $=s=>document.querySelector(s);
 const esc=s=>(s||"").replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
@@ -225,29 +229,32 @@ function blob2url(b){return new Promise(r=>{const f=new FileReader();f.onload=()
 async function startRec(){
   try{
     const st=await navigator.mediaDevices.getUserMedia({audio:true});
-    rec=new MediaRecorder(st); chunks=[];
-    rec.ondataavailable=e=>chunks.push(e.data);
-    rec.onstop=async()=>{
-      st.getTracks().forEach(t=>t.stop());
-      const raw=new Blob(chunks,{type:rec.mimeType||'audio/webm'});
+    const mr=new MediaRecorder(st);
+    recorder=mr; chunks=[];
+    mr.ondataavailable=e=>{ if(e.data&&e.data.size) chunks.push(e.data); };
+    mr.onstop=async()=>{
+      try{ st.getTracks().forEach(t=>t.stop()); }catch(e){}
+      const type=(mr.mimeType||'audio/webm').split(';')[0];
+      const raw=new Blob(chunks,{type});
       let out=raw;
-      try{ out=await toMp3(raw); }catch(e){ /* 변환 실패시 원본 */ }
-      draft.audio=await blob2url(out);
-      drawEditor();
+      try{ out=await toMp3(raw); }catch(e){ /* 변환 실패하면 원본 그대로 */ }
+      try{ draft.audio=await blob2url(out); }
+      catch(e){ toast("녹음을 저장하지 못했습니다"); }
+      recorder=null; drawEditor();
     };
-    rec.start();
+    mr.start();
     let left=MAXSEC;
     drawEditor(left);
-    timer=setInterval(()=>{
-      left--; drawEditor(left);
-      if(left<=0) stopRec();
+    recTimer=setInterval(()=>{
+      left--;
+      if(left<=0){ stopRec(); } else { drawEditor(left); }
     },1000);
   }catch(e){ toast("마이크를 쓸 수 없습니다"); }
 }
 function stopRec(){
-  clearInterval(timer); timer=null;
-  if(rec&&rec.state!=='inactive') rec.stop();
-  rec=null; drawEditor();
+  if(recTimer){ clearInterval(recTimer); recTimer=null; }
+  try{ if(recorder && recorder.state!=='inactive') recorder.stop(); }catch(e){}
+  drawEditor();
 }
 
 /* ---------- 지도 ---------- */
@@ -259,6 +266,23 @@ function initMap(){
     {maxZoom:19,attribution:"© OpenStreetMap contributors"}).addTo(map);
   layer=L.layerGroup().addTo(map);
   L.control.scale({imperial:false}).addTo(map);
+  watchMe();
+}
+function watchMe(){
+  if(!navigator.geolocation) return;
+  watchId=navigator.geolocation.watchPosition(p=>{
+    myPos=[p.coords.latitude,p.coords.longitude]; myAcc=Math.round(p.coords.accuracy||0);
+    if(!meMk){
+      meMk=L.marker(myPos,{icon:L.divIcon({className:"",html:'<div class="me"></div>',
+        iconSize:[16,16],iconAnchor:[8,8]}),zIndexOffset:900,interactive:false}).addTo(map);
+      map.setView(myPos,17);
+    }else meMk.setLatLng(myPos);
+    const el=document.getElementById('acc');
+    if(el) el.textContent=`파란 점이 지금 내 위치입니다. 오차 약 ${myAcc}m.`;
+  },()=>{
+    const el=document.getElementById('acc');
+    if(el) el.textContent="위치를 잡지 못했습니다. 지도를 움직여 자리를 고른 뒤 지점을 만드세요.";
+  },{enableHighAccuracy:true,maximumAge:5000,timeout:15000});
 }
 function drawMap(){
   layer.clearLayers(); mks={};
@@ -284,7 +308,7 @@ function drawMap(){
 function drawEditor(recLeft){
   const host=$('#editor');
   if(!draft){ host.innerHTML=""; return; }
-  const recording = timer!==null;
+  const recording = recTimer!==null;
   host.innerHTML=`<div class="card draft">
     <div class="lab">소리 이름</div>
     <input type="text" id="dTitle" placeholder="예: 언덕길 오르는 마을버스" />
@@ -365,12 +389,13 @@ function drawList(){
 
 /* ---------- 위치 ---------- */
 function locate(then){
-  if(!navigator.geolocation){ then(map.getCenter().lat,map.getCenter().lng); return; }
+  if(myPos) return then(myPos[0],myPos[1]);
+  if(!navigator.geolocation){ const c=map.getCenter(); return then(c.lat,c.lng); }
   navigator.geolocation.getCurrentPosition(
     p=>then(p.coords.latitude,p.coords.longitude),
     ()=>{ toast("위치를 못 잡아 화면 가운데로 놓습니다");
-          then(map.getCenter().lat,map.getCenter().lng); },
-    {enableHighAccuracy:true,timeout:8000,maximumAge:0});
+          const c=map.getCenter(); then(c.lat,c.lng); },
+    {enableHighAccuracy:true,timeout:8000,maximumAge:5000});
 }
 
 /* ---------- 접속 ---------- */
