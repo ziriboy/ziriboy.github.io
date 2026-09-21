@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>지리교과교육론 4강 · 학습이론</title>
+<style>
+/* ═══ 수업자료 공통 스타일 v1 — 매주 이 블록을 그대로 재사용 ═══ */
+:root{
+  --ink:#111517; --mid:#525C60; --soft:#8A9296;
+  --line:#E2E5E2; --line2:#EFF1EE; --wash:#F5F7F5;
+  --acc:#0E5A50; --acc-w:#E2EFEA; --red:#A03A26;
+  --mark:#F6E7B8;
+  --warn-l:#E7D8B6; --warn-b:#FCF7EB; --warn-t:#6D5421;
+  --f:Pretendard,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --w:1120px; --hh:56px;
+}
+*{box-sizing:border-box} html,body{margin:0}
+body{background:#fff;color:var(--ink);font-family:var(--f);font-size:16px;
+  line-height:1.75;-webkit-font-smoothing:antialiased;letter-spacing:-.005em}
+button,input,textarea{font-family:inherit;font-size:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+
+header{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.96);
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.hin{max-width:var(--w);margin:0 auto;padding:9px 30px;display:flex;align-items:center;gap:18px}
+.brand{background:none;border:none;cursor:pointer;padding:0;text-align:left;line-height:1.3}
+.brand .c{display:block;font-size:11.5px;color:var(--soft)}
+.brand .n{display:block;font-size:14.5px;font-weight:600}
+.switch{margin-left:auto;display:flex;gap:3px;overflow:auto}
+.switch button{background:none;border:1px solid transparent;border-radius:6px;cursor:pointer;
+  padding:5px 10px;font-size:13px;color:var(--mid);white-space:nowrap}
+.switch button:hover{border-color:var(--line);color:var(--ink)}
+.switch button[aria-current="true"]{background:var(--acc-w);color:var(--acc);font-weight:600}
+.switch b{color:var(--soft);font-weight:600;margin-right:5px}
+.switch button[aria-current="true"] b{color:var(--acc)}
+
+main{max-width:var(--w);margin:0 auto;padding:44px 30px 110px}
+.stage{font-size:13px;color:var(--acc);font-weight:600;letter-spacing:.06em;margin:0 0 6px}
+h1{font-size:33px;font-weight:700;letter-spacing:-.03em;line-height:1.25;margin:0 0 14px}
+.lead{color:var(--mid);font-size:16.5px;margin:0 0 32px;max-width:70ch}
+.lead b{color:var(--ink)}
+
+.menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:18px;margin-top:28px}
+.mcard{text-align:left;background:none;border:1px solid var(--line);border-radius:12px;
+  padding:24px;cursor:pointer;transition:border-color .12s}
+.mcard:hover{border-color:var(--acc)}
+.mcard .k{font-size:12.5px;color:var(--acc);font-weight:600;letter-spacing:.06em}
+.mcard h3{margin:6px 0 8px;font-size:19px;font-weight:700;letter-spacing:-.02em;line-height:1.35}
+.mcard p{margin:0;color:var(--mid);font-size:14.5px;line-height:1.65}
+.mcard .m{margin-top:14px;font-size:13px;color:var(--soft)}
+.arc{max-width:860px;margin:34px 0 0;padding-top:20px;border-top:1px solid var(--line2);
+  font-size:14.5px;color:var(--mid);display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.arc span{background:var(--wash);border-radius:6px;padding:4px 10px;color:var(--ink)}
+.arc i{font-style:normal;color:var(--soft)}
+
+.concept{background:var(--wash);border-radius:10px;padding:20px 24px;max-width:1000px;margin:6px 0 26px}
+.concept h3{margin:0 0 10px;font-size:13px;color:var(--acc);font-weight:600;letter-spacing:.04em}
+.concept dl{display:grid;grid-template-columns:170px minmax(0,1fr);gap:7px 16px;margin:0;font-size:15px}
+.concept dt{font-weight:600}
+.concept dd{margin:0;color:var(--mid)}
+.concept p{margin:12px 0 0;font-size:14.5px;color:var(--mid)}
+.concept p b{color:var(--ink)}
+
+.step{margin-bottom:46px}
+.step>h3{margin:0 0 3px;font-size:17px;font-weight:700;letter-spacing:-.02em}
+.step>h3 b{color:var(--acc);margin-right:9px}
+.step>.d{margin:0 0 16px;color:var(--mid);font-size:14.5px;max-width:74ch}
+
+.opt,.tag{background:none;border:1px solid var(--line);border-radius:6px;cursor:pointer;
+  padding:6px 12px;font-size:14px;color:var(--mid)}
+.opt:hover,.tag:hover{border-color:var(--acc);color:var(--ink)}
+.opt[aria-pressed="true"],.tag[aria-pressed="true"]{background:var(--acc);border-color:var(--acc);color:#fff}
+.opt:disabled{opacity:.4;cursor:not-allowed}
+.opt:disabled:hover{border-color:var(--line);color:var(--mid)}
+textarea,.inp{width:100%;min-height:96px;border:1px solid var(--line);border-radius:7px;
+  padding:11px 13px;resize:vertical;background:none;line-height:1.7}
+.inp{min-height:0;padding:7px 11px}
+textarea:focus,.inp:focus{border-color:var(--acc);outline:none}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.notice{border:1px solid var(--warn-l);background:var(--warn-b);border-radius:9px;
+  padding:14px 18px;color:var(--warn-t);font-size:14.5px;max-width:1000px;margin:14px 0}
+.count{font-size:14px;color:var(--mid)}
+.count b{color:var(--acc);font-weight:700}
+
+.foot{margin-top:54px;padding-top:16px;border-top:1px solid var(--line);
+  display:flex;align-items:center;gap:18px;font-size:14px;color:var(--mid);flex-wrap:wrap}
+.foot button{background:none;border:none;cursor:pointer;color:var(--mid);padding:0}
+.foot button:hover{color:var(--ink)}
+.foot .msg{color:var(--acc)}
+/* ═══ 공통 스타일 v1 끝 ═══ */
+
+.bar{position:sticky;top:var(--hh);z-index:20;background:rgba(255,255,255,.97);border-bottom:1px solid var(--line2);
+  padding:8px 0;margin:0 0 22px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.tabs{display:flex;gap:5px;flex-wrap:wrap}
+.tab{background:none;border:1px solid var(--line);border-radius:7px;cursor:pointer;padding:5px 13px;font-size:14px;line-height:1.35;text-align:left;color:var(--ink)}
+.tab small{display:block;font-size:11.5px;color:var(--soft);font-weight:400}
+.tab:hover{border-color:var(--acc)}
+.tab[aria-pressed="true"]{border-color:var(--acc);background:var(--acc-w);color:var(--acc);font-weight:600}
+.tab[aria-pressed="true"] small{color:var(--acc)}
+.hint{font-size:13px;color:var(--mid)}
+.hint b{background:var(--mark);border-radius:4px;padding:1px 7px;font-weight:600;color:var(--ink);margin-right:7px}
+.prog{margin-left:auto;font-size:13px;color:var(--soft)}
+
+/* 교육과정 */
+.doc{max-width:940px}
+.unit{border-top:1px solid var(--line);padding:15px 0 9px}
+.uh{display:grid;grid-template-columns:38px minmax(0,1fr);align-items:baseline;margin-bottom:3px}
+.uh .un{font-size:12.5px;color:var(--soft);font-weight:600}
+.uh .ut{font-size:17.5px;font-weight:700;letter-spacing:-.02em;line-height:1.45}
+.std{display:grid;grid-template-columns:38px 132px minmax(0,1fr);padding:4px 0;font-size:15px;line-height:1.72}
+.std .c{grid-column:2;font-size:12.5px;color:var(--mid);padding-top:3px;white-space:nowrap}
+.std .t{grid-column:3}
+.hl{cursor:text}
+mark{background:var(--mark);color:inherit;border-radius:2px;padding:0 1px;cursor:pointer}
+.flash{animation:fl 2s ease}
+@keyframes fl{0%,55%{background:var(--acc-w);box-shadow:0 0 0 4px var(--acc-w)}100%{background:transparent;box-shadow:none}}
+
+/* 체크리스트 */
+.scale{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:18px;align-items:end;
+  font-size:12px;color:var(--soft);padding-bottom:5px;border-bottom:1px solid var(--line);max-width:1060px}
+.scale div{display:grid;grid-template-columns:repeat(3,1fr);text-align:center}
+.it{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:6px 18px;align-items:center;
+  padding:7px 0;border-bottom:1px solid var(--line2);max-width:1060px}
+.it .q{font-size:15px;line-height:1.5}
+.it .q i{font-style:normal;color:var(--soft);margin-right:8px;font-size:13px}
+.it .opts{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+.lv{background:none;border:1px solid var(--line);border-radius:6px;cursor:pointer;padding:5px 4px;font-size:13.5px;color:var(--mid)}
+.lv:hover{border-color:var(--acc);color:var(--ink)}
+.lv[aria-pressed="true"]{background:var(--acc);border-color:var(--acc);color:#fff}
+.it.done .q{color:var(--mid)}
+.it .rf{grid-column:1/-1;font-size:13.5px;line-height:1.65;color:var(--mid);padding-bottom:2px}
+.it .rf b{font-weight:600;margin-right:7px}
+.it .rf b.ok{color:var(--acc)} .it .rf b.no{color:var(--red)}
+.it .go{background:none;border:none;color:var(--soft);cursor:pointer;font-size:12.5px;padding:0;text-decoration:underline;margin-left:6px}
+.it .go:hover{color:var(--acc)}
+
+/* 자동 종합 */
+:root{--ours:#D98A4E;--ours-w:#F7E6D6}
+.rhead{display:grid;grid-template-columns:18px minmax(0,1fr) 300px;gap:14px;max-width:1040px;
+  font-size:12px;color:var(--soft);padding-bottom:4px;border-bottom:1px solid var(--line);
+  position:sticky;top:calc(var(--hh) + 46px);background:#fff;z-index:5}
+.rhead .zn{display:grid;grid-template-columns:repeat(3,1fr);text-align:center}
+.rgrp{margin-bottom:14px;max-width:1040px}
+.rgrp h4{margin:12px 0 2px;font-size:13px;font-weight:600;color:var(--acc);letter-spacing:.04em}
+.rgrp h4 span{font-weight:400;color:var(--soft);letter-spacing:0;margin-left:8px}
+.rl{display:grid;grid-template-columns:18px minmax(0,1fr) 300px;gap:14px;align-items:center;
+  padding:6px 0 10px;border-bottom:1px solid var(--line2);font-size:15px}
+.rl .mk{color:var(--ours);font-size:13px;text-align:center;align-self:start;padding-top:2px}
+.rl .nm{line-height:1.4}
+.rl.w2 .nm b{font-weight:700}
+.rl .nm small{display:block;font-size:12.5px;color:var(--soft);line-height:1.45;margin-top:1px}
+.rl .tr{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.rl .zn{height:20px;background:var(--wash);border-radius:5px;position:relative}
+.rl .zn.ours{background:var(--ours)}
+.rl .zn.ref:after{content:'';position:absolute;left:16%;right:16%;bottom:-6px;height:3px;border-radius:2px;background:var(--acc)}
+.rgrp.none .nm b{color:var(--soft)}
+.rgrp.none .mk{color:var(--soft)}
+.rleg{font-size:13px;color:var(--mid);margin:10px 0 0}
+.rleg i{display:inline-block;vertical-align:middle;margin:0 6px 0 18px}
+.rleg i:first-of-type{margin-left:0}
+.rleg .o{width:20px;height:12px;border-radius:3px;background:var(--ours)}
+.rleg .g{width:20px;height:3px;background:var(--acc)}
+.vsent{font-size:16.5px;line-height:1.75;letter-spacing:-.01em;margin:16px 0 0;max-width:1000px;
+  border-left:3px solid var(--acc);padding-left:16px}
+.vsent b{font-weight:700}
+.refS{font-size:15px;color:var(--mid);margin:14px 0 0;line-height:1.85;max-width:1000px}
+.refS .lb{font-size:12.5px;color:var(--acc);font-weight:600;letter-spacing:.04em;margin-right:10px}
+.refS b{color:var(--ink)}
+.legend{font-size:13px;color:var(--soft);margin:8px 0 0}
+.legend i{display:inline-block;width:2px;height:12px;background:var(--ink);vertical-align:-2px;margin-right:5px}
+.cau{margin-top:12px;font-size:14.5px;color:var(--mid);background:var(--wash);border-radius:8px;padding:12px 16px;line-height:1.7;max-width:1000px}
+/* 대조표 */
+.dt{width:100%;max-width:1000px;border-collapse:collapse;font-size:14.5px;margin:8px 0 0}
+.dt th,.dt td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line2)}
+.dt thead th{border-bottom:1px solid var(--line);font-size:13px;color:var(--mid);font-weight:600}
+.dt td.v{width:130px}
+.dt .same{color:var(--acc)} .dt .diff{color:var(--red);font-weight:600}
+.dt tr.d td{background:var(--wash)}
+.hit{font-size:14px;color:var(--mid);margin:16px 0 0}
+.hit b{color:var(--acc);font-weight:700}
+
+.final{max-width:1000px;margin-top:8px}
+.final label{display:block;font-size:14.5px;font-weight:600;margin-bottom:7px;line-height:1.6}
+.final label span{display:block;font-weight:400;color:var(--mid);font-size:13.5px}
+
+/* 비교 */
+.ctw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table.ct{border-collapse:collapse;width:100%;min-width:780px;font-size:14.5px}
+.ct th,.ct td{text-align:left;vertical-align:top;padding:11px 14px;border-bottom:1px solid var(--line)}
+.ct thead th{border-bottom:2px solid var(--ink);font-size:15.5px}
+.ct thead th button{background:none;border:none;padding:0;font:inherit;cursor:pointer;color:var(--ink)}
+.ct thead th button:hover{color:var(--acc)}
+.ct tbody th{width:120px;font-weight:600;color:var(--mid);font-size:14px}
+.ct td{width:29%;line-height:1.65}
+.ct .none{color:var(--soft)}
+.ct ul{margin:0;padding:0;list-style:none}
+.ct li{padding:1px 0}
+.ct li b{font-weight:700}
+
+@media(max-width:820px){
+  .hin,main{padding-left:16px;padding-right:16px}
+  .brand .c{display:none} h1{font-size:26px}
+  .it,.scale{grid-template-columns:1fr}
+  .std{grid-template-columns:0 minmax(0,1fr)} .std .c,.std .t{grid-column:2}
+  .rhead,.rl{grid-template-columns:16px minmax(0,1fr) 132px;gap:8px}
+  .rhead{font-size:11px}
+  .prog{margin-left:0}
+}
+@media print{
+  header,.foot,.bar,.lv,.go,#keyb{display:none!important}
+  main{padding:0;max-width:none}
+  mark{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+@media (prefers-reduced-motion:reduce){.flash{animation:none}}
+</style>
+<style>
+.brief{margin:0;padding-left:22px;max-width:760px}
+.brief li{font-size:16.5px;margin:6px 0}
+.brief li small{color:var(--soft);font-size:13px;margin-left:8px}
+.sd{margin:0 0 14px;color:var(--mid);font-size:14.5px;max-width:62em}
+.lockrow{margin:26px 0;padding:14px 18px;border:1px dashed var(--line2);border-radius:9px;
+  color:var(--soft);font-size:14px;max-width:860px}
+.pens{display:flex;gap:8px;flex-wrap:wrap;margin:0}
+.pen{border:1px solid var(--line);border-radius:20px;cursor:pointer;padding:6px 15px;
+  font-size:14px;background:none;color:var(--mid)}
+.pen[aria-pressed="true"]{border-color:var(--ink);color:var(--ink);font-weight:600}
+.pen i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:8px;vertical-align:-1px}
+.pen small{color:var(--soft);font-weight:400;margin-left:7px;font-size:12.5px}
+.eb{margin-bottom:30px;max-width:900px}
+.eg{margin:0 0 10px;font-size:12px;color:var(--acc);font-weight:600;letter-spacing:.06em}
+.ed{border-top:1px solid var(--line)}
+.edu{border-bottom:1px solid var(--line2);padding:14px 0 13px}
+.edu:last-child{border-bottom:none}
+.edt{margin:0 0 7px;font-size:16.5px;font-weight:700;letter-spacing:-.02em}
+.eds{margin:0 0 5px;font-size:14.5px;line-height:1.75;color:var(--mid);
+  padding-left:78px;text-indent:-78px}
+.eds:last-child{margin-bottom:0}
+.edc{display:inline-block;width:70px;color:var(--soft);font-size:12.5px;text-indent:0}
+.nav2{margin-top:24px}
+.cmp .pre{background:var(--wash);color:var(--mid)}
+textarea[data-txt]{width:100%;max-width:860px;border:1px solid var(--line);border-radius:7px;
+  padding:10px 13px;background:none;line-height:1.7;resize:vertical}
+textarea[data-txt]:focus{border-color:var(--acc)}
+@media (max-width:760px){.elem{grid-template-columns:1fr}}
+.pend{margin:14px 0 20px;max-width:860px}
+.pend p{margin:0 0 7px;font-size:14px;color:var(--mid);line-height:1.7;
+  display:flex;gap:9px;align-items:baseline}
+.pend p:last-child{margin-bottom:0}
+.pend i{display:inline-block;width:10px;height:10px;border-radius:3px;flex:0 0 auto;
+  transform:translateY(-1px)}
+.pend b{color:var(--ink);font-weight:600;white-space:nowrap}
+mark[data-k]{padding:1px 0;border-radius:3px;cursor:pointer;color:inherit}
+.evbox{margin-top:18px;border:1px solid var(--line);border-radius:9px;padding:14px 18px;max-width:860px}
+.ek{margin:0 0 9px;font-size:12px;color:var(--acc);font-weight:600;letter-spacing:.06em}
+.evl{display:flex;flex-wrap:wrap;gap:6px}
+.evc{border:1px solid var(--line);border-radius:6px;padding:5px 11px;font-size:13.5px;
+  background:none;cursor:default;color:var(--ink);text-align:left}
+.evc i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:7px;vertical-align:0}
+.evc small{color:var(--soft);font-size:12px;margin-left:7px}
+.evc.pickable{cursor:pointer}
+.evc.pickable:hover{border-color:var(--acc)}
+.evc[aria-pressed="true"]{border-color:var(--acc);background:var(--acc-w)}
+.picks{display:grid;gap:9px;max-width:860px}
+.pk{display:flex;gap:12px;align-items:flex-start;text-align:left;background:none;
+  border:1px solid var(--line);border-radius:9px;padding:13px 17px;cursor:pointer;color:var(--ink)}
+.pk:hover{border-color:var(--acc)}
+.pk[aria-pressed="true"]{border-color:var(--acc);background:var(--acc-w)}
+.pk .mk{width:16px;height:16px;border:1px solid var(--line);border-radius:50%;flex:0 0 auto;margin-top:5px}
+.pk[aria-pressed="true"] .mk{background:var(--acc);border-color:var(--acc)}
+.pk b{font-weight:600}
+.pk small{display:block;color:var(--soft);font-size:13px;margin-top:2px;line-height:1.55}
+.reveal{margin-top:14px;border-left:3px solid var(--acc);background:var(--acc-w);
+  border-radius:0 8px 8px 0;padding:14px 18px;max-width:860px}
+.reveal b{color:var(--acc)}
+.card{border:1px solid var(--acc);border-radius:10px;padding:20px 24px;max-width:860px}
+.card dl{display:grid;grid-template-columns:96px minmax(0,1fr);gap:8px 16px;margin:0}
+.card dt{color:var(--soft);font-size:13px}
+.card dd{margin:0;font-size:15.5px}
+.card .sum{margin:16px 0 0;padding-top:14px;border-top:1px solid var(--line2);font-size:16.5px;line-height:1.75}
+.cmp{overflow:auto;margin-top:8px}
+.cmp table{border-collapse:collapse;width:100%;min-width:760px;font-size:14.5px}
+.cmp th,.cmp td{border-bottom:1px solid var(--line2);padding:11px 12px;text-align:left;vertical-align:top}
+.cmp thead th{border-bottom:1px solid var(--line);color:var(--mid);font-weight:600;font-size:13.5px}
+.cmp tbody th{color:var(--soft);font-weight:400;font-size:13px;width:88px}
+.cmp .none{color:var(--soft)}
+.swatch{display:flex;flex-wrap:wrap;gap:4px}
+.sw{width:100%;height:9px;border-radius:2px}
+.keyb{background:none;border:1px solid var(--line);border-radius:7px;cursor:pointer;
+  padding:7px 16px;font-size:14px;color:var(--mid)}
+.keyb:hover{border-color:var(--acc);color:var(--ink)}
+</style>
+<style>
+.sd{margin:0 0 14px;color:var(--mid);font-size:14.5px;max-width:62em}
+.lockrow{margin:26px 0;padding:14px 18px;border:1px dashed var(--line2);border-radius:9px;
+  color:var(--soft);font-size:14px;max-width:880px}
+.pens{display:flex;gap:8px;flex-wrap:wrap}
+.pen{border:1px solid var(--line);border-radius:20px;cursor:pointer;padding:6px 15px;
+  font-size:14px;background:none;color:var(--mid)}
+.pen[aria-pressed="true"]{border-color:var(--ink);color:var(--ink);font-weight:600}
+.pen i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:8px;vertical-align:-1px}
+.pend{margin:14px 0 20px;max-width:880px}
+.pend p{margin:0 0 7px;font-size:14px;color:var(--mid);line-height:1.7;display:flex;gap:9px;align-items:baseline}
+.pend p:last-child{margin-bottom:0}
+.pend i{display:inline-block;width:10px;height:10px;border-radius:3px;flex:0 0 auto;transform:translateY(-1px)}
+.pend b{color:var(--ink);font-weight:600;white-space:nowrap}
+mark{padding:1px 0;border-radius:3px;cursor:pointer;color:inherit}
+.doc{max-width:940px}
+.unit{border-top:1px solid var(--line);padding:15px 0 10px}
+.uh{margin:0 0 6px;display:flex;gap:10px;align-items:baseline}
+.un{font-size:12.5px;color:var(--soft);font-weight:600;white-space:nowrap}
+.uh .ut{font-size:16.5px;font-weight:400;letter-spacing:-.01em;line-height:1.5}
+.std{display:flex;gap:12px;padding:4px 0;font-size:15px;line-height:1.75}
+.std .c{font-size:12.5px;color:var(--soft);white-space:nowrap;padding-top:4px;min-width:104px}
+.std .t{flex:1}
+.evbox{margin-top:18px;border:1px solid var(--line);border-radius:9px;padding:14px 18px;max-width:880px}
+.ek{margin:0 0 9px;font-size:12px;color:var(--acc);font-weight:600;letter-spacing:.06em}
+.evl{display:flex;flex-wrap:wrap;gap:6px}
+.evc{border:1px solid var(--line);border-radius:6px;padding:5px 11px;font-size:13.5px;
+  background:none;cursor:default;color:var(--ink);text-align:left}
+.evc i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:7px}
+.evc small{color:var(--soft);font-size:12px;margin-left:7px}
+.evc.pickable{cursor:pointer}
+.evc.pickable:hover{border-color:var(--acc)}
+.evc[aria-pressed="true"]{border-color:var(--acc);background:var(--acc-w)}
+.picks{display:grid;gap:9px;max-width:880px}
+.pk{display:flex;gap:12px;align-items:flex-start;text-align:left;background:none;
+  border:1px solid var(--line);border-radius:9px;padding:13px 17px;cursor:pointer;color:var(--ink)}
+.pk:hover{border-color:var(--acc)}
+.pk[aria-pressed="true"]{border-color:var(--acc);background:var(--acc-w)}
+.pk .mk{width:16px;height:16px;border:1px solid var(--line);border-radius:50%;flex:0 0 auto;margin-top:5px}
+.pk[aria-pressed="true"] .mk{background:var(--acc);border-color:var(--acc)}
+.pk b{font-weight:600}
+.pk small{display:block;color:var(--soft);font-size:13px;margin-top:2px;line-height:1.55}
+.reveal{margin-top:14px;border-left:3px solid var(--acc);background:var(--acc-w);
+  border-radius:0 8px 8px 0;padding:14px 18px;max-width:880px}
+.reveal b{color:var(--acc)}
+.card{border:1px solid var(--acc);border-radius:10px;padding:20px 24px;max-width:880px}
+.card dl{display:grid;grid-template-columns:150px minmax(0,1fr);gap:10px 16px;margin:0}
+.card dt{color:var(--soft);font-size:13px}
+.card dt em{font-style:normal;color:var(--acc);font-size:11.5px;display:block}
+.card dd{margin:0;font-size:15.5px}
+.card .sum{margin:16px 0 0;padding-top:14px;border-top:1px solid var(--line2);font-size:16.5px;line-height:1.75}
+.cmp{overflow:auto;margin-top:8px}
+.cmp table{border-collapse:collapse;width:100%;min-width:820px;font-size:14.5px}
+.cmp th,.cmp td{border-bottom:1px solid var(--line2);padding:11px 12px;text-align:left;vertical-align:top}
+.cmp thead th{border-bottom:1px solid var(--line);color:var(--mid);font-weight:600;font-size:13.5px}
+.cmp tbody th{color:var(--soft);font-weight:400;font-size:13px;width:104px}
+.cmp tbody th em{font-style:normal;color:var(--acc);font-size:11px;display:block}
+.cmp .none{color:var(--soft)}
+.swatch{display:flex;gap:3px}
+.sw{height:9px;border-radius:2px}
+.keyb{background:none;border:1px solid var(--line);border-radius:7px;cursor:pointer;
+  padding:7px 16px;font-size:14px;color:var(--mid)}
+.keyb:hover{border-color:var(--acc);color:var(--ink)}
+.chips{display:flex;gap:7px;flex-wrap:wrap}
+.chip{background:none;border:1px solid var(--line);border-radius:20px;cursor:pointer;
+  padding:6px 15px;font-size:14px;color:var(--mid)}
+.chip:hover{border-color:var(--acc);color:var(--ink)}
+.chip[aria-pressed="true"]{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:600}
+.seg2{display:inline-flex;flex-wrap:wrap}
+.seg2 button{background:none;border:1px solid var(--line);border-right:none;cursor:pointer;
+  padding:8px 18px;font-size:14.5px;color:var(--mid)}
+.seg2 button:first-child{border-radius:7px 0 0 7px}
+.seg2 button:last-child{border-right:1px solid var(--line);border-radius:0 7px 7px 0}
+.seg2 button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper);font-weight:600}
+.egbar2{display:flex;gap:14px;align-items:center;flex-wrap:wrap;max-width:880px;
+  border:1px solid var(--warn-l);background:var(--warn-b);color:var(--warn-t);
+  border-radius:9px;padding:13px 17px;margin:0 0 26px;font-size:14px}
+.egbar2 span{flex:1 1 320px;line-height:1.65}
+.guide{margin:16px 0 20px;max-width:880px;line-height:1.75}
+.sqlist{display:grid;gap:10px;max-width:900px;margin-top:14px}
+.sqrow{border:1px solid var(--line);border-radius:9px;padding:13px 17px}
+.sqh{margin:0 0 5px;font-size:12.5px;color:var(--acc);font-weight:600}
+.sqh span{color:var(--soft);font-weight:400;margin-left:7px}
+.sqt{margin:0 0 9px;font-size:15.5px;line-height:1.75}
+.sqrow .sqt:last-child{margin-bottom:0}
+.sqc{display:block;font-size:12.5px;color:var(--soft);margin-bottom:2px}
+.sqc em{font-style:normal;color:var(--mid);margin-left:7px}
+.qbox{border:1px solid var(--acc);border-radius:9px;padding:15px 19px;margin-top:18px;max-width:900px}
+.qk{margin:0 0 9px;font-size:12px;color:var(--acc);font-weight:600;letter-spacing:.06em}
+.qbox p{margin:0 0 6px;font-size:15.5px;line-height:1.75}
+.qbox p:last-child{margin-bottom:0}
+.qbox b{color:var(--acc);margin-right:7px}
+.qbox .qs{margin:4px 0 14px;padding-left:20px;font-size:14px;color:var(--mid);line-height:1.75}
+.qbox .qs:last-child{margin-bottom:0}
+.qbox .qs b{color:var(--ink);margin-right:2px}
+.cmp .tn{display:block;font-size:12px;color:var(--soft)}
+.cmp input{width:100%;border:none;border-bottom:1px solid var(--line);background:none;
+  padding:4px 2px;font-size:14.5px}
+.cmp input:focus{outline:none;border-color:var(--acc)}
+.defbox{border-left:3px solid var(--acc);background:var(--wash);border-radius:0 8px 8px 0;
+  padding:16px 20px;max-width:880px}
+.defbox p{margin:0 0 7px;font-size:15.5px;line-height:1.75}
+.defbox p:last-child{margin-bottom:0}
+.defbox b{color:var(--acc)}
+.ansbar{margin:20px 0 0}
+.sh{margin:22px 0 10px;font-size:14.5px;font-weight:700}
+input.one{width:100%;max-width:640px;border:1px solid var(--line);border-radius:7px;
+  padding:9px 13px;background:none;font-size:15px}
+input.one:focus{border-color:var(--acc);outline:none}
+.unit.tit{padding:11px 0}
+.hlro{cursor:default}
+.mv{display:grid;gap:14px;max-width:880px}
+.mvbox{border:1px solid var(--line);border-radius:10px;padding:14px 17px}
+.mvbox.hi{border-color:var(--acc);background:var(--acc-w)}
+.mvbox.mid{border-color:var(--line)}
+.mvbox.pool{background:var(--wash)}
+.mvh{margin:0 0 10px;font-size:12px;color:var(--acc);font-weight:600;letter-spacing:.06em;
+  display:flex;gap:9px;align-items:baseline}
+.mvbox.pool .mvh{color:var(--soft)}
+.mvh span{color:var(--soft);font-weight:400;letter-spacing:0;font-size:12.5px}
+.mvc{display:flex;flex-wrap:wrap;gap:7px}
+.mvc.col{display:grid;gap:6px;align-content:start}
+.mvc.slot{min-height:82px}
+.mvbox.over{border-color:var(--acc);background:var(--acc-w)}
+.mchip{cursor:grab;touch-action:pan-y}
+.mchip.dragging{opacity:.85;box-shadow:0 6px 18px rgba(0,0,0,.18);position:relative;z-index:5}
+.mchip:active{cursor:grabbing}
+.mvc.col .mchip{max-width:none;width:100%;align-items:baseline}
+.mvc.col .mchip>span{display:flex;gap:10px;align-items:baseline;flex:1;flex-wrap:wrap}
+.mvc.col .mchip b{display:inline;white-space:nowrap}
+.mvc.col .mchip small{display:inline;margin-top:0}
+.mvc .n0{color:var(--soft);font-size:13.5px}
+.mchip{display:flex;gap:9px;align-items:flex-start;text-align:left;cursor:pointer;
+  border:1px solid var(--line);background:var(--paper);border-radius:8px;padding:9px 13px;
+  color:var(--ink);max-width:340px}
+.mchip:hover{border-color:var(--acc)}
+.mchip i{display:inline-block;width:10px;height:10px;border-radius:3px;flex:0 0 auto;margin-top:5px}
+.mchip i.nod{background:none;border:1px solid var(--line2)}
+.mchip b{font-weight:600;font-size:14.5px;display:block}
+.mchip small{display:block;color:var(--soft);font-size:12.5px;line-height:1.5;margin-top:1px}
+.lvs{display:grid;gap:10px;max-width:880px}
+.lvr{display:flex;gap:16px;align-items:center;flex-wrap:wrap;
+  border:1px solid var(--line);border-radius:9px;padding:12px 17px}
+.lvn{font-size:15px;display:flex;gap:10px;align-items:flex-start;flex:1 1 320px}
+.lvn i{display:inline-block;width:11px;height:11px;border-radius:3px;flex:0 0 auto;margin-top:6px}
+.lvn i.nod{background:none;border:1px solid var(--line2)}
+.lvn b{font-weight:600;display:block}
+.lvn small{display:block;color:var(--soft);font-size:13px;line-height:1.55;margin-top:1px}
+.lvr.on{border-color:var(--acc);background:var(--acc-w)}
+.lvr .seg{display:inline-flex;margin-left:auto}
+.lvr .seg button{background:none;border:1px solid var(--line);border-right:none;cursor:pointer;
+  padding:6px 15px;font-size:13.5px;color:var(--mid)}
+.lvr .seg button:first-child{border-radius:6px 0 0 6px}
+.lvr .seg button:last-child{border-right:1px solid var(--line);border-radius:0 6px 6px 0}
+.lvr .seg button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.evg{border-top:1px solid var(--line2);padding:11px 0 9px}
+.evg:first-of-type{border-top:none;padding-top:0}
+.evh{font-size:13.5px;color:var(--mid);margin-bottom:7px;display:flex;gap:8px;align-items:center}
+.evh i{display:inline-block;width:10px;height:10px;border-radius:3px}
+.evh b{color:var(--soft);font-weight:600;font-size:12.5px}
+.evg .n0{color:var(--soft);font-size:13.5px}
+.xsub{margin:26px 0 0}
+.xsub>h4{margin:0 0 4px;font-size:15px;font-weight:700}
+.xfound{max-width:880px;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-top:10px}
+.xrow{display:flex;gap:14px;padding:12px 16px;border-top:1px solid var(--line2);font-size:14.5px}
+.xrow:first-child{border-top:none}
+.xrow .xs{min-width:118px;color:var(--soft);font-size:13px}
+.xrow ul{margin:0;padding-left:17px}
+.xrow li{margin:2px 0}
+.xrow li small{color:var(--soft);font-size:12.5px;margin-left:6px}
+.xrow .n0{color:var(--soft)}
+textarea[data-txt]{width:100%;max-width:880px;border:1px solid var(--line);border-radius:7px;
+  padding:10px 13px;background:none;line-height:1.7;resize:vertical;min-height:0}
+textarea[data-txt]:focus{border-color:var(--acc)}
+.nav2{margin-top:24px}
+.tabs .tab small{display:block;font-size:11.5px;color:var(--soft);margin-top:2px;font-weight:400}
+</style>
+<style>
+.note2{margin:16px 0 0;padding-top:14px;border-top:1px solid var(--line2);
+  font-size:13.5px;color:var(--soft);line-height:1.7}
+.cmpt{border-collapse:collapse;width:100%;min-width:860px;font-size:14.5px}
+.cmpt th,.cmpt td{border:1px solid var(--line2);padding:8px 10px;text-align:left;vertical-align:top}
+.cmpt thead th{background:var(--wash);color:var(--mid);font-weight:600;font-size:13px}
+.cmpt tbody th{width:84px;font-weight:700;background:var(--wash)}
+.cmpt input{width:100%;border:none;border-bottom:1px solid transparent;border-radius:0;
+  padding:4px 2px;font-size:14px;background:none}
+.cmpt input:focus{outline:none;border-bottom-color:var(--acc)}
+.scroll{overflow-x:auto;max-width:1040px}
+.sect{margin:0 0 10px;font-size:23px;font-weight:700;letter-spacing:-.025em}
+.sd{margin:0 0 14px;color:var(--mid);font-size:14.5px;max-width:62em}
+.lockrow{margin:24px 0;padding:14px 18px;border:1px dashed var(--line2);border-radius:9px;
+  color:var(--soft);font-size:14px;max-width:900px}
+.taskbox{border:1px solid var(--acc);border-radius:12px;padding:22px 26px;max-width:940px}
+.taskbox .gk{margin:0 0 6px;font-size:12px;color:var(--acc);font-weight:600;letter-spacing:.06em}
+.taskbox .gv{margin:0 0 4px;font-size:17px;line-height:1.75;font-weight:600}
+.taskbox .gc{margin:0;font-size:14px;color:var(--soft)}
+.taskbox .mline{display:flex;gap:12px;align-items:baseline;border-top:1px solid var(--line2);
+  padding:9px 0;font-size:14.5px}
+.taskbox .mline:first-of-type{border-top:1px solid var(--line);margin-top:16px}
+.taskbox .mk{color:var(--acc);font-weight:700;font-size:13px;min-width:14px}
+.taskbox .mn{font-weight:600;min-width:130px}
+.taskbox .md{color:var(--mid);font-size:14px}
+.wsblock{border:1px solid var(--line);border-radius:11px;padding:18px 22px;
+  margin-bottom:12px;max-width:940px}
+.wsblock h4{margin:0 0 4px;font-size:18px;font-weight:700;letter-spacing:-.025em;
+  display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.wsblock h4 .wsq{font-size:13.5px;font-weight:400;color:var(--soft);letter-spacing:0}
+.wsh{margin:16px 0 5px;font-size:12px;color:var(--acc);font-weight:600;letter-spacing:.06em}
+.wslist{margin:0;padding-left:17px}
+.wslist li{font-size:15px;line-height:1.95;margin:0 0 3px;color:var(--ink)}
+.wslist li.plain{color:var(--mid)}
+.wslist input{width:112px;border:none;border-bottom:1px solid var(--acc);border-radius:0;
+  padding:1px 4px;font-size:14.5px;text-align:center;background:none;margin:0 3px}
+.wslist input:focus{outline:none;border-bottom-width:2px}
+.wslist input.ok{color:var(--acc);font-weight:600}
+.wslist input.no{color:var(--warn-t);text-decoration:line-through}
+.ansline{margin-left:8px;font-size:13px;color:var(--acc)}
+.qi{border-top:1px solid var(--line2);padding:15px 0 14px;max-width:940px}
+.qi:first-of-type{border-top:1px solid var(--line)}
+.qi.ok .qt b{color:var(--acc)}
+.qi.no .qt b{color:var(--warn-t)}
+.qi .qt{margin:0 0 9px;font-size:15.5px;line-height:1.75}
+.qi .qt b{color:var(--soft);font-weight:700;font-size:13px;margin-right:9px;
+  display:inline-block;min-width:16px;text-align:right;font-variant-numeric:tabular-nums}
+.opt{display:flex;gap:6px;flex-wrap:wrap}
+.opt button{background:none;border:1px solid var(--line);border-radius:20px;cursor:pointer;
+  padding:6px 14px;font-size:14px;color:var(--mid)}
+.opt button:hover{border-color:var(--acc);color:var(--ink)}
+.opt button[aria-pressed="true"]{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:600}
+.opt button[disabled]{cursor:default}
+.qn2{margin:9px 0 0;font-size:13.5px;color:var(--mid);line-height:1.7}
+.qn2 b{color:var(--acc)}
+.score{border:1px solid var(--acc);border-radius:11px;padding:18px 22px;max-width:900px;
+  font-size:16.5px;line-height:1.8;margin-top:18px}
+.score b{color:var(--acc);font-size:22px;letter-spacing:-.02em}
+.score .sub{font-size:14.5px;color:var(--mid)}
+.cmpbar{margin-top:10px;font-size:14.5px;color:var(--mid)}
+.qrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;max-width:1000px}
+.qc{border:1px solid var(--line);border-radius:10px;padding:13px 16px;text-align:left;
+  background:none;cursor:pointer;color:var(--ink)}
+.qc:hover{border-color:var(--acc)}
+.qc[aria-pressed="true"]{border-color:var(--acc);background:var(--acc-w)}
+.qc .qn{font-size:17px;font-weight:700;letter-spacing:-.02em}
+.qc .qe{font-size:12px;color:var(--soft);margin-left:6px;font-weight:400}
+.card2{border:1px solid var(--acc);border-radius:12px;padding:24px 28px;max-width:940px;margin-top:20px}
+.card2 .hd{font-size:12.5px;color:var(--acc);font-weight:600;letter-spacing:.04em}
+.card2 h2{margin:0 0 18px;font-size:26px;font-weight:700;letter-spacing:-.03em;
+  display:flex;align-items:baseline;gap:10px}
+.card2 h2 .en2{font-size:14px;font-weight:400;color:var(--soft);letter-spacing:0}
+.ck{margin:22px 0 8px;font-size:12px;color:var(--acc);font-weight:600;letter-spacing:.06em}
+.ck:first-of-type{margin-top:0}
+.cv{margin:0;font-size:16px;line-height:1.85}
+.terms{display:flex;gap:6px;flex-wrap:wrap}
+.tg{border:1px solid var(--line);border-radius:20px;padding:5px 13px;font-size:13.5px;color:var(--mid)}
+.dz{border-top:1px solid var(--line2);padding:16px 0 4px}
+.dz:first-of-type{border-top:none}
+.dz h4{margin:0 0 5px;font-size:16px;font-weight:700;letter-spacing:-.02em}
+.dz p{margin:0 0 7px;font-size:14.5px;line-height:1.75;color:var(--mid)}
+.dz .ex{margin:0;font-size:14.5px;line-height:1.75;border-left:2px solid var(--acc);
+  padding-left:13px;color:var(--ink)}
+.warn{margin-top:16px;border:1px solid var(--warn-l);background:var(--warn-b);color:var(--warn-t);
+  border-radius:9px;padding:13px 17px;font-size:14px;line-height:1.7}
+.apply{border:1px solid var(--line);border-radius:12px;padding:22px 26px;max-width:940px;margin-top:16px}
+.apply .ah{margin:0 0 4px;font-size:12.5px;color:var(--acc);font-weight:600;letter-spacing:.04em}
+.apply h3{margin:0 0 16px;font-size:20px;font-weight:700;letter-spacing:-.025em}
+.apply .first{border-left:3px solid var(--acc);padding-left:14px;margin:0 0 18px;
+  font-size:15.5px;line-height:1.8}
+.pstep{border-top:1px solid var(--line2);padding:14px 0 2px}
+.pstep:first-of-type{border-top:none}
+.pstep .pp{margin:0 0 5px;font-size:15.5px;font-weight:700;letter-spacing:-.02em}
+.pstep .pd{margin:0;font-size:14.5px;line-height:1.75;color:var(--mid)}
+.apply .sq2{margin:18px 0 0;padding-top:14px;border-top:1px solid var(--line2);
+  font-size:14.5px;line-height:1.75;color:var(--mid)}
+.apply .sq2 b{color:var(--acc);margin-right:8px}
+mark{background:#F6E7B8;padding:1px 0;border-radius:3px;cursor:pointer;color:inherit}
+.hl{cursor:text}
+.toolbar2{margin:22px 0 0;max-width:940px;font-size:14px;color:var(--soft)}
+.keyb{background:none;border:1px solid var(--line);border-radius:7px;cursor:pointer;
+  padding:8px 18px;font-size:14.5px;color:var(--mid)}
+.keyb:hover{border-color:var(--acc);color:var(--ink)}
+.keyb[disabled]{opacity:.45;cursor:default}
+.sh{margin:26px 0 10px;font-size:15px;font-weight:700}
+</style>
+</head>
+<body>
+<header><div class="hin">
+  <button class="brand" id="brand">
+    <span class="c">지리교과교육론 4강</span>
+    <span class="n">학습이론</span>
+  </button>
+</div></header>
+<main id="main"></main>
+<script>
+(function(){
+"use strict";
+var D={"S": [{"k": "gagne", "who": "가네", "en": "Gagné", "learn": "학습을 통해 얻는 결과는 한 종류가 아니다. 결과의 성격이 다르면 필요한 학습조건도 다르다.", "terms": ["학습결과의 유형", "학습위계", "과제분석", "선행조건", "관찰에 의한 개념 · 정의에 의한 개념", "개념의 층위"], "design": [{"t": "최종 목표에서 거꾸로 분석한다", "d": "과제분석은 수업을 잘게 쪼개는 일이 아니라, 이 문제를 풀기 위해 반드시 먼저 할 수 있어야 하는 것을 찾아내는 일이다.", "e": "“수도권에 왜 인구와 산업이 집중되었는지 설명하라” → 지역 구분 → 분포 읽기 → 개념 이해 → 관계 파악"}, {"t": "개념의 성격에 따라 교수방법을 바꾼다", "d": "학생이 스스로 발견하게 하면 언제나 좋은 것이 아니다. 개념의 성격이 방법을 정한다.", "e": "하천 · 해변 · 도시는 사례 → 비교 → 공통속성 → 개념. 인구밀도 · 배후지 · 입지계수는 정의 → 관계 설명 → 사례 적용"}, {"t": "개념의 층위를 고려해 목표를 세운다", "d": "복잡한 개념은 더 단순하고 구체적인 개념 위에서 만들어진다.", "e": "구체 개념(하천 · 산 · 도로) → 관계적 개념(인구밀도 · 접근성 · 집적) → 복합 개념(도시체계 · 지역갈등)"}], "attack": "선수 능력을 확인하지 않고 복잡한 문제부터 던지면, 학생은 무엇을 근거로 판단해야 할지 모르는 채 겉도는 말만 하게 됩니다.", "warn": ""}, {"k": "piaget", "who": "피아제", "en": "Piaget", "learn": "학습은 지식을 하나 더 얻는 것이 아니라 사고구조 자체가 재조직되는 과정이다.", "terms": ["도식", "동화", "조절", "인지갈등(불평형)", "평형화", "인지발달 단계", "공간인지"], "design": [{"t": "학생의 기존 도식을 먼저 드러나게 한다", "d": "오개념은 지워야 할 잘못이 아니라 개념 변화가 시작되는 현재의 사고구조다.", "e": "만어산 너덜겅을 본 학생 — “계곡에서 이런 바위를 봤으니 여기도 물이 흘렀던 곳 아닐까?” 기존 계곡 도식으로 설명한 것이 동화다."}, {"t": "기존 도식으로 설명되지 않는 자료를 만나게 한다", "d": "불평형이 생겨야 사고를 수정한다. 설명이 막히는 지점을 교사가 만들어 준다.", "e": "“사막은 덥고 모래가 많은 곳” → 고비사막의 겨울 기온 자료 → “사막인데 왜 이렇게 추울까?”"}, {"t": "구체적 조작기에는 실제 자료와 대상을 준다", "d": "구체적이라는 말은 논리적 사고를 못 한다는 뜻이 아니다. 자료가 있어야 논리적으로 사고할 수 있다는 뜻이다.", "e": "인구지도를 놓고 두 지역을 비교·분류하는 것은 가능하다. “산업구조가 완전히 바뀐다면 인구분포는?”은 훨씬 어렵다."}, {"t": "학생이 그린 지도에서 공간이해 방식을 읽는다", "d": "물어야 할 것은 정확하게 그렸는가가 아니라 공간을 어떻게 조직하고 있는가다.", "e": "위상적 → 투영적 → 유클리드적. 집을 크게 그렸다면 실수가 아니라 자기 경험을 중심으로 조직된 공간일 수 있다."}], "attack": "학생이 지금 무엇을 어떻게 생각하고 있는지 확인하지 않고 완성된 설명부터 주면, 그 설명은 기존 생각 위에 얹혀 있을 뿐입니다.", "warn": ""}, {"k": "ausubel", "who": "오수벨", "en": "Ausubel", "learn": "수용이냐 발견이냐가 학습의 질을 가르지 않는다. 새 지식이 기존 인지구조와 연결되느냐가 가른다.", "terms": ["유의미학습 · 기계적 암기", "수용학습 · 발견학습", "선행조직자", "비교 조직자 · 설명 조직자", "점진적 분화", "통합적 조정"], "design": [{"t": "설명하기 전에 학생이 이미 아는 것을 확인한다", "d": "수용학습이 곧 암기학습은 아니다. 교사의 설명도 기존 개념에 걸리면 유의미해진다.", "e": "인구밀도의 정의를 교사가 설명해도, 학생이 이미 아는 인구와 면적으로 그 의미를 이해했다면 유의미학습이다."}, {"t": "선행조직자로 개념적 자리를 먼저 만든다", "d": "수업 개요와 다르다. 앞으로 나올 세부 내용이 들어갈 틀을 주는 것이다.", "e": "“오늘은 판, 지진, 화산을 배웁니다”가 아니라 “지구 표면은 여러 판으로 이루어져 있고, 판의 움직임이 지진·화산·산맥을 하나로 연결한다”"}, {"t": "학생의 상태에 따라 조직자를 고른다", "d": "관련 지식이 흩어져 있으면 비교 조직자, 거의 없으면 설명 조직자다.", "e": "도심·상업지역·주거지역을 따로 알고 있을 때 — “도시의 기능지역은 접근성과 지가의 차이에 따라 일정한 패턴을 보인다”"}, {"t": "지식구조를 분화하고 다시 잇는다", "d": "학습이 깊어진다는 것은 정보량이 느는 것이 아니라 구조가 분화되고 연결되는 것이다.", "e": "점진적 분화 — 도시 → 도심 · 부도심 · 교외. 통합적 조정 — 도시화 ↔ 교외화 ↔ 재도시화"}], "attack": "발견만 강조하면 학생은 무엇을 발견해야 하는지도 모른 채 시간을 씁니다. 걸릴 자리가 없는 개념은 공중에 뜹니다.", "warn": ""}, {"k": "bruner", "who": "브루너", "en": "Bruner", "learn": "어떤 연령의 아동이라도 지적으로 정직한 형태로 표현하면 배울 수 있다. 문제는 내용의 난이도가 아니라 표현 방식이다.", "terms": ["지식의 구조", "행동적 · 영상적 · 상징적 표상", "나선형 교육과정", "발견학습", "안내된 발견"], "design": [{"t": "같은 내용을 세 가지 표상으로 옮긴다", "d": "표상은 자료의 종류가 아니다. 하나의 관계를 행동으로 겪고, 이미지로 구조화하고, 상징으로 일반화하는 것이다.", "e": "연안류 — 답사에서 파도와 모래를 관찰한다 / 화살표로 물질의 이동을 그린다 / 연안표류를 정의하고 공식으로 쓴다"}, {"t": "원리를 주지 않고 자료에서 찾게 한다", "d": "자료 제시 → 비교·탐색 → 패턴 발견 → 가설 형성 → 일반화.", "e": "여러 지역의 기후 자료를 비교해 기후 유형의 특징을 학생이 도출한다."}, {"t": "안내된 발견 — 도움을 점점 줄인다", "d": "처음에는 교사의 질문을 따라가지만, 이후 사고의 책임을 학생에게 넘긴다.", "e": "서울 여름 기온분포 지도 — “기온이 높은 곳부터 표시해 볼까요?” → “그 지역의 토지이용은?” → “공원이나 하천 주변과 비교하면?” → “가설을 만들어 볼까요?”"}, {"t": "나선형으로 다시 만나게 한다", "d": "한 차시의 단계가 아니라 교육과정 차원의 원리다. 반복은 다시 외우는 것이 아니라 더 강력한 방식으로 다시 이해하는 것이다.", "e": "같은 도시 발달 개념을 학년이 올라가며 다른 지역, 더 복잡한 사례로 다시 만난다."}], "attack": "결론을 먼저 알려 주고 사례로 확인만 시키는 수업은, 학생에게서 구조를 발견할 기회를 빼앗습니다.", "warn": "표상방식은 발달단계가 아니다. 행동적=감각운동기, 영상적=구체적 조작기처럼 피아제의 단계와 일대일로 맞추는 것은 잘못이다. 성인도 복잡한 개념을 배울 때 지도와 직접 조작이 필요하다."}, {"k": "vygotsky", "who": "비고츠키", "en": "Vygotsky", "learn": "사고는 먼저 사람들 사이에서 일어나고, 그다음 개인에게 내면화된다.", "terms": ["사회적 상호작용", "내면화", "사적 언어", "근접발달영역(ZPD)", "비계", "도제"], "design": [{"t": "혼자 할 수 있는 수준이 아니라 ZPD에 과제를 놓는다", "d": "같은 과제라도 학생마다 ZPD가 다르다. 좋은 교수는 모두에게 같은 양의 도움을 주는 것이 아니다.", "e": "산업입지 패턴 설명하기 — 혼자 가능한 학생 / “항구와의 거리를 비교해 볼까요?”라는 질문이 있으면 가능한 학생 / 접근성 개념부터 필요한 학생"}, {"t": "비계를 설계하고, 줄여 나간다", "d": "과제 단순화 · 자료 선택 지원 · 사고과정 시범 · 전략적 질문. 학생 대신 답을 만들어 주는 것이 아니다.", "e": "보조바퀴는 처음에 필요하지만 계속 달아 두면 혼자 타는 능력이 자라지 않는다."}, {"t": "말하게 한다", "d": "사회적 언어 → 사적 언어 → 내적 언어. 말하면서 생각 자체가 명료해진다.", "e": "지도를 분석할 때 교사가 무엇부터 보고 어떤 질문을 던지는지 함께 겪은 학생은, 나중에 혼자서도 그 질문을 던진다."}, {"t": "또래의 다른 시각을 부딪히게 한다", "d": "상호작용은 완성된 생각을 교환하는 데서 끝나지 않고 사고 자체를 바꾼다.", "e": "같은 인구이동 지도를 두고 한 학생은 일자리에, 다른 학생은 주택가격에, 또 다른 학생은 대학 위치에 주목한다."}], "attack": "각자 알아서 하라고 맡겨 두면 학생은 이미 할 수 있는 수준에 머뭅니다. 반대로 도움을 끝까지 유지하면 혼자 할 수 있게 되지 않습니다.", "warn": ""}], "APPLY": {"gagne": {"open": "지도에서 용인의 위치와 수도권 범위를 짚게 하고, 시가지와 도로를 구분해 읽을 수 있는지 확인한다.", "steps": [{"p": "상위 학습에는 하위 능력이 선행조건이 된다", "d": "교통 문제를 설명하고 방안을 제안하려면, 그전에 분포를 읽고 도시화와 인구밀도를 알고 둘의 관계를 세울 수 있어야 한다. 이 순서를 먼저 확인한다."}, {"p": "개념의 성격이 교수방법을 정한다", "d": "도로·택지·시가지는 지도에서 찾아 공통점을 모으게 한다. 인구밀도·접근성은 정의를 주고 자료에 적용하게 한다."}, {"p": "원리를 세운 뒤에 문제로 간다", "d": "“인구가 늘고 시가지가 넓어지면 통행 거리가 길어진다”를 자료로 확인한 다음, 그것을 써서 개선 방안을 묻는다."}], "seq": "A → B → C → D", "why": "수를 읽는 자료에서 관계를 따지는 자료로 간다. 선행 능력이 뒤 자료의 조건이 되도록 놓았다."}, "piaget": {"open": "자료를 주기 전에 묻는다. “용인은 왜 막힐까?” 학생이 지금 가진 설명을 그림이나 글로 꺼내 놓게 한다.", "steps": [{"p": "기존 도식을 먼저 드러나게 한다", "d": "대개 “사람이 많아져서”라고 답한다. 이것은 지워야 할 잘못이 아니라 지금의 사고구조이고, 수업이 딛고 설 자리다."}, {"p": "설명이 막히는 자료로 인지갈등을 만든다", "d": "통근 자료를 보면 혼잡은 인구 수보다 서울·수원으로 쏠리는 방향과 시간대에 걸려 있다. “사람이 많아서”로는 설명되지 않는다."}, {"p": "동화가 막히면 조절이 일어난다", "d": "왜 내 생각과 자료가 다른지 토론하고, 통근 방향과 도시 확장을 넣어 설명을 다시 세우게 한다."}], "seq": "D → A → B → C", "why": "어긋나는 자료를 먼저 주어 갈등을 만들고, 그것을 풀기 위해 나머지를 끌어오게 한다."}, "ausubel": {"open": "먼저 큰 틀을 준다. “도시는 사는 곳과 일하는 곳이 멀어질수록 이동이 늘어난다.” 그다음 학생이 아는 용인의 장소와 통학 경험을 꺼낸다.", "steps": [{"p": "선행조직자로 개념적 자리를 먼저 만든다", "d": "수업 개요가 아니다. 앞으로 나올 자료들이 들어갈 틀을 한 문장으로 준다."}, {"p": "흩어진 지식이면 비교 조직자를 쓴다", "d": "학생은 아파트, 출근길, 고속도로를 따로 알고 있다. 그 조각들을 하나로 묶을 틀이 필요하다."}, {"p": "점진적 분화와 통합적 조정으로 구조를 키운다", "d": "도시화를 택지 개발, 통근권 확대, 도심 기능 분리로 나누고, 그것들이 다시 교통 문제로 모이는 것을 확인한다."}], "seq": "A → B → D → C", "why": "틀에 맞추어 원인에서 결과로 배열했다. 자료가 개념의 자리를 하나씩 채운다."}, "bruner": {"open": "설명 없이 자료 네 개를 함께 펼쳐 놓는다. “이 넷을 겹쳐 보면 무엇이 보입니까?”", "steps": [{"p": "원리를 주지 않고 사례에서 찾게 한다", "d": "인구가 늘어난 곳, 시가지가 넓어진 곳, 막히는 구간이 겹치는지 지도 위에서 견주게 한다."}, {"p": "안내된 발견 — 도움을 점점 줄인다", "d": "“인구가 가장 많이 는 곳은?” → “그 시기에 시가지는?” → “막히는 구간과 견주면?” → “가설을 만들어 볼까요?” 뒤로 갈수록 질문을 줄인다."}, {"p": "같은 내용을 세 표상으로 옮긴다", "d": "자기 통학 경로를 몸으로 따라가고, 지도에 그리고, 통행 시간과 거리로 나타낸다."}, {"p": "교육과정 차원에서 다시 만나게 한다", "d": "오늘 찾은 원리를 다음 학년에서 다른 도시, 더 복잡한 사례로 다시 다룬다. 나선형은 한 차시의 단계가 아니다."}], "seq": "A · B · C · D 를 함께", "why": "순서를 정해 주지 않는다. 늘어놓고 학생이 견주게 한다."}, "vygotsky": {"open": "모둠을 만들고 자료를 하나씩 맡긴다. 먼저 혼자 읽고, 그다음 모둠에서 설명한다.", "steps": [{"p": "혼자 할 수 있는 수준이 아니라 ZPD에 과제를 놓는다", "d": "혼자 해석하는 학생, 질문을 주면 하는 학생, 개념부터 필요한 학생이 한 모둠에 있다. 같은 양의 도움을 주지 않는다."}, {"p": "비계를 걸고, 줄여 나간다", "d": "자료를 골라 주고, 한 자료를 소리 내어 해석해 보이고, 막힌 모둠에 “통근 방향과 도로 방향을 겹쳐 볼까요?”라고 묻는다."}, {"p": "말하면서 사고가 만들어진다", "d": "각자 맡은 자료를 모둠에서 설명하며 네 자료를 하나의 설명으로 잇고, 공동 제안서를 만든다."}], "seq": "A · B · C · D 를 나눠 맡고 합친다", "why": "자료를 나누어 해석하고 서로의 해석을 연결하면서, 혼자 구성한 것보다 복합적인 설명을 만든다."}}, "TASK": {"goal": "학생은 용인의 도시 성장 자료를 분석하여 도시화가 교통 문제에 미친 영향을 설명하고, 개선 방안을 제안할 수 있다.", "ctx": "중학교 3학년 · 45분 한 차시", "mats": [["A", "용인시 인구 변화", "1990년 이후 인구와 세대수"], ["B", "도시 확장 지도", "시가지 확대와 택지개발지구"], ["C", "도로망과 교통량", "구간별 통행량과 혼잡 구간"], ["D", "통근 자료", "서울·수원 통근 인구와 이동 수단"]]}, "WHO": [["gagne", "가네"], ["piaget", "피아제"], ["ausubel", "오수벨"], ["bruner", "브루너"], ["vygotsky", "비고츠키"]], "SHEET": [{"k": "gagne", "who": "가네", "q": "모든 학습을 같은 방식으로 가르쳐야 할까?", "groups": [{"h": "학습이란", "rows": [{"seg": ["학습의 결과는 한 종류가 아니다. 성격이 다르면 필요한 학습조건도 다르다."], "a": []}]}, {"h": "핵심 개념", "rows": [{"seg": ["상위 학습에는 하위 능력이 선행조건이 된다. 이 위아래 관계를 ", "라 한다."], "a": ["학습위계"]}, {"seg": ["최종 목표에서 거꾸로 필요한 하위 능력을 찾아내는 일을 ", "이라 한다."], "a": ["과제분석"]}]}, {"h": "수업 설계", "rows": [{"seg": ["하천처럼 눈으로 보는 개념은 사례에서 공통속성을 모은다."], "a": []}, {"seg": ["인구밀도처럼 정의가 필요한 개념은 정의를 주고 사례에 적용한다."], "a": []}]}]}, {"k": "piaget", "who": "피아제", "q": "학습자는 빈 그릇일까?", "groups": [{"h": "학습이란", "rows": [{"seg": ["지식이 하나 더 쌓이는 것이 아니라 사고구조가 재조직되는 것이다."], "a": []}]}, {"h": "핵심 개념", "rows": [{"seg": ["세상을 이해하는 틀을 도식이라 한다."], "a": []}, {"seg": ["기존 틀에 맞추어 새 경험을 해석하는 것이 ", ", 틀 자체를 고치거나 새로 만드는 것이 ", "이다."], "a": ["동화", "조절"]}, {"seg": ["설명되지 않으면 불평형이 생기고, 이를 푸는 과정에서 평형화가 일어날 수 있다."], "a": []}]}, {"h": "수업 설계", "rows": [{"seg": ["학생의 기존 도식을 먼저 드러나게 한다. 오개념은 지워야 할 잘못이 아니다."], "a": []}, {"seg": ["기존 도식으로 설명되지 않는 자료를 만나게 한다."], "a": []}]}]}, {"k": "ausubel", "who": "오수벨", "q": "발견해야만 제대로 배운 것일까?", "groups": [{"h": "학습이란", "rows": [{"seg": ["학습에 가장 큰 영향을 미치는 것은 학습자가 이미 알고 있는 것이다."], "a": []}]}, {"h": "핵심 개념", "rows": [{"seg": ["기존 인지구조와 연결되면 ", "학습이고, 연결되지 않으면 기계적 암기에 그친다."], "a": ["유의미"]}, {"seg": ["새 내용에 앞서 개념적 자리를 만들어 주는 틀을 ", "라 한다."], "a": ["선행조직자"]}]}, {"h": "수업 설계", "rows": [{"seg": ["관련 지식이 흩어져 있으면 비교 조직자, 거의 없으면 설명 조직자를 쓴다."], "a": []}, {"seg": ["점진적 분화와 통합적 조정으로 지식구조를 키운다."], "a": []}]}]}, {"k": "bruner", "who": "브루너", "q": "어려운 지식은 나이가 들어야만 배울 수 있을까?", "groups": [{"h": "학습이란", "rows": [{"seg": ["어떤 연령의 아동이라도 지적으로 정직한 형태로 표현하면 배울 수 있다."], "a": []}]}, {"h": "핵심 개념", "rows": [{"seg": ["지식을 표현하는 방식은 행동적 · 영상적 · 상징적 표상이다. 발달단계가 아니다."], "a": []}, {"seg": ["사례를 견주며 학생이 스스로 원리를 찾게 하는 것을 ", "이라 한다."], "a": ["발견학습"]}, {"seg": ["같은 개념을 학년이 올라가며 더 깊게 다시 만나게 하는 것이 ", " 교육과정이다."], "a": ["나선형"]}]}, {"h": "수업 설계", "rows": [{"seg": ["원리를 주지 않고 여러 사례를 늘어놓아 패턴을 찾게 한다."], "a": []}, {"seg": ["안내된 발견 — 교사의 질문을 점점 줄여 사고의 책임을 넘긴다."], "a": []}]}]}, {"k": "vygotsky", "who": "비고츠키", "q": "학습은 개인의 머릿속에서만 일어날까?", "groups": [{"h": "학습이란", "rows": [{"seg": ["사고는 먼저 사람들 사이에서 일어나고 그다음 개인에게 내면화된다."], "a": []}]}, {"h": "핵심 개념", "rows": [{"seg": ["혼자 할 수 있는 수준과 도움을 받아 할 수 있는 수준 사이를 ", "이라 한다."], "a": ["근접발달영역"]}, {"seg": ["그 사이를 메우는 지원을 ", "라 하며, 능숙해질수록 줄여 나간다."], "a": ["비계"]}]}, {"h": "수업 설계", "rows": [{"seg": ["과제 단순화, 자료 선택 지원, 사고과정 시범, 전략적 질문으로 지원한다."], "a": []}, {"seg": ["말하게 한다. 또래의 다른 시각을 부딪히게 한다."], "a": []}]}]}], "CCOLS": ["학습은 어떻게 일어나는가", "교사는 무엇을 하는가", "학생은 무엇을 하는가"]};
+var SC=D.S,T=D.TASK,WHO=D.WHO,AP=D.APPLY;
+var TABS=[["sheet","학습지 (1)"],["case","상황"],["expert","전문가 회의"],
+ ["teach","돌아가며 설명하기"],["recap","학습지 (2)"]];
+
+function bl(){return {tab:"sheet",mine:"",marks:{},
+ r1:{},r2:{},r1done:false,r2done:false,cmp:{},open:false};}
+var S=bl();
+function $(x){return document.querySelector(x);}
+function qq(x){return Array.prototype.slice.call(document.querySelectorAll(x));}
+function esc(x){return String(x==null?"":x).replace(/[&<>"]/g,function(c){
+  return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];});}
+function has(v){return v!=null&&String(v).trim()!=="";}
+var KEY="jigsaw4-v7",tm=null;
+function save(){clearTimeout(tm);tm=setTimeout(function(){
+  try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}},300);}
+function load(){try{var r=localStorage.getItem(KEY);
+  if(r){var x=JSON.parse(r)||{},b=bl();
+    Object.keys(b).forEach(function(k){if(x[k]!==undefined)b[k]=x[k];});S=b;}}catch(e){}
+  var ok=false;TABS.forEach(function(t){if(t[0]===S.tab)ok=true;});
+  if(!ok)S.tab=TABS[0][0];}
+function sc(k){for(var i=0;i<SC.length;i++)if(SC[i].k===k)return SC[i];return null;}
+function nameOf(k){for(var i=0;i<WHO.length;i++)if(WHO[i][0]===k)return WHO[i][1];return k;}
+function norm(v){return String(v||"").replace(/\s|\(|\)/g,"");}
+
+function head(){
+  return '<p class="stage">4강 학습이론</p>'+
+   '<h1>인간은 새로운 사실을 어떻게 알게 되는가</h1>'+
+   '<p class="lead">만일 가네, 오수벨, 피아제, 브루너, 비고츠키가 지리수업을 계획한다면?</p>';}
+function tabs(){
+  return '<div class="bar"><div class="tabs">'+TABS.map(function(t){
+    return '<button class="tab" data-tab="'+t[0]+'" aria-pressed="'+(S.tab===t[0])+'">'+t[1]+'</button>';
+  }).join("")+'</div></div>';}
+function foot(){
+  return '<div class="foot"><button id="copy">패들렛용 정리 복사</button>'+
+   '<button id="print">인쇄 · PDF</button><span class="msg" id="msg"></span>'+
+   '<button id="clear">모두 지우기</button></div>';}
+function taskBox(){
+  return '<div class="taskbox"><p class="gk">수업 목표</p>'+
+   '<p class="gv">'+esc(T.goal)+'</p><p class="gc">'+esc(T.ctx)+'</p>'+
+   '<p class="gk" style="margin:20px 0 0">수업에 쓸 수 있는 자료</p>'+
+   T.mats.map(function(m){
+     return '<div class="mline"><span class="mk">'+m[0]+'</span>'+
+      '<span class="mn">'+esc(m[1])+'</span><span class="md">'+esc(m[2])+'</span></div>';}).join("")+
+   '<p class="note2">수업 설계를 견주기 위한 사례입니다. '+
+   '각 교사의 설명은 이 자료에서 그러한 패턴이 나타난다고 가정한 것입니다.</p></div>';}
+
+/* 학습지 */
+function key(i,g,j,k){return i+"-"+g+"-"+j+"-"+k;}
+function walk(fn){D.SHEET.forEach(function(b,i){b.groups.forEach(function(G,g){
+  G.rows.forEach(function(x,j){x.a.forEach(function(ans,k){fn(key(i,g,j,k),ans);});});});});}
+function total(){var n=0;walk(function(){n++;});return n;}
+function filled(r){var n=0;walk(function(kk){if(has(S[r][kk]))n++;});return n;}
+function scoreOf(r){var ok=0;walk(function(kk,ans){if(norm(S[r][kk])===norm(ans))ok++;});return ok;}
+function worksheet(r,show){
+  return D.SHEET.map(function(b,i){
+    return '<div class="wsblock"><h4>'+esc(b.who)+'<span class="wsq">'+esc(b.q)+'</span></h4>'+
+     b.groups.map(function(G,g){
+       return '<p class="wsh">'+esc(G.h)+'</p><ul class="wslist">'+
+        G.rows.map(function(x,j){
+          var out="",wrong=false;
+          x.seg.forEach(function(t,k){
+            out+='<span>'+esc(t)+'</span>';
+            if(k<x.a.length){
+              var val=S[r][key(i,g,j,k)]||"",cls="";
+              if(show){cls=(norm(val)===norm(x.a[k]))?" ok":" no";
+                if(norm(val)!==norm(x.a[k]))wrong=true;}
+              out+='<input type="text" class="'+cls+'" data-f="'+r+'|'+key(i,g,j,k)+'" value="'+
+                esc(val)+'"'+(show?" readonly":"")+'>';}});
+          return '<li'+(x.a.length?'':' class="plain"')+'>'+out+
+            (show&&wrong?'<span class="ansline">'+x.a.map(esc).join(" · ")+'</span>':'')+'</li>';
+        }).join("")+'</ul>';}).join("")+
+     '</div>';}).join("");}
+
+function vSheet(){
+  var n=filled("r1"),tot=total();
+  var h='<h2 class=\"sect\">학습지</h2>'+
+   '<p class="sd" style="margin-bottom:20px">오늘 알아야 할 것입니다. 지금 아는 만큼만 채웁니다. '+n+' / '+tot+'</p>'+
+   worksheet("r1",S.r1done);
+  if(!S.r1done)
+    h+='<div style="margin-top:18px"><button class="keyb" id="r1sub">제출</button></div>';
+  else h+='<div class="score"><b>'+scoreOf("r1")+' / '+tot+'</b><span class="sub"> · 1차</span></div>';
+  return h;}
+
+/* 상황 */
+function vCase(){
+  return '<h2 class=\"sect\">다섯 교사의 미션</h2>'+
+   '<p class="sd" style="margin-bottom:20px">다섯 명의 교사가 같은 미션을 받았습니다. '+
+   '목표도 자료도 같습니다. 각 교사는 이 수업을 어떻게 구성했을까요.</p>'+taskBox();}
+
+/* 전문가 회의 */
+var DOC={};
+SC.forEach(function(c){
+  DOC[c.k+"-learn"]=c.learn;
+  c.design.forEach(function(d,i){DOC[c.k+"-d"+i]=d.d;DOC[c.k+"-e"+i]=d.e;});
+  DOC[c.k+"-atk"]=c.attack;
+  DOC[c.k+"-open"]=AP[c.k].open;
+  AP[c.k].steps.forEach(function(x,i){DOC[c.k+"-p"+i]=x.p;DOC[c.k+"-s"+i]=x.d;});});
+function marksOf(id){return (S.marks[id]||[]).slice().sort(function(a,b){return a.s-b.s;});}
+function H(id){var t=DOC[id],p=0,out="";
+  marksOf(id).forEach(function(m,i){
+    out+=esc(t.slice(p,m.s))+'<mark data-mi="'+i+'">'+esc(t.slice(m.s,m.e))+'</mark>';p=m.e;});
+  return '<span class="hl" data-doc="'+id+'">'+out+esc(t.slice(p))+'</span>';}
+function hlSel(){
+  var sl=window.getSelection();if(!sl||sl.isCollapsed||!sl.rangeCount)return;
+  var r=sl.getRangeAt(0);
+  function host(n){n=n.nodeType===3?n.parentNode:n;return n&&n.closest?n.closest(".hl"):null;}
+  var a=host(r.startContainer);if(!a||a!==host(r.endContainer))return;
+  var id=a.dataset.doc,t=DOC[id],pre=document.createRange();
+  pre.selectNodeContents(a);pre.setEnd(r.startContainer,r.startOffset);
+  var st=pre.toString().length,en=st+r.toString().length;
+  while(st<en&&/\s/.test(t[st]))st++;while(en>st&&/\s/.test(t[en-1]))en--;
+  if(en-st<2)return;
+  var keep=marksOf(id).filter(function(m){return m.e<=st||m.s>=en;});
+  keep.push({s:st,e:en});S.marks[id]=keep;
+  sl.removeAllRanges();save();paint();}
+function unmark(el,mi){var id=el.dataset.doc,arr=marksOf(id);if(!arr[mi])return;
+  arr.splice(mi,1);S.marks[id]=arr;save();paint();}
+var pm=false,tt=null,sk="";
+function snap(){var sl=window.getSelection();
+  if(!sl||sl.isCollapsed||!sl.rangeCount)return "";
+  var r=sl.getRangeAt(0);return sl.toString()+"@"+r.startOffset+"-"+r.endOffset;}
+if(window.PointerEvent)document.addEventListener("pointerdown",function(e){pm=(e.pointerType!=="mouse");},true);
+else{document.addEventListener("touchstart",function(){pm=true;},{passive:true,capture:true});
+ document.addEventListener("mousedown",function(){pm=false;},true);}
+document.addEventListener("selectionchange",function(){
+  if(tt){clearTimeout(tt);tt=null;}
+  if(!pm)return;var k=snap();if(!k)return;sk=k;
+  tt=setTimeout(function(){tt=null;if(snap()===sk)hlSel();},450);});
+
+function card(c,live){
+  function tx(id,txt){return live?H(id):esc(txt);}
+  return '<div class="card2"><h2>'+esc(c.who)+'<span class="en2">'+c.en+'</span></h2>'+
+   '<p class="ck">학습이란</p><p class="cv">'+tx(c.k+"-learn",c.learn)+'</p>'+
+   '<p class="ck">핵심 개념</p><div class="terms">'+c.terms.map(function(t){
+     return '<span class="tg">'+esc(t)+'</span>';}).join("")+'</div>'+
+   '<p class="ck">수업을 이렇게 설계한다</p>'+
+   c.design.map(function(d,i){
+     return '<div class="dz"><h4>'+esc(d.t)+'</h4><p>'+tx(c.k+"-d"+i,d.d)+'</p>'+
+      '<p class="ex">'+tx(c.k+"-e"+i,d.e)+'</p></div>';}).join("")+
+   (c.warn?'<div class="warn">'+esc(c.warn)+'</div>':'')+
+   '<p class="ck">비판하는 것</p><p class="cv">'+tx(c.k+"-atk",c.attack)+'</p></div>';}
+function applyBox(k,live){
+  var a=AP[k];
+  function tx(id,txt){return live?H(id):esc(txt);}
+  return '<div class="apply"><p class="ah">용인 수업에 적용하면</p><h3>'+esc(nameOf(k))+'의 수업</h3>'+
+   '<p class="first">첫 장면 — '+tx(k+"-open",a.open)+'</p>'+
+   a.steps.map(function(x,i){
+     return '<div class="pstep"><p class="pp">'+tx(k+"-p"+i,x.p)+'</p>'+
+      '<p class="pd">'+tx(k+"-s"+i,x.d)+'</p></div>';}).join("")+
+   '<p class="sq2"><b>자료 순서</b>'+esc(a.seq)+' — '+esc(a.why)+'</p></div>';}
+function vExpert(){
+  var h='<h2 class=\"sect\">전문가 회의</h2>'+
+   '<p class="sd" style="margin-bottom:20px">같은 학자를 맡은 사람끼리 모입니다. 읽고, 모둠에서 설명할 대목을 표시합니다.</p>'+
+   '<div class="qrow">'+SC.map(function(x){
+     return '<button class="qc" data-mine="'+x.k+'" aria-pressed="'+(S.mine===x.k)+'">'+
+      '<span class="qn">'+esc(x.who)+'<span class="qe">'+x.en+'</span></span></button>';}).join("")+'</div>';
+  if(!has(S.mine)){h+='<div class="lockrow">맡은 학자를 고르면 자료가 열립니다.</div>';return h;}
+  var n=0;Object.keys(S.marks).forEach(function(k){n+=S.marks[k].length;});
+  h+='<div class="toolbar2">글자를 긁으면 표시됩니다 · 표시를 누르면 지워집니다'+
+   (n?' · 표시한 곳 '+n:'')+'</div>'+
+   card(sc(S.mine),true)+applyBox(S.mine,true);
+  return h;}
+
+/* 돌아가며 설명하기 */
+function vTeach(){
+  var h='<h2 class="sect">돌아가며 설명하기</h2>'+
+   '<p class="sd" style="margin-bottom:20px">원래 모둠으로 돌아갑니다. '+
+   '전문가 회의에서 정리한 내용을 다른 팀원들에게 설명하고, 듣는 동안 아래 표를 채웁니다.</p>'+
+   '<div class="scroll"><table class="cmpt"><thead><tr><th></th>'+
+    D.CCOLS.map(function(c){return '<th>'+esc(c)+'</th>';}).join("")+'</tr></thead><tbody>'+
+   WHO.map(function(w){
+     return '<tr><th>'+w[1]+'</th>'+
+      D.CCOLS.map(function(_,j){
+        return '<td><input type="text" data-c="'+w[0]+'|'+j+'" value="'+
+         esc((S.cmp[w[0]]||{})[j]||"")+'"></td>';}).join("")+'</tr>';}).join("")+
+   '</tbody></table></div>';
+  return h;}
+
+/* 학습지 (2) */
+function vRecap(){
+  var n=filled("r2"),tot=total();
+  var h='<h2 class=\"sect\">학습지 (2)</h2>'+
+   '<p class="sd" style="margin-bottom:20px">수업을 시작할 때 푼 것과 같은 학습지입니다. '+n+' / '+tot+'</p>'+
+   worksheet("r2",S.r2done);
+  if(!S.r2done)
+    h+='<div style="margin-top:18px"><button class="keyb" id="r2sub">제출</button></div>';
+  else{
+    h+='<div class="score"><b>'+scoreOf("r2")+' / '+tot+'</b><span class="sub"> · 2차</span>'+
+     (S.r1done?'<div class="cmpbar">1차 '+scoreOf("r1")+' / '+tot+' → 2차 '+scoreOf("r2")+' / '+tot+'</div>':'')+
+     '</div>'+
+     '<div class="step" style="margin-top:28px"><h3><b>·</b>다섯 자료 모두 보기</h3>'+
+     '<p class="sd"><button class="keyb" id="allc">'+(S.open?"닫기":"펼치기")+'</button></p>'+
+     (S.open?SC.map(function(c){return card(c,false)+applyBox(c.k,false);}).join(""):"")+'</div>';}
+  return h;}
+
+/* 정리 */
+function summary(){
+  var L=["4강 학습이론 — 기록"];
+  if(has(S.mine))L.push("맡은 학자: "+nameOf(S.mine));
+  if(S.r1done)L.push("학습지 1차: "+scoreOf("r1")+"/"+total());
+  if(S.r2done)L.push("학습지 2차: "+scoreOf("r2")+"/"+total());
+  var mk=Object.keys(S.marks||{});
+  if(mk.length){L.push("");L.push("■ 표시한 대목");
+    mk.forEach(function(id){marksOf(id).forEach(function(m){
+      L.push("  · "+DOC[id].slice(m.s,m.e));});});}
+  var ck=Object.keys(S.cmp||{});
+  if(ck.length){L.push("");L.push("■ 비교표");
+    WHO.forEach(function(w){var v=S.cmp[w[0]]||{};
+      var r=D.CCOLS.map(function(_,j){return v[j]||"—";});
+      if(r.join("")!=="————")L.push("  "+w[1]+": "+r.join(" / "));});}
+  if(L.length===1)L.push("(아직 기록이 없음)");
+  return L.join("\n");}
+
+var V={sheet:vSheet,case:vCase,expert:vExpert,teach:vTeach,recap:vRecap};
+function paint(){
+  var fn=V[S.tab]||V[TABS[0][0]];
+  $("#main").innerHTML=head()+tabs()+fn()+foot();
+  bind();window.scrollTo(0,0);}
+function bind(){
+  qq("[data-tab]").forEach(function(b){b.onclick=function(){S.tab=b.dataset.tab;save();paint();};});
+  qq("[data-mine]").forEach(function(b){b.onclick=function(){
+    S.mine=(S.mine===b.dataset.mine)?"":b.dataset.mine;save();paint();};});
+  qq("[data-f]").forEach(function(el){el.oninput=function(){
+    var p=el.dataset.f.split("|");S[p[0]][p[1]]=el.value;save();};});
+  qq("[data-c]").forEach(function(el){el.oninput=function(){
+    var p=el.dataset.c.split("|");
+    if(!S.cmp[p[0]])S.cmp[p[0]]={};
+    S.cmp[p[0]][p[1]]=el.value;save();};});
+  qq(".hl").forEach(function(el){
+    el.onmouseup=function(){setTimeout(hlSel,0);};
+    el.ontouchend=function(){setTimeout(hlSel,250);};
+    el.onclick=function(e){var sl=window.getSelection();if(sl&&!sl.isCollapsed)return;
+      if(e.target.tagName==="MARK")unmark(el,+e.target.dataset.mi);};});
+  if($("#r1sub"))$("#r1sub").onclick=function(){S.r1done=true;save();paint();};
+  if($("#r2sub"))$("#r2sub").onclick=function(){S.r2done=true;save();paint();};
+  if($("#allc"))$("#allc").onclick=function(){S.open=!S.open;save();paint();};
+  if($("#print"))$("#print").onclick=function(){try{window.print();}catch(e){}};
+  if($("#copy"))$("#copy").onclick=function(){copyText(summary());};
+  if($("#clear"))$("#clear").onclick=function(){
+    if(!window.confirm("이 기기에 저장된 내용을 모두 지웁니다. 계속할까요?"))return;
+    try{localStorage.removeItem(KEY);}catch(e){}
+    S=bl();save();paint();};
+  $("#brand").onclick=function(){S.tab="sheet";save();paint();};}
+function flash(t){var e=$("#msg");if(e){e.textContent=t;setTimeout(function(){e.textContent="";},2600);}}
+function copyText(t){
+  function fb(){var a=document.createElement("textarea");a.value=t;a.style.position="fixed";a.style.opacity="0";
+    document.body.appendChild(a);a.select();
+    try{document.execCommand("copy");flash("복사했습니다");}catch(x){flash("복사하지 못했습니다");}
+    document.body.removeChild(a);}
+  if(navigator.clipboard&&window.isSecureContext)navigator.clipboard.writeText(t).then(function(){flash("복사했습니다");},fb);
+  else fb();}
+
+load();paint();
+})();
+</script>
+</body>
+</html>
