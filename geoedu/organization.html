@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>지리교과교육론 3강 · 지리 교육과정의 내용조직 원리</title>
 <style>
 /* ═══ 수업자료 공통 스타일 v1 — 매주 이 블록을 그대로 재사용 ═══ */
@@ -214,227 +214,677 @@ table.ct{border-collapse:collapse;width:100%;min-width:780px;font-size:14.5px}
 }
 @media (prefers-reduced-motion:reduce){.flash{animation:none}}
 </style>
+<style>
+.brief{margin:0;padding-left:22px;max-width:760px}
+.brief li{font-size:16.5px;margin:6px 0}
+.brief li small{color:var(--soft);font-size:13px;margin-left:8px}
+.sd{margin:0 0 14px;color:var(--mid);font-size:14.5px;max-width:62em}
+.lockrow{margin:26px 0;padding:14px 18px;border:1px dashed var(--line2);border-radius:9px;
+  color:var(--soft);font-size:14px;max-width:860px}
+.pens{display:flex;gap:8px;flex-wrap:wrap;margin:0}
+.pen{border:1px solid var(--line);border-radius:20px;cursor:pointer;padding:6px 15px;
+  font-size:14px;background:none;color:var(--mid)}
+.pen[aria-pressed="true"]{border-color:var(--ink);color:var(--ink);font-weight:600}
+.pen i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:8px;vertical-align:-1px}
+.pen small{color:var(--soft);font-weight:400;margin-left:7px;font-size:12.5px}
+.eb{margin-bottom:30px;max-width:900px}
+.eg{margin:0 0 10px;font-size:12px;color:var(--acc);font-weight:600;letter-spacing:.06em}
+.ed{border-top:1px solid var(--line)}
+.edu{border-bottom:1px solid var(--line2);padding:14px 0 13px}
+.edu:last-child{border-bottom:none}
+.edt{margin:0 0 7px;font-size:16.5px;font-weight:700;letter-spacing:-.02em}
+.eds{margin:0 0 5px;font-size:14.5px;line-height:1.75;color:var(--mid);
+  padding-left:78px;text-indent:-78px}
+.eds:last-child{margin-bottom:0}
+.edc{display:inline-block;width:70px;color:var(--soft);font-size:12.5px;text-indent:0}
+.nav2{margin-top:24px}
+.cmp .pre{background:var(--wash);color:var(--mid)}
+textarea[data-txt]{width:100%;max-width:860px;border:1px solid var(--line);border-radius:7px;
+  padding:10px 13px;background:none;line-height:1.7;resize:vertical}
+textarea[data-txt]:focus{border-color:var(--acc)}
+@media (max-width:760px){.elem{grid-template-columns:1fr}}
+.pend{margin:14px 0 20px;max-width:860px}
+.pend p{margin:0 0 7px;font-size:14px;color:var(--mid);line-height:1.7;
+  display:flex;gap:9px;align-items:baseline}
+.pend p:last-child{margin-bottom:0}
+.pend i{display:inline-block;width:10px;height:10px;border-radius:3px;flex:0 0 auto;
+  transform:translateY(-1px)}
+.pend b{color:var(--ink);font-weight:600;white-space:nowrap}
+mark[data-k]{padding:1px 0;border-radius:3px;cursor:pointer;color:inherit}
+.evbox{margin-top:18px;border:1px solid var(--line);border-radius:9px;padding:14px 18px;max-width:860px}
+.ek{margin:0 0 9px;font-size:12px;color:var(--acc);font-weight:600;letter-spacing:.06em}
+.evl{display:flex;flex-wrap:wrap;gap:6px}
+.evc{border:1px solid var(--line);border-radius:6px;padding:5px 11px;font-size:13.5px;
+  background:none;cursor:default;color:var(--ink);text-align:left}
+.evc i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:7px;vertical-align:0}
+.evc small{color:var(--soft);font-size:12px;margin-left:7px}
+.evc.pickable{cursor:pointer}
+.evc.pickable:hover{border-color:var(--acc)}
+.evc[aria-pressed="true"]{border-color:var(--acc);background:var(--acc-w)}
+.picks{display:grid;gap:9px;max-width:860px}
+.pk{display:flex;gap:12px;align-items:flex-start;text-align:left;background:none;
+  border:1px solid var(--line);border-radius:9px;padding:13px 17px;cursor:pointer;color:var(--ink)}
+.pk:hover{border-color:var(--acc)}
+.pk[aria-pressed="true"]{border-color:var(--acc);background:var(--acc-w)}
+.pk .mk{width:16px;height:16px;border:1px solid var(--line);border-radius:50%;flex:0 0 auto;margin-top:5px}
+.pk[aria-pressed="true"] .mk{background:var(--acc);border-color:var(--acc)}
+.pk b{font-weight:600}
+.pk small{display:block;color:var(--soft);font-size:13px;margin-top:2px;line-height:1.55}
+.reveal{margin-top:14px;border-left:3px solid var(--acc);background:var(--acc-w);
+  border-radius:0 8px 8px 0;padding:14px 18px;max-width:860px}
+.reveal b{color:var(--acc)}
+.card{border:1px solid var(--acc);border-radius:10px;padding:20px 24px;max-width:860px}
+.card dl{display:grid;grid-template-columns:96px minmax(0,1fr);gap:8px 16px;margin:0}
+.card dt{color:var(--soft);font-size:13px}
+.card dd{margin:0;font-size:15.5px}
+.card .sum{margin:16px 0 0;padding-top:14px;border-top:1px solid var(--line2);font-size:16.5px;line-height:1.75}
+.cmp{overflow:auto;margin-top:8px}
+.cmp table{border-collapse:collapse;width:100%;min-width:760px;font-size:14.5px}
+.cmp th,.cmp td{border-bottom:1px solid var(--line2);padding:11px 12px;text-align:left;vertical-align:top}
+.cmp thead th{border-bottom:1px solid var(--line);color:var(--mid);font-weight:600;font-size:13.5px}
+.cmp tbody th{color:var(--soft);font-weight:400;font-size:13px;width:88px}
+.cmp .none{color:var(--soft)}
+.swatch{display:flex;flex-wrap:wrap;gap:4px}
+.sw{width:100%;height:9px;border-radius:2px}
+.keyb{background:none;border:1px solid var(--line);border-radius:7px;cursor:pointer;
+  padding:7px 16px;font-size:14px;color:var(--mid)}
+.keyb:hover{border-color:var(--acc);color:var(--ink)}
+</style>
+<style>
+.sd{margin:0 0 14px;color:var(--mid);font-size:14.5px;max-width:62em}
+.lockrow{margin:26px 0;padding:14px 18px;border:1px dashed var(--line2);border-radius:9px;
+  color:var(--soft);font-size:14px;max-width:880px}
+.pens{display:flex;gap:8px;flex-wrap:wrap}
+.pen{border:1px solid var(--line);border-radius:20px;cursor:pointer;padding:6px 15px;
+  font-size:14px;background:none;color:var(--mid)}
+.pen[aria-pressed="true"]{border-color:var(--ink);color:var(--ink);font-weight:600}
+.pen i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:8px;vertical-align:-1px}
+.pend{margin:14px 0 20px;max-width:880px}
+.pend p{margin:0 0 7px;font-size:14px;color:var(--mid);line-height:1.7;display:flex;gap:9px;align-items:baseline}
+.pend p:last-child{margin-bottom:0}
+.pend i{display:inline-block;width:10px;height:10px;border-radius:3px;flex:0 0 auto;transform:translateY(-1px)}
+.pend b{color:var(--ink);font-weight:600;white-space:nowrap}
+mark{padding:1px 0;border-radius:3px;cursor:pointer;color:inherit}
+.doc{max-width:940px}
+.unit{border-top:1px solid var(--line);padding:15px 0 10px}
+.uh{margin:0 0 6px;display:flex;gap:10px;align-items:baseline}
+.un{font-size:12.5px;color:var(--soft);font-weight:600;white-space:nowrap}
+.uh .ut{font-size:16.5px;font-weight:400;letter-spacing:-.01em;line-height:1.5}
+.std{display:flex;gap:12px;padding:4px 0;font-size:15px;line-height:1.75}
+.std .c{font-size:12.5px;color:var(--soft);white-space:nowrap;padding-top:4px;min-width:104px}
+.std .t{flex:1}
+.evbox{margin-top:18px;border:1px solid var(--line);border-radius:9px;padding:14px 18px;max-width:880px}
+.ek{margin:0 0 9px;font-size:12px;color:var(--acc);font-weight:600;letter-spacing:.06em}
+.evl{display:flex;flex-wrap:wrap;gap:6px}
+.evc{border:1px solid var(--line);border-radius:6px;padding:5px 11px;font-size:13.5px;
+  background:none;cursor:default;color:var(--ink);text-align:left}
+.evc i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:7px}
+.evc small{color:var(--soft);font-size:12px;margin-left:7px}
+.evc.pickable{cursor:pointer}
+.evc.pickable:hover{border-color:var(--acc)}
+.evc[aria-pressed="true"]{border-color:var(--acc);background:var(--acc-w)}
+.picks{display:grid;gap:9px;max-width:880px}
+.pk{display:flex;gap:12px;align-items:flex-start;text-align:left;background:none;
+  border:1px solid var(--line);border-radius:9px;padding:13px 17px;cursor:pointer;color:var(--ink)}
+.pk:hover{border-color:var(--acc)}
+.pk[aria-pressed="true"]{border-color:var(--acc);background:var(--acc-w)}
+.pk .mk{width:16px;height:16px;border:1px solid var(--line);border-radius:50%;flex:0 0 auto;margin-top:5px}
+.pk[aria-pressed="true"] .mk{background:var(--acc);border-color:var(--acc)}
+.pk b{font-weight:600}
+.pk small{display:block;color:var(--soft);font-size:13px;margin-top:2px;line-height:1.55}
+.reveal{margin-top:14px;border-left:3px solid var(--acc);background:var(--acc-w);
+  border-radius:0 8px 8px 0;padding:14px 18px;max-width:880px}
+.reveal b{color:var(--acc)}
+.card{border:1px solid var(--acc);border-radius:10px;padding:20px 24px;max-width:880px}
+.card dl{display:grid;grid-template-columns:150px minmax(0,1fr);gap:10px 16px;margin:0}
+.card dt{color:var(--soft);font-size:13px}
+.card dt em{font-style:normal;color:var(--acc);font-size:11.5px;display:block}
+.card dd{margin:0;font-size:15.5px}
+.card .sum{margin:16px 0 0;padding-top:14px;border-top:1px solid var(--line2);font-size:16.5px;line-height:1.75}
+.cmp{overflow:auto;margin-top:8px}
+.cmp table{border-collapse:collapse;width:100%;min-width:820px;font-size:14.5px}
+.cmp th,.cmp td{border-bottom:1px solid var(--line2);padding:11px 12px;text-align:left;vertical-align:top}
+.cmp thead th{border-bottom:1px solid var(--line);color:var(--mid);font-weight:600;font-size:13.5px}
+.cmp tbody th{color:var(--soft);font-weight:400;font-size:13px;width:104px}
+.cmp tbody th em{font-style:normal;color:var(--acc);font-size:11px;display:block}
+.cmp .none{color:var(--soft)}
+.swatch{display:flex;gap:3px}
+.sw{height:9px;border-radius:2px}
+.keyb{background:none;border:1px solid var(--line);border-radius:7px;cursor:pointer;
+  padding:7px 16px;font-size:14px;color:var(--mid)}
+.keyb:hover{border-color:var(--acc);color:var(--ink)}
+.chips{display:flex;gap:7px;flex-wrap:wrap}
+.chip{background:none;border:1px solid var(--line);border-radius:20px;cursor:pointer;
+  padding:6px 15px;font-size:14px;color:var(--mid)}
+.chip:hover{border-color:var(--acc);color:var(--ink)}
+.chip[aria-pressed="true"]{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:600}
+.seg2{display:inline-flex;flex-wrap:wrap}
+.seg2 button{background:none;border:1px solid var(--line);border-right:none;cursor:pointer;
+  padding:8px 18px;font-size:14.5px;color:var(--mid)}
+.seg2 button:first-child{border-radius:7px 0 0 7px}
+.seg2 button:last-child{border-right:1px solid var(--line);border-radius:0 7px 7px 0}
+.seg2 button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper);font-weight:600}
+.egbar2{display:flex;gap:14px;align-items:center;flex-wrap:wrap;max-width:880px;
+  border:1px solid var(--warn-l);background:var(--warn-b);color:var(--warn-t);
+  border-radius:9px;padding:13px 17px;margin:0 0 26px;font-size:14px}
+.egbar2 span{flex:1 1 320px;line-height:1.65}
+.guide{margin:16px 0 20px;max-width:880px;line-height:1.75}
+.sqlist{display:grid;gap:10px;max-width:900px;margin-top:14px}
+.sqrow{border:1px solid var(--line);border-radius:9px;padding:13px 17px}
+.sqh{margin:0 0 5px;font-size:12.5px;color:var(--acc);font-weight:600}
+.sqh span{color:var(--soft);font-weight:400;margin-left:7px}
+.sqt{margin:0 0 9px;font-size:15.5px;line-height:1.75}
+.sqrow .sqt:last-child{margin-bottom:0}
+.sqc{display:block;font-size:12.5px;color:var(--soft);margin-bottom:2px}
+.sqc em{font-style:normal;color:var(--mid);margin-left:7px}
+.qbox{border:1px solid var(--acc);border-radius:9px;padding:15px 19px;margin-top:18px;max-width:900px}
+.qk{margin:0 0 9px;font-size:12px;color:var(--acc);font-weight:600;letter-spacing:.06em}
+.qbox p{margin:0 0 6px;font-size:15.5px;line-height:1.75}
+.qbox p:last-child{margin-bottom:0}
+.qbox b{color:var(--acc);margin-right:7px}
+.qbox .qs{margin:4px 0 14px;padding-left:20px;font-size:14px;color:var(--mid);line-height:1.75}
+.qbox .qs:last-child{margin-bottom:0}
+.qbox .qs b{color:var(--ink);margin-right:2px}
+.cmp .tn{display:block;font-size:12px;color:var(--soft)}
+.cmp input{width:100%;border:none;border-bottom:1px solid var(--line);background:none;
+  padding:4px 2px;font-size:14.5px}
+.cmp input:focus{outline:none;border-color:var(--acc)}
+.defbox{border-left:3px solid var(--acc);background:var(--wash);border-radius:0 8px 8px 0;
+  padding:16px 20px;max-width:880px}
+.defbox p{margin:0 0 7px;font-size:15.5px;line-height:1.75}
+.defbox p:last-child{margin-bottom:0}
+.defbox b{color:var(--acc)}
+.ansbar{margin:20px 0 0}
+.sh{margin:22px 0 10px;font-size:14.5px;font-weight:700}
+input.one{width:100%;max-width:640px;border:1px solid var(--line);border-radius:7px;
+  padding:9px 13px;background:none;font-size:15px}
+input.one:focus{border-color:var(--acc);outline:none}
+.unit.tit{padding:11px 0}
+.hlro{cursor:default}
+.mv{display:grid;gap:14px;max-width:880px}
+.mvbox{border:1px solid var(--line);border-radius:10px;padding:14px 17px}
+.mvbox.hi{border-color:var(--acc);background:var(--acc-w)}
+.mvbox.mid{border-color:var(--line)}
+.mvbox.pool{background:var(--wash)}
+.mvh{margin:0 0 10px;font-size:12px;color:var(--acc);font-weight:600;letter-spacing:.06em;
+  display:flex;gap:9px;align-items:baseline}
+.mvbox.pool .mvh{color:var(--soft)}
+.mvh span{color:var(--soft);font-weight:400;letter-spacing:0;font-size:12.5px}
+.mvc{display:flex;flex-wrap:wrap;gap:7px}
+.mvc.col{display:grid;gap:6px;align-content:start}
+.mvc.slot{min-height:82px}
+.mvbox.over{border-color:var(--acc);background:var(--acc-w)}
+.mchip{cursor:grab;touch-action:pan-y}
+.mchip.dragging{opacity:.85;box-shadow:0 6px 18px rgba(0,0,0,.18);position:relative;z-index:5}
+.mchip:active{cursor:grabbing}
+.mvc.col .mchip{max-width:none;width:100%;align-items:baseline}
+.mvc.col .mchip>span{display:flex;gap:10px;align-items:baseline;flex:1;flex-wrap:wrap}
+.mvc.col .mchip b{display:inline;white-space:nowrap}
+.mvc.col .mchip small{display:inline;margin-top:0}
+.mvc .n0{color:var(--soft);font-size:13.5px}
+.mchip{display:flex;gap:9px;align-items:flex-start;text-align:left;cursor:pointer;
+  border:1px solid var(--line);background:var(--paper);border-radius:8px;padding:9px 13px;
+  color:var(--ink);max-width:340px}
+.mchip:hover{border-color:var(--acc)}
+.mchip i{display:inline-block;width:10px;height:10px;border-radius:3px;flex:0 0 auto;margin-top:5px}
+.mchip i.nod{background:none;border:1px solid var(--line2)}
+.mchip b{font-weight:600;font-size:14.5px;display:block}
+.mchip small{display:block;color:var(--soft);font-size:12.5px;line-height:1.5;margin-top:1px}
+.lvs{display:grid;gap:10px;max-width:880px}
+.lvr{display:flex;gap:16px;align-items:center;flex-wrap:wrap;
+  border:1px solid var(--line);border-radius:9px;padding:12px 17px}
+.lvn{font-size:15px;display:flex;gap:10px;align-items:flex-start;flex:1 1 320px}
+.lvn i{display:inline-block;width:11px;height:11px;border-radius:3px;flex:0 0 auto;margin-top:6px}
+.lvn i.nod{background:none;border:1px solid var(--line2)}
+.lvn b{font-weight:600;display:block}
+.lvn small{display:block;color:var(--soft);font-size:13px;line-height:1.55;margin-top:1px}
+.lvr.on{border-color:var(--acc);background:var(--acc-w)}
+.lvr .seg{display:inline-flex;margin-left:auto}
+.lvr .seg button{background:none;border:1px solid var(--line);border-right:none;cursor:pointer;
+  padding:6px 15px;font-size:13.5px;color:var(--mid)}
+.lvr .seg button:first-child{border-radius:6px 0 0 6px}
+.lvr .seg button:last-child{border-right:1px solid var(--line);border-radius:0 6px 6px 0}
+.lvr .seg button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.evg{border-top:1px solid var(--line2);padding:11px 0 9px}
+.evg:first-of-type{border-top:none;padding-top:0}
+.evh{font-size:13.5px;color:var(--mid);margin-bottom:7px;display:flex;gap:8px;align-items:center}
+.evh i{display:inline-block;width:10px;height:10px;border-radius:3px}
+.evh b{color:var(--soft);font-weight:600;font-size:12.5px}
+.evg .n0{color:var(--soft);font-size:13.5px}
+.xsub{margin:26px 0 0}
+.xsub>h4{margin:0 0 4px;font-size:15px;font-weight:700}
+.xfound{max-width:880px;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-top:10px}
+.xrow{display:flex;gap:14px;padding:12px 16px;border-top:1px solid var(--line2);font-size:14.5px}
+.xrow:first-child{border-top:none}
+.xrow .xs{min-width:118px;color:var(--soft);font-size:13px}
+.xrow ul{margin:0;padding-left:17px}
+.xrow li{margin:2px 0}
+.xrow li small{color:var(--soft);font-size:12.5px;margin-left:6px}
+.xrow .n0{color:var(--soft)}
+textarea[data-txt]{width:100%;max-width:880px;border:1px solid var(--line);border-radius:7px;
+  padding:10px 13px;background:none;line-height:1.7;resize:vertical;min-height:0}
+textarea[data-txt]:focus{border-color:var(--acc)}
+.nav2{margin-top:24px}
+.tabs .tab small{display:block;font-size:11.5px;color:var(--soft);margin-top:2px;font-weight:400}
+</style>
 </head>
 <body>
-
 <header><div class="hin">
-  <button class="brand" id="brand"><span class="c">지리교과교육론</span><span class="n">3강 지리 교육과정의 내용조직 원리</span></button>
+  <button class="brand" id="brand">
+    <span class="c">지리교과교육론 3강</span>
+    <span class="n">지리 교육과정의 내용조직 원리</span>
+  </button>
 </div></header>
 <main id="main"></main>
-
 <script>
-var D={"ITEMS":[{"g":"reg","t":"대륙·국가·권역·지역 등이 내용 조직의 기본 단위가 된다.","r":{"mid":[2,"12개 대단원 중 9개가 대륙 또는 국내 권역입니다."],"wcg":[0,"네 대단원 모두 지역이 아니라 주제와 개념입니다."],"kgi":[0,"다섯 대단원 중 지역 이름이 들어간 것은 동아시아 하나입니다."]},"ev":"아시아의 국가와 주요 도시의 위치를 파악하고"},{"g":"reg","t":"한 지역의 자연환경과 인문환경을 여러 측면에서 종합적으로 다루며, 지역마다 비슷한 항목을 반복해서 살펴본다.","r":{"mid":[1,"대륙마다 자연환경을 지도로 표현한 뒤 인문 주제를 다루지만, 반복되는 것은 첫 성취기준뿐이고 나머지 주제는 지역마다 다릅니다."],"wcg":[0,"지역을 단위로 삼지 않습니다."],"kgi":[0,"지역을 단위로 삼지 않습니다."]}},{"g":"sys","t":"기후·인구·산업·도시와 같은 주제나 개념이 내용 조직의 기본 단위가 된다.","r":{"mid":[1,"12개 중 ‘우리나라의 자연환경과 인간 생활’ 하나가 주제 단위입니다."],"wcg":[2,"자연환경과 문화, 인구와 경제 공간, 환경 문제와 평화가 대단원입니다."],"kgi":[1,"생활·국토·환경은 주제이지만 지리의 개념 이름은 아닙니다."]}},{"g":"rt1","t":"특정 지역을 먼저 정하고, 그 지역을 이해하기 위해 여러 주제를 선택하여 다룬다.","r":{"mid":[2,"아시아는 종교·인구·산업, 유럽은 도시·통합과 분리, 아메리카는 인구 구성·초국적 기업으로 지역마다 다른 주제를 골랐습니다."],"wcg":[0,"지역별 대단원이 없습니다."],"kgi":[0,"지역별 대단원이 없습니다."]},"ev":"아시아의 인구 특징을 파악하고"},{"g":"rt2","t":"특정 주제를 먼저 정하고, 지역은 그 주제를 이해하기 위한 사례로 다룬다.","r":{"mid":[0,"초국적 기업(05-03)처럼 주제가 앞선 성취기준이 몇 개 있지만, 대단원은 모두 지역으로 묶여 있습니다."],"wcg":[2,"기후·종교·식량 같은 주제를 세우고 사례 지역은 정해 두지 않았습니다."],"kgi":[0,"지역을 사례로 견주기보다 지방소멸·탄소중립·재해 같은 문제 자체를 탐구하고 대안을 제안합니다."]},"ev":"초국적 기업의 아메리카 지역 내 입지와 해외 이전의 이유"},{"g":"iss","t":"현실의 쟁점이나 문제를 중심으로 내용을 구성하고, 원인을 분석하거나 해결 방안을 모색하고 판단하게 한다.","r":{"mid":[1,"쟁점은 극지방(06-03), 제주도(10-03)처럼 개별 성취기준에만 들어 있습니다."],"wcg":[1,"마지막 대단원이 환경 문제와 평화이고, 지형 갈등(02-02) 같은 성취기준이 있습니다."],"kgi":[2,"지방소멸, 에너지 쟁점, 동아시아 갈등이 대단원의 축이고 15개 중 10개가 제안·평가·토론으로 끝납니다."]},"ev":"탄소중립 달성을 위한 에너지 정책을 제안한다"},{"g":"comp","t":"지리적 탐구, 자료·정보 활용, 의사 결정, 의사소통처럼 학생이 실제로 수행할 수 있는 능력을 강조한다.","r":{"mid":[1,"우리 지역의 문제를 지리적으로 시각화하고(07-03) 마지막 대단원에서 실천합니다."],"wcg":[1,"지리정보기술의 활용 사례를 조사하고(01-03) 생활방식을 점검합니다(04-02)."],"kgi":[1,"첫 대단원 전체가 탐구 질문, 야외조사, 데이터 수집·분석·시각화입니다. 다만 나머지 대단원을 묶는 기준은 역량이 아니라 문제입니다. 세 과목 모두 2022 개정의 공통 틀에 따라 역량을 강조하므로, 이 문항으로는 과목이 갈리지 않습니다."]},"ev":"탐구 질문에 맞춰 데이터를 수집, 분석, 시각화한다"},{"g":"ex","t":"가까운 곳이나 좁은 공간에서 출발하여 지역·국가·세계로 공간 범위를 점차 넓혀 간다.","r":{"mid":[0,"반대 방향입니다."],"wcg":[0,"네 대단원의 공간 범위가 모두 세계입니다."],"kgi":[2,"탐구 방법 다음에 생활 → 국토 → 동아시아로 넓어집니다."]},"ev":"핫 플레이스의 특징, 생성과정, 정체성 이슈를 조사하고"},{"g":"na","t":"세계나 대륙 같은 넓은 공간에서 출발하여 국가·지역·생활공간으로 공간 범위를 점차 좁혀 간다.","r":{"mid":[1,"대륙에서 대한민국, 국내 권역으로 내려오지만 첫 대단원이 세계화 도입이고 마지막 대단원에서 다시 글로컬로 넓어집니다."],"wcg":[0,"범위가 바뀌지 않습니다."],"kgi":[0,"반대 방향입니다."]},"ev":"대한민국, 우리가 살아가는 곳"},{"g":"int","t":"여러 교과나 학문에 공통된 개념·주제·사회적 문제를 중심으로 내용을 통합하여 구성한다.","r":{"mid":[0,"사회 과목의 한 영역이지만 지리 영역은 따로 제시되고, 내용도 지리 주제로 짜여 있습니다."],"wcg":[0,"지리 과목 하나로 독립해 있습니다."],"kgi":[0,"지리 과목 하나로 독립해 있습니다."]}},{"g":"loc","t":"학생이 살아가는 지역의 특성이나 문제를 교육 내용이나 탐구 활동에 반영하게 한다.","r":{"mid":[1,"우리 지역의 문제를 선정해 시각화하고(07-03) 마지막 대단원에서 해결을 실천하지만(12-03), 대단원 자체가 학생이 사는 지역으로 짜인 것은 아닙니다."],"wcg":[0,"학생이 사는 지역을 다루는 성취기준이 없습니다."],"kgi":[1,"둘째 대단원 전체가 음식, 핫 플레이스, 공유서비스처럼 학생의 생활공간을 다루고, 우리 지역의 자연재해도 분석합니다(04-03)."]},"ev":"우리 지역의 문제를 선정하고 지리적으로 시각화한다"}],"GROUPS":[{"k":"reg","n":"지역적 방법","d":"지역을 기본 단위로 삼아 그 지역을 종합적으로 이해하게 하는 방식"},{"k":"sys","n":"계통적·주제적 방법","d":"주제와 개념을 기본 단위로 삼는 방식"},{"k":"rt1","n":"지역-주제 방법 · 지역 중심형","d":"지역을 먼저 정하고 그 지역에 맞는 주제를 고르는 방식"},{"k":"rt2","n":"지역-주제 방법 · 주제 중심형","d":"주제를 먼저 정하고 여러 지역을 사례로 삼는 방식"},{"k":"iss","n":"쟁점·문제 중심 방법","d":"현실의 쟁점과 문제를 중심에 놓는 방식"},{"k":"comp","n":"역량 중심 방법","d":"학생이 수행할 수 있는 능력을 앞세우는 방식"},{"k":"ex","n":"공간 범위의 계열화 · 확대형","d":"좁은 공간에서 넓은 공간으로 나아가는 배열"},{"k":"na","n":"공간 범위의 계열화 · 축소형","d":"넓은 공간에서 좁은 공간으로 좁혀 오는 배열"},{"k":"int","n":"통합교육과정","d":"여러 교과의 공통 주제로 내용을 묶는 방식"},{"k":"loc","n":"교육과정의 지역화","d":"학생이 사는 지역을 내용과 활동에 반영하는 방식"}],"READ":"<p>세 과목이 또렷하게 갈립니다. 중학교는 지역을 먼저 정하고 그 지역에 맞는 주제를 고르는 <b>지역 중심<\/b>, 세계시민과 지리는 주제를 먼저 정하고 지역을 사례로 삼는 <b>주제 중심<\/b>, 한국지리 탐구는 <b>문제와 탐구 중심<\/b>입니다. 4번과 5번이 정확히 반대로 나오는 두 과목을 나란히 보면 지역-주제 방법의 두 방향이 드러납니다.<\/p><p>7번 역량은 세 과목이 모두 일부입니다. 2022 개정은 모든 과목이 역량을 공통 틀로 삼기 때문에, 이 항목으로는 과목이 갈리지 않습니다. 10번 통합도 마찬가지입니다. 갈리지 않는 항목이 있다는 것도 분석의 결과입니다.<\/p><p>뚜렷한 원리가 하나로 나오지 않는 것은 자연스럽습니다. 지역-주제 방법 자체가 지역적 방법과 계통적 방법을 결합한 것이고, 공간 범위의 계열화는 묶는 기준이 아니라 배열에 관한 것이어서 다른 원리와 함께 나타납니다. 여덟 방법은 경쟁하는 정답이 아니라 한 교육과정 안에서 함께 쓰입니다.<\/p>","SUBJ":[{"id":"mid","name":"중학교 지리 영역","units":[{"n":1,"t":"세계화 시대, 지리의 힘","s":[{"c":"[9사(지리)01-01]","t":"세계 여러 지역의 특성을 해당 지역의 위치와 자연⋅인문환경을 고려하여 추론한다."},{"c":"[9사(지리)01-02]","t":"다양한 스케일에서 지역이 서로 연계되어 있음을 공간적 상호 작용의 사례를 통해 파악한다."},{"c":"[9사(지리)01-03]","t":"세계의 변화가 지역에 영향을 미치고 지역의 변화가 세계에 영향을 미치는 사례를 조사한다."}]},{"n":2,"t":"아시아","s":[{"c":"[9사(지리)02-01]","t":"다양한 지리 정보와 매체를 활용하여 아시아의 국가와 주요 도시의 위치를 파악하고 자연환경의 특성을 지도로 표현한다."},{"c":"[9사(지리)02-02]","t":"종교와 관련된 아시아의 다양한 문화경관과 생활양식을 파악하고, 세계시민으로서 문화 다양성에 대한 이해와 수용성을 높인다."},{"c":"[9사(지리)02-03]","t":"아시아의 인구 특징을 파악하고 지역별 인구 구조 변화를 비교하여 지역 발전의 가능성 및 변화 모습을 추론한다."},{"c":"[9사(지리)02-04]","t":"글로컬 관점에서 아시아의 산업 특징과 변화를 파악하고, 이것이 우리나라 산업에 미치는 영향을 탐색한다."}]},{"n":3,"t":"유럽","s":[{"c":"[9사(지리)03-01]","t":"다양한 지리 정보와 매체를 활용하여 유럽의 국가와 주요 도시의 위치를 파악하고 자연환경의 특성을 지도로 표현한다."},{"c":"[9사(지리)03-02]","t":"다양한 유형의 유럽 도시를 탐색하고, 기후위기에 대응하여 지속가능한 도시를 만들기 위한 노력을 조사한다."},{"c":"[9사(지리)03-03]","t":"지역 간 역학관계에 따른 유럽의 통합과 분리의 움직임이 유럽연합의 변화와 주민 생활에 미치는 영향을 탐색한다."}]},{"n":4,"t":"아프리카","s":[{"c":"[9사(지리)04-01]","t":"다양한 지리 정보와 매체를 활용하여 아프리카의 국가와 주요 도시의 위치를 파악하고 자연환경의 특성을 지도로 표현한다."},{"c":"[9사(지리)04-02]","t":"아프리카의 지리적 특성에 기반한 다양한 문화와 지역 잠재력을 탐구하고, 아프리카에 대한 자신의 인식을 성찰한다."},{"c":"[9사(지리)04-03]","t":"지속가능한 발전을 위한 아프리카 각 지역의 노력과 세계 다양한 주체들의 협력 사례를 조사하고, 세계시민으로서 우리가 참여할 수 있는 방안을 모색한다."}]},{"n":5,"t":"아메리카","s":[{"c":"[9사(지리)05-01]","t":"다양한 지리 정보와 매체를 활용하여 아메리카의 국가와 주요 도시의 위치를 파악하고 자연환경의 특성을 지도로 표현한다."},{"c":"[9사(지리)05-02]","t":"다양한 민족(인종)으로 구성된 아메리카의 인구 특징을 살펴보고, 사례를 들어 아메리카의 문화 혼종성을 설명한다."},{"c":"[9사(지리)05-03]","t":"초국적 기업의 글로벌 생산체제에 대한 이해를 바탕으로, 초국적 기업의 아메리카 지역 내 입지와 해외 이전의 이유, 그에 따른 해당 지역의 변화를 분석한다."}]},{"n":6,"t":"오세아니아와 극지방","s":[{"c":"[9사(지리)06-01]","t":"다양한 지리 정보와 매체를 활용하여 오세아니아의 국가와 주요 도시의 위치, 자연환경의 특성을 파악하고, 자원 수출을 중심으로 세계 다른 지역과의 상호연계성을 탐색한다."},{"c":"[9사(지리)06-02]","t":"태평양 지역이 겪고 있는 환경 문제를 조사하고 그 해결에 참여할 수 있는 방안을 제안한다."},{"c":"[9사(지리)06-03]","t":"극지방의 지리적 중요성과 지역 개발을 둘러싼 다양한 이해관계를 살펴보고, 이에 대한 자신과 상대방의 의견을 비판적으로 검토한다."}]},{"n":7,"t":"대한민국, 우리가 살아가는 곳","s":[{"c":"[9사(지리)07-01]","t":"우리 국토의 위치와 영역에 대한 이해를 바탕으로 세계 속에서 우리나라의 위치를 지정학, 지경학적 측면에서 탐색한다."},{"c":"[9사(지리)07-02]","t":"우리나라 행정구역과 주요 도시의 위치를 파악하고, 자신이 살고 있는 곳의 장소성과 장소감을 표현한다."},{"c":"[9사(지리)07-03]","t":"다양한 지리 정보와 매체를 활용하여 우리 지역의 문제를 선정하고 지리적으로 시각화한다."}]},{"n":8,"t":"우리나라의 자연환경과 인간 생활","s":[{"c":"[9사(지리)08-01]","t":"우리나라 주요 산지⋅하천⋅해안 지형의 위치와 특성을 파악하고, 매력적인 지형 경관을 탐색하여 우리 국토의 아름다움을 느낀다."},{"c":"[9사(지리)08-02]","t":"우리나라의 계절별, 지역별 기후 특성 및 변화 양상을 파악하고, 기후변화에 대한 지역별 대응 노력을 조사한다."},{"c":"[9사(지리)08-03]","t":"우리나라 자연재해의 지리적 특성과 피해 최소화를 위한 노력을 파악하고, 일상생활 속 다양한 상황에서 자연재해 발생 시 자신의 대처 방안을 탐색한다."}]},{"n":9,"t":"중부 지역","s":[{"c":"[9사(지리)09-01]","t":"다양한 지리 정보와 매체를 활용하여 중부 지역의 지리적 특성 및 매력적인 여행 장소들을 탐색한다."},{"c":"[9사(지리)09-02]","t":"수도권의 공간 구조를 파악하고, 인구⋅문화⋅경제적 측면을 중심으로 수도권의 변화 양상을 탐색한다."},{"c":"[9사(지리)09-03]","t":"강원⋅충청 지역의 변화를 교통 발달과 수도권과의 관계를 중심으로 파악하고, 강원⋅충청 지역의 산업 변화와 지역경제 활성화를 위한 노력을 조사한다."},{"c":"[9사(지리)09-04]","t":"수도권과 비수도권 간의 지역 불균형 실태를 지도로 표현하고, 지역 불균형을 완화하기 위한 방안들을 제안한다."}]},{"n":10,"t":"남부 지역","s":[{"c":"[9사(지리)10-01]","t":"다양한 지리 정보와 매체를 활용하여 남부 지역의 지리적 특성 및 매력적인 여행 장소들을 탐색한다."},{"c":"[9사(지리)10-02]","t":"글로벌 경제와 우리나라 산업에서 영⋅호남 공업 지역의 위상을 파악하고, 영⋅호남 지역의 산업 변화와 당면 과제를 조사한다."},{"c":"[9사(지리)10-03]","t":"제주도의 지역 변화와 이를 둘러싼 다양한 가치를 살펴보고 이에 대한 자신과 상대방의 의견을 비판적으로 검토한다."}]},{"n":11,"t":"북부 지역","s":[{"c":"[9사(지리)11-01]","t":"다양한 지리 정보와 매체를 활용하여 북한의 자연환경과 인문환경의 특징을 탐색한다."},{"c":"[9사(지리)11-02]","t":"분단이 우리의 일상생활에 미친 영향을 살펴보고, 분리와 연결의 공간으로서 접경지역의 다양한 모습을 세계 여러 지역의 사례를 통해 비교한다."},{"c":"[9사(지리)11-03]","t":"세계시민의 관점에서 한반도 평화의 중요성을 논의하고, 한반도 평화와 통일 환경 속에서 우리의 삶과 국토의 미래를 구상한다."}]},{"n":12,"t":"지속가능한 세계와 글로컬 시민","s":[{"c":"[9사(지리)12-01]","t":"우리나라 주요 식량 자원 및 에너지 자원의 소비 현황과 수입국 현황을 분석하여 이와 관련된 문제를 파악하고, 자원의 지속가능한 확보 방안을 모색한다."},{"c":"[9사(지리)12-02]","t":"지역 개발과 환경 보존을 둘러싼 글로컬 환경 이슈에 관심을 가지고 자신의 웰빙 및 공동체의 지속가능한 발전을 위해 참여하고 실천한다."},{"c":"[9사(지리)12-03]","t":"더 나은 지역을 만들어 가는 사람들의 노력을 국내외 사례를 통해 살펴보고, 자신이 사는 지역의 문제를 해결하기 위한 방안을 모색하고 이를 실천한다."}]}],"key":{"cau":"대단원 이름만 보면 지역적 방법입니다. 그러나 한 지역을 고르게 다루지 않고, 공통의 틀 위에 지역마다 다른 주제를 두세 개씩 골라 얹었습니다. 1번과 2번이 갈리는 지점이 바로 지역적 방법과 지역-주제 방법의 차이입니다. 배열에서는 초등학교와 반대로 세계에서 우리나라로 좁혀 옵니다. 지평확대법의 방향을 뒤집은 것입니다."}},{"id":"wcg","name":"세계시민과 지리","units":[{"n":1,"t":"세계시민, 세계화와 지역 이해","s":[{"c":"[12세지01-01]","t":"세계화의 의미를 지리적 스케일에 따라 이해하고, 세계화와 지역화의 관계 속에서 세계시민의 역할을 탐색한다."},{"c":"[12세지01-02]","t":"지역 통합과 분리 현상의 사례와 주요 원인을 탐구하고, 이를 바탕으로 지역 변화의 역동성을 파악한다."},{"c":"[12세지01-03]","t":"지리정보기술이 세계시민의 삶과 연계되는 다양한 모습을 이해하고, 지리적 문제 해결 및 의사 결정에 활용되는 사례를 조사한다."}],"el":["세계화와 세계시민","지역 변화의 역동성","지리 정보와 지리정보기술의 활용"]},{"n":2,"t":"모자이크 세계, 세계의 다양한 자연환경과 문화","s":[{"c":"[12세지02-01]","t":"세계의 다양한 기후에 대한 이해를 바탕으로 기후를 활용하거나 극복한 사례를 찾아 인간 생활과의 관계를 탐색한다."},{"c":"[12세지02-02]","t":"세계 주요 지형과 인간 생활의 상관성을 파악하고, 지형의 개발과 보존을 둘러싼 갈등 사례를 통해 지속가능한 이용 방안을 토론한다."},{"c":"[12세지02-03]","t":"세계 주요 종교의 특징 및 종교 경관의 의미를 이해하고, 각 종교가 인간 생활에 미치는 영향을 탐구한다."},{"c":"[12세지02-04]","t":"세계의 다양한 음식과 축제를 지리적으로 설명하고, 문화 다양성을 보존하기 위한 방법을 모색한다."}],"el":["다양한 기후와 인간 생활","지형과 인간 생활 및 지형의 지속가능한 이용","세계 주요 종교 경관","다양한 음식과 축제의 지리적 의미"]},{"n":3,"t":"네트워크 세계, 세계의 인구와 경제 공간","s":[{"c":"[12세지03-01]","t":"세계 인구 분포 및 구조를 통해 세계 인구 문제를 이해하고, 국제적 이주가 인구 유출 지역과 유입 지역에 미치는 영향을 탐구한다."},{"c":"[12세지03-02]","t":"주요 식량 자원의 생산과 소비 양상을 통해 세계 식량 문제가 발생하는 구조적 원인을 파악하고, 식량의 안정적인 생산과 공급을 위한 각국의 대응 전략을 비교⋅분석한다."},{"c":"[12세지03-03]","t":"초국적 기업을 중심으로 한 글로벌 경제 체제의 형성 과정을 탐색하고, 글로벌 경제에서의 공간적 불균등을 해소하기 위한 국제적 협력과 개인적 실천 방안에 대해 조사한다."}],"el":["인구 분포 및 구조, 국제적 이주의 영향","식량 자원의 생산과 소비","글로벌 경제와 공간적 불균등"]},{"n":4,"t":"지속가능한 세계, 세계의 환경 문제와 평화","s":[{"c":"[12세지04-01]","t":"세계 주요 에너지 자원의 생산과 소비 현황을 조사하고, 다양한 친환경 에너지원의 특징에 대한 이해를 바탕으로 지속가능한 에너지 생산 방안을 제시한다."},{"c":"[12세지04-02]","t":"세계 주요 환경 문제의 유형과 실태를 설명하고, 생태전환적 삶에 비추어 현재의 생활방식을 비판적으로 점검한다."},{"c":"[12세지04-03]","t":"다양한 지정학적 분쟁을 국제 정세의 변화와 관련지어 조사하고, 세계 평화와 정의에 기여할 수 있는 방안을 찾아 실천한다."}],"el":["세계의 에너지 문제와 대안","세계의 환경 문제와 생태전환적 삶","지정학적 분쟁과 평화를 위한 노력"]}],"key":{"cau":"계통적·주제적 방법과 지역-주제 주제 중심형이 함께 뚜렷하게 나오는 것이 이 과목의 특징입니다. 둘은 배타적이지 않습니다. 주제로 대단원을 세우고(계통), 그 주제를 여러 지역의 사례로 다루기(지역-주제) 때문입니다. 네 대단원이 모두 세계를 다루므로 공간 범위로는 순서가 설명되지 않고, 모자이크 → 네트워크 → 지속가능한 세계라는 개념이 순서를 정합니다."}},{"id":"kgi","name":"한국지리 탐구","units":[{"n":1,"t":"공간정보와 지리 탐구","s":[{"c":"[12한탐01-01]","t":"다양한 현상에 대해 지리적 관점으로 질문을 던지고, 질문에 답을 하기 위한 탐구 계획을 수립한다."},{"c":"[12한탐01-02]","t":"야외조사 및 지리정보기술을 활용한 데이터 수집방법을 연습하고, 탐구 질문에 맞춰 데이터를 수집, 분석, 시각화한다."}],"el":["지리적 질문과 지리탐구","데이터, 야외조사와 지리정보기술"]},{"n":2,"t":"생활 속 지리 탐구","s":[{"c":"[12한탐02-01]","t":"식품의 생산, 유통, 소비과정을 조사함으로써 음식을 통한 생산자와 소비자, 상품, 장소의 연결성을 이해하고, 상품사슬을 조직하는 윤리적인 방식의 가능성과 한계를 파악한다."},{"c":"[12한탐02-02]","t":"핫 플레이스의 특징, 생성과정, 정체성 이슈를 조사하고, 지역 자원을 활용한 관광 활성화 방안을 제안한다."},{"c":"[12한탐02-03]","t":"모빌리티와 모바일, 빅 데이터, 플랫폼의 결합이 시⋅공간 활용에 미치는 영향을 설명하고, 모빌리티 공유서비스가 일상생활에 미친 영향과 문제점을 조사해 대안을 제시한다."}],"el":["식품과 상품사슬","관광과 여가, 장소 정체성과 장소마케팅","모빌리티와 공유서비스"]},{"n":3,"t":"국토의 변화와 균형 발전 탐구","s":[{"c":"[12한탐03-01]","t":"통계 자료를 활용해 우리나라 인구 및 가구구조의 변화를 시각화 및 분석하고, 저출생, 고령화, 다문화 가구의 증가에 대응하기 위한 방안을 모색한다."},{"c":"[12한탐03-02]","t":"식생활 변화 및 세계화에 따른 우리나라 농업의 변화를 이해하고, 지속가능한 농업과 농촌을 위한 정책을 제안한다."},{"c":"[12한탐03-03]","t":"산업구조의 전환이 지역 경제에 미치는 영향을 이해하고, 이를 바탕으로 최근 급속하게 성장한 지역과 위기의 징후가 나타나는 지역의 성격과 특징을 비교한다."},{"c":"[12한탐03-04]","t":"수도권 집중에 따른 지방소멸과 국토 불균등 발전 문제에 대한 인식을 바탕으로 국가 및 지역 수준의 국토균형발전 방안을 제안하고 실현 가능성을 평가한다."}],"el":["저출생과 고령화, 외국인 이주자와 다문화","지속가능한 농업과 농촌","산업구조의 전환과 지역 변화","수도권 집중과 지방소멸, 국가균형발전"]},{"n":4,"t":"환경과 지속가능성 탐구","s":[{"c":"[12한탐04-01]","t":"세계유산으로 등재된 한반도 자연경관의 가치를 탁월성과 보편성의 측면에서 설명하고, 이를 토대로 등재 가능한 자연경관을 추천한다."},{"c":"[12한탐04-02]","t":"도시화, 농업, 관광지 개발로 인한 산지, 하천, 해안지역의 변화를 조사하고, 환경과 개발에 대한 관점이 자연환경의 복원 및 지속가능한 활용에 미치는 영향을 파악한다."},{"c":"[12한탐04-03]","t":"우리나라 및 우리 지역에서 주로 발생하는 자연재해의 유형과 특징을 분석하고, 이를 토대로 자연재해의 경감 대책을 조사하고 평가한다."},{"c":"[12한탐04-04]","t":"우리나라의 에너지원별 발전에 관한 주요 쟁점을 조사하고, 탄소중립 달성을 위한 에너지 정책을 제안한다."}],"el":["세계유산과 자연경관","환경의 개발과 변화, 보전","자연재해, 재난위험 경감","탄소중립과 에너지 정책"]},{"n":5,"t":"동아시아 갈등과 공존 탐구","s":[{"c":"[12한탐05-01]","t":"북한의 지리적 특징과 당면과제에 대한 이해를 바탕으로 남북협력의 가능성을 모색한다."},{"c":"[12한탐05-02]","t":"한반도를 둘러싼 국가 간 경계와 접경지역을 분석하고, 동아시아 지역의 발전과 평화⋅공존을 위한 지정학적 전략을 토론한다."}],"el":["북한의 당면과제와 남북협력","경계와 영역, 동아시아 지정학과 평화⋅공존"]}],"key":{"cau":"대단원 이름(“국토의 변화와 균형 발전 탐구”, “환경과 지속가능성 탐구”)만 보면 계통적 방법처럼 보입니다. 판정은 이름표가 아니라 성취기준이 학생에게 요구하는 행위에서 갈립니다. 15개 중 10개가 제안·평가·토론으로 끝납니다. 첫 대단원 전체가 탐구 방법이라는 점, 일상에서 국토를 거쳐 동아시아로 넓혀 가는 배열도 함께 봐야 합니다."}}]};
+(function(){
+"use strict";
+var D={"SUBJ":[{"id":"elem","name":"초등 사회","units":[{"n":"3~4학년","t":"우리가 사는 곳","s":[{"c":"4사01-01","t":"주변 여러 장소에서의 경험과 느낌을 다양한 방식으로 표현하고, 장소감을 나누며 서로 존중하는 태도를 지닌다."},{"c":"4사01-02","t":"주변의 여러 장소를 살펴보고, 우리가 사는 곳을 더 살기 좋은 곳으로 만드는 방안을 탐 색한다."}]},{"n":"3~4학년","t":"지도로 만나는 우리 지역","s":[{"c":"4사05-01","t":"우리 지역을 표현한 다양한 종류의 지도를 찾아보고, 지도의 요소를 이해한다."},{"c":"4사05-02","t":"지도에서 우리 지역의 위치를 파악하고, 우리 지역의 지리 정보를 탐색한다."}]},{"n":"3~4학년","t":"지역문제를 해결하고 지역을 알리는 노력","s":[{"c":"4사09-01","t":"생활 주변에서 찾을 수 있는 여러 가지 문제를 파악하고, 그 문제를 합리적으로 해결하는 능력을 기른다."},{"c":"4사09-02","t":"지역의 자연환경, 역사, 문화, 생산물 등을 알리려는 지역사회의 노력을 알고 관심을 갖는다."}]},{"n":"3~4학년","t":"다양한 환경과 삶의 모습","s":[{"c":"4사10-01","t":"여러 지역의 자연환경과 인문환경의 특징을 살펴보고, 환경의 이용과 개발에 따른 변화를 탐구한다."},{"c":"4사10-02","t":"사례에서 도시의 인구, 교통, 산업 등의 특징을 탐구하고, 도시에서의 삶의 모습을 이해 한다."}]},{"n":"5~6학년","t":"우리나라 국토 여행","s":[{"c":"6사01-01","t":"우리나라 산지, 하천, 해안 지형의 위치를 확인하고 지형의 분포 특징을 탐구한다."},{"c":"6사01-02","t":"독도의 지리적 특성과 독도에 대한 역사 기록을 바탕으로 영토로서 독도의 중요성을 이해 한다."}]},{"n":"5~6학년","t":"우리나라 지리 탐구","s":[{"c":"6사02-01","t":"우리나라의 계절별 기후 특징을 자료에서 탐구하고, 기후변화로 인한 자연재해의 심각성을 이해한다."},{"c":"6사02-02","t":"우리나라의 지역별 인구 분포의 특징을 알아보고, 이에 따른 문제점과 해결 방안을 탐색 한다."}]},{"n":"5~6학년","t":"지구, 대륙 그리고 국가들","s":[{"c":"6사09-01","t":"세계를 표현하는 다양한 공간 자료의 특징을 이해하고, 지구본과 세계지도에서 위치를 표현하는 방법을 익힌다."},{"c":"6사09-02","t":"세계 주요 대륙과 대양을 파악하고, 우리나라 및 세계 여러 국가의 위치와 영토의 특징을 이해한다."}]},{"n":"5~6학년","t":"세계의 자연환경","s":[{"c":"6사10-01","t":"세계의 여러 지역의 지형 경관을 살펴보고, 이를 통해 다양한 삶의 모습을 이해한다."},{"c":"6사10-02","t":"세계의 다양한 기후를 알아보고 기후 환경과 인간생활 간의 관계를 탐구한다."}]},{"n":"5~6학년","t":"지구촌 사람들","s":[{"c":"6사12-01","t":"세계의 인구 분포를 파악하고 여러 국가의 인구 특징을 탐구한다."},{"c":"6사12-02","t":"지구촌을 위협하는 다양한 문제들을 파악하고, 지속가능한 미래를 위한 해결 방안을 탐색 한다."}]}]},{"id":"mid","name":"중학교 지리 영역","units":[{"n":1,"t":"세계화 시대, 지리의 힘","s":[{"c":"[9사(지리)01-01]","t":"세계 여러 지역의 특성을 해당 지역의 위치와 자연⋅인문환경을 고려하여 추론한다."},{"c":"[9사(지리)01-02]","t":"다양한 스케일에서 지역이 서로 연계되어 있음을 공간적 상호 작용의 사례를 통해 파악한다."},{"c":"[9사(지리)01-03]","t":"세계의 변화가 지역에 영향을 미치고 지역의 변화가 세계에 영향을 미치는 사례를 조사한다."}]},{"n":2,"t":"아시아","s":[{"c":"[9사(지리)02-01]","t":"다양한 지리 정보와 매체를 활용하여 아시아의 국가와 주요 도시의 위치를 파악하고 자연환경의 특성을 지도로 표현한다."},{"c":"[9사(지리)02-02]","t":"종교와 관련된 아시아의 다양한 문화경관과 생활양식을 파악하고, 세계시민으로서 문화 다양성에 대한 이해와 수용성을 높인다."},{"c":"[9사(지리)02-03]","t":"아시아의 인구 특징을 파악하고 지역별 인구 구조 변화를 비교하여 지역 발전의 가능성 및 변화 모습을 추론한다."},{"c":"[9사(지리)02-04]","t":"글로컬 관점에서 아시아의 산업 특징과 변화를 파악하고, 이것이 우리나라 산업에 미치는 영향을 탐색한다."}]},{"n":3,"t":"유럽","s":[{"c":"[9사(지리)03-01]","t":"다양한 지리 정보와 매체를 활용하여 유럽의 국가와 주요 도시의 위치를 파악하고 자연환경의 특성을 지도로 표현한다."},{"c":"[9사(지리)03-02]","t":"다양한 유형의 유럽 도시를 탐색하고, 기후위기에 대응하여 지속가능한 도시를 만들기 위한 노력을 조사한다."},{"c":"[9사(지리)03-03]","t":"지역 간 역학관계에 따른 유럽의 통합과 분리의 움직임이 유럽연합의 변화와 주민 생활에 미치는 영향을 탐색한다."}]},{"n":4,"t":"아프리카","s":[{"c":"[9사(지리)04-01]","t":"다양한 지리 정보와 매체를 활용하여 아프리카의 국가와 주요 도시의 위치를 파악하고 자연환경의 특성을 지도로 표현한다."},{"c":"[9사(지리)04-02]","t":"아프리카의 지리적 특성에 기반한 다양한 문화와 지역 잠재력을 탐구하고, 아프리카에 대한 자신의 인식을 성찰한다."},{"c":"[9사(지리)04-03]","t":"지속가능한 발전을 위한 아프리카 각 지역의 노력과 세계 다양한 주체들의 협력 사례를 조사하고, 세계시민으로서 우리가 참여할 수 있는 방안을 모색한다."}]},{"n":5,"t":"아메리카","s":[{"c":"[9사(지리)05-01]","t":"다양한 지리 정보와 매체를 활용하여 아메리카의 국가와 주요 도시의 위치를 파악하고 자연환경의 특성을 지도로 표현한다."},{"c":"[9사(지리)05-02]","t":"다양한 민족(인종)으로 구성된 아메리카의 인구 특징을 살펴보고, 사례를 들어 아메리카의 문화 혼종성을 설명한다."},{"c":"[9사(지리)05-03]","t":"초국적 기업의 글로벌 생산체제에 대한 이해를 바탕으로, 초국적 기업의 아메리카 지역 내 입지와 해외 이전의 이유, 그에 따른 해당 지역의 변화를 분석한다."}]},{"n":6,"t":"오세아니아와 극지방","s":[{"c":"[9사(지리)06-01]","t":"다양한 지리 정보와 매체를 활용하여 오세아니아의 국가와 주요 도시의 위치, 자연환경의 특성을 파악하고, 자원 수출을 중심으로 세계 다른 지역과의 상호연계성을 탐색한다."},{"c":"[9사(지리)06-02]","t":"태평양 지역이 겪고 있는 환경 문제를 조사하고 그 해결에 참여할 수 있는 방안을 제안한다."},{"c":"[9사(지리)06-03]","t":"극지방의 지리적 중요성과 지역 개발을 둘러싼 다양한 이해관계를 살펴보고, 이에 대한 자신과 상대방의 의견을 비판적으로 검토한다."}]},{"n":7,"t":"대한민국, 우리가 살아가는 곳","s":[{"c":"[9사(지리)07-01]","t":"우리 국토의 위치와 영역에 대한 이해를 바탕으로 세계 속에서 우리나라의 위치를 지정학, 지경학적 측면에서 탐색한다."},{"c":"[9사(지리)07-02]","t":"우리나라 행정구역과 주요 도시의 위치를 파악하고, 자신이 살고 있는 곳의 장소성과 장소감을 표현한다."},{"c":"[9사(지리)07-03]","t":"다양한 지리 정보와 매체를 활용하여 우리 지역의 문제를 선정하고 지리적으로 시각화한다."}]},{"n":8,"t":"우리나라의 자연환경과 인간 생활","s":[{"c":"[9사(지리)08-01]","t":"우리나라 주요 산지⋅하천⋅해안 지형의 위치와 특성을 파악하고, 매력적인 지형 경관을 탐색하여 우리 국토의 아름다움을 느낀다."},{"c":"[9사(지리)08-02]","t":"우리나라의 계절별, 지역별 기후 특성 및 변화 양상을 파악하고, 기후변화에 대한 지역별 대응 노력을 조사한다."},{"c":"[9사(지리)08-03]","t":"우리나라 자연재해의 지리적 특성과 피해 최소화를 위한 노력을 파악하고, 일상생활 속 다양한 상황에서 자연재해 발생 시 자신의 대처 방안을 탐색한다."}]},{"n":9,"t":"중부 지역","s":[{"c":"[9사(지리)09-01]","t":"다양한 지리 정보와 매체를 활용하여 중부 지역의 지리적 특성 및 매력적인 여행 장소들을 탐색한다."},{"c":"[9사(지리)09-02]","t":"수도권의 공간 구조를 파악하고, 인구⋅문화⋅경제적 측면을 중심으로 수도권의 변화 양상을 탐색한다."},{"c":"[9사(지리)09-03]","t":"강원⋅충청 지역의 변화를 교통 발달과 수도권과의 관계를 중심으로 파악하고, 강원⋅충청 지역의 산업 변화와 지역경제 활성화를 위한 노력을 조사한다."},{"c":"[9사(지리)09-04]","t":"수도권과 비수도권 간의 지역 불균형 실태를 지도로 표현하고, 지역 불균형을 완화하기 위한 방안들을 제안한다."}]},{"n":10,"t":"남부 지역","s":[{"c":"[9사(지리)10-01]","t":"다양한 지리 정보와 매체를 활용하여 남부 지역의 지리적 특성 및 매력적인 여행 장소들을 탐색한다."},{"c":"[9사(지리)10-02]","t":"글로벌 경제와 우리나라 산업에서 영⋅호남 공업 지역의 위상을 파악하고, 영⋅호남 지역의 산업 변화와 당면 과제를 조사한다."},{"c":"[9사(지리)10-03]","t":"제주도의 지역 변화와 이를 둘러싼 다양한 가치를 살펴보고 이에 대한 자신과 상대방의 의견을 비판적으로 검토한다."}]},{"n":11,"t":"북부 지역","s":[{"c":"[9사(지리)11-01]","t":"다양한 지리 정보와 매체를 활용하여 북한의 자연환경과 인문환경의 특징을 탐색한다."},{"c":"[9사(지리)11-02]","t":"분단이 우리의 일상생활에 미친 영향을 살펴보고, 분리와 연결의 공간으로서 접경지역의 다양한 모습을 세계 여러 지역의 사례를 통해 비교한다."},{"c":"[9사(지리)11-03]","t":"세계시민의 관점에서 한반도 평화의 중요성을 논의하고, 한반도 평화와 통일 환경 속에서 우리의 삶과 국토의 미래를 구상한다."}]},{"n":12,"t":"지속가능한 세계와 글로컬 시민","s":[{"c":"[9사(지리)12-01]","t":"우리나라 주요 식량 자원 및 에너지 자원의 소비 현황과 수입국 현황을 분석하여 이와 관련된 문제를 파악하고, 자원의 지속가능한 확보 방안을 모색한다."},{"c":"[9사(지리)12-02]","t":"지역 개발과 환경 보존을 둘러싼 글로컬 환경 이슈에 관심을 가지고 자신의 웰빙 및 공동체의 지속가능한 발전을 위해 참여하고 실천한다."},{"c":"[9사(지리)12-03]","t":"더 나은 지역을 만들어 가는 사람들의 노력을 국내외 사례를 통해 살펴보고, 자신이 사는 지역의 문제를 해결하기 위한 방안을 모색하고 이를 실천한다."}]}],"key":{"cau":"대단원 이름만 보면 지역적 방법입니다. 그러나 한 지역을 고르게 다루지 않고, 공통의 틀 위에 지역마다 다른 주제를 두세 개씩 골라 얹었습니다. 1번과 2번이 갈리는 지점이 바로 지역적 방법과 지역-주제 방법의 차이입니다. 배열에서는 초등학교와 반대로 세계에서 우리나라로 좁혀 옵니다. 지평확대법의 방향을 뒤집은 것입니다."}},{"id":"wcg","name":"세계시민과 지리","units":[{"n":1,"t":"세계시민, 세계화와 지역 이해","s":[{"c":"[12세지01-01]","t":"세계화의 의미를 지리적 스케일에 따라 이해하고, 세계화와 지역화의 관계 속에서 세계시민의 역할을 탐색한다."},{"c":"[12세지01-02]","t":"지역 통합과 분리 현상의 사례와 주요 원인을 탐구하고, 이를 바탕으로 지역 변화의 역동성을 파악한다."},{"c":"[12세지01-03]","t":"지리정보기술이 세계시민의 삶과 연계되는 다양한 모습을 이해하고, 지리적 문제 해결 및 의사 결정에 활용되는 사례를 조사한다."}],"el":["세계화와 세계시민","지역 변화의 역동성","지리 정보와 지리정보기술의 활용"]},{"n":2,"t":"모자이크 세계, 세계의 다양한 자연환경과 문화","s":[{"c":"[12세지02-01]","t":"세계의 다양한 기후에 대한 이해를 바탕으로 기후를 활용하거나 극복한 사례를 찾아 인간 생활과의 관계를 탐색한다."},{"c":"[12세지02-02]","t":"세계 주요 지형과 인간 생활의 상관성을 파악하고, 지형의 개발과 보존을 둘러싼 갈등 사례를 통해 지속가능한 이용 방안을 토론한다."},{"c":"[12세지02-03]","t":"세계 주요 종교의 특징 및 종교 경관의 의미를 이해하고, 각 종교가 인간 생활에 미치는 영향을 탐구한다."},{"c":"[12세지02-04]","t":"세계의 다양한 음식과 축제를 지리적으로 설명하고, 문화 다양성을 보존하기 위한 방법을 모색한다."}],"el":["다양한 기후와 인간 생활","지형과 인간 생활 및 지형의 지속가능한 이용","세계 주요 종교 경관","다양한 음식과 축제의 지리적 의미"]},{"n":3,"t":"네트워크 세계, 세계의 인구와 경제 공간","s":[{"c":"[12세지03-01]","t":"세계 인구 분포 및 구조를 통해 세계 인구 문제를 이해하고, 국제적 이주가 인구 유출 지역과 유입 지역에 미치는 영향을 탐구한다."},{"c":"[12세지03-02]","t":"주요 식량 자원의 생산과 소비 양상을 통해 세계 식량 문제가 발생하는 구조적 원인을 파악하고, 식량의 안정적인 생산과 공급을 위한 각국의 대응 전략을 비교⋅분석한다."},{"c":"[12세지03-03]","t":"초국적 기업을 중심으로 한 글로벌 경제 체제의 형성 과정을 탐색하고, 글로벌 경제에서의 공간적 불균등을 해소하기 위한 국제적 협력과 개인적 실천 방안에 대해 조사한다."}],"el":["인구 분포 및 구조, 국제적 이주의 영향","식량 자원의 생산과 소비","글로벌 경제와 공간적 불균등"]},{"n":4,"t":"지속가능한 세계, 세계의 환경 문제와 평화","s":[{"c":"[12세지04-01]","t":"세계 주요 에너지 자원의 생산과 소비 현황을 조사하고, 다양한 친환경 에너지원의 특징에 대한 이해를 바탕으로 지속가능한 에너지 생산 방안을 제시한다."},{"c":"[12세지04-02]","t":"세계 주요 환경 문제의 유형과 실태를 설명하고, 생태전환적 삶에 비추어 현재의 생활방식을 비판적으로 점검한다."},{"c":"[12세지04-03]","t":"다양한 지정학적 분쟁을 국제 정세의 변화와 관련지어 조사하고, 세계 평화와 정의에 기여할 수 있는 방안을 찾아 실천한다."}],"el":["세계의 에너지 문제와 대안","세계의 환경 문제와 생태전환적 삶","지정학적 분쟁과 평화를 위한 노력"]}],"key":{"cau":"계통적·주제적 방법과 지역-주제 주제 중심형이 함께 뚜렷하게 나오는 것이 이 과목의 특징입니다. 둘은 배타적이지 않습니다. 주제로 대단원을 세우고(계통), 그 주제를 여러 지역의 사례로 다루기(지역-주제) 때문입니다. 네 대단원이 모두 세계를 다루므로 공간 범위로는 순서가 설명되지 않고, 모자이크 → 네트워크 → 지속가능한 세계라는 개념이 순서를 정합니다."}},{"id":"kgi","name":"한국지리 탐구","units":[{"n":1,"t":"공간정보와 지리 탐구","s":[{"c":"[12한탐01-01]","t":"다양한 현상에 대해 지리적 관점으로 질문을 던지고, 질문에 답을 하기 위한 탐구 계획을 수립한다."},{"c":"[12한탐01-02]","t":"야외조사 및 지리정보기술을 활용한 데이터 수집방법을 연습하고, 탐구 질문에 맞춰 데이터를 수집, 분석, 시각화한다."}],"el":["지리적 질문과 지리탐구","데이터, 야외조사와 지리정보기술"]},{"n":2,"t":"생활 속 지리 탐구","s":[{"c":"[12한탐02-01]","t":"식품의 생산, 유통, 소비과정을 조사함으로써 음식을 통한 생산자와 소비자, 상품, 장소의 연결성을 이해하고, 상품사슬을 조직하는 윤리적인 방식의 가능성과 한계를 파악한다."},{"c":"[12한탐02-02]","t":"핫 플레이스의 특징, 생성과정, 정체성 이슈를 조사하고, 지역 자원을 활용한 관광 활성화 방안을 제안한다."},{"c":"[12한탐02-03]","t":"모빌리티와 모바일, 빅 데이터, 플랫폼의 결합이 시⋅공간 활용에 미치는 영향을 설명하고, 모빌리티 공유서비스가 일상생활에 미친 영향과 문제점을 조사해 대안을 제시한다."}],"el":["식품과 상품사슬","관광과 여가, 장소 정체성과 장소마케팅","모빌리티와 공유서비스"]},{"n":3,"t":"국토의 변화와 균형 발전 탐구","s":[{"c":"[12한탐03-01]","t":"통계 자료를 활용해 우리나라 인구 및 가구구조의 변화를 시각화 및 분석하고, 저출생, 고령화, 다문화 가구의 증가에 대응하기 위한 방안을 모색한다."},{"c":"[12한탐03-02]","t":"식생활 변화 및 세계화에 따른 우리나라 농업의 변화를 이해하고, 지속가능한 농업과 농촌을 위한 정책을 제안한다."},{"c":"[12한탐03-03]","t":"산업구조의 전환이 지역 경제에 미치는 영향을 이해하고, 이를 바탕으로 최근 급속하게 성장한 지역과 위기의 징후가 나타나는 지역의 성격과 특징을 비교한다."},{"c":"[12한탐03-04]","t":"수도권 집중에 따른 지방소멸과 국토 불균등 발전 문제에 대한 인식을 바탕으로 국가 및 지역 수준의 국토균형발전 방안을 제안하고 실현 가능성을 평가한다."}],"el":["저출생과 고령화, 외국인 이주자와 다문화","지속가능한 농업과 농촌","산업구조의 전환과 지역 변화","수도권 집중과 지방소멸, 국가균형발전"]},{"n":4,"t":"환경과 지속가능성 탐구","s":[{"c":"[12한탐04-01]","t":"세계유산으로 등재된 한반도 자연경관의 가치를 탁월성과 보편성의 측면에서 설명하고, 이를 토대로 등재 가능한 자연경관을 추천한다."},{"c":"[12한탐04-02]","t":"도시화, 농업, 관광지 개발로 인한 산지, 하천, 해안지역의 변화를 조사하고, 환경과 개발에 대한 관점이 자연환경의 복원 및 지속가능한 활용에 미치는 영향을 파악한다."},{"c":"[12한탐04-03]","t":"우리나라 및 우리 지역에서 주로 발생하는 자연재해의 유형과 특징을 분석하고, 이를 토대로 자연재해의 경감 대책을 조사하고 평가한다."},{"c":"[12한탐04-04]","t":"우리나라의 에너지원별 발전에 관한 주요 쟁점을 조사하고, 탄소중립 달성을 위한 에너지 정책을 제안한다."}],"el":["세계유산과 자연경관","환경의 개발과 변화, 보전","자연재해, 재난위험 경감","탄소중립과 에너지 정책"]},{"n":5,"t":"동아시아 갈등과 공존 탐구","s":[{"c":"[12한탐05-01]","t":"북한의 지리적 특징과 당면과제에 대한 이해를 바탕으로 남북협력의 가능성을 모색한다."},{"c":"[12한탐05-02]","t":"한반도를 둘러싼 국가 간 경계와 접경지역을 분석하고, 동아시아 지역의 발전과 평화⋅공존을 위한 지정학적 전략을 토론한다."}],"el":["북한의 당면과제와 남북협력","경계와 영역, 동아시아 지정학과 평화⋅공존"]}],"key":{"cau":"대단원 이름(“국토의 변화와 균형 발전 탐구”, “환경과 지속가능성 탐구”)만 보면 계통적 방법처럼 보입니다. 판정은 이름표가 아니라 성취기준이 학생에게 요구하는 행위에서 갈립니다. 15개 중 10개가 제안·평가·토론으로 끝납니다. 첫 대단원 전체가 탐구 방법이라는 점, 일상에서 국토를 거쳐 동아시아로 넓혀 가는 배열도 함께 봐야 합니다."}}],"READ":"<p>세 과목이 또렷하게 갈립니다. 중학교는 지역을 먼저 정하고 그 지역에 맞는 주제를 고르는 <b>지역 중심</b>, 세계시민과 지리는 주제를 먼저 정하고 지역을 사례로 삼는 <b>주제 중심</b>, 한국지리 탐구는 <b>문제와 탐구 중심</b>입니다. 4번과 5번이 정확히 반대로 나오는 두 과목을 나란히 보면 지역-주제 방법의 두 방향이 드러납니다.</p><p>7번 역량은 세 과목이 모두 일부입니다. 2022 개정은 모든 과목이 역량을 공통 틀로 삼기 때문에, 이 항목으로는 과목이 갈리지 않습니다. 10번 통합도 마찬가지입니다. 갈리지 않는 항목이 있다는 것도 분석의 결과입니다.</p><p>뚜렷한 원리가 하나로 나오지 않는 것은 자연스럽습니다. 지역-주제 방법 자체가 지역적 방법과 계통적 방법을 결합한 것이고, 공간 범위의 계열화는 묶는 기준이 아니라 배열에 관한 것이어서 다른 원리와 함께 나타납니다. 여덟 방법은 경쟁하는 정답이 아니라 한 교육과정 안에서 함께 쓰입니다.</p>"};
+var ELEM=D.SUBJ[0];
+var SUBJ=D.SUBJ.slice(1),SID={};SUBJ.forEach(function(s){SID[s.id]=s;});
+var ALL=[ELEM].concat(SUBJ);
+var PENS=[
+ {k:"reg",n:"지역",c:"#CFE6CE",d:"아시아, 유럽, 우리 지역처럼 특정 공간이 출발점인 곳"},
+ {k:"sys",n:"주제·개념",c:"#CFDDEF",d:"기후, 인구, 산업, 종교처럼 주제나 개념이 출발점인 곳"},
+ {k:"iss",n:"쟁점·문제",c:"#F2DCC2",d:"기후위기, 지방소멸, 개발과 보존처럼 판단할 문제가 출발점인 곳"}
+];
+var XC="#E4D4EE";
+function pc(k){var i;
+  for(i=0;i<PENS.length;i++)if(PENS[i].k===k)return PENS[i].c;
+  for(i=0;i<PENS2.length;i++)if(PENS2[i].k===k)return PENS2[i].c;
+  return XC;}
+function pn(k){for(var i=0;i<PENS.length;i++)if(PENS[i].k===k)return PENS[i].n;return "주제";}
+var LV=[{k:"hi",n:"뚜렷"},{k:"mid",n:"부분"}];
+var METHODS=[{"k": "reg", "n": "지역적 방법", "d": "지역을 기본 단위로 삼아 그 지역을 종합적으로 이해하게 하는 방식", "p": "reg"}, {"k": "sys", "n": "계통적·주제적 방법", "d": "주제와 개념을 기본 단위로 삼는 방식", "p": "sys"}, {"k": "rt1", "n": "지역-주제 방법 · 지역 중심형", "d": "지역을 먼저 정하고 그 지역에 맞는 주제를 고르는 방식", "p": "reg"}, {"k": "rt2", "n": "지역-주제 방법 · 주제 중심형", "d": "주제를 먼저 정하고 여러 지역을 사례로 삼는 방식", "p": "sys"}, {"k": "iss", "n": "쟁점·문제 중심 방법", "d": "현실의 쟁점과 문제를 중심에 놓는 방식", "p": "iss"}, {"k": "comp", "n": "역량 중심 방법", "d": "학생이 수행할 수 있는 능력을 앞세우는 방식"}, {"k": "ex", "n": "공간 범위의 계열화 · 확대형", "d": "좁은 공간에서 넓은 공간으로 나아가는 배열"}, {"k": "na", "n": "공간 범위의 계열화 · 축소형", "d": "넓은 공간에서 좁은 공간으로 좁혀 오는 배열"}, {"k": "int", "n": "통합교육과정", "d": "여러 교과의 공통 주제로 내용을 묶는 방식"}, {"k": "loc", "n": "교육과정의 지역화", "d": "학생이 사는 지역을 내용과 활동에 반영하는 방식"}];
+var CRIT=[
+ {k:"reg",n:"지역",name:"지역적 방법",d:"지역을 기본 단위로 삼아 그 지역을 종합적으로 이해하게 하는 방식"},
+ {k:"sys",n:"주제·개념",name:"계통적·주제적 방법",d:"주제와 개념을 기본 단위로 삼는 방식"},
+ {k:"iss",n:"쟁점·문제",name:"쟁점·문제 중심 방법",d:"현실의 쟁점과 문제를 중심에 놓는 방식"}
+];
+var EGM={"mid.u0":[{"s":8,"e":13,"k":"sys"}],"mid.u1":[{"s":0,"e":3,"k":"reg"}],"mid.u2":[{"s":0,"e":2,"k":"reg"}],"mid.u3":[{"s":0,"e":4,"k":"reg"}],"mid.u4":[{"s":0,"e":4,"k":"reg"}],"mid.u5":[{"s":0,"e":10,"k":"reg"}],"mid.u6":[{"s":0,"e":4,"k":"reg"}],"mid.u7":[{"s":6,"e":17,"k":"sys"}],"mid.u8":[{"s":0,"e":5,"k":"reg"}],"mid.u9":[{"s":0,"e":5,"k":"reg"}],"mid.u10":[{"s":0,"e":5,"k":"reg"}],"mid.u11":[{"s":0,"e":8,"k":"iss"}],"mid.u0s0":[{"s":17,"e":32,"k":"sys"}],"mid.u0s1":[{"s":0,"e":7,"k":"sys"}],"mid.u0s2":[{"s":0,"e":14,"k":"sys"}],"mid.u1s0":[{"s":20,"e":23,"k":"reg"}],"mid.u1s1":[{"s":8,"e":11,"k":"reg"}],"mid.u1s2":[{"s":0,"e":3,"k":"reg"}],"mid.u1s3":[{"s":9,"e":12,"k":"reg"}],"mid.u2s0":[{"s":20,"e":22,"k":"reg"}],"mid.u2s1":[{"s":8,"e":13,"k":"reg"}],"mid.u2s2":[{"s":14,"e":24,"k":"reg"}],"mid.u3s0":[{"s":20,"e":24,"k":"reg"}],"mid.u3s1":[{"s":0,"e":4,"k":"reg"}],"mid.u3s2":[{"s":13,"e":22,"k":"reg"}],"mid.u4s0":[{"s":20,"e":24,"k":"reg"}],"mid.u4s1":[{"s":17,"e":21,"k":"reg"}],"mid.u4s2":[{"s":39,"e":46,"k":"reg"}],"mid.u5s0":[{"s":20,"e":25,"k":"reg"}],"mid.u5s1":[{"s":0,"e":6,"k":"reg"}],"mid.u5s2":[{"s":0,"e":3,"k":"reg"}],"mid.u6s0":[{"s":0,"e":5,"k":"reg"}],"mid.u6s1":[{"s":0,"e":4,"k":"reg"}],"mid.u6s2":[{"s":20,"e":25,"k":"reg"}],"mid.u7s0":[{"s":8,"e":19,"k":"sys"}],"mid.u7s1":[{"s":15,"e":25,"k":"sys"}],"mid.u7s2":[{"s":5,"e":9,"k":"sys"}],"mid.u8s0":[{"s":20,"e":25,"k":"reg"}],"mid.u8s1":[{"s":0,"e":3,"k":"reg"}],"mid.u8s2":[{"s":0,"e":8,"k":"reg"}],"mid.u8s3":[{"s":0,"e":9,"k":"reg"}],"mid.u9s0":[{"s":20,"e":25,"k":"reg"}],"mid.u9s1":[{"s":18,"e":28,"k":"reg"}],"mid.u9s2":[{"s":0,"e":3,"k":"reg"}],"mid.u10s0":[{"s":20,"e":22,"k":"reg"}],"mid.u10s1":[{"s":41,"e":45,"k":"reg"}],"mid.u10s2":[{"s":11,"e":14,"k":"reg"}],"mid.u11s0":[{"s":61,"e":73,"k":"iss"}],"mid.u11s1":[{"s":3,"e":27,"k":"iss"}],"mid.u11s2":[{"s":42,"e":59,"k":"iss"}],"wcg.u0":[{"s":6,"e":16,"k":"sys"}],"wcg.u1":[{"s":9,"e":25,"k":"sys"}],"wcg.u2":[{"s":9,"e":22,"k":"sys"}],"wcg.u3":[{"s":10,"e":23,"k":"iss"}],"wcg.u0s0":[{"s":0,"e":16,"k":"sys"}],"wcg.u0s1":[{"s":0,"e":12,"k":"sys"}],"wcg.u0s2":[{"s":0,"e":6,"k":"sys"}],"wcg.u1s0":[{"s":0,"e":10,"k":"sys"}],"wcg.u1s1":[{"s":0,"e":20,"k":"sys"}],"wcg.u1s2":[{"s":0,"e":20,"k":"sys"}],"wcg.u1s3":[{"s":0,"e":14,"k":"sys"}],"wcg.u2s0":[{"s":0,"e":13,"k":"sys"}],"wcg.u2s1":[{"s":0,"e":19,"k":"sys"}],"wcg.u2s2":[{"s":15,"e":31,"k":"sys"}],"wcg.u3s0":[{"s":61,"e":76,"k":"iss"}],"wcg.u3s1":[{"s":0,"e":19,"k":"iss"}],"wcg.u3s2":[{"s":0,"e":11,"k":"iss"}],"kgi.u0":[{"s":0,"e":11,"k":"sys"}],"kgi.u1":[{"s":0,"e":10,"k":"iss"}],"kgi.u2":[{"s":0,"e":13,"k":"iss"}],"kgi.u3":[{"s":0,"e":9,"k":"iss"}],"kgi.u4":[{"s":0,"e":11,"k":"iss"}],"kgi.u0s0":[{"s":11,"e":27,"k":"sys"}],"kgi.u0s1":[{"s":45,"e":61,"k":"sys"}],"kgi.u1s0":[{"s":32,"e":53,"k":"sys"}],"kgi.u1s1":[{"s":18,"e":52,"k":"iss"}],"kgi.u1s2":[{"s":50,"e":78,"k":"iss"}],"kgi.u2s0":[{"s":43,"e":75,"k":"iss"}],"kgi.u2s1":[{"s":36,"e":55,"k":"iss"}],"kgi.u2s2":[{"s":0,"e":23,"k":"sys"}],"kgi.u2s3":[{"s":0,"e":29,"k":"iss"}],"kgi.u3s0":[{"s":0,"e":23,"k":"sys"}],"kgi.u3s1":[{"s":44,"e":57,"k":"iss"}],"kgi.u3s2":[{"s":50,"e":61,"k":"iss"}],"kgi.u3s3":[{"s":6,"e":24,"k":"iss"}],"kgi.u4s0":[{"s":12,"e":39,"k":"iss"}],"kgi.u4s1":[{"s":9,"e":22,"k":"iss"}],"elem.u0":[{"s":0,"e":8,"k":"reg"}],"elem.u1":[{"s":8,"e":13,"k":"reg"}],"elem.u2":[{"s":0,"e":8,"k":"iss"}],"elem.u3":[{"s":0,"e":13,"k":"sys"}],"elem.u4":[{"s":0,"e":7,"k":"reg"}],"elem.u5":[{"s":0,"e":7,"k":"reg"}],"elem.u6":[{"s":0,"e":14,"k":"reg"}],"elem.u7":[{"s":0,"e":8,"k":"sys"}],"elem.u8":[{"s":0,"e":7,"k":"sys"}],"elem.u0s0":[{"s":0,"e":8,"k":"reg"}],"elem.u0s1":[{"s":17,"e":45,"k":"iss"}],"elem.u1s0":[{"s":29,"e":35,"k":"sys"}],"elem.u1s1":[{"s":5,"e":14,"k":"reg"}],"elem.u2s0":[{"s":0,"e":24,"k":"iss"}],"elem.u2s1":[{"s":30,"e":38,"k":"iss"}],"elem.u3s0":[{"s":7,"e":21,"k":"sys"}],"elem.u3s1":[{"s":5,"e":19,"k":"sys"}],"elem.u4s0":[{"s":0,"e":18,"k":"reg"}],"elem.u4s1":[{"s":0,"e":2,"k":"reg"}],"elem.u5s0":[{"s":0,"e":12,"k":"reg"}],"elem.u5s1":[{"s":0,"e":15,"k":"reg"}],"elem.u6s0":[{"s":0,"e":18,"k":"sys"}],"elem.u6s1":[{"s":0,"e":12,"k":"reg"}],"elem.u7s0":[{"s":0,"e":16,"k":"sys"}],"elem.u7s1":[{"s":0,"e":10,"k":"sys"}],"elem.u8s0":[{"s":0,"e":9,"k":"sys"}],"elem.u8s1":[{"s":0,"e":16,"k":"iss"}]};
+var SD={"6사10-02":{"c":"6사10-02","t":"세계의 다양한 기후를 알아보고 기후 환경과 인간생활 간의 관계를 탐구한다.","s":"초등 사회"},"6사12-01":{"c":"6사12-01","t":"세계의 인구 분포를 파악하고 여러 국가의 인구 특징을 탐구한다.","s":"초등 사회"},"9사(지리)02-03":{"c":"[9사(지리)02-03]","t":"아시아의 인구 특징을 파악하고 지역별 인구 구조 변화를 비교하여 지역 발전의 가능성 및 변화 모습을 추론한다.","s":"중학교 지리 영역"},"9사(지리)08-02":{"c":"[9사(지리)08-02]","t":"우리나라의 계절별, 지역별 기후 특성 및 변화 양상을 파악하고, 기후변화에 대한 지역별 대응 노력을 조사한다.","s":"중학교 지리 영역"},"12세지02-01":{"c":"[12세지02-01]","t":"세계의 다양한 기후에 대한 이해를 바탕으로 기후를 활용하거나 극복한 사례를 찾아 인간 생활과의 관계를 탐색한다.","s":"세계시민과 지리"},"12세지03-01":{"c":"[12세지03-01]","t":"세계 인구 분포 및 구조를 통해 세계 인구 문제를 이해하고, 국제적 이주가 인구 유출 지역과 유입 지역에 미치는 영향을 탐구한다.","s":"세계시민과 지리"},"12한탐03-01":{"c":"[12한탐03-01]","t":"통계 자료를 활용해 우리나라 인구 및 가구구조의 변화를 시각화 및 분석하고, 저출생, 고령화, 다문화 가구의 증가에 대응하기 위한 방안을 모색한다.","s":"한국지리 탐구"}};
+SD["10통사2-05-01"]={c:"[10통사2-05-01]",s:"통합사회",t:"세계의 인구 분포와 구조 등에 대한 이해를 토대로 현재와 미래의 인구 문제 양상을 파악하고, 그 해결 방안을 제안한다."};
+SD["10통사1-03-01"]={c:"[10통사1-03-01]",s:"통합사회",t:"자연환경이 인간의 생활에 미치는 영향에 관한 과거와 현재의 사례를 조사하여 분석 하고, 안전하고 쾌적한 환경에서 살아가는 것이 시민의 권리임을 주장한다."};
+SD["12한탐04-03"]={c:"[12한탐04-03]",s:"한국지리 탐구",t:"우리나라 및 우리 지역에서 주로 발생하는 자연재해의 유형과 특징을 분석하고, 이를 토대로 자연재해의 경감 대책을 조사하고 평가한다."};
+SD["6사02-01"]={c:"6사02-01",s:"초등 사회",t:"우리나라의 계절별 기후 특징을 자료에서 탐구하고, 기후변화로 인한 자연재해의 심각성을 이해한다."};
+SD["9사(지리)08-03"]={c:"[9사(지리)08-03]",s:"중학교 지리 영역",t:"우리나라 자연재해의 지리적 특성과 피해 최소화를 위한 노력을 파악하고, 일상생활 속 다양한 상황에서 자연재해 발생 시 자신의 대처 방안을 탐색한다."};
+var PENS2=[
+ {k:"rep",n:"반복되는 것",c:"#F6E7B8"},
+ {k:"new",n:"새로 추가되는 것",c:"#CFE6CE"},
+ {k:"act",n:"학생이 하는 일",c:"#E4D4EE"}
+];
+var POP=[
+ {g:"초등 5~6학년",it:[{c:"6사12-01"}],w:"인구 분포 · 국가별 특징",t:"파악한다 · 탐구한다"},
+ {g:"중학교",it:[{c:"9사(지리)02-03"}],w:"인구 특징 + 인구 구조의 변화",t:"비교한다 · 추론한다"},
+ {g:"고등학교 · 통합사회",it:[{c:"10통사2-05-01"}],w:"분포·구조 + 인구 문제",t:"파악한다 · 제안한다"},
+ {g:"고등학교 · 선택 과목",it:[
+   {c:"12세지03-01",n:"세계시민과 지리"},
+   {c:"12한탐03-01",n:"한국지리 탐구"}],
+  w:"국제 이주의 영향 · 인구와 가구구조의 변화와 현실 문제",t:"탐구한다 · 분석한다 · 방안을 모색한다"}
+];
+var CLI=[["초등 5~6학년",["6사02-01"]],["중학교",["9사(지리)08-03"]],["고등학교 · 통합사회",["10통사1-03-01"]],["고등학교 · 선택 과목",[["12세지02-01","세계시민과 지리"],["12한탐04-03","한국지리 탐구"]]]];
+var TOPICS=[{k:"cli",n:"기후"},{k:"pop",n:"인구"},{k:"lnd",n:"지형"}];
 
-var ITEMS=D.ITEMS,G=D.GROUPS,SUBJ=D.SUBJ,SID={};SUBJ.forEach(function(s){SID[s.id]=s;});
-var GN={};G.forEach(function(g){GN[g.k]=g;});
-var LV=[['2','뚜렷하게 나타난다'],['1','일부 나타난다'],['0','거의 나타나지 않는다']];
-var BANDS=[{k:'hi',h:'뚜렷하게 나타나는 원리',mk:'●'},{k:'mid',h:'보조적으로 나타나는 원리',mk:'○'},{k:'lo',h:'거의 나타나지 않는 원리',mk:'·'}];
+function bl(){return {marks:{},pen:"reg",lv:{}};}
+function blank(){var d={};SUBJ.forEach(function(s){d[s.id]=bl();});
+  return {sid:"elem",d:d,key:false,eg:false,egOff:false,ans:{},mine:{},x:{}};}
+var S=blank(),DRAG=null,TS=null;
+function dropUnder(x,y){
+  var hit=null;
+  qq("[data-drop]").forEach(function(z){
+    var r=z.getBoundingClientRect();
+    if(x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom)hit=z;});
+  return hit;}
+function $(x){return document.querySelector(x);}
+function qq(x){return Array.prototype.slice.call(document.querySelectorAll(x));}
+function esc(x){return String(x==null?"":x).replace(/[&<>"]/g,function(c){
+  return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];});}
+function has(v){return v!=null&&String(v).trim()!=="";}
+var KEY="org3-v9",tm=null;
+function save(){clearTimeout(tm);tm=setTimeout(function(){
+  try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}},300);}
+function load(){try{var r=localStorage.getItem(KEY);
+  if(r){var x=JSON.parse(r)||{},b=blank();
+    if(x.d)SUBJ.forEach(function(s){b.d[s.id]=Object.assign(bl(),x.d[s.id]||{});
+      b.d[s.id].lv=b.d[s.id].lv||{};});
+    if(x.sid&&(SID[x.sid]||x.sid==="cross"||x.sid==="elem"))b.sid=x.sid;
+    b.key=!!x.key;b.eg=!!x.eg;b.egOff=!!x.egOff;
+    b.ans=x.ans||{};b.mine=x.mine||{};
+    if(x.x)b.x=Object.assign(b.x,x.x);
+S=b;}}catch(e){}
+}
+function egFor(sid){
+  var m={};Object.keys(EGM).forEach(function(k){
+    if(k.indexOf(sid+".")!==0)return;
+    m[k]=EGM[k].map(function(x){return {s:x.s,e:x.e,k:x.k};});});
+  return m;}
 
-function val(sid,k,pick){
-  var vs=[];
-  ITEMS.forEach(function(it,i){if(it.g!==k)return;
-    var a=pick?pick[i]:it.r[sid][0];if(a==null||a==='')return;vs.push(+a);});
-  if(!vs.length)return null;
-  return vs.reduce(function(a,b){return a+b;},0)/vs.length;}
-function bandOf(v){return v>=1.5?'hi':(v>=0.75?'mid':'lo');}
-function grouped(sid,pick){
-  var o={hi:[],mid:[],lo:[]};
-  G.forEach(function(g){var v=val(sid,g.k,pick);if(v==null)return;o[bandOf(v)].push({g:g,v:v});});
-  ['hi','mid','lo'].forEach(function(b){o[b].sort(function(x,y){return y.v-x.v;});});
-  return o;}
-
-/* ═════ 상태 ═════ */
-function bl(){return {marks:{},a:{}};}
-function blank(){var d={};SUBJ.forEach(function(s){d[s.id]=bl();});return {sid:'mid',d:d,key:false};}
-var S=blank(),dirty=false;
-function $(s){return document.querySelector(s);}
-function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
-function nAns(id){var a=S.d[id].a,n=0;ITEMS.forEach(function(x,i){if(a[i]!=null&&a[i]!=='')n++;});return n;}
-function allAns(id){return nAns(id)===ITEMS.length;}
-
-function jong(w){var c=w.replace(/[^가-힣]+$/,'').slice(-1);return c?(c.charCodeAt(0)-0xAC00)%28:0;}
-function ga(w){return jong(w)?'이':'가';}
-function andList(ns){return ns.length===2?ns[0]+(jong(ns[0])?'과':'와')+' '+ns[1]:ns.join(', ');}
-function sentence(sid,pick){
-  var o=grouped(sid,pick),nm=function(x){return x.g.n;};
-  if(!o.hi.length&&!o.mid.length)return '';
-  var L=[];
-  if(o.hi.length){var h=o.hi.map(nm);L.push('<b>'+andList(h)+'</b>'+ga(h[h.length-1])+' 뚜렷하게 나타납니다');}
-  else L.push('뚜렷하게 나타나는 원리는 없습니다');
-  if(o.mid.length){var m=o.mid.map(nm);L.push('여기에 '+andList(m)+ga(m[m.length-1])+' 보조적으로 더해집니다');}
-  return '종합하면, 이 교육과정은 '+L.join('. ')+'.';}
-
-/* ═════ 형광펜 ═════ */
 var DOC={},DL={};
-SUBJ.forEach(function(s){var L=DL[s.id]=[];
+ALL.forEach(function(s){var L=DL[s.id]=[];
   s.units.forEach(function(u,ui){
-    DOC[s.id+'.u'+ui]={t:u.t,lb:'('+u.n+') 대단원',sid:s.id};L.push(s.id+'.u'+ui);
-    u.s.forEach(function(x,si){var id=s.id+'.u'+ui+'s'+si;DOC[id]={t:x.t,lb:x.c,sid:s.id};L.push(id);});});});
-function marksOf(id){return (S.d[DOC[id].sid].marks[id]||[]).slice().sort(function(a,b){return a.s-b.s;});}
-function H(id){var t=DOC[id].t,p=0,out='';
-  marksOf(id).forEach(function(m,i){out+=esc(t.slice(p,m.s))+'<mark data-mi="'+i+'">'+esc(t.slice(m.s,m.e))+'</mark>';p=m.e;});
-  return '<span class="hl" data-doc="'+id+'">'+out+esc(t.slice(p))+'</span>';}
+    DOC[s.id+".u"+ui]={t:u.t,lb:"("+u.n+") 대단원",sid:s.id};L.push(s.id+".u"+ui);
+    u.s.forEach(function(x,si){var id=s.id+".u"+ui+"s"+si;
+      DOC[id]={t:x.t,lb:x.c,sid:s.id};L.push(id);});});});
+function marksOf(id,cross){var st=cross?S.x.marks:(S.d[DOC[id].sid]||{marks:{}}).marks;
+  return (st[id]||[]).slice().sort(function(a,b){return a.s-b.s;});}
+function H(id,cross,ro){var t=DOC[id].t,p=0,out="";
+  marksOf(id,cross).forEach(function(m,i){
+    out+=esc(t.slice(p,m.s))+'<mark'+(ro?'':' data-mi="'+i+'"')+' style="background:'+pc(m.k)+'">'+
+      esc(t.slice(m.s,m.e))+'</mark>';p=m.e;});
+  if(ro)return '<span class="hlro">'+out+esc(t.slice(p))+'</span>';
+  return '<span class="hl" data-doc="'+id+'"'+(cross?' data-x="1"':'')+'>'+out+esc(t.slice(p))+'</span>';}
 function hlSel(){
   var sl=window.getSelection();if(!sl||sl.isCollapsed||!sl.rangeCount)return;
   var r=sl.getRangeAt(0);
-  function host(n){n=n.nodeType===3?n.parentNode:n;return n&&n.closest?n.closest('.hl'):null;}
+  function host(n){n=n.nodeType===3?n.parentNode:n;return n&&n.closest?n.closest(".hl"):null;}
   var a=host(r.startContainer);if(!a||a!==host(r.endContainer))return;
-  var id=a.dataset.doc,t=DOC[id].t,pre=document.createRange();
+  var id=a.dataset.doc,cross=a.dataset.x==="1",t=DOC[id].t,pre=document.createRange();
   pre.selectNodeContents(a);pre.setEnd(r.startContainer,r.startOffset);
-  var s=pre.toString().length,e=s+r.toString().length;
-  while(s<e&&/\s/.test(t[s]))s++;while(e>s&&/\s/.test(t[e-1]))e--;
-  if(e-s<2)return;
-  var keep=marksOf(id).filter(function(m){if(m.e>=s&&m.s<=e){s=Math.min(s,m.s);e=Math.max(e,m.e);return false;}return true;});
-  keep.push({s:s,e:e});S.d[DOC[id].sid].marks[id]=keep;
-  sl.removeAllRanges();dirty=true;paint();}
-function unmark(el,mi){var id=el.dataset.doc,arr=marksOf(id);if(!arr[mi])return;arr.splice(mi,1);S.d[DOC[id].sid].marks[id]=arr;dirty=true;paint();}
-function evList(sid){var out=[];DL[sid].forEach(function(id){marksOf(id).forEach(function(m){out.push({t:DOC[id].t.slice(m.s,m.e),lb:DOC[id].lb});});});return out;}
+  var st=pre.toString().length,en=st+r.toString().length;
+  while(st<en&&/\s/.test(t[st]))st++;while(en>st&&/\s/.test(t[en-1]))en--;
+  if(en-st<2)return;
+  var keep=marksOf(id,cross).filter(function(m){return m.e<=st||m.s>=en;});
+  keep.push(cross?{s:st,e:en,k:S.x.pen||"rep"}:{s:st,e:en,k:S.d[DOC[id].sid].pen});
+  (cross?S.x.marks:S.d[DOC[id].sid].marks)[id]=keep;
+  sl.removeAllRanges();save();paint();}
+function unmark(el,mi){var id=el.dataset.doc,cross=el.dataset.x==="1",arr=marksOf(id,cross);
+  if(!arr[mi])return;arr.splice(mi,1);
+  (cross?S.x.marks:S.d[DOC[id].sid].marks)[id]=arr;save();paint();}
+function isStd(id){return /s\d+$/.test(id);}
+function evList(sid,cross){var out=[];DL[sid].forEach(function(id){
+  marksOf(id,cross).forEach(function(m,i){
+    out.push({t:DOC[id].t.slice(m.s,m.e),lb:DOC[id].lb,k:m.k,id:id+"#"+i});});});
+  return out;}
 
-/* ═════ 화면 ═════ */
-function docView(s){
+var pm=false,tt=null,sk="";
+function snap(){var sl=window.getSelection();
+  if(!sl||sl.isCollapsed||!sl.rangeCount)return "";
+  var r=sl.getRangeAt(0);return sl.toString()+"@"+r.startOffset+"-"+r.endOffset;}
+if(window.PointerEvent)document.addEventListener("pointerdown",function(e){pm=(e.pointerType!=="mouse");},true);
+else{document.addEventListener("touchstart",function(){pm=true;},{passive:true,capture:true});
+ document.addEventListener("mousedown",function(){pm=false;},true);}
+document.addEventListener("selectionchange",function(){
+  if(tt){clearTimeout(tt);tt=null;}
+  if(!pm)return;var k=snap();if(!k)return;sk=k;
+  tt=setTimeout(function(){tt=null;if(snap()===sk)hlSel();},450);});
+
+function nMark(sid,std){var n=0;DL[sid].forEach(function(id){
+  if(isStd(id)===!!std)n+=marksOf(id).length;});return n;}
+function picked(d,lvk){return METHODS.filter(function(m){return d.lv[m.k]===lvk;});}
+function lvDone(d){return picked(d,"hi").length>=1;}
+function stageOf(s){var d=S.d[s.id];
+  if(!evList(s.id).length)return 1;
+  if(!lvDone(d))return 2;
+  return 3;}
+function doneAll(){return SUBJ.every(function(x){return stageOf(x)===5;});}
+function tabNote(s){var d=S.d[s.id],p=[];
+  if(evList(s.id).length)p.push("색칠 "+evList(s.id).length);
+  if(lvDone(d))p.push("방법");
+  return p.length?p.join(" · "):"시작 전";}
+
+function docView(s,cross,roTitle){
   return '<div class="doc">'+s.units.map(function(u,ui){
-    return '<div class="unit"><div class="uh"><span class="un">('+u.n+')</span><span class="ut">'+H(s.id+'.u'+ui)+'</span></div>'+
-      u.s.map(function(x,si){return '<div class="std"><span class="c">'+x.c+'</span><span class="t">'+H(s.id+'.u'+ui+'s'+si)+'</span></div>';}).join('')+
-      '</div>';}).join('')+'</div>';}
+    return '<div class="unit"><div class="uh"><span class="un">('+esc(u.n)+')</span>'+
+      '<span class="ut">'+H(s.id+".u"+ui,cross,roTitle)+'</span></div>'+
+      u.s.map(function(x,si){return '<div class="std"><span class="c">'+esc(x.c)+'</span>'+
+        '<span class="t">'+H(s.id+".u"+ui+"s"+si,cross)+'</span></div>';}).join("")+
+      '</div>';}).join("")+'</div>';}
+function unitView(s){
+  return '<div class="doc">'+s.units.map(function(u,ui){
+    return '<div class="unit tit"><div class="uh"><span class="un">('+esc(u.n)+')</span>'+
+      '<span class="ut">'+H(s.id+".u"+ui,false)+'</span></div></div>';}).join("")+'</div>';}
+function evBox(s,mode){
+  var ev=evList(s.id).filter(function(e){var st=isStd(e.id.split("#")[0]);
+    return mode==="unit"?!st:(mode==="std"?st:true);});
+  if(!ev.length)return "";
+  return '<div class="evbox"><p class="ek">표시한 곳 '+ev.length+'</p>'+
+   PENS.map(function(p){
+     var g=ev.filter(function(e){return e.k===p.k;});
+     return '<div class="evg"><div class="evh"><i style="background:'+p.c+'"></i>'+p.n+
+       '<b>'+g.length+'</b></div>'+
+       (g.length?'<div class="evl">'+g.map(function(e){
+         return '<span class="evc">'+esc(e.t)+'<small>'+esc(e.lb)+'</small></span>';}).join("")+'</div>'
+        :'<span class="n0">없음</span>')+'</div>';}).join("")+'</div>';}
+function pickList(name,opts,cur){
+  return '<div class="picks">'+opts.map(function(o){
+    return '<button class="pk" data-'+name+'="'+o.k+'" aria-pressed="'+(cur===o.k)+'">'+
+      '<span class="mk"></span><span><b>'+esc(o.n)+'</b>'+
+      (o.s?'<small>'+esc(o.s)+'</small>':'')+'</span></button>';}).join("")+'</div>';}
+function tabs(){
+  return '<div class="bar"><div class="tabs">'+
+   SUBJ.map(function(x){
+     return '<button class="tab" data-tab="'+x.id+'" aria-pressed="'+(S.sid===x.id)+'">'+esc(x.name)+
+       '</button>';}).join("")+
+   '<button class="tab" data-tab="cross" aria-pressed="'+(S.sid==="cross")+'">범위와 계열</button>'+
+   '</div></div>';}
+function foot(){
+  return '<div class="foot"><button id="copy">패들렛용 정리 복사</button>'+
+   '<button id="print">인쇄 · PDF</button><span class="msg" id="msg"></span>'+
+   '<button id="clear">모두 지우기</button></div>';}
 
-function checklist(s){
-  var d=S.d[s.id],open=S.key&&allAns(s.id);
-  return '<div class="scale"><span></span><div>'+LV.map(function(l){return '<span>'+l[1].replace('나타난다','').replace('나타나지 않는다','없다')+'</span>';}).join('')+'</div></div>'+
-   ITEMS.map(function(it,i){var v=d.a[i],ref=it.r[s.id];
-     return '<div class="it'+(v!=null&&v!==''?' done':'')+'"><div class="q"><i>'+(i+1)+'</i>'+esc(it.t)+'</div>'+
-      '<div class="opts">'+LV.map(function(l){
-        return '<button class="lv" data-a="'+i+'" data-v="'+l[0]+'" aria-pressed="'+(v===l[0])+'">'+l[1].replace('나타난다','').replace('나타나지 않는다','없다')+'</button>';}).join('')+'</div>'+
-      (open?'<div class="rf"><b class="'+(v===ref[0]+''?'ok':'no')+'">참고 '+LV.filter(function(l){return l[0]===ref[0]+'';})[0][1].replace('나타난다','').replace('나타나지 않는다','없다')+'</b>'+
-        esc(ref[1])+(it.ev?'<button class="go" data-goev="'+s.id+'|'+i+'">위치 보기</button>':'')+'</div>':'')+
-      '</div>';}).join('');}
+function elemView(){
+  return '<h1>'+esc(ELEM.name)+'</h1>'+
+   ELEM.units.map(function(u){
+     return '<div class="unit"><div class="uh"><span class="un">('+esc(u.n)+')</span>'+
+       '<span class="ut">'+esc(u.t)+'</span></div>'+
+       u.s.map(function(x){return '<div class="std"><span class="c">'+esc(x.c)+'</span>'+
+         '<span class="t">'+esc(x.t)+'</span></div>';}).join("")+'</div>';}).join("");
+}
+function subjView(){
+  var s=SID[S.sid],d=S.d[s.id];
+  function penbar(){
+    return '<div class="toolbar"><div class="pens">'+PENS.map(function(p){
+      return '<button class="pen" data-pen="'+p.k+'" aria-pressed="'+(d.pen===p.k)+'">'+
+        '<i style="background:'+p.c+'"></i>'+p.n+'</button>';}).join("")+'</div></div>';}
 
-var ZI={hi:0,mid:1,lo:2};
-function dots(v,rv,open){
-  var a=ZI[bandOf(v)],b=(open&&rv!=null)?ZI[bandOf(rv)]:-1,h='';
-  for(var i=0;i<3;i++)h+='<span class="zn'+(i===a?' ours':'')+(i===b?' ref':'')+'"></span>';
-  return h;}
-function result(s){
-  var d=S.d[s.id],o=grouped(s.id,d.a),open=S.key;
-  var h='<div class="rhead"><span></span><span></span><span class="zn"><span>뚜렷</span><span>보조</span><span>거의 없음</span></span></div>'+
-   BANDS.map(function(b){var rows=o[b.k];
-    return '<div class="rgrp'+(b.k==='lo'?' none':'')+'"><h4>'+b.h+(rows.length?'':' <span>없음</span>')+'</h4>'+
-      rows.map(function(x){var rv=open?val(s.id,x.g.k):null;
-        return '<div class="rl'+(b.k==='hi'?' w2':'')+'"><span class="mk">'+b.mk+'</span>'+
-          '<span class="nm"><b>'+x.g.n+'</b><small>'+x.g.d+'</small></span>'+
-          '<span class="tr">'+dots(x.v,rv,open)+'</span></div>';}).join('')+
-      '</div>';}).join('')+
-   '<p class="rleg"><i class="o"></i>내가 체크한 값'+(open?'<i class="g"></i>참고 값':'')+'</p>';
-  h+='<p class="vsent">'+sentence(s.id,d.a)+'</p>';
-  if(open)h+='<div class="cau">'+s.key.cau+'</div>';
-  return h;}
+  var h='<h1>'+esc(s.name)+'</h1>';
+  if(S.ans[s.id])
+    h+='<div class="egbar2"><span>결과를 표시해 두었습니다. 내가 칠한 것과 견주어 보십시오.</span>'+
+     '<button class="keyb" id="ansoff">내 표시로 돌아가기</button></div>';
 
-function view(){
-  var s=SID[S.sid],anyDone=SUBJ.some(function(x){return allAns(x.id);});
-  var h='<p class="stage">지리교과교육론 3강</p><h1>지리 교육과정의 내용조직 원리</h1>'+
-  '<p class="lead">중심 질문 — <b>2022 개정 지리 교육과정은 무엇을 중심으로 내용을 묶고, 어떤 순서로 배열했는가?</b><br>'+
-  '대단원과 성취기준을 읽고 '+ITEMS.length+'개 특징이 어느 정도 나타나는지 체크합니다.</p>';
+  h+='<div class="step"><h3><b>1</b>대단원과 성취기준</h3>'+
+   penbar()+
+   '<div class="pend">'+PENS.map(function(p){
+     return '<p><i style="background:'+p.c+'"></i><b>'+p.n+'</b> — '+p.d+'</p>';}).join("")+'</div>'+
+   '<p class="sd guide">대단원과 성취기준을 지역, 주제·개념, 쟁점·문제로 분류합니다. '+
+   '각각에서 그 성격이 가장 뚜렷하게 드러나는 문구를 골라 표시하십시오. '+
+   '한 곳에는 한 가지만 분류합니다.</p>'+
+   docView(s,false,false)+
+   '<div class="ansbar"><button class="keyb" id="anson">'+
+     (S.ans[s.id]?"결과 숨기기":"결과 확인하기")+'</button></div>'+
+   '</div>';
 
-  h+='<div class="bar"><div class="tabs">'+SUBJ.map(function(x){
-      return '<button class="tab" data-tab="'+x.id+'" aria-pressed="'+(S.sid===x.id)+'">'+x.name+
-        '<small>'+nAns(x.id)+'/'+ITEMS.length+(allAns(x.id)?' · 분석 완료':'')+'</small></button>';}).join('')+'</div>'+
-    '<span class="hint"><b>형광펜</b>근거가 될 어구를 긁어 표시 · 표시를 누르면 지워짐</span>'+
-    '<span class="prog">'+evList(s.id).length+'곳 표시</span></div>';
-
-  h+='<div class="step"><h3><b>1</b>'+s.name+'의 대단원과 성취기준을 읽는다</h3>'+docView(s)+'</div>';
-
-  h+='<div class="step"><h3><b>2</b>교육과정에서 다음 특징이 어느 정도 나타나는가</h3>'+checklist(s)+'</div>';
-
-  h+='<div class="step"><h3><b>3</b>체크한 결과를 종합한다</h3>';
-  if(!allAns(s.id))h+='<p class="d">'+(ITEMS.length-nAns(s.id))+'개 문항이 남았습니다. 모두 체크하면 결과가 열립니다.</p>';
-  else h+=result(s)+'<div style="margin-top:16px"><button class="opt" id="keyb" aria-pressed="'+S.key+'">'+
-    (S.key?'비교 닫기':'참고 결과와 비교해 보기')+'</button></div>';
+  var nHi=picked(d,"hi").length,nMid=picked(d,"mid").length;
+  function chip(m){
+    return '<button class="mchip" draggable="true" data-mv="'+m.k+'">'+
+      (m.p?'<i style="background:'+pc(m.p)+'"></i>':'<i class="nod"></i>')+
+      '<span><b>'+esc(m.n)+'</b><small>'+esc(m.d)+'</small></span></button>';}
+  function box(cl,label,note,list){
+    return '<div class="mvbox '+cl+'" data-drop="'+cl+'"><p class="mvh">'+label+
+      (note?'<span>'+note+'</span>':'')+'</p><div class="mvc col'+(cl==="pool"?"":" slot")+'">'+
+      list.map(chip).join("")+'</div></div>';}
+  var pool=METHODS.filter(function(m){return !d.lv[m.k];});
+  h+='<div class="step"><h3><b>3</b>조직 방법</h3>'+
+   '<div class="mv">'+
+    box("hi","뚜렷하게 보이는 것",(nHi?nHi+"개":""),picked(d,"hi"))+
+    box("mid","부분적으로 적용된 것",(nMid?nMid+"개":""),picked(d,"mid"))+
+    box("pool","후보","",pool)+
+   '</div>';
+  if(lvDone(d))
+    h+='<div class="reveal">'+picked(d,"hi").map(function(m){
+      return '<b>'+esc(m.n)+'</b> — '+esc(m.d);}).join('<br>')+'</div>';
   h+='</div>';
 
-  var done=SUBJ.filter(function(x){return allAns(x.id);});
-  h+='<div class="step"><h3><b>4</b>세 과목을 맞대어 본다</h3>';
-  if(done.length<2)h+='<p class="d">두 과목 이상 체크하면 표가 채워집니다.</p>';
-  else{
-    h+='<div class="ctw"><table class="ct"><thead><tr><th></th>'+SUBJ.map(function(x){
-      return '<th><button data-tab="'+x.id+'">'+x.name+'</button></th>';}).join('')+'</tr></thead><tbody>'+
-     BANDS.slice(0,2).map(function(b){
-       return '<tr><th>'+b.h+'</th>'+SUBJ.map(function(x){
-         if(!allAns(x.id))return '<td class="none">체크하는 중</td>';
-         var rows=grouped(x.id,S.d[x.id].a)[b.k];
-         return '<td>'+(rows.length?'<ul>'+rows.map(function(r){return '<li>'+b.mk+' '+(b.k==='hi'?'<b>'+r.g.n+'</b>':r.g.n)+'</li>';}).join('')+'</ul>':'<span class="none">없음</span>')+'</td>';}).join('')+'</tr>';}).join('')+
-     '</tbody></table></div>'+(S.key?'<div class="cau">'+D.READ+'</div>':'');}
-  h+='</div>';
-
-  h+='<div class="foot"><button id="copy">패들렛용 정리 복사</button><button id="print">인쇄 · PDF</button>'+
-   '<button id="save">작업 저장</button><button id="load">불러오기</button>'+
-   '<span class="msg" id="msg"></span><input type="file" id="file" accept=".json" hidden></div>';
+  if(stageOf(s)===3)
+    h+='<div class="step"><h3><b>·</b>정리</h3>'+cardOf(s)+'</div>';
   return h;}
 
-/* ═════ 정리문 ═════ */
-function strip(h){return h.replace(/<[^>]+>/g,'');}
+function cardOf(s){
+  var d=S.d[s.id],hi=picked(d,"hi"),mid=picked(d,"mid");
+  return '<div class="card"><dl>'+
+   '<dt>뚜렷한 방법</dt><dd>'+(hi.length?esc(hi.map(function(m){return m.n;}).join(" · ")):"—")+'</dd>'+
+   '<dt>부분적인 방법</dt><dd>'+(mid.length?esc(mid.map(function(m){return m.n;}).join(" · ")):"—")+'</dd>'+
+   '</dl></div>';}
+
+function qbox(){
+  return '<div class="qbox">'+
+   '<p><b>1</b> 같은 내용이 되풀이되는가, 되풀이되면서 깊어지는가.</p>'+
+   '<p><b>2</b> 깊어진다면 무엇이 깊어지는가. 다루는 공간인가, 개념인가, 학생에게 요구하는 사고인가.</p>'+
+  '</div>';}
+function crossView(){
+  var h='<h1>범위와 계열</h1>'+
+   '<div class="defbox">'+
+    '<p><b>범위 scope</b> — 무엇을 넣고 무엇을 뺄 것인가, 얼마나 깊이 다룰 것인가.</p>'+
+    '<p><b>계열 sequence</b> — 그것들을 어떤 순서로 놓을 것인가.</p>'+
+   '</div>'+
+   '<p class="sd" style="margin-top:18px">앞에서 한 색칠과 조직 방법이 <b>범위</b>였습니다. '+
+   '여기서는 <b>계열</b>을 봅니다. 같은 주제가 학교급을 따라 어떻게 달라지는지 봅니다.</p>';
+
+  /* 예시 — 인구 */
+  h+='<div class="step"><h3><b>예시</b>인구는 학교급에 따라 어떻게 달라지는가</h3>'+
+   '<div class="sqlist">'+POP.map(function(b){
+     return '<div class="sqrow"><p class="sqh">'+esc(b.g)+'</p>'+
+       b.it.map(function(x){
+         return '<p class="sqt"><span class="sqc">'+esc(SD[x.c].c)+
+           (x.n?' <em>'+esc(x.n)+'</em>':'')+'</span>'+esc(SD[x.c].t)+'</p>';}).join("")+
+       '</div>';}).join("")+'</div>'+
+
+   '<div class="cmp" style="margin-top:18px"><table><thead><tr><th></th>'+
+     '<th>무엇을 배우는가</th><th>학생에게 요구하는 사고</th></tr></thead><tbody>'+
+     POP.map(function(b){
+       return '<tr><th>'+esc(b.g)+'</th><td>'+esc(b.w)+'</td><td>'+esc(b.t)+'</td></tr>';}).join("")+
+   '</tbody></table></div>'+
+   qbox()+'</div>';
+
+  /* 활동 — 자연재해 */
+  h+='<div class="step"><h3><b>활동</b>그렇다면 자연재해는 어떻게 계열화되어 있는가</h3>'+
+   '<div class="sqlist">'+CLI.map(function(b){
+     return '<div class="sqrow"><p class="sqh">'+esc(b[0])+'</p>'+
+       b[1].map(function(x){var c=(typeof x==="string")?x:x[0],n=(typeof x==="string")?"":x[1];
+         return '<p class="sqt"><span class="sqc">'+esc(SD[c].c)+
+           (n?' <em>'+esc(n)+'</em>':'')+'</span>'+esc(SD[c].t)+'</p>';}).join("")+
+       '</div>';}).join("")+'</div>'+
+
+   '</div>';
+
+  /* 마무리 */
+  if(doneAll())
+    h+='<div class="step"><h3><b>·</b>나란히 놓기</h3>'+cmpTable()+
+     '<p class="sd" style="margin-top:16px"><button class="keyb" id="keyb">'+(S.key?"해설 닫기":"해설 보기")+'</button></p>'+
+     (S.key?'<div class="cau">'+D.READ+'</div>':'')+'</div>';
+  return h;}
+
+function cmpTable(){
+  function nm(arr,k){var o=arr.filter(function(x){return x.k===k;})[0];return o?o.n:"—";}
+  return '<div class="cmp"><table><thead><tr><th></th>'+ALL.map(function(x){
+     return '<th><button class="keyb" data-tab="'+x.id+'" style="padding:4px 10px;font-size:13.5px">'+esc(x.name)+'</button></th>';
+   }).join("")+'</tr></thead><tbody>'+
+   '<tr><th>칠한 색</th><td class="none">읽기 자료</td>'+SUBJ.map(function(x){
+     var ev=evList(x.id);
+     return '<td><div class="swatch">'+(ev.length?ev.map(function(e){
+       return '<span class="sw" style="background:'+pc(e.k)+';flex:1"></span>';}).join("")
+       :'<span class="none">없음</span>')+'</div></td>';}).join("")+'</tr>'+
+   '<tr><th>뚜렷한 방법<em>범위</em></th><td class="none">—</td>'+SUBJ.map(function(x){
+     var g=picked(S.d[x.id],"hi");
+     return '<td>'+(g.length?'<b>'+esc(g.map(function(m){return m.n;}).join("<br>"))+'</b>':'<span class="none">—</span>')+'</td>';
+   }).join("")+'</tr>'+
+   '<tr><th>부분적인 방법<em>범위</em></th><td class="none">—</td>'+SUBJ.map(function(x){
+     var g=picked(S.d[x.id],"mid");
+     return '<td>'+(g.length?esc(g.map(function(m){return m.n;}).join("<br>")):'<span class="none">—</span>')+'</td>';
+   }).join("")+'</tr>'+
+   '</tbody></table></div>';}
+
 function summary(){
-  var L=['3강 지리 교육과정의 내용조직 원리 — 분석 결과'];
-  SUBJ.forEach(function(x){var d=S.d[x.id],ev=evList(x.id);
-    if(!nAns(x.id)&&!ev.length)return;
-    L.push('');L.push('■ '+x.name+'  (문항 '+nAns(x.id)+'/'+ITEMS.length+')');
-    if(allAns(x.id)){var o=grouped(x.id,d.a);
-      BANDS.forEach(function(b){L.push('  '+b.h+': '+(o[b.k].length?o[b.k].map(function(r){return r.g.n;}).join(', '):'없음'));});
-      L.push('  '+strip(sentence(x.id,d.a)));}
-    if(ev.length){L.push('  근거:');ev.forEach(function(e){L.push('   · “'+e.t+'” ('+e.lb+')');});}});
-  if(L.length===1)L.push('(아직 기록이 없음)');
-  return L.join('\n');}
+  var L=["3강 지리 교육과정의 내용조직 원리 — 분석 결과"];
+  function nm(arr,k){var o=arr.filter(function(x){return x.k===k;})[0];return o?o.n:"—";}
+  SUBJ.forEach(function(x){
+    var d=S.d[x.id],ev=evList(x.id);
+    if(!ev.length&&!lvDone(d))return;
+    L.push("");L.push("■ "+x.name);
+    L.push("  뚜렷한 방법: "+(picked(d,"hi").map(function(m){return m.n;}).join(", ")||"—"));
+    L.push("  부분적인 방법: "+(picked(d,"mid").map(function(m){return m.n;}).join(", ")||"—"));
+    if(ev.length){L.push("  표시한 곳:");
+      ev.forEach(function(e){L.push("   · ["+pn(e.k)+"] \u201C"+e.t+"\u201D ("+e.lb+")");});}});
+  if(L.length===1)L.push("(아직 기록이 없음)");
+  return L.join("\n");}
 
-/* ═════ 바인딩 ═════ */
-function setHH(){document.documentElement.style.setProperty('--hh',document.querySelector('header').offsetHeight+'px');}
-function paint(){$('#main').innerHTML=view();bind();setHH();}
-$('#brand').onclick=function(){window.scrollTo(0,0);};
-function goEvidence(sid,i){
-  var qq=ITEMS[i].ev;if(!qq)return;
-  var id=null;DL[sid].some(function(x){if(DOC[x].t.indexOf(qq)>=0){id=x;return true;}});
-  if(S.sid!==sid){S.sid=sid;paint();}
-  if(!id)return;
-  var el=document.querySelector('[data-doc="'+id+'"]');if(!el)return;
-  el.scrollIntoView({behavior:'smooth',block:'center'});
-  el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash');}
+function paint(){
+  $("#main").innerHTML=tabs()+(S.sid==="cross"?crossView():(S.sid==="elem"?elemView():subjView()))+foot();
+  bind();window.scrollTo(0,0);}
 function bind(){
-  var m=$('#main'),q=function(s){return Array.prototype.slice.call(m.querySelectorAll(s));};
-  q('[data-tab]').forEach(function(b){b.onclick=function(){S.sid=b.dataset.tab;paint();
-    if(b.closest('.ct'))window.scrollTo(0,0);};});
-  q('[data-a]').forEach(function(b){b.onclick=function(){var d=S.d[S.sid],i=b.dataset.a;
-    d.a[i]=d.a[i]===b.dataset.v?'':b.dataset.v;dirty=true;paint();};});
-  if($('#keyb'))$('#keyb').onclick=function(){S.key=!S.key;paint();};
-  q('[data-goev]').forEach(function(b){b.onclick=function(){var p=b.dataset.goev.split('|');goEvidence(p[0],+p[1]);};});
-  q('.hl').forEach(function(el){
+  qq("[data-tab]").forEach(function(b){b.onclick=function(){S.sid=b.dataset.tab;save();paint();};});
+  qq("[data-pen]").forEach(function(b){b.onclick=function(){S.d[S.sid].pen=b.dataset.pen;save();paint();};});
+  qq("[data-mv]").forEach(function(b){
+    b.addEventListener("touchstart",function(e){
+      TS={k:b.dataset.mv,el:b,x:e.touches[0].clientX,y:e.touches[0].clientY,on:false};},{passive:true});
+    b.addEventListener("touchmove",function(e){
+      if(!TS||TS.k!==b.dataset.mv)return;
+      var t=e.touches[0],dx=t.clientX-TS.x,dy=t.clientY-TS.y;
+      if(!TS.on&&Math.abs(dx)<10&&Math.abs(dy)<10)return;
+      if(!TS.on){TS.on=true;b.classList.add("dragging");}
+      e.preventDefault();
+      b.style.transform="translate("+dx+"px,"+dy+"px)";
+      var z=dropUnder(t.clientX,t.clientY);
+      qq("[data-drop]").forEach(function(o){o.classList.toggle("over",o===z);});},{passive:false});
+    b.addEventListener("touchend",function(e){
+      if(!TS||TS.k!==b.dataset.mv)return;
+      var moved=TS.on;
+      b.classList.remove("dragging");b.style.transform="";
+      qq("[data-drop]").forEach(function(o){o.classList.remove("over");});
+      if(moved){
+        var t=e.changedTouches[0],z=dropUnder(t.clientX,t.clientY);
+        if(z){var g=z.dataset.drop;S.d[S.sid].lv[TS.k]=(g==="pool"?"":g);save();paint();}
+        TS=null;e.preventDefault();return;}
+      TS=null;});
+    b.onclick=function(){
+      var k=b.dataset.mv,dd=S.d[S.sid],c=dd.lv[k]||"";
+      dd.lv[k]=(c===""?"hi":(c==="hi"?"mid":""));
+      save();paint();};
+    b.ondragstart=function(e){DRAG=b.dataset.mv;
+      try{e.dataTransfer.setData("text/plain",DRAG);e.dataTransfer.effectAllowed="move";}catch(x){}};
+    b.ondragend=function(){DRAG=null;};});
+  qq("[data-drop]").forEach(function(z){
+    z.ondragover=function(e){e.preventDefault();z.classList.add("over");};
+    z.ondragleave=function(){z.classList.remove("over");};
+    z.ondrop=function(e){e.preventDefault();z.classList.remove("over");
+      var k=DRAG||(e.dataTransfer&&e.dataTransfer.getData("text/plain"));
+      if(!k)return;
+      var t=z.dataset.drop;
+      S.d[S.sid].lv[k]=(t==="pool"?"":t);
+      DRAG=null;save();paint();};});
+  qq("[data-pen2]").forEach(function(b){b.onclick=function(){
+    S.x.pen=b.dataset.pen2;save();paint();};});
+  qq(".hl").forEach(function(el){
     el.onmouseup=function(){setTimeout(hlSel,0);};
     el.ontouchend=function(){setTimeout(hlSel,250);};
     el.onclick=function(e){var sl=window.getSelection();if(sl&&!sl.isCollapsed)return;
-      if(e.target.tagName==='MARK')unmark(el,+e.target.dataset.mi);};});
-  $('#copy').onclick=function(){copyText(summary());};
-  $('#print').onclick=function(){window.print();};
-  $('#save').onclick=save;$('#load').onclick=function(){$('#file').click();};
-  $('#file').onchange=load;}
-function flash(t){var e=$('#msg');if(e){e.textContent=t;setTimeout(function(){e.textContent='';},2800);}}
+      if(e.target.tagName==="MARK")unmark(el,+e.target.dataset.mi);};});
+  if($("#anson"))$("#anson").onclick=function(){
+    var id=S.sid;
+    if(S.ans[id]){S.d[id].marks=S.mine[id]||{};S.ans[id]=false;}
+    else{S.mine[id]=S.d[id].marks;S.d[id].marks=egFor(id);S.ans[id]=true;}
+    save();paint();};
+  if($("#ansoff"))$("#ansoff").onclick=function(){
+    var id=S.sid;S.d[id].marks=S.mine[id]||{};S.ans[id]=false;save();paint();};
+  if($("#keyb"))$("#keyb").onclick=function(){S.key=!S.key;save();paint();};
+  if($("#print"))$("#print").onclick=function(){try{window.print();}catch(e){}};
+  if($("#copy"))$("#copy").onclick=function(){copyText(summary());};
+  if($("#clear"))$("#clear").onclick=function(){
+    if(!window.confirm("이 기기에 저장된 내용을 모두 지웁니다. 계속할까요?"))return;
+    try{localStorage.removeItem(KEY);}catch(e){}
+    S=blank();save();paint();};
+  $("#brand").onclick=function(){S.sid="elem";save();paint();};}
+function flash(t){var e=$("#msg");if(e){e.textContent=t;setTimeout(function(){e.textContent="";},2600);}}
 function copyText(t){
-  function fb(){var a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';
+  function fb(){var a=document.createElement("textarea");a.value=t;a.style.position="fixed";a.style.opacity="0";
     document.body.appendChild(a);a.select();
-    try{document.execCommand('copy');flash('복사했습니다');}catch(x){flash('복사하지 못했습니다');}document.body.removeChild(a);}
-  if(navigator.clipboard&&window.isSecureContext)navigator.clipboard.writeText(t).then(function(){flash('복사했습니다');},fb);else fb();}
-function stamp(){var d=new Date();return ''+d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');}
-function save(){var b=new Blob([JSON.stringify(S,null,2)],{type:'application/json'}),a=document.createElement('a');
-  a.href=URL.createObjectURL(b);a.download='3강_내용조직_'+stamp()+'.json';a.click();
-  URL.revokeObjectURL(a.href);dirty=false;flash('저장했습니다');}
-function load(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();
-  r.onload=function(){try{var x=JSON.parse(r.result),b=blank();
-    if(!x.d||!x.d.mid)throw 0;
-    S=Object.assign(b,x);
-    SUBJ.forEach(function(s){S.d[s.id]=Object.assign(bl(),S.d[s.id]||{});
-      S.d[s.id].a=S.d[s.id].a||{};S.d[s.id].marks=S.d[s.id].marks||{};});
-    if(!SID[S.sid])S.sid='mid';
-    dirty=false;paint();flash('불러왔습니다');
-  }catch(z){flash('이 화면에서 저장한 파일인지 확인하십시오');}e.target.value='';};
-  r.readAsText(f);}
-window.addEventListener('beforeunload',function(e){if(dirty){e.preventDefault();e.returnValue='';}});
-window.addEventListener('resize',setHH);
-paint();
+    try{document.execCommand("copy");flash("복사했습니다");}catch(x){flash("복사하지 못했습니다");}
+    document.body.removeChild(a);}
+  if(navigator.clipboard&&window.isSecureContext)navigator.clipboard.writeText(t).then(function(){flash("복사했습니다");},fb);
+  else fb();}
+
+load();paint();
+})();
 </script>
 </body>
 </html>
