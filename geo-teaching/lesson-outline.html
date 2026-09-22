@@ -355,6 +355,7 @@ var DEF={
  who:["학생","이 부분에 대해 학생들은 무엇을 알고 있고, 무엇을 겪어 봤고, 무엇에 호기심을 보일까?"],
  data:["자료","쓸 수 있는 이슈, 기사, 데이터, 사진, 지도를 정리해 보자."],
  core:["핵심 지리적 개념 (1~3개 정도)",""],
+ uni:["관련 전공 강의","이 개념은 대학의 어떤 강의에서 배운 것인가. 기후학, 지형학, 도시지리학, 인구지리학처럼 과목 이름으로 적는다."],
  goal2:["학습 목표","이 차시를 통해 학생들이 꼭 성취해야 하는 것이 무엇일까?"],
  act:["활동 계획","학습 목표를 달성하기 위해 어떤 경험(활동)을 고려할 수 있을까?"],
  conc:["지리적 개념","이 수업의 구조가 되고, 설명하고 판단하는 데 쓰이는 지리적 개념."],
@@ -367,7 +368,7 @@ var DEF={
 var KEY="tamgu-outline-v3";
 function newQ(){return {q:"",c:"",d:""};}
 function blank(){return{scr:0,pick:EGI,code:"",marks:[],memo:"",
- know:"",data:"",core:"",act:"",
+ know:"",data:"",core:"",uni:"",act:"",
  title:"",bg:"",goal:"",q:[newQ(),newQ()]};}
 var S=blank();
 function $(s){return document.querySelector(s);}
@@ -495,6 +496,8 @@ function scrOpen(){
     '<textarea class="sm" data-k="data" rows="3">'+esc(S.data)+'</textarea></div>'+
    '<div class="fieldrow"><p class="fk">'+DEF.core[0]+'</p>'+
     '<input type="text" data-k="core" value="'+esc(S.core)+'"></div>'+
+   '<div class="fieldrow"><p class="fk">'+DEF.uni[0]+'</p><p class="fd">'+DEF.uni[1]+'</p>'+
+    '<input type="text" data-k="uni" value="'+esc(S.uni)+'"></div>'+
    '<div class="fieldrow"><p class="fk">'+DEF.goal2[0]+'</p><p class="fd">'+DEF.goal2[1]+'</p>'+
     '<input type="text" data-k="goal" value="'+esc(S.goal)+'"></div>'+
    '<div class="fieldrow"><p class="fk">'+DEF.act[0]+'</p><p class="fd">'+DEF.act[1]+'</p>'+
@@ -515,10 +518,11 @@ function qRow(r,i){
 }
 function scrOut(){
   var h='<p class="stage">3부 · 작성</p><h1>차시 개요 작성하기</h1>';
-  if(has(S.goal)||has(S.act))
+  if(has(S.goal)||has(S.act)||has(S.uni))
     h+='<div class="out"><h3>2부에서 적은 것</h3>'+
      (has(S.goal)?'<p class="memo">학습 목표 — '+esc(S.goal)+'</p>':'')+
      (has(S.act)?'<p class="memo">활동 계획 — '+esc(S.act)+'</p>':'')+
+     (has(S.uni)?'<p class="memo">관련 전공 강의 — '+esc(S.uni)+'</p>':'')+
      '</div>';
   h+='<div class="ov tight" style="margin-top:22px">'+
    '<div class="fieldrow"><p class="fk">'+DEF.title[0]+'</p><p class="fd">'+DEF.title[1]+'</p>'+
