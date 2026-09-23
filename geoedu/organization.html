@@ -814,9 +814,13 @@ function summary(){
   if(L.length===1)L.push("(아직 기록이 없음)");
   return L.join("\n");}
 
+var lastSid=null;
 function paint(){
+  var y=(window.pageYOffset||document.documentElement.scrollTop||0);
   $("#main").innerHTML=head()+tabs()+(S.sid==="cross"?crossView():(S.sid==="elem"?elemView():subjView()))+foot();
-  bind();window.scrollTo(0,0);}
+  bind();
+  if(S.sid!==lastSid){lastSid=S.sid;window.scrollTo(0,0);}
+  else window.scrollTo(0,y);}
 function bind(){
   qq("[data-tab]").forEach(function(b){b.onclick=function(){S.sid=b.dataset.tab;save();paint();};});
   qq("[data-pen]").forEach(function(b){b.onclick=function(){S.d[S.sid].pen=b.dataset.pen;save();paint();};});
