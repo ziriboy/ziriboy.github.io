@@ -350,6 +350,9 @@ textarea.sm{min-height:0}
 .sk .skm b{background:#F6E7B8;color:#111517;font-weight:500;border-radius:3px;padding:1px 4px}
 .sk ol.fv{padding-left:22px}
 .foot{max-width:900px}
+.hin{display:block}
+.hbar{max-width:900px;display:flex;align-items:center;gap:18px}
+@media (max-width:760px){.hbar{flex-wrap:wrap;gap:10px}}
 .chk{max-width:900px;margin-top:26px;border-left:3px solid var(--acc);padding:4px 0 4px 18px}
 .chq{margin:0 0 6px;font-size:18px;font-weight:700;letter-spacing:-.02em}
 .chn{margin:0;color:var(--mid);font-size:14.5px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
@@ -357,13 +360,13 @@ textarea.sm{min-height:0}
 </style>
 </head>
 <body>
-<header><div class="hin">
+<header><div class="hin"><div class="hbar">
   <button class="brand" id="brand">
     <span class="c">지리교재연구 및 지도법 · 9월 29일</span>
     <span class="n">성취기준에서 한 차시로</span>
   </button>
   <nav class="switch" id="switch"></nav>
-</div></header>
+</div></div></header>
 <main id="main"></main>
 <script>
 (function(){
