@@ -321,13 +321,46 @@ textarea.sm{min-height:0}
 .clist li.on{color:var(--ink)}
 .clist li.on b{color:var(--acc)}
 .cex{margin:0;font-size:14.5px;line-height:1.8;color:var(--mid)}
+.toolbar{max-width:900px}
+.grp{margin-top:48px;padding-top:24px;border-top:1px solid var(--line);max-width:900px}
+.grp:first-of-type{margin-top:8px;border-top:none;padding-top:0}
+.gh{margin:0 0 4px;font-size:19px;font-weight:700;letter-spacing:-.02em}
+.gh b{color:var(--acc);margin-right:10px}
+.glead{margin:0 0 16px;color:var(--mid);font-size:15px}
+.grp .ov{max-width:none;margin-top:16px}
+.grp .fk{font-size:15.5px;color:var(--ink);letter-spacing:-.01em;font-weight:600;margin-bottom:4px}
+.fieldrow.sub .fk{color:var(--mid);font-size:13.5px;font-weight:500}
+.fieldrow.sub .fd{font-size:12.5px}
+.fieldrow.sub input{font-size:14.5px;padding:7px 11px}
+.egs{margin:10px 0 0;font-size:13px;color:var(--mid)}
+.egs summary{cursor:pointer;color:var(--soft);font-size:13px}
+.egs ul{margin:6px 0 0;padding-left:18px;line-height:1.7}
+.echo{border-left:3px solid var(--acc);background:var(--acc-w);border-radius:0 8px 8px 0;
+  padding:12px 18px;font-size:15.5px;line-height:1.8}
+.echo .l{display:block;font-size:12px;color:var(--acc);font-weight:600;letter-spacing:.06em;margin-bottom:2px}
+.echo .none{color:var(--soft)}
+.look{font-weight:400;color:var(--soft);font-size:12.5px;letter-spacing:0;margin-left:12px}
+.look::before{content:"살펴볼 점 · "}
+.sk .skr{padding:14px 0;border-top:1px solid var(--line2)}
+.sk .skr:first-child{border-top:none;padding-top:0}
+.sk .fk{margin:0 0 4px}
+.sk .fv{margin:0}
+.sk .pw{white-space:pre-wrap}
+.sk .skm{font-size:14px;color:var(--mid);margin-top:6px}
+.sk .skm b{background:#F6E7B8;color:#111517;font-weight:500;border-radius:3px;padding:1px 4px}
+.sk ol.fv{padding-left:22px}
+.foot{max-width:900px}
+.chk{max-width:900px;margin-top:26px;border-left:3px solid var(--acc);padding:4px 0 4px 18px}
+.chq{margin:0 0 6px;font-size:18px;font-weight:700;letter-spacing:-.02em}
+.chn{margin:0;color:var(--mid);font-size:14.5px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+@media print{.chn .egbtn{display:none}}
 </style>
 </head>
 <body>
 <header><div class="hin">
   <button class="brand" id="brand">
     <span class="c">지리교재연구 및 지도법 · 9월 29일</span>
-    <span class="n">차시 개요 작성하기</span>
+    <span class="n">성취기준에서 한 차시로</span>
   </button>
   <nav class="switch" id="switch"></nav>
 </div></header>
@@ -368,6 +401,7 @@ var DEF={
 var KEY="tamgu-outline-v3";
 function newQ(){return {q:"",c:"",d:""};}
 function blank(){return{scr:0,pick:EGI,code:"",marks:[],memo:"",
+ areaAim:"",stdAim:"",kw:"",open:"",evid:"",crit:"",
  know:"",data:"",core:"",uni:"",act:"",
  title:"",bg:"",goal:"",q:[newQ(),newQ()]};}
 var S=blank();
@@ -410,7 +444,7 @@ function hl(el){
   if(a===null||b===null||a===b)return;
   var st=Math.min(a,b),en=Math.max(a,b);
   S.marks=S.marks.filter(function(m){return m.e<=st||m.s>=en;});
-  S.marks.push({s:st,e:en});sl.removeAllRanges();save();paint();
+  S.marks.push({s:st,e:en});sl.removeAllRanges();save();paint(true);
 }
 var pm=false,tt=null,sk="";
 function host(){var sl=window.getSelection();
@@ -428,21 +462,21 @@ document.addEventListener("selectionchange",function(){
   if(!pm)return;var k=snap();if(!k)return;sk=k;
   tt=setTimeout(function(){tt=null;var el=host();if(snap()===sk&&el)hl(el);},450);});
 
-/* ── 화면 1 · 예시 ── */
+/* ── 화면 1 · 좋은 수업 사례 보기 ── */
+var LOOK={title:"성취기준에서 무엇을 골랐나?",bg:"어떤 사례와 자료를 쓰나?",
+  goal:"무엇을 학습의 증거로 볼 수 있나?",q:"학생에게 무엇을 하게 하나?",conc:"어떤 지리적 개념으로 설명하나?"};
 function field(k,body){
-  return '<div class="fieldrow"><p class="fk">'+DEF[k][0]+'</p>'+
-    '<p class="fd">'+DEF[k][1]+'</p><div class="fv">'+body+'</div></div>';
+  return '<div class="fieldrow"><p class="fk">'+DEF[k][0]+'<span class="look">'+LOOK[k]+'</span></p>'+
+    '<div class="fv">'+body+'</div></div>';
 }
 function scrEg(){
-  var t=TAMGU[S.pick],main=(S.pick===EGI);
-  var h='<p class="stage">1부 · 예시</p><h1>차시의 개요</h1>'+
-  '<p class="lead">고등학교 〈한국지리 탐구〉를 위해 작성된 차시의 개요와 실제 모습입니다. '+
-  '오늘 여러분은 자신들이 담당할 수업의 개요를 만들어 볼 계획입니다. '+
-  '이 개요와 실제 수업 계획을 보고, 우리 팀이 맡은 차시의 개요를 작성해 봅시다.</p>'+
+  var t=TAMGU[S.pick];
+  var h='<p class="stage">1 · 좋은 수업 사례 보기</p><h1>수업은 이렇게 구체화될 수 있다</h1>'+
+  '<p class="lead">고등학교 〈한국지리 탐구〉의 차시들입니다. 하나의 성취기준이 한 차시의 수업으로 어떻게 좁혀지고, '+
+  '어떤 질문·자료·개념으로 조직되며, 실제 수업에서 어떻게 구현되는지 살펴봅니다.</p>'+
   '<p class="ovt">'+esc(t.t)+'</p>'+
   '<p class="ovmeta"><a href="'+t.url+'" target="_blank" rel="noopener">실제 수업 계획 보기 ↗</a>'+
   '<span>'+t.url+'</span></p>';
-
   h+='<div class="ov">'+
    field("title",'<p style="font-size:18px;font-weight:600">'+esc(t.t)+'</p>')+
    field("bg",'<p>'+esc(t.bg)+'</p>')+
@@ -451,11 +485,10 @@ function scrEg(){
      return '<li>'+esc(x[0])+' '+esc(x[1])+'</li>';}).join("")+'</ul>')+
    field("conc",'<p>'+esc(t.conc)+'</p>')+
   '</div>'+
-  '<div class="egwrap"><p class="fd" style="margin:24px 0 8px">다른 차시의 개요도 볼 수 있습니다.</p>'+
+  '<div class="egwrap"><p class="fd" style="margin:24px 0 8px">다른 차시</p>'+
    '<div class="pick9">'+TAMGU.map(function(x,i){
      return '<button class="p9" data-pick="'+i+'" aria-pressed="'+(S.pick===i)+'">'+esc(x.no)+'</button>';
-   }).join("")+'</div></div>'+
-  '<div class="nav"><span></span><button class="go" data-go="1">다음 · 성취기준 뜯어보기</button></div>';
+   }).join("")+'</div></div>';
   return h;
 }
 
@@ -480,101 +513,132 @@ function scrOpen(){
     sel+='</optgroup>';});
   sel+='</select>';
 
-  var h='<p class="stage">2부 · 분석하기</p><h1>성취기준 분석하기</h1>'+
-  '<p class="lead">내가 수업할 부분을 선택합니다.</p>'+
-  '<div style="max-width:600px">'+sel+'</div>';
-  if(s){
-    h+='<div class="toolbar" style="margin-top:16px"><div class="tl">형광펜</div>'+
-      '<div class="tc">이번 차시에서 수업할 부분을 긁어 표시합니다 · 다시 누르면 지워집니다</div></div>'+
-      '<div class="stdbox"><div class="code">'+s.g+' · ['+s.c+']</div>'+
-      '<div class="body" data-doc="1">'+segs(s.t)+'</div></div>'+curBox();
-  }
-  h+='<div class="ov tight" style="margin-top:24px">'+
-   '<div class="fieldrow"><p class="fk">'+DEF.who[0]+'</p><p class="fd">'+DEF.who[1]+'</p>'+
-    '<textarea class="sm" data-k="know" rows="2">'+esc(S.know)+'</textarea></div>'+
-   '<div class="fieldrow"><p class="fk">'+DEF.data[0]+'</p><p class="fd">'+DEF.data[1]+'</p>'+
-    '<textarea class="sm" data-k="data" rows="3">'+esc(S.data)+'</textarea></div>'+
-   '<div class="fieldrow"><p class="fk">'+DEF.core[0]+'</p>'+
-    '<input type="text" data-k="core" value="'+esc(S.core)+'"></div>'+
-   '<div class="fieldrow"><p class="fk">'+DEF.uni[0]+'</p><p class="fd">'+DEF.uni[1]+'</p>'+
-    '<input type="text" data-k="uni" value="'+esc(S.uni)+'"></div>'+
-   '<div class="fieldrow"><p class="fk">'+DEF.goal2[0]+'</p><p class="fd">'+DEF.goal2[1]+'</p>'+
-    '<input type="text" data-k="goal" value="'+esc(S.goal)+'"></div>'+
-   '<div class="fieldrow"><p class="fk">'+DEF.act[0]+'</p><p class="fd">'+DEF.act[1]+'</p>'+
-    '<textarea class="sm" data-k="act" rows="3">'+esc(S.act)+'</textarea></div>'+
-  '</div>'+
-  '<div class="nav"><button data-go="0">이전 · 예시</button>'+
-  '<button class="go" data-go="2">다음 · 개요 쓰기</button></div>';
+  /* 한 칸: 질문(fk) · 안내(fd) · 입력 */
+  function F(k,label,desc,rows,opt){opt=opt||{};
+    var inp=rows?'<textarea class="sm" data-k="'+k+'" rows="'+rows+'"'+(opt.ph?' placeholder="'+opt.ph+'"':'')+'>'+esc(S[k])+'</textarea>'
+      :'<input type="text" data-k="'+k+'" value="'+esc(S[k])+'"'+(opt.ph?' placeholder="'+opt.ph+'"':'')+'>';
+    return '<div class="fieldrow'+(opt.sub?' sub':'')+'"><p class="fk">'+label+'</p>'+
+      (desc?'<p class="fd">'+desc+'</p>':'')+inp+(opt.after||'')+'</div>';}
+  function G(letter,title,lead,body){
+    return '<section class="grp"><h2 class="gh"><b>'+letter+'</b>'+title+'</h2>'+
+      (lead?'<p class="glead">'+lead+'</p>':'')+body+'</section>';}
+
+  var h='<p class="stage">2 · 우리 차시 설계하기</p><h1>성취기준에서 한 차시로</h1>'+
+  '<p class="lead">성취기준에서 출발해 학습목표, 학생 경험, 자료, 지리적 개념, 도입, 활동, 평가를 차례로 구안합니다.</p>';
+
+  /* A · 성취기준 이해하기 */
+  h+=G("A","성취기준 이해하기","",
+    '<div>'+sel+'</div>'+
+    (s?curBox()+'<div class="ov tight">'+
+      F("areaAim","이 대단원은 학생들이 궁극적으로 무엇을 이해하거나 할 수 있게 하려는 것일까?",
+        "대단원에 배열된 성취기준들을 함께 보며 공통된 방향을 읽어 보자.",2)+
+      F("stdAim","그 안에서 내가 선택한 성취기준은 무엇을 특히 이해하거나 할 수 있게 하려는 것일까?","",2)+
+     '</div>':''));
+
+  /* B · 이번 차시의 핵심 정하기 */
+  if(s) h+=G("B","이번 차시의 핵심 정하기","",
+    '<div class="toolbar"><div class="tl">형광펜</div>'+
+      '<div class="tc">이번 차시에서 실제로 다룰 부분을 하이라이트해 보자 · 다시 누르면 지워집니다</div></div>'+
+    '<div class="stdbox"><div class="code">'+s.g+' · ['+s.c+']</div>'+
+      '<div class="body" data-doc="1">'+segs(s.t)+'</div></div>'+
+    '<div class="ov tight">'+
+      F("kw","하이라이트한 부분에서 가장 중요한 핵심어는 무엇인가?","1~3개 정도.",0)+
+      F("goal","이 차시가 끝났을 때 학생은 무엇을 할 수 있어야 할까?",
+        "학생의 입장에서 관찰 가능한 행동으로 적어 보자. 예: 분포를 설명할 수 있다 / 두 지역을 비교할 수 있다 / 자료를 근거로 판단할 수 있다.",
+        2,{ph:"학생은 ~할 수 있다."})+
+    '</div>');
+
+  /* C · 수업을 위한 재료 살펴보기 */
+  h+=G("C","수업을 위한 재료 살펴보기","",
+    '<div class="ov tight">'+
+      F("know","학생들은 이 주제에 대해 이미 무엇을 알고 있거나 경험했을까? 무엇에 호기심을 느낄까?",
+        "알고 있는 것, 직접 경험한 것, 흔히 갖는 생각이나 오해, 궁금해할 만한 것을 떠올려 보자.",3)+
+      F("data","이 학습목표를 이해하거나 탐구하는 데 어떤 자료를 활용할 수 있을까?",
+        "사례, 기사, 데이터, 지도, 사진 등.",3)+
+    '</div>');
+
+  /* D · 지리적으로 구조화하기 */
+  h+=G("D","지리적으로 구조화하기","이 수업을 지리 수업답게 만드는 것은 무엇일까?",
+    '<div class="ov tight">'+
+      F("core","이 현상을 이해·설명·판단하기 위해 필요한 지리적 개념은 무엇인가?","1~3개 정도를 적어 보자.",0)+
+      F("uni","이 개념은 대학에서 어떤 전공 내용과 연결되는가?",
+        "기후학, 지형학, 도시지리학처럼 과목 이름으로.",0,{sub:1})+
+    '</div>');
+
+  /* E · 수업 경험 설계하기 */
+  h+=G("E","수업 경험 설계하기","",
+    '<div class="ov tight">'+
+      F("open","학생들이 이 학습목표를 궁금해하게 만들려면 무엇으로 시작할 수 있을까?",
+        "질문, 사진, 지도, 짧은 사례, 학생 경험, 모순되는 자료, 문제 상황 등을 생각해 보자.",2)+
+      F("act","학생들이 이 학습목표에 도달할 수 있도록 어떤 활동을 해 볼 수 있을까?",
+        "어떤 자료나 사례를 가지고, 학생들이 실제로 무엇을 보고, 조사하고, 비교하고, 이야기하고, 만들거나 판단하게 할 것인지 적어 보자. 활동이 여러 개면 줄을 바꿔 적는다.",4,
+        {after:'<details class="egs"><summary>이런 수준으로 — 자료/상황 + 학생이 하는 일 + 생각하게 되는 것</summary><ul>'+
+          '<li>두 지역의 기후 그래프를 비교하여 차이가 나타나는 이유를 추론한다.</li>'+
+          '<li>서로 다른 종교 경관 사진을 보고 공통점과 차이점을 찾아 분류한다.</li>'+
+          '<li>우리 지역의 과거·현재 지도를 겹쳐 보고 가장 크게 변화한 공간을 찾아 그 원인을 설명한다.</li>'+
+          '<li>산불 발생 지도에서 피해가 반복되는 지역을 찾은 뒤 지형·기후 자료와 연결해 설명한다.</li>'+
+          '<li>두 지역의 재해 피해 자료를 비교하고, 차이를 가장 잘 설명하는 요인을 모둠별로 골라 근거를 제시한다.</li>'+
+          '</ul></details>'})+
+    '</div>');
+
+  /* F · 학습 확인하기 */
+  h+=G("F","학습 확인하기","",
+    '<div class="echo" id="goalecho">'+echoGoal()+'</div>'+
+    '<div class="ov tight">'+
+      F("evid","학생이 무엇을 말하거나, 쓰거나, 만들거나, 수행하면 학습목표를 달성했다고 볼 수 있을까?","",3)+
+    '</div>');
+
   return h;
 }
 
-/* ── 화면 3 · 개요 ── */
-function qRow(r,i){
-  return '<tr><td class="no">'+(i+1)+'</td>'+
-   '<td><input type="text" data-q="'+i+'|q" value="'+esc(r.q)+'"></td>'+
-   '<td><input type="text" data-q="'+i+'|c" value="'+esc(r.c)+'"></td>'+
-   '<td><input type="text" data-q="'+i+'|d" value="'+esc(r.d)+'"></td>'+
-   '<td class="x">'+(S.q.length>1?'<button data-delq="'+i+'">×</button>':'')+'</td></tr>';
-}
+function echoGoal(){
+  return '<span class="l">B에서 쓴 학습목표 — 이 목표가 달성되었다는 증거는 무엇일까?</span>'+
+    (has(S.goal)?esc(S.goal):'<span class="none">아직 쓰지 않았습니다</span>');}
+
+/* ── 화면 3 · 우리 수업 한눈에 보기 ── */
 function scrOut(){
-  var h='<p class="stage">3부 · 작성</p><h1>차시 개요 작성하기</h1>';
-  if(has(S.goal)||has(S.act)||has(S.uni))
-    h+='<div class="out"><h3>2부에서 적은 것</h3>'+
-     (has(S.goal)?'<p class="memo">학습 목표 — '+esc(S.goal)+'</p>':'')+
-     (has(S.act)?'<p class="memo">활동 계획 — '+esc(S.act)+'</p>':'')+
-     (has(S.uni)?'<p class="memo">관련 전공 강의 — '+esc(S.uni)+'</p>':'')+
-     '</div>';
-  h+='<div class="ov tight" style="margin-top:22px">'+
-   '<div class="fieldrow"><p class="fk">'+DEF.title[0]+'</p><p class="fd">'+DEF.title[1]+'</p>'+
-    '<input type="text" data-k="title" value="'+esc(S.title)+'"></div>'+
-   '<div class="fieldrow"><p class="fk">'+DEF.bg[0]+'</p><p class="fd">'+DEF.bg[1]+'</p>'+
-    '<textarea class="sm" data-k="bg" rows="4">'+esc(S.bg)+'</textarea></div>'+
-   '<div class="fieldrow"><p class="fk">'+DEF.goal[0]+'</p><p class="fd">'+DEF.goal[1]+'</p>'+
-    '<textarea class="sm" data-k="goal" rows="2">'+esc(S.goal)+'</textarea></div>'+
-   '<div class="fieldrow"><p class="fk">'+DEF.q[0]+'</p><p class="fd">'+DEF.q[1]+'</p>'+
-    '<div class="qtwrap"><table class="ct qt2"><colgroup><col style="width:28px"><col style="width:38%">'+
-    '<col style="width:22%"><col><col style="width:30px"></colgroup>'+
-    '<thead><tr><th></th><th>탐구 질문</th><th>지리적 개념</th><th>사례, 자료, 데이터</th><th></th></tr></thead>'+
-    '<tbody>'+S.q.map(qRow).join("")+'</tbody></table></div>'+
-    (S.q.length<5?'<button class="addrow" id="addq">＋ 질문 추가</button>':'')+'</div>'+
-  '</div>'+
-  '<div class="step" style="margin-top:36px"><h3><b>·</b>우리 팀의 차시 개요</h3></div>'+
-  '<div class="prev" id="prev">'+prevHTML()+'</div>'+
+  return '<p class="stage">3 · 우리 수업 한눈에 보기</p><h1>우리 수업 스케치</h1>'+
+  '<p class="lead">2에서 적은 내용을 한 장으로 모았습니다.</p>'+
+  '<div class="prev sk" id="prev">'+prevHTML()+'</div>'+
+  '<div class="chk"><p class="chq">학습목표–활동–평가는 서로 연결되어 있는가?</p>'+
+   '<p class="chn">수정할 것이 있다면 2로 돌아가세요.</p></div>'+
   '<div class="foot"><button id="copy">복사</button><button id="savehtml">HTML로 저장</button>'+
   '<button id="print">인쇄 · PDF</button>'+
   '<span class="sp"></span><span class="msg" id="msg"></span><button id="clear">모두 지우기</button></div>'+
-  '<div class="notice">입력한 내용은 이 기기의 브라우저에만 남습니다. 끝나면 복사하거나 저장해 가져가세요.</div>'+
-  '<div class="nav"><button data-go="1">이전 · 뜯어보기</button><span></span></div>';
-  return h;
+  '<div class="notice">입력한 내용은 이 기기의 브라우저에만 남습니다. 끝나면 복사하거나 저장해 가져가세요.</div>';
 }
+function lines(t){return String(t||"").split(/\n+/).map(function(x){
+  return x.replace(/^\s*(?:[-•·*]|\d+[.)]|활동\s*\d+\s*[:.)]?)\s*/,"").trim();}).filter(function(x){return x;});}
 function prevHTML(){
-  var s=std(),qs=S.q.filter(function(x){return has(x.q)||has(x.c)||has(x.d);});
-  function v(x){return has(x)?esc(x):'<span class="none">—</span>';}
-  return '<p class="ovt" style="font-size:20px">'+v(S.title)+'</p>'+
-   '<p class="ovmeta">'+(s?'['+esc(s.c)+'] '+esc(s.t):'<span class="none">성취기준 미선택</span>')+'</p>'+
-   (marked().length?'<p class="fd" style="margin-top:-12px">이번 차시에서 수업할 부분 — '+esc(marked().join(" / "))+'</p>':'')+
-   '<p class="fk">배경</p><p class="fv">'+v(S.bg)+'</p>'+
-   '<p class="fk">학습 목표</p><p class="fv">'+v(S.goal)+'</p>'+
-   '<p class="fk">탐구 질문</p>'+(qs.length?'<ol class="fv">'+qs.map(function(x){
-     var m=[];
-     if(has(x.c))m.push('지리적 개념 — '+esc(x.c));
-     if(has(x.d))m.push('사례, 자료, 데이터 — '+esc(x.d));
-     return '<li>'+v(x.q)+(m.length?'<span class="qm">'+m.join(' · ')+'</span>':'')+'</li>';
-   }).join("")+'</ol>':'<p class="fv none">—</p>')+
-   (function(){var c=S.q.map(function(x){return x.c;}).filter(has);
-     var all=(has(S.core)?[S.core]:[]).concat(c);
-     return '<p class="fk">지리적 개념</p><p class="fv">'+(all.length?esc(all.join(", ")):'<span class="none">—</span>')+'</p>';})();
+  var s=std(),mk=marked();
+  function v(x){return has(x)?'<p class="fv pw">'+esc(x)+'</p>':'<p class="fv none">—</p>';}
+  function row(label,body){return '<div class="skr"><p class="fk">'+label+'</p>'+body+'</div>';}
+  var acts=lines(S.act);
+  return row("성취기준",
+     (s?'<p class="fv">['+esc(s.c)+'] '+esc(s.t)+'</p>':'<p class="fv none">—</p>')+
+     (mk.length?'<p class="fv skm">이번 차시에서 선택한 부분 — '+mk.map(function(x){return '<b>'+esc(x)+'</b>';}).join(" ")+'</p>':''))+
+   row("핵심어",v(S.kw))+
+   row("학습목표",v(S.goal))+
+   row("학생에게서 출발하기",v(S.know))+
+   row("활용할 자료",v(S.data))+
+   row("핵심 지리적 개념",v(S.core)+(has(S.uni)?'<p class="fv skm">관련 전공 — '+esc(S.uni)+'</p>':''))+
+   row("수업의 시작",v(S.open))+
+   row("활동 아이디어",acts.length?'<ol class="fv">'+acts.map(function(x){return '<li>'+esc(x)+'</li>';}).join("")+'</ol>':'<p class="fv none">—</p>')+
+   row("학습의 증거 · 평가",
+     (has(S.evid)?'<p class="fv pw">'+esc(S.evid)+'</p>':'<p class="fv none">—</p>'));
 }
 
 /* ── 그리기 ── */
-var SCR=[scrEg,scrOpen,scrOut],NAMES=["1부 · 예시","2부 · 분석하기","3부 · 개요"];
-function paint(){
+var SCR=[scrEg,scrOpen,scrOut],NAMES=["1 · 좋은 수업 사례 보기","2 · 우리 차시 설계하기","3 · 우리 수업 한눈에 보기"];
+function paint(keep){
+  var y=window.scrollY||0;
   $("#main").innerHTML=SCR[S.scr]();
   $("#switch").innerHTML=NAMES.map(function(n,i){
     return '<button data-go="'+i+'"'+(S.scr===i?' aria-current="true"':'')+'>'+n+'</button>';}).join("");
-  bind();window.scrollTo(0,0);
+  bind();window.scrollTo(0,keep?y:0);
 }
-function refresh(){if($("#prev"))$("#prev").innerHTML=prevHTML();}
+function refresh(){if($("#prev"))$("#prev").innerHTML=prevHTML();
+  if($("#goalecho"))$("#goalecho").innerHTML=echoGoal();}
 function bind(){
   q("[data-go]").forEach(function(b){b.onclick=function(){S.scr=+b.dataset.go;save();paint();};});
   $("#brand").onclick=function(){S.scr=0;save();paint();};
@@ -596,13 +660,13 @@ function bind(){
     el.onclick=function(e){var sl=window.getSelection();if(sl&&!sl.isCollapsed)return;
       if(e.target.tagName!=="MARK")return;
       var a=S.marks.slice().sort(function(x,y){return x.s-y.s;});
-      a.splice(+e.target.dataset.mi,1);S.marks=a;save();paint();};});
+      a.splice(+e.target.dataset.mi,1);S.marks=a;save();paint(true);};});
   if($("#print"))$("#print").onclick=function(){try{window.print();}catch(e){}};
   if($("#savehtml"))$("#savehtml").onclick=function(){
     try{
       var doc='<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8">'+
        '<meta name="viewport" content="width=device-width, initial-scale=1">'+
-       '<title>'+esc(has(S.title)?S.title:"차시 개요")+'</title><style>'+
+       '<title>우리 수업 스케치</title><style>'+
        'body{margin:0;background:#fff;color:#111517;font-size:16px;line-height:1.8;'+
        'font-family:Pretendard,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif}'+
        '.wrap{max-width:820px;margin:0 auto;padding:48px 28px 80px}'+
@@ -612,11 +676,11 @@ function bind(){
        '.fv{margin:0 0 6px;font-size:16px}.fv ol,.fv ul{margin:0;padding-left:20px}.fv li{margin:7px 0}'+
        '.fd{font-size:13.5px;color:#8A9296;margin:0 0 6px}'+
        '.qm{display:block;font-size:13.5px;color:#525C60;margin-top:2px}'+
-       '.memo{color:#525C60}.none{color:#8A9296}a{color:#0E5A50}'+
+       '.skr{margin-bottom:4px}.skm{font-size:14px;color:#525C60}.skm b{font-weight:600}.pw{white-space:pre-wrap}.memo{color:#525C60}.none{color:#8A9296}a{color:#0E5A50}'+
        '</style></head><body><div class="wrap">'+prevHTML()+'</div></body></html>';
       var b=new Blob([doc],{type:"text/html;charset=utf-8"});
       var u=URL.createObjectURL(b),a=document.createElement("a");
-      a.href=u;a.download=(has(S.title)?S.title.replace(/[\\/:*?"<>|]/g,"").slice(0,40):"차시개요")+".html";
+      a.href=u;a.download="수업스케치"+(S.code?"_"+S.code:"")+".html";
       document.body.appendChild(a);a.click();
       setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(u);},400);
       flash("내려받았습니다");
