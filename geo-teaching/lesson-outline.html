@@ -358,6 +358,18 @@ textarea.sm{min-height:0}
 .chn{margin:0;color:var(--mid);font-size:14.5px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
 @media print{.chn .egbtn{display:none}}
 </style>
+<style>
+/* ═══ 레이아웃 고정 — 모든 화면에서 같은 폭, 같은 머리 높이 ═══ */
+:root{--w:960px}   /* 좌우 여백 30px씩을 빼면 본문 900px */
+html{overflow-y:scroll;scrollbar-gutter:stable}
+.hin,main{max-width:var(--w)}
+.hbar{max-width:none}
+/* 본문 안 덩어리는 모두 본문 폭 전체를 쓴다 */
+.lead,.arc,.step>.d,.bg,.stdbox,.out,.notice,.fw,.two,.ov,.secs,.picks,.qrow,.ct,.chain,
+.lockmsg,.goal,.sum,.fv,.prev,.mini2,.curbox,.toolbar,.grp,.foot,.chk{max-width:none}
+/* 선택된 메뉴도 글자 굵기를 바꾸지 않는다 — 메뉴 줄이 흔들리지 않게 */
+.switch button[aria-current="true"]{font-weight:inherit}
+</style>
 </head>
 <body>
 <header><div class="hin"><div class="hbar">
