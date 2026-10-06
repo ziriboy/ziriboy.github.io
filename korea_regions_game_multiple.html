@@ -675,6 +675,21 @@ body {
   line-height: 1;
 }
 .modal .score-cell .val.gold { color: var(--gold); }
+.modal .race { margin: -8px 0 20px; text-align: left; }
+.modal .race:empty { display: none; }
+.race-head { font-size: 11px; font-weight: 700; color: var(--ink-soft); margin-bottom: 6px; display: flex; justify-content: space-between; }
+.race-head span { font-weight: 400; color: var(--ink-faint); }
+.race-mine { text-align: center; font-size: 13px; color: var(--ink-soft); margin-bottom: 8px; }
+.race-mine b { display: block; font-family: var(--font-display); font-size: 30px; color: var(--ink); line-height: 1.15; font-variant-numeric: tabular-nums; }
+.race-list { display: grid; gap: 3px; max-height: 210px; overflow-y: auto; }
+.race-row { display: grid; grid-template-columns: 26px 1fr auto; gap: 6px; align-items: baseline; font-size: 13px; padding: 5px 8px; border-radius: 3px; background: var(--bg-page); }
+.race-row .rk { font-weight: 700; color: var(--ink-faint); font-size: 12px; }
+.race-row .nm { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.race-row .tm { font-weight: 700; font-variant-numeric: tabular-nums; color: var(--accent-cool); }
+.race-row.first .rk, .race-row.first .tm { color: var(--gold); }
+.race-row.me { background: #fff6e8; outline: 1px solid var(--accent-warm); }
+.race-row.wip .tm { color: var(--ink-faint); font-weight: 400; font-size: 11.5px; }
+.race-note { font-size: 11px; color: var(--ink-faint); margin-top: 6px; text-align: center; }
 .modal .actions {
   display: flex;
   gap: 8px;
@@ -1081,6 +1096,7 @@ body {
       </div>
       <div class="progress" id="hud-progress"></div>
       <div class="stats">
+        <span><span class="stat-label">시간</span><span class="stat-val" id="hud-time">0:00</span></span>
         <span><span class="stat-label">점수</span><span class="stat-val" id="hud-score">0</span></span>
         <span><span class="stat-label">생명</span><span class="lives" id="hud-lives"></span></span>
       </div>
@@ -1135,6 +1151,7 @@ body {
         <div class="val gold" id="modal-score">0</div>
       </div>
     </div>
+    <div class="race" id="modal-race"></div>
     <div class="actions" id="modal-actions"></div>
   </div>
 </div>
@@ -1152,12 +1169,12 @@ const TIER2_GEOJSON = {"type":"FeatureCollection","features":[{"type":"Feature",
 // 여러 명의 점수를 한 화면에 모으려면 Firebase Realtime Database를 쓰면 됩니다.
 //   1. console.firebase.google.com 에서 무료 프로젝트를 만들고
 //      Realtime Database를 생성합니다 (지역은 아무 곳이나).
-//   2. 규칙(Rules)을 아래처럼 바꿉니다. 수업용 임시 방이므로 공개로 둡니다.
-//        { "rules": { "rooms": { ".read": true, ".write": true } } }
+//   2. 규칙(Rules)에 games 칸을 공개로 열어 둡니다 (게임 기록은 games 아래에 저장된다).
+//        "games": { ".read": true, ".write": true }
 //   3. 데이터베이스 주소를 그대로 아래에 붙여 넣습니다.
 //        const SYNC_URL = 'https://내프로젝트-default-rtdb.firebaseio.com';
 // =========================================================================
-const SYNC_URL = '';
+const SYNC_URL = 'https://korea-regions-default-rtdb.asia-southeast1.firebasedatabase.app';
 
 // =========================================================================
 // SOUND — 외부 음원 파일 없이 Web Audio API로 직접 소리를 만든다.
@@ -1385,7 +1402,7 @@ const NET = {
 
   configured() { return !!this.base; },
   live() { return !!this.base && !!this.room; },
-  path(sub) { return `${this.base}/rooms/${encodeURIComponent(this.room)}${sub}.json`; },
+  path(sub) { return `${this.base}/games/${encodeURIComponent(this.room)}${sub}.json`; },
 
   async push(state) {
     if (!this.live()) return;
@@ -2016,6 +2033,10 @@ class Game {
     this.modalSubtitle = document.getElementById('modal-subtitle');
     this.modalCorrect = document.getElementById('modal-correct');
     this.modalScore = document.getElementById('modal-score');
+    this.modalRace = document.getElementById('modal-race');
+    this.hudTime = document.getElementById('hud-time');
+    this.raceStart = 0; this.raceKey = ''; this.splits = {}; this.finishMs = null;
+    this.raceView = null; this.clockTimer = null;
     this.modalActions = document.getElementById('modal-actions');
 
     this.bindUI();
@@ -2095,6 +2116,7 @@ class Game {
   // 대기실 — 참여자가 다 모인 뒤 함께 출발하기 위한 화면
   // ---------------------------------------------------------------------
   showLobby() {
+    this.stopClock();
     this.cancelFall();
     Sound.stopMusic();
     this.stopHeartbeat();
@@ -2304,17 +2326,19 @@ class Game {
   }
 
   renderBoard() {
+    if (this.raceView && this.modalBg.classList.contains('show')) this.renderRace();
     if (!this.playArea.classList.contains('with-board')) return;
     const now = Date.now();
     const rows = [];
     rows.push({
       id: NET.playerId, name: NET.name || '나', score: this.score,
-      level: this.levelIdx + 1, ts: now, me: true
+      level: this.levelIdx + 1, ts: now, me: true, finishMs: this.finishMs
     });
     Object.keys(NET.peers || {}).forEach(k => {
       if (k === NET.playerId) return;
       const p = NET.peers[k] || {};
-      rows.push({ id: k, name: p.name || '?', score: p.score || 0, level: p.level || 1, ts: p.ts || 0 });
+      rows.push({ id: k, name: p.name || '?', score: p.score || 0, level: p.level || 1, ts: p.ts || 0,
+        finishMs: this.sameRace(p) ? p.finishMs : null });
     });
     rows.sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
 
@@ -2323,7 +2347,7 @@ class Game {
       const cls = [i === 0 ? 'top' : '', r.me ? 'me' : '', stale ? 'stale' : ''].join(' ').trim();
       return `<div class="board-row ${cls}">
         <span class="rk">${i + 1}</span>
-        <span class="nm">${this.esc(r.name)}<small>${r.level}단계</small></span>
+        <span class="nm">${this.esc(r.name)}<small>${r.finishMs != null ? '완주 ' + this.fmtTime(r.finishMs) : r.level + '단계'}</small></span>
         <span class="sc">${r.score}</span>
       </div>`;
     }).join('');
@@ -2338,7 +2362,11 @@ class Game {
   }
 
   syncScore() {
-    NET.push({ score: this.score, level: this.levelIdx + 1, mode: this.modeKey });
+    NET.push({
+      score: this.score, level: this.levelIdx + 1, mode: this.modeKey,
+      raceStart: this.raceStart, raceKey: this.raceKey,
+      splits: this.splits, finishMs: this.finishMs
+    });
     this.renderBoard();
   }
 
@@ -2401,6 +2429,7 @@ class Game {
       this.zoomConfig = null;
     }
     this.hudLevelTotal.textContent = mode.levels.length;
+    this.startRaceClock(modeKey);
     this.modeScreen.classList.add('hidden');
     this.gameScreen.classList.add('active');
 
@@ -2425,6 +2454,7 @@ class Game {
   }
 
   exitToModeSelect() {
+    this.stopClock();
     this.cancelFall();
     Sound.stopMusic();
     NET.stopPolling();
@@ -2775,8 +2805,11 @@ class Game {
     this.cancelFall();
     this.clearWarnState();
     Sound.sfx('clear');
-    this.syncScore();
     const isLast = (this.levelIdx >= MODES[this.modeKey].levels.length - 1);
+    const elapsed = Date.now() - this.raceStart;
+    if (this.splits[this.levelIdx] == null) this.splits[this.levelIdx] = elapsed;
+    if (isLast && this.finishMs == null) { this.finishMs = elapsed; this.stopClock(); }
+    this.syncScore();
     const isModeC = (this.modeKey === 'C');
 
     if (isLast) {
@@ -2810,6 +2843,7 @@ class Game {
         subtitle: masterLabel,
         correct: this.totalCorrect,
         score: this.score,
+        race: 'final',
         actions: actions
       });
     } else {
@@ -2823,6 +2857,7 @@ class Game {
         subtitle: subtitle,
         correct: this.levelCorrect,
         score: this.score,
+        race: this.levelIdx,
         actions: [
           { label: '다음 단계 →', primary: true, onClick: () => {
             this.levelIdx++;
@@ -2884,7 +2919,9 @@ class Game {
     });
   }
 
-  showModal({ icon, title, subtitle, correct, score, actions }) {
+  showModal({ icon, title, subtitle, correct, score, actions, race }) {
+    this.raceView = (race === undefined) ? null : race;
+    this.renderRace();
     this.modalIcon.textContent = icon;
     this.modalTitle.textContent = title;
     this.modalSubtitle.textContent = subtitle;
@@ -2901,7 +2938,81 @@ class Game {
     this.modalBg.classList.add('show');
   }
 
-  hideModal() { this.modalBg.classList.remove('show'); }
+  hideModal() { this.modalBg.classList.remove('show'); this.raceView = null; }
+
+  // ---------------------------------------------------------------------
+  // 기록 — 시작 신호(GO)부터 흐르는 시간. 방에서는 모두 같은 시작 시각을 쓴다.
+  // ---------------------------------------------------------------------
+  startRaceClock(modeKey) {
+    const key = modeKey + (modeKey === 'C' && this.zoomConfig ? ':' + this.zoomConfig.sido : '');
+    const sig = NET.meta && NET.meta.startAt;
+    const shared = NET.room && sig && Math.abs(Date.now() - sig) < 3 * 3600 * 1000;
+    const start = shared ? sig : Date.now();
+    // 같은 판(같은 시작 신호·같은 게임)이면 기록을 이어 간다 — '처음부터'를 눌러도 시계는 계속 흐른다
+    if (!(shared && start === this.raceStart && key === this.raceKey)) {
+      this.splits = {}; this.finishMs = null;
+    }
+    this.raceStart = start; this.raceKey = key;
+    this.stopClock();
+    const tick = () => {
+      const ms = this.finishMs != null ? this.finishMs : Date.now() - this.raceStart;
+      this.hudTime.textContent = this.fmtTime(ms, true);
+    };
+    tick();
+    if (this.finishMs == null) this.clockTimer = setInterval(tick, 500);
+  }
+  stopClock() { if (this.clockTimer) { clearInterval(this.clockTimer); this.clockTimer = null; } }
+
+  fmtTime(ms, short) {
+    if (ms == null || ms < 0) return '—';
+    const t = Math.floor(ms / 100);
+    const m = Math.floor(t / 600), sec = Math.floor(t / 10) % 60, d = t % 10;
+    return `${m}:${String(sec).padStart(2, '0')}` + (short ? '' : `.${d}`);
+  }
+
+  sameRace(p) {
+    return !!p && p.raceStart === this.raceStart && p.raceKey === this.raceKey;
+  }
+
+  /** 단계 완료·최종 화면의 순위. 2.5초마다 다시 그려 늦게 끝난 사람도 들어온다. */
+  renderRace() {
+    const el = this.modalRace;
+    const view = this.raceView;
+    if (view === null || view === undefined) { el.innerHTML = ''; return; }
+    const isFinal = view === 'final';
+    const mine = isFinal ? this.finishMs : this.splits[view];
+    const title = isFinal ? '전체 완주 순위' : `${view + 1}단계 완료 순서`;
+
+    if (!NET.live()) {
+      el.innerHTML = `<div class="race-mine">${isFinal ? '전체 완주 기록' : (view + 1) + '단계까지 걸린 시간'}<b>${this.fmtTime(mine)}</b></div>` +
+        (NET.roomCode ? `<div class="race-note">같은 방 코드로 한 친구들과 시간을 비교해 보세요</div>` : '');
+      return;
+    }
+
+    const rows = [{ id: NET.playerId, name: NET.name || '나', me: true, t: mine,
+      level: this.levelIdx + 1, score: this.score }];
+    Object.keys(NET.peers || {}).forEach(k => {
+      if (k === NET.playerId) return;
+      const p = NET.peers[k];
+      if (!this.sameRace(p)) return;
+      const t = isFinal ? p.finishMs : (p.splits ? p.splits[view] : null);
+      rows.push({ id: k, name: p.name || '?', t: (t == null ? null : t), level: p.level || 1, score: p.score || 0 });
+    });
+    const done = rows.filter(r => r.t != null).sort((a, b) => a.t - b.t);
+    const wip = rows.filter(r => r.t == null).sort((a, b) => b.level - a.level || b.score - a.score);
+    const myRank = done.findIndex(r => r.me) + 1;
+
+    const line = (r, i, isDone) => `<div class="race-row${isDone && i === 0 ? ' first' : ''}${r.me ? ' me' : ''}${isDone ? '' : ' wip'}">
+        <span class="rk">${isDone ? i + 1 : '·'}</span>
+        <span class="nm">${this.esc(r.name)}</span>
+        <span class="tm">${isDone ? this.fmtTime(r.t) : (isFinal ? r.level + '단계 진행 중' : '진행 중')}</span>
+      </div>`;
+
+    el.innerHTML =
+      `<div class="race-mine">${myRank === 1 ? '🥇 가장 먼저 끝냈습니다' : myRank ? `${rows.length}명 중 <strong>${myRank}번째</strong>` : ''}<b>${this.fmtTime(mine)}</b></div>` +
+      `<div class="race-head">${title}<span>${done.length} / ${rows.length}명 완료</span></div>` +
+      `<div class="race-list">${done.map((r, i) => line(r, i, true)).join('')}${wip.map(r => line(r, 0, false)).join('')}</div>`;
+  }
 }
 
 function shuffle(arr) {
