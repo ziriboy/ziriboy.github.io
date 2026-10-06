@@ -133,6 +133,7 @@ body{background:var(--bg);display:flex;flex-direction:column;}
 #msrc{position:absolute;bottom:8px;right:10px;z-index:400;
   font-size:9px;color:rgba(0,0,0,.4);}
 .leaflet-container{background:#E8EFF8;}
+.tile-muted{filter:grayscale(1) contrast(.9) brightness(1.05);}
 .leaflet-control-zoom{border:1px solid var(--border)!important;border-radius:8px!important;overflow:hidden;}
 .leaflet-tooltip{border-radius:9px!important;border:none!important;
   box-shadow:0 4px 16px rgba(0,0,0,.18)!important;
@@ -364,7 +365,7 @@ body{background:var(--bg);display:flex;flex-direction:column;}
       </div>
     </div>
 
-    <div id="msrc">© Esri · HERE · OpenStreetMap · 한국은행(2023)</div>
+    <div id="msrc">© Esri · HERE · Garmin · OpenStreetMap · 한국은행(2023)</div>
   </div>
 
   <!-- RIGHT -->
@@ -715,7 +716,7 @@ const IND=[
 /* ============================================================
    LEAFLET
    ============================================================ */
-const map=L.map('map',{center:[36.3,127.9],zoom:7,
+const map=L.map('map',{center:[36.3,127.9],zoom:7,maxZoom:16,
   zoomControl:true,attributionControl:false});
 /* ── 바탕 지도 ──
    CARTO는 2026년 8월부터 API 키 없는 요청에 "API KEY REQUIRED" 워터마크를 찍어 보낸다.
@@ -727,17 +728,23 @@ if(CARTO_KEY) BASEMAPS.push({
   url:'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?key='+CARTO_KEY,
   opt:{subdomains:'abcd',maxZoom:18}, src:'© OpenStreetMap · CARTO'});
 BASEMAPS.push(
-  {url:'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
-   opt:{maxZoom:18}, src:'© Esri · HERE · OpenStreetMap'},
+  {url:'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+   labels:'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}',
+   opt:{maxZoom:16}, src:'© Esri · HERE · Garmin · OpenStreetMap'},
   {url:'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-   opt:{maxZoom:18}, src:'© OpenStreetMap'}
+   opt:{maxZoom:18, className:'tile-muted'}, src:'© OpenStreetMap'}
 );
-let baseIdx=0, baseLayer=null, baseErr=0;
+map.createPane('labels');
+map.getPane('labels').style.zIndex=350;
+map.getPane('labels').style.pointerEvents='none';
+let baseIdx=0, baseLayer=null, labelLayer=null, baseErr=0;
 function setBasemap(i){
   if(baseLayer) map.removeLayer(baseLayer);
-  baseIdx=i; baseErr=0;
+  if(labelLayer) map.removeLayer(labelLayer);
+  labelLayer=null; baseIdx=i; baseErr=0;
   const b=BASEMAPS[i];
   baseLayer=L.tileLayer(b.url,b.opt).addTo(map);
+  if(b.labels) labelLayer=L.tileLayer(b.labels,{maxZoom:b.opt.maxZoom,pane:'labels'}).addTo(map);
   baseLayer.on('tileerror',()=>{
     if(++baseErr>=4 && baseIdx<BASEMAPS.length-1) setBasemap(baseIdx+1);
   });
