@@ -364,7 +364,7 @@ body{background:var(--bg);display:flex;flex-direction:column;}
       </div>
     </div>
 
-    <div id="msrc">© OpenStreetMap · CartoDB · 한국은행(2023)</div>
+    <div id="msrc">© Esri · HERE · OpenStreetMap · 한국은행(2023)</div>
   </div>
 
   <!-- RIGHT -->
@@ -717,8 +717,34 @@ const IND=[
    ============================================================ */
 const map=L.map('map',{center:[36.3,127.9],zoom:7,
   zoomControl:true,attributionControl:false});
-L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
-  {subdomains:'abcd',maxZoom:18}).addTo(map);
+/* ── 바탕 지도 ──
+   CARTO는 2026년 8월부터 API 키 없는 요청에 "API KEY REQUIRED" 워터마크를 찍어 보낸다.
+   그래서 키가 필요 없는 Esri 지도를 기본으로 쓰고, 불러오지 못하면 OpenStreetMap으로 넘어간다.
+   CARTO 무료 키(carto.com/basemaps/apikey)를 받았다면 아래 따옴표 안에 넣으면 CARTO 지도로 돌아간다. */
+const CARTO_KEY='';
+const BASEMAPS=[];
+if(CARTO_KEY) BASEMAPS.push({
+  url:'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?key='+CARTO_KEY,
+  opt:{subdomains:'abcd',maxZoom:18}, src:'© OpenStreetMap · CARTO'});
+BASEMAPS.push(
+  {url:'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+   opt:{maxZoom:18}, src:'© Esri · HERE · OpenStreetMap'},
+  {url:'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+   opt:{maxZoom:18}, src:'© OpenStreetMap'}
+);
+let baseIdx=0, baseLayer=null, baseErr=0;
+function setBasemap(i){
+  if(baseLayer) map.removeLayer(baseLayer);
+  baseIdx=i; baseErr=0;
+  const b=BASEMAPS[i];
+  baseLayer=L.tileLayer(b.url,b.opt).addTo(map);
+  baseLayer.on('tileerror',()=>{
+    if(++baseErr>=4 && baseIdx<BASEMAPS.length-1) setBasemap(baseIdx+1);
+  });
+  const el=document.getElementById('msrc');
+  if(el) el.textContent=b.src+' · 한국은행(2023)';
+}
+setBasemap(0);
 
 let regionLayers=[],pinLayers=[],chartBar=null,chartSpark=null;
 let curInd=null, allMode=false;
