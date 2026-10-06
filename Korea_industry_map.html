@@ -137,14 +137,6 @@ body{background:var(--bg);display:flex;flex-direction:column;}
   font-size:9px;color:rgba(0,0,0,.4);}
 .leaflet-container{background:#E8EFF8;}
 .leaflet-overlay-pane{z-index:400;}
-#basesw{background:rgba(255,255,255,.95);border-radius:9px;padding:7px;
-  box-shadow:0 2px 10px rgba(0,0,0,.12);display:flex;flex-direction:column;gap:3px;min-width:118px;}
-#basesw .bs-h{font-size:9.5px;font-weight:700;color:var(--muted);padding:0 4px 2px;letter-spacing:.04em;}
-#basesw button{font-family:inherit;font-size:11px;text-align:left;border:none;background:none;
-  padding:4px 7px;border-radius:5px;cursor:pointer;color:var(--text);}
-#basesw button:hover{background:#F0F4FA;}
-#basesw button.on{background:#E6F0FF;color:#1255A0;font-weight:700;}
-.tile-muted{filter:grayscale(1) contrast(.9) brightness(1.05);}
 .leaflet-control-zoom{border:1px solid var(--border)!important;border-radius:8px!important;overflow:hidden;}
 .leaflet-tooltip{border-radius:9px!important;border:none!important;
   box-shadow:0 4px 16px rgba(0,0,0,.18)!important;
@@ -376,7 +368,7 @@ body{background:var(--bg);display:flex;flex-direction:column;}
       </div>
     </div>
 
-    <div id="msrc">© Esri · HERE · Garmin · OpenStreetMap · 한국은행(2023)</div>
+    <div id="msrc">© OpenStreetMap · CARTO · 한국은행(2023)</div>
   </div>
 
   <!-- RIGHT -->
@@ -729,67 +721,44 @@ const IND=[
    ============================================================ */
 const map=L.map('map',{center:[36.3,127.9],zoom:7,maxZoom:16,
   zoomControl:true,attributionControl:false});
-/* ── 바탕 지도 ──
-   CARTO는 2026년 8월부터 API 키 없는 요청에 "API KEY REQUIRED" 워터마크를 찍어 보낸다.
-   그래서 키가 필요 없는 지도들 중에서 고를 수 있게 했다(지도 오른쪽 위 버튼).
-   기본값 DEFAULT_BASE를 바꾸면 처음 열릴 때 보이는 지도가 바뀐다. */
-const DEFAULT_BASE='positron';
-map.createPane('labels');
-map.getPane('labels').style.zIndex=350;
-map.getPane('labels').style.pointerEvents='none';
-
-/* OpenFreeMap 벡터 지도: 지명을 한글(name:ko)로 바꿔 표시 */
+/* ── 바탕 지도: CARTO Voyager ──
+   CARTO는 2026년 8월부터 키 없는 이미지 타일에 "API KEY REQUIRED" 워터마크를 찍는다.
+   ① CARTO 무료 키(carto.com/basemaps/apikey)를 아래 따옴표 안에 넣으면 원래 지도(이미지 타일) 그대로 나온다.
+   ② 키가 없으면 같은 디자인의 Voyager 벡터 지도를 쓴다.
+   ③ 그것마저 안 되면 비슷한 밝은 지도(OpenFreeMap)로 넘어간다. */
+const CARTO_KEY='';
+const SRC_CARTO='© OpenStreetMap · CARTO';
+function setSrc(t){document.getElementById('msrc').textContent=t+' · 한국은행(2023)';}
 function koLabels(gl){
-  const apply=()=>{
-    (gl.getStyle().layers||[]).forEach(l=>{
-      if(l.type==='symbol' && gl.getLayoutProperty(l.id,'text-field')!==undefined){
-        try{gl.setLayoutProperty(l.id,'text-field',['coalesce',['get','name:ko'],['get','name']]);}catch(e){}
-      }
-    });
-  };
-  gl.once('style.load',apply);
-  if(gl.isStyleLoaded()) apply();
+  (gl.getStyle().layers||[]).forEach(l=>{
+    if(l.type==='symbol' && gl.getLayoutProperty(l.id,'text-field')!==undefined){
+      try{gl.setLayoutProperty(l.id,'text-field',['coalesce',['get','name:ko'],['get','name']]);}catch(e){}
+    }
+  });
 }
-function vectorBase(style){
-  if(!window.maplibregl || !L.maplibreGL) return null;
-  const lay=L.maplibreGL({style:'https://tiles.openfreemap.org/styles/'+style});
-  lay.on('add',()=>{const gl=lay.getMaplibreMap(); if(gl) koLabels(gl);});
+function vectorLayer(url,src,onFail){
+  const lay=L.maplibreGL({style:url}).addTo(map);
+  const gl=lay.getMaplibreMap();
+  let ok=false;
+  gl.on('style.load',()=>{ok=true; koLabels(gl); setSrc(src);});
+  gl.on('error',()=>{ if(!ok && onFail){map.removeLayer(lay); const f=onFail; onFail=null; f();} });
+  setTimeout(()=>{ if(!ok && onFail){map.removeLayer(lay); const f=onFail; onFail=null; f();} },6000);
   return lay;
 }
-const ESRI='https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/';
-const BASES={
-  positron:{name:'밝은 회색 (기본)', src:'© OpenFreeMap · OpenMapTiles · OpenStreetMap',
-    make:()=>vectorBase('positron')},
-  bright:{name:'옅은 컬러', src:'© OpenFreeMap · OpenMapTiles · OpenStreetMap',
-    make:()=>vectorBase('liberty')},
-  esri:{name:'회색 캔버스 (Esri)', src:'© Esri · HERE · Garmin · OpenStreetMap',
-    make:()=>L.layerGroup([
-      L.tileLayer(ESRI+'World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',{maxZoom:16}),
-      L.tileLayer(ESRI+'World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}',{maxZoom:16,pane:'labels'})])},
-  plain:{name:'지명 없음 (Esri)', src:'© Esri · HERE · Garmin',
-    make:()=>L.tileLayer(ESRI+'World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',{maxZoom:16})},
-  osm:{name:'흑백 OSM', src:'© OpenStreetMap',
-    make:()=>L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,className:'tile-muted'})},
-};
-let baseLayer=null, baseKey=null;
-function setBasemap(k){
-  let lay=BASES[k].make();
-  if(!lay){k='esri'; lay=BASES.esri.make();}   // 벡터 지도 라이브러리를 못 불러오면 Esri로
-  if(baseLayer) map.removeLayer(baseLayer);
-  baseLayer=lay.addTo(map); baseKey=k;
-  document.getElementById('msrc').textContent=BASES[k].src+' · 한국은행(2023)';
-  document.querySelectorAll('#basesw button').forEach(b=>b.classList.toggle('on',b.dataset.k===k));
+function esriFallback(){
+  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',{maxZoom:16}).addTo(map);
+  setSrc('© Esri · HERE · OpenStreetMap');
 }
-const BaseSwitch=L.Control.extend({options:{position:'topright'},onAdd(){
-  const d=L.DomUtil.create('div'); d.id='basesw';
-  d.innerHTML='<div class="bs-h">바탕 지도</div>'+
-    Object.entries(BASES).map(([k,b])=>`<button data-k="${k}">${b.name}</button>`).join('');
-  L.DomEvent.disableClickPropagation(d);
-  d.querySelectorAll('button').forEach(b=>b.onclick=()=>setBasemap(b.dataset.k));
-  return d;
-}});
-map.addControl(new BaseSwitch());
-setBasemap(DEFAULT_BASE);
+if(CARTO_KEY){
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?key='+CARTO_KEY,
+    {subdomains:'abcd',maxZoom:18}).addTo(map);
+  setSrc(SRC_CARTO);
+} else if(window.maplibregl && L.maplibreGL){
+  vectorLayer('https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json', SRC_CARTO,
+    ()=>vectorLayer('https://tiles.openfreemap.org/styles/liberty','© OpenFreeMap · OpenMapTiles · OpenStreetMap', esriFallback));
+} else {
+  esriFallback();
+}
 
 let regionLayers=[],pinLayers=[],chartBar=null,chartSpark=null;
 let curInd=null, allMode=false;
