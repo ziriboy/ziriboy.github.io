@@ -4,331 +4,265 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>서울숲 2길, 얼마나 변했는가?</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
-:root {
-  --bg:#f5f0e8; --paper:#faf7f2; --ink:#1a1208; --ink2:#5c4f3a;
-  --accent:#c84b2a; --green:#3a6b4a; --line:#ddd4bc;
-  --cn:#87ceeb; --crt:#ffd700; --cnt:#ff8c00; --ctf:#9370db;
+:root{
+  --bg:#F1F4F9; --paper:#FFFFFF; --soft:#F6F8FC; --ink:#18243A; --ink2:#6B7A99; --line:#DDE3EE;
+  --navy:#0B2550; --blue:#1255A0; --blue-l:#E6F0FF;
+  --accent:#1255A0; --green:#1A7A3C;
+  --c-none:#9DB4D3; --c-rt:#F59E0B; --c-nt:#E53E3E; --c-tf:#1255A0; --c-e:#18243A; --c-u:#D5DCE8;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--ink);background-image:url("data:image/svg+xml,%3Csvg width='4' height='4' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='4' height='4' fill='%23f5f0e8'/%3E%3Ccircle cx='1' cy='1' r='0.4' fill='%23e8e0d0' opacity='0.4'/%3E%3C/svg%3E");}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--ink);}
 
 /* ─ HERO ─ */
-.hero{background:transparent;color:var(--ink);padding:28px 0 20px;position:relative;}
-.hero::before{display:none;}
-.hl{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--accent);margin-bottom:10px;}
-.hero h1{font-size:clamp(22px,5vw,36px);font-weight:900;line-height:1.1;letter-spacing:-1px;margin-bottom:10px;color:var(--ink);}
-.hero h1 em{font-style:normal;color:var(--accent);}
-.hero p{font-size:13px;color:var(--ink2);max-width:100%;line-height:1.7;}
-
-/* ─ PROGRESS ─ */
-.pd{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:10.5px;font-family:'DM Mono',monospace;color:rgba(255,255,255,.3);cursor:pointer;transition:all .25s;flex-shrink:0;}
-.pd.active{background:var(--accent);color:#fff;}
-.pd.done{background:var(--green);color:#fff;}
-.pl{flex:1;height:1px;background:rgba(255,255,255,.08);}
-.plabel{font-size:10px;color:rgba(255,255,255,.28);margin-left:6px;font-family:'DM Mono',monospace;}
+.hero-wrap{background:var(--paper);border-bottom:1px solid var(--line);padding:0 16px;}
+.hero{padding:16px 0 14px;color:var(--ink);}
+.hl{font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--ink2);margin-bottom:6px;}
+.hero h1{font-size:clamp(22px,4.5vw,30px);font-weight:900;line-height:1.25;letter-spacing:-.6px;margin-bottom:6px;color:var(--ink);}
+.hero h1 em{font-style:normal;}
+.hero p{font-size:13px;color:var(--ink2);line-height:1.7;}
 
 /* ─ SECTIONS ─ */
 .sec{display:none;animation:fi .3s ease;}
 .sec.active{display:block;}
 @keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.wrap{max-width:100%;margin:0 auto;padding:22px 16px;}
 
-.hero-wrap{max-width:100%;padding:0 16px;margin-bottom:0;}
-/* ─ LAYOUT ─ */
-.wrap{max-width:100%;margin:0 auto;padding:24px 16px;}
-
-.snum{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--accent);margin-bottom:5px;}
-.stitle{font-size:22px;font-weight:900;letter-spacing:-.5px;margin-bottom:8px;}
-.sdesc{font-size:13px;color:var(--ink2);line-height:1.75;max-width:100%;margin-bottom:18px;}
+.snum{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--ink2);background:#E9EDF3;padding:3px 10px;border-radius:5px;margin-bottom:8px;}
+.stitle{font-size:19px;font-weight:800;letter-spacing:-.4px;margin-bottom:6px;}
+.sdesc{font-size:13px;color:var(--ink2);line-height:1.75;margin-bottom:16px;}
+.sdesc strong{color:var(--ink);}
 
 /* ─ LINK BOX ─ */
-.lbox{background:rgba(200,75,42,.07);border:1px solid rgba(200,75,42,.2);border-radius:9px;padding:10px 14px;margin-bottom:16px;font-size:12.5px;display:flex;align-items:flex-start;gap:8px;flex-wrap:wrap;}
-.lbox a{color:var(--accent);text-decoration:none;font-weight:700;}
+.lbox{background:var(--soft);border:1px solid var(--line);align-items:center!important;border-radius:9px;padding:11px 14px;margin-bottom:16px;font-size:12.5px;display:flex;align-items:flex-start;gap:8px;flex-wrap:wrap;}
+.lbox a{color:var(--ink);text-decoration:underline!important;text-decoration:none;font-weight:700;margin-left:auto;}
 
 /* ─ LEGEND ROW ─ */
 .legends{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;}
-.leg{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:10px 14px;flex:1;min-width:160px;}
-.leg h5{font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--ink2);font-family:'DM Mono',monospace;margin-bottom:7px;}
-.li{display:flex;align-items:center;gap:6px;font-size:12px;margin-bottom:4px;}
+.leg{background:var(--paper);border:1px solid var(--line);border-radius:9px;padding:11px 14px;flex:1;min-width:160px;}
+.leg h5{font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--ink2);margin-bottom:8px;}
+.li{display:flex;align-items:center;gap:7px;font-size:12px;margin-bottom:4px;}
 .li:last-child{margin-bottom:0;}
-.lc{width:14px;height:14px;border-radius:3px;border:1px solid rgba(0,0,0,.1);flex-shrink:0;}
+.lc{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
 
 /* ─ TABLE ─ */
-.tw{border-radius:10px;border:1px solid var(--line);overflow:hidden;overflow-x:auto;margin-bottom:32px;}
+.tw{background:var(--paper);border-radius:10px;border:1px solid var(--line);overflow:hidden;overflow-x:auto;margin-bottom:14px;}
 table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:600px;}
-thead tr{background:var(--ink);color:var(--paper);}
-thead th{padding:11px 10px;text-align:left;font-weight:500;font-size:11px;letter-spacing:.2px;}
+thead tr{background:var(--soft);color:var(--ink);}
+thead th{padding:9px 10px;text-align:left;font-weight:700;font-size:11px;border-bottom:1px solid var(--line);}
 thead th:first-child{width:34px;text-align:center;}
 tbody tr{border-bottom:1px solid var(--line);transition:background .12s;}
 tbody tr:last-child{border-bottom:none;}
-tbody tr:hover{background:rgba(0,0,0,.02);}
+tbody tr:hover{background:#F4F7FC;}
 td{padding:7px 10px;vertical-align:middle;}
-td:first-child{text-align:center;font-family:'DM Mono',monospace;font-size:11px;color:var(--ink2);}
+td:first-child{text-align:center;font-size:11px;font-weight:700;color:var(--ink2);}
 
-.ci{width:100%;background:transparent;border:none;border-bottom:1.5px dashed var(--line);padding:2px 2px 4px;font-family:'Noto Sans KR',sans-serif;font-size:12.5px;color:var(--ink);outline:none;transition:border-color .2s;min-width:90px;}
-.ci:focus{border-bottom-color:var(--accent);}
-.ci::placeholder{color:#c5b9a4;font-size:11px;}
-.cs{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:4px 6px;font-family:'Noto Sans KR',sans-serif;font-size:11.5px;color:var(--ink);cursor:pointer;outline:none;}
-.cs:focus{border-color:var(--accent);}
-.cs.filled{background:var(--paper);font-weight:700;}
-.badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;border:1.5px solid rgba(0,0,0,.1);white-space:nowrap;transition:all .3s;min-height:22px;}
-.badge.empty{background:transparent;border-color:var(--line);color:var(--ink2);font-weight:400;}
-.chip{display:inline-block;padding:2px 6px;border-radius:20px;font-size:10px;font-weight:700;font-family:'DM Mono',monospace;margin:1px;}
-.cR{background:#a8d8ea;color:#1a6080;}.cN{background:#a8e6a3;color:#1a5030;}.cT{background:#ffe0a0;color:#7a5200;}.cF{background:#d4a8ea;color:#5a1a8a;}.cE{background:#3a3328;color:#f5f0e8;}
-.prefill{color:var(--ink2);font-size:12px;font-style:italic;}
+.ci{width:100%;background:#FAFBFE;border:1.5px solid var(--line);border-radius:6px;padding:4px 8px;font-family:inherit;font-size:12.5px;color:var(--ink);outline:none;transition:border-color .15s;min-width:90px;}
+.ci:focus{border-color:var(--ink2);background:#fff;}
+.ci::placeholder{color:#B0BAD0;font-size:11px;}
+.cs{width:100%;background:#FAFBFE;border:1.5px solid var(--line);border-radius:6px;padding:4px 6px;font-family:inherit;font-size:11.5px;color:var(--ink);cursor:pointer;outline:none;}
+.cs:focus{border-color:var(--ink2);}
+.cs.filled{background:#fff;border-color:var(--ink2);font-weight:700;color:var(--ink);}
+.badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:5px;font-size:10.5px;font-weight:700;white-space:nowrap;transition:all .3s;min-height:22px;color:#fff;}
+.badge.empty{background:transparent;border:1px dashed var(--line);color:var(--ink2);font-weight:400;}
+.chip{display:inline-block;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:700;margin:1px;}
+.cR,.cN,.cT,.cF{background:#E9EDF3;color:var(--ink);}.cE{background:#E9EDF3;color:var(--ink2);}
+.prefill{color:var(--ink2);font-size:12px;}
 
 /* ─ MAP SECTION ─ */
-.map-section{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:24px;}
-.map-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:16px;}
-.map-title-area h3{font-size:15px;font-weight:800;margin-bottom:6px;}
+.map-section{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:14px;}
+.map-top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:14px;}
+.map-title-area h3{font-size:15px;font-weight:800;margin-bottom:4px;}
 .map-title-area p{font-size:12px;color:var(--ink2);}
-.map-legend{display:flex;flex-wrap:wrap;gap:5px;align-items:center;}
-.mleg{font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;border:1.5px solid rgba(0,0,0,.1);}
+.map-legend{display:flex;flex-wrap:wrap;gap:10px;align-items:center;}
+.mleg{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--ink);}
+.mleg i{width:11px;height:11px;border-radius:50%;display:inline-block;}
 
 #leafletMap{width:100%;height:430px;border-radius:8px;z-index:0;}
-.leaflet-bldg-label{
-  font-family:'DM Mono',monospace;font-size:10px;font-weight:700;
-  color:#1a1208;text-align:center;
-  background:rgba(255,255,255,0.75);border-radius:3px;
-  padding:1px 3px;border:none;box-shadow:none;
-  pointer-events:none;
-}
+.leaflet-container{font-family:'Noto Sans KR',sans-serif;}
+.leaflet-bldg-label{font-family:'Noto Sans KR',sans-serif;font-size:10px;font-weight:700;color:#18243A;text-align:center;
+  background:rgba(255,255,255,.85);border-radius:3px;padding:0 3px;border:none;box-shadow:none;pointer-events:none;}
 
 .map-stats{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:12px;}
 @media (max-width:640px){.map-stats{grid-template-columns:repeat(2,1fr);}}
-.spill{text-align:center;border-radius:8px;padding:10px 6px;font-size:11.5px;}
-.spill b{display:block;font-size:22px;font-family:'DM Mono',monospace;line-height:1;margin-bottom:2px;}
+.spill{background:var(--soft);border-left:4px solid var(--line);border-radius:8px;padding:9px 11px;font-size:11px;color:var(--ink2);}
+.spill b{display:block;font-size:20px;font-weight:900;line-height:1.1;margin-bottom:2px;color:var(--ink);}
 
 /* ─ ANALYSIS ─ */
-.analysis-section{margin-bottom:32px;}
-.analysis-title{font-size:17px;font-weight:800;margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid var(--line);}
-.qgrid{display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:12px;}
-.qcard{background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:20px;}
-.qnum{font-family:'DM Mono',monospace;font-size:10px;color:var(--accent);margin-bottom:5px;}
-.qtxt{font-size:13.5px;font-weight:700;margin-bottom:10px;line-height:1.5;}
-.qhint{font-size:11.5px;color:var(--ink2);margin-bottom:9px;padding:6px 11px;background:rgba(200,75,42,.06);border-left:3px solid var(--accent);border-radius:0 5px 5px 0;line-height:1.6;}
-.ta{width:100%;border:1.5px solid var(--line);border-radius:7px;padding:9px 11px;font-family:'Noto Sans KR',sans-serif;font-size:13px;color:var(--ink);background:var(--bg);resize:vertical;min-height:72px;outline:none;transition:border-color .2s;line-height:1.7;}
-.ta:focus{border-color:var(--accent);}
+.analysis-section{margin-bottom:28px;}
+.analysis-title{font-size:16px;font-weight:800;margin-bottom:14px;padding-bottom:9px;border-bottom:1px solid var(--line);}
+.qgrid{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:12px;}
+.qcard{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:14px 16px;}
+.qnum{display:inline-block;font-size:10px;font-weight:700;color:var(--ink2);background:#E9EDF3;padding:2px 9px;border-radius:5px;margin-bottom:7px;}
+.qtxt{font-size:13.5px;font-weight:700;margin-bottom:9px;line-height:1.55;}
+.qhint{font-size:11.5px;color:var(--ink2);margin-bottom:9px;padding:8px 12px;background:var(--soft);border-radius:7px;line-height:1.65;}
+.ta{width:100%;border:1.5px solid var(--line);border-radius:7px;padding:9px 11px;font-family:inherit;font-size:13px;color:var(--ink);background:#FFFFFF;resize:vertical;min-height:64px;outline:none;transition:border-color .15s;line-height:1.7;}
+.ta:focus{border-color:var(--ink2);background:#fff;}
+.ta::placeholder{color:#B0BAD0;}
 .qfull{grid-column:1/-1;}
 
-/* ─ PRINT BUTTON AREA ─ */
-.print-bar{background:linear-gradient(135deg,var(--ink) 0%,#3a2a10 100%);border-radius:10px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:24px;}
-.print-bar p{color:rgba(255,255,255,.7);font-size:13px;max-width:100%;line-height:1.6;}
-.print-bar strong{color:white;}
-.pbtn-row{display:flex;gap:10px;flex-wrap:wrap;}
-
 /* ─ BUTTONS ─ */
-.btn{padding:10px 22px 7px;border:none;border-radius:8px;font-family:'Noto Sans KR',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;justify-content:center;line-height:1;}
-.btn-p{background:var(--accent);color:#fff;}
-.btn-p:hover{background:#a83820;transform:translateY(-1px);}
-.btn-s{background:transparent;border:1.5px solid var(--line);color:var(--ink2);}
-.btn-s:hover{border-color:var(--ink);color:var(--ink);}
-.btn-g{background:var(--green);color:#fff;}
-.btn-g:hover{background:#2a5a3a;}
-.btn-w{background:rgba(255,255,255,.15);color:#fff;border:1.5px solid rgba(255,255,255,.25);}
-.btn-w:hover{background:rgba(255,255,255,.25);}
-.brow{display:flex;gap:10px;margin-top:20px;justify-content:flex-end;}
+.btn{padding:9px 18px;border:none;border-radius:7px;font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer;transition:opacity .15s;display:inline-flex;align-items:center;justify-content:center;line-height:1;}
+.btn:hover{opacity:.88;}
+.btn-p{background:var(--ink);color:#fff;}
+.btn-s{background:var(--paper);border:1.5px solid var(--line);color:var(--ink2);}
+.btn-s:hover{border-color:var(--ink);color:var(--ink);opacity:1;}
+.print-bar{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:24px;}
+.print-bar p{font-size:13px;font-weight:700;color:var(--ink);}
+.pbtn-row{display:flex;gap:8px;flex-wrap:wrap;}
 
-/* ─ DEEP DIVE (section 2) ─ */
-.infobox{background:rgba(58,107,74,.09);border:1px solid rgba(58,107,74,.22);border-radius:9px;padding:14px 18px;margin-bottom:20px;font-size:13px;line-height:1.75;}
-.infobox strong{color:var(--green);}
-.gt{width:100%;border-collapse:collapse;}
-.gt th,.gt td{padding:11px 13px;border:1px solid var(--line);text-align:left;vertical-align:top;}
-.gt th{background:var(--ink);color:var(--paper);font-size:11.5px;font-weight:500;}
-.gpre{font-size:12px;color:var(--ink2);font-style:italic;}
-.gh{font-weight:800;font-size:12px;}
-.benefit{color:var(--green);}
-.damage{color:var(--accent);}
+/* ─ EDIT MODE ─ */
+#editModeBtn{font-size:11px;padding:5px 12px;border-radius:6px;border:1.5px solid var(--line);background:var(--paper);color:var(--ink2);cursor:pointer;font-family:inherit;transition:all .15s;}
+#editModeBtn.on{background:var(--soft);border-color:var(--ink);color:var(--ink);}
+#editPanel{display:none;background:var(--soft);border:1px solid var(--line);border-radius:8px;padding:11px 15px;margin-bottom:12px;font-size:12px;line-height:1.8;}
+#editPanel strong{color:var(--ink);}
 
 /* ─ TOAST & TOOLTIP ─ */
-.toast{position:fixed;bottom:26px;right:26px;background:var(--ink);color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;opacity:0;transform:translateY(8px);transition:all .3s;z-index:999;pointer-events:none;}
+.toast{position:fixed;bottom:26px;right:26px;background:var(--ink);color:#fff;padding:10px 18px;border-radius:8px;font-size:12.5px;opacity:0;transform:translateY(8px);transition:all .3s;z-index:999;pointer-events:none;box-shadow:0 4px 16px rgba(0,0,0,.18);}
 .toast.show{opacity:1;transform:translateY(0);}
-#tip{display:none;position:fixed;background:#1a1208;color:#fff;padding:8px 13px;border-radius:8px;font-size:12px;z-index:999;max-width:220px;line-height:1.65;pointer-events:none;}
+#tip{display:none;position:fixed;background:#fff;color:var(--ink);padding:9px 13px;border-radius:9px;font-size:12px;z-index:999;max-width:230px;line-height:1.65;pointer-events:none;box-shadow:0 4px 16px rgba(0,0,0,.18);}
+
+
+/* ─ STEPS ─ */
+.step{border-radius:12px;padding:18px 18px 20px;margin-bottom:18px;border:1px solid var(--line);}
+.step1{background:var(--paper);border-top:4px solid #8A97AD;}
+.step2{background:#F7F5F0;border-color:#E6E0D3;border-top:4px solid #B5A889;}
+.step-head{display:flex;align-items:baseline;gap:8px;margin-bottom:10px;}
+.step-tag{font-size:11px;font-weight:700;padding:2px 9px;border-radius:5px;}
+.step1 .step-tag{background:#E9EDF3;color:#4A5770;}
+.step2 .step-tag{background:#ECE6D8;color:#6E6247;}
+.step-name{font-size:18px;font-weight:800;letter-spacing:-.4px;}
+.cls-leg{display:flex;flex-wrap:wrap;gap:6px 18px;margin-bottom:12px;}
+.cls-leg .li{margin-bottom:0;}
+.cls-leg .chip{min-width:20px;text-align:center;}
+.qn{display:inline-block;min-width:20px;font-weight:900;color:#6E6247;}
+.step2 .qgrid{gap:16px;margin-bottom:0;}
+.step2 .qcard{background:none;border:none;border-radius:0;padding:0;}
+.step2 .qtxt{margin-bottom:6px;}
+.step2 .ta{border-color:#E1DACB;}
+.step2 .stages{background:none;padding:0 0 0 20px;margin-bottom:8px;}
+.stages{display:grid;grid-template-columns:repeat(2,1fr);gap:6px 14px;font-size:11.5px;color:var(--ink2);line-height:1.6;background:#F7F5F0;border-radius:7px;padding:10px 12px;margin-bottom:9px;}
+.stages b{display:block;color:var(--ink);font-size:12px;}
+@media (max-width:640px){.stages{grid-template-columns:1fr;}}
+.print-bar{justify-content:flex-end!important;}
 
 /* ─ PRINT ─ */
 @media print {
-  .hero,.pbar,.lbox,.btn,.brow,.print-bar,.toast,#tip{display:none!important;}
+  .hero-wrap,.lbox,.btn,.print-bar,.toast,#tip{display:none!important;}
   .sec{display:block!important;}
   body{background:white;}
   .wrap{padding:16px;}
   .map-section,.qcard{break-inside:avoid;}
-  .qgrid{grid-template-columns:1fr;}
 }
-
-
 </style>
 </head>
 <body>
 
 <div class="hero-wrap">
   <div class="hero">
-    <div class="hl">한국지리 탐구 활동 · 젠트리피케이션</div>
-    <h1>서울숲 2길,<br><em>얼마나 변했는가?</em></h1>
-    <p>카페거리로 유명한 서울숲2길의 업종 변화를 조사하고, 젠트리피케이션의 과정과 영향을 탐구해 보자.</p>
+    <h1>서울숲 2길, 얼마나 변했는가?</h1>
+    <p>2009년과 2025년 서울숲 2길의 업종을 비교해 변화를 지도로 나타내고, 젠트리피케이션이 어떻게 진행되었는지 분석해 보자.</p>
   </div>
-
 </div>
 
-<!-- ══════════ SECTION 1 ══════════ -->
 <div class="sec active" id="sec1">
 <div class="wrap">
-  <div class="snum">STEP 01</div>
-  <div class="stitle">업종 변화 조사 · 지도 · 결과 분석</div>
-  <p class="sdesc">다음지도 로드뷰로 <strong>2009년 업종을 확인해 입력</strong>하세요. 분류를 선택하면 변화 유형이 자동으로 표시되고, 아래 지도에 즉시 반영됩니다.</p>
 
-  <div class="lbox">
-    <span>🗺️</span>
-    <div>
-      <strong>다음지도 로드뷰 사용법</strong><br>
-      <span style="color:var(--ink2);font-size:12px">① 아래 버튼 클릭 → ② 지도 위 <strong>로드뷰</strong> 버튼 클릭 → ③ 왼쪽 상단에서 <strong>2009년</strong> 시점 선택 후 건물 업종 확인</span>
+  <!-- ══════════ 1단계 지도화 ══════════ -->
+  <section class="step step1">
+    <div class="step-head"><span class="step-tag">1단계</span><span class="step-name">지도화</span></div>
+    <p class="sdesc">로드뷰에서 2009년 업종을 확인해 입력하고, 2009년 분류를 고르세요.</p>
+
+    <div class="lbox">
+      <span><b>확인 방법</b>&ensp;① 오른쪽 링크로 카카오맵을 연다 → ② 지도 오른쪽 위 <strong>로드뷰</strong> 버튼을 누르고 서울숲 2길 도로 위를 클릭한다 → ③ 로드뷰 화면 왼쪽 위의 촬영 시점을 <strong>2009년</strong>으로 바꾼다 → ④ 아래 지도의 건물 번호를 보며 같은 건물의 업종을 확인한다</span>
+      <a href="https://map.kakao.com/?q=서울숲2길&map_type=TYPE_ROADVIEW" target="_blank" style="white-space:nowrap">서울숲2길 로드뷰 열기 ↗</a>
     </div>
-    <a href="https://map.kakao.com/?q=서울숲2길&map_type=TYPE_ROADVIEW" target="_blank" style="white-space:nowrap;flex-shrink:0">📍 서울숲2길 바로가기 ↗</a>
-  </div>
 
-  <!-- LEGENDS -->
-  <div class="legends">
-    <div class="leg">
-      <h5>업종 분류 기준</h5>
-      <div class="li"><div class="lc" style="background:#a8d8ea"></div><span><b>R</b> 주거지역</span></div>
-      <div class="li"><div class="lc" style="background:#a8e6a3"></div><span><b>N</b> 근린상업 (주민 대상)</span></div>
-      <div class="li"><div class="lc" style="background:#ffe0a0"></div><span><b>T</b> 외지인 대상 카페·상점</span></div>
-      <div class="li"><div class="lc" style="background:#d4a8ea"></div><span><b>F</b> 프랜차이즈</span></div>
-      <div class="li"><div class="lc" style="background:#3a3328"></div><span><b>E</b> 공실</span></div>
+    <div class="leg cls-leg">
+      <div class="li"><span class="chip cR">R</span><span>주택</span></div>
+      <div class="li"><span class="chip cN">N</span><span>주민 대상의 상점</span></div>
+      <div class="li"><span class="chip cT">T</span><span>외지인 대상의 카페·상점 (프랜차이즈 제외)</span></div>
+      <div class="li"><span class="chip cF">F</span><span>프랜차이즈 상점</span></div>
+      <div class="li"><span class="chip cE">E</span><span>빈 건물</span></div>
     </div>
-    <div class="leg">
-      <h5>변화 유형 (자동 색칠)</h5>
-      <div class="li"><div class="lc" style="background:#87ceeb"></div><span>변화 없음</span></div>
-      <div class="li"><div class="lc" style="background:#ffd700"></div><span>주거지 → 외지인 대상</span></div>
-      <div class="li"><div class="lc" style="background:#ff8c00"></div><span>근린 상업 → 외지인 대상</span></div>
-      <div class="li"><div class="lc" style="background:#9370db"></div><span>외지인 업종 → 프랜차이즈</span></div>
-      <div class="li"><div class="lc" style="background:#1a1208"></div><span>공실로 변화</span></div>
+
+    <div class="tw">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>2009년 업종</th>
+            <th>2009 분류</th>
+            <th>2025년 업종</th>
+            <th>2025 분류</th>
+            <th>변화 유형</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
     </div>
-  </div>
 
-  <!-- TABLE -->
-  <div class="tw">
-    <table>
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>2009년 업종 <span style="opacity:.5;font-weight:400">(로드뷰 확인 후 입력)</span></th>
-          <th>2009 분류</th>
-          <th>2025년 업종</th>
-          <th>2025 분류</th>
-          <th>변화 유형 ✦자동</th>
-        </tr>
-      </thead>
-      <tbody id="tbody"></tbody>
-    </table>
-  </div>
-
-  <!-- ── MAP ── -->
-  <div class="map-section" id="mapSection">
-    <div class="map-top">
-      <div class="map-title-area">
-        <h3>📍 서울숲 2길 · 변화 지도</h3>
-        <p>건물 위에 마우스를 올리면 업종 정보가 표시됩니다. 분류 선택 시 즉시 색칠됩니다.</p>
-      </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+    <div class="map-section" id="mapSection">
+      <div class="map-top">
         <div class="map-legend">
-          <span class="mleg" style="background:#87ceeb">변화없음</span>
-          <span class="mleg" style="background:#ffd700">주거→외지인</span>
-          <span class="mleg" style="background:#ff8c00">근린→외지인</span>
-          <span class="mleg" style="background:#9370db">외지인→프랜차이즈</span>
-          <span class="mleg" style="background:#1a1208;color:#f5f0e8">공실로 변화</span>
-          <span class="mleg" style="background:#d4cdc0">미분류</span>
+          <span class="mleg"><i style="background:var(--c-none)"></i>변화 없음</span>
+          <span class="mleg"><i style="background:var(--c-rt)"></i>주택 → 외지인 대상</span>
+          <span class="mleg"><i style="background:var(--c-nt)"></i>주민 대상 → 외지인 대상</span>
+          <span class="mleg"><i style="background:var(--c-tf)"></i>외지인 대상 → 프랜차이즈</span>
+          <span class="mleg"><i style="background:var(--c-e)"></i>빈 건물로 변화</span>
+          <span class="mleg"><i style="background:var(--c-u)"></i>미분류</span>
         </div>
-        <button id="editModeBtn" onclick="toggleEditMode()"
-          style="font-size:11px;padding:5px 12px;border-radius:6px;border:1.5px solid var(--ink2);
-                 background:transparent;color:var(--ink2);cursor:pointer;font-family:inherit;
-                 transition:all .2s;">
-          🔧 좌표 편집 모드
-        </button>
+        <button id="editModeBtn" onclick="toggleEditMode()">🔧 좌표 편집</button>
       </div>
-    </div>
 
-    <!-- 편집 모드 안내 패널 -->
-    <div id="editPanel" style="display:none;background:#fffbe6;border:1.5px solid #f0c040;
-         border-radius:8px;padding:12px 16px;margin-bottom:12px;font-size:12px;line-height:1.8;">
-      <strong style="color:#7a5200;">🔧 좌표 편집 모드 활성</strong><br>
-      마커를 <strong>드래그</strong>해서 건물 위치로 이동하세요. 완료 후 아래 버튼으로 새 좌표를 복사하세요.<br>
-      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
-        <button onclick="copyCoords()"
-          style="padding:6px 14px;border-radius:5px;border:none;background:#c84b2a;color:#fff;
-                 font-size:12px;font-family:inherit;cursor:pointer;font-weight:700;">
-          📋 BLDG_LL 코드 복사
-        </button>
-        <button onclick="toggleEditMode()"
-          style="padding:6px 14px;border-radius:5px;border:1.5px solid #ccc;background:transparent;
-                 font-size:12px;font-family:inherit;cursor:pointer;">
-          편집 종료
-        </button>
-        <span style="font-size:11px;color:#888;align-self:center;">복사 후 코드의 BLDG_LL 부분에 붙여넣기</span>
+      <div id="editPanel">
+        <strong>좌표 편집 모드</strong> · 마커를 드래그해 건물 위치에 맞춘 뒤 코드를 복사해 BLDG_LL에 붙여 넣으세요.
+        <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
+          <button class="btn btn-p" onclick="copyCoords()" style="padding:7px 14px;font-size:12px;">BLDG_LL 코드 복사</button>
+          <button class="btn btn-s" onclick="toggleEditMode()" style="padding:7px 14px;font-size:12px;">편집 종료</button>
+        </div>
       </div>
+
+      <div id="leafletMap"></div>
+      <div class="map-stats" id="mapStats"></div>
     </div>
+  </section>
 
-    <div id="leafletMap"></div>
-
-    <div class="map-stats" id="mapStats"></div>
-  </div>
-
-  <!-- ── ANALYSIS ── -->
-  <div class="analysis-section" id="analysisSection">
-    <div class="analysis-title">📊 결과 분석</div>
+  <!-- ══════════ 2단계 분석 ══════════ -->
+  <section class="step step2" id="analysisSection">
+    <div class="step-head"><span class="step-tag">2단계</span><span class="step-name">분석</span></div>
     <div class="qgrid">
       <div class="qcard">
-        <div class="qnum">Q 1 · 사실 확인</div>
-        <div class="qtxt">가장 많이 나타난 변화 유형은 무엇인가?</div>
-        <div class="qhint">💡 지도 아래 통계와 색깔 분포를 확인하세요.</div>
-        <textarea class="ta" id="q1" placeholder="예) 근린 상업시설에서 외지인 대상 업종으로의 변화가 가장 많이 나타났다..."></textarea>
+        <div class="qtxt"><span class="qn">1</span>가장 많이 나타난 변화 유형은 무엇인가?</div>
+        <textarea class="ta" id="q1"></textarea>
       </div>
       <div class="qcard">
-        <div class="qnum">Q 2 · 사실 확인</div>
-        <div class="qtxt">2009년과 비교했을 때, 주민을 위한 공간은 늘었는가, 줄었는가?</div>
-        <div class="qhint">💡 주거(R)·근린상업(N) 건물 수를 2009년↔2025년 비교하세요.</div>
-        <textarea class="ta" id="q2" placeholder="2009년에 비해 2025년에는..."></textarea>
+        <div class="qtxt"><span class="qn">2</span>2009년과 비교해 주민을 위한 공간은 늘었는가, 줄었는가?</div>
+        <textarea class="ta" id="q2"></textarea>
       </div>
       <div class="qcard">
-        <div class="qnum">Q 3 · 패턴 분석</div>
-        <div class="qtxt">서울숲2길은 지금 누구를 위한 공간인가?</div>
-        <textarea class="ta" id="q3" placeholder="현재 서울숲2길은...을 위한 공간이다. 왜냐하면..."></textarea>
+        <div class="qtxt"><span class="qn">3</span>서울숲 2길은 지금 누구를 위한 공간인가?</div>
+        <textarea class="ta" id="q3"></textarea>
       </div>
-      <div class="qcard qfull">
-        <div class="qnum">Q 4 · 추론·적용</div>
-        <div class="qtxt">서울숲2길의 변화는 <strong>장소의 생애주기 4단계</strong> 중 현재 어느 단계에 해당하는가? 지도에서 찾은 증거를 근거로 설명하세요.</div>
-        <div class="qhint" style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:10px 12px;">
-          <div style="border-right:1px solid rgba(200,75,42,.2);padding-right:8px">
-            <div style="font-weight:700;margin-bottom:3px">① 재생기</div>
-            <div style="font-size:11px;color:var(--ink2)">저렴한 임대료에 예술가·청년 창업자 유입, 개성 있는 소규모 가게 등장</div>
-          </div>
-          <div style="border-right:1px solid rgba(200,75,42,.2);padding-right:8px">
-            <div style="font-weight:700;margin-bottom:3px">② 상권부흥기</div>
-            <div style="font-size:11px;color:var(--ink2)">SNS·미디어로 알려지며 방문객 급증, 카페·가게 우후죽순 생겨남</div>
-          </div>
-          <div style="border-right:1px solid rgba(200,75,42,.2);padding-right:8px">
-            <div style="font-weight:700;margin-bottom:3px">③ 상권버블기</div>
-            <div style="font-size:11px;color:var(--ink2)">임대료 급등, 원조 가게들이 하나씩 문을 닫기 시작. 부흥과 쇠퇴 동시 진행</div>
-          </div>
-          <div>
-            <div style="font-weight:700;margin-bottom:3px">④ 상권쇠퇴기</div>
-            <div style="font-size:11px;color:var(--ink2)">폐업이 개업을 앞지르고, 공실 증가 또는 프랜차이즈 위주로 변모</div>
-          </div>
+      <div class="qcard">
+        <div class="qtxt"><span class="qn">4</span>서울숲 2길은 장소의 생애주기 중 어느 단계에 있는가? 지도에서 찾은 근거와 함께 쓰시오.</div>
+        <div class="stages">
+          <div><b>① 재생기</b>낮은 임대료로 예술가·청년 창업자가 들어오고 개성 있는 작은 가게가 생긴다</div>
+          <div><b>② 상권부흥기</b>SNS로 알려지며 방문객이 늘고 카페·가게가 빠르게 늘어난다</div>
+          <div><b>③ 상권버블기</b>임대료가 크게 오르고 원래 있던 가게가 하나둘 문을 닫는다</div>
+          <div><b>④ 상권쇠퇴기</b>폐업이 개업보다 많아지고 빈 건물이나 프랜차이즈가 늘어난다</div>
         </div>
-        <textarea class="ta" id="q4" placeholder="서울숲2길은 현재 (  )단계에 해당한다. 그 근거는 지도에서..."></textarea>
+        <textarea class="ta" id="q4"></textarea>
       </div>
     </div>
-  </div>
+  </section>
 
-  <!-- ── PRINT BAR ── -->
-  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:24px;padding:14px 18px;background:linear-gradient(135deg,var(--ink) 0%,#3a2a10 100%);border-radius:10px;">
-    <p style="color:rgba(255,255,255,.7);font-size:13px;line-height:1.6;"><strong style="color:white">📋 지도와 결과 분석 출력</strong></p>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;">
-      <button class="btn btn-w" onclick="clearAll()" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.15);font-size:12px;padding:10px 14px 7px;">초기화</button>
-      <button class="btn" style="background:var(--accent);color:#fff;font-size:13px;padding:10px 18px 7px;" onclick="printSection()">🖨️ 저장</button>
-    </div>
+  <div class="print-bar">
+    <button class="btn btn-s" onclick="clearAll()">초기화</button>
+    <button class="btn btn-p" onclick="printSection()">🖨️ 저장</button>
   </div>
 
 </div><!-- wrap -->
@@ -344,10 +278,10 @@ const D25=[
   {id:1, biz:"Samo Ondoh",sub:"패션잡화",cls:"T"},
   {id:2, biz:"Project Miso / Acua dell'elba / Paper dollmate / 다산부동산",sub:"소품·향수·소품·부동산",cls:"T,T,T,N"},
   {id:3, biz:"호과당 / 하루 필름",sub:"베이커리·셀프포토",cls:"T"},
-  {id:4, biz:"공실",sub:"",cls:"E"},
+  {id:4, biz:"빈 건물",sub:"",cls:"E"},
   {id:5, biz:"GS25 편의점",sub:"",cls:"N/F"},
   {id:6, biz:"포레스트 빈티지 / 헨리코튼",sub:"의류",cls:"T"},
-  {id:7, biz:"공실",sub:"",cls:"E"},
+  {id:7, biz:"빈 건물",sub:"",cls:"E"},
   {id:8, biz:"Perment 베이커리",sub:"",cls:"T"},
   {id:9, biz:"Black Combat",sub:"",cls:"T"},
   {id:10,biz:"주택",sub:"",cls:"R"},
@@ -358,13 +292,13 @@ const D25=[
   {id:15,biz:"빌라",sub:"",cls:"R"},
   {id:16,biz:"빌라",sub:"",cls:"R"},
   {id:17,biz:"크림라벨 카페",sub:"",cls:"T"},
-  {id:18,biz:"공실",sub:"",cls:"E"},
+  {id:18,biz:"빈 건물",sub:"",cls:"E"},
   {id:19,biz:"빌라",sub:"",cls:"R"},
   {id:20,biz:"구쯔",sub:"패브릭·자수",cls:"T"},
   {id:21,biz:"윤경양식당",sub:"",cls:"T"},
-  {id:22,biz:"공실",sub:"",cls:"E"},
+  {id:22,biz:"빈 건물",sub:"",cls:"E"},
   {id:23,biz:"파르코 피자 / PHOTOGRAY",sub:"피자·셀프포토",cls:"T,T/F"},
-  {id:24,biz:"공실",sub:"",cls:"E"},
+  {id:24,biz:"빈 건물",sub:"",cls:"E"},
   {id:25,biz:"성수 베이킹 스튜디오",sub:"베이커리",cls:"T"},
   {id:26,biz:"노가리마켓",sub:"주점",cls:"T"},
 ];
@@ -379,11 +313,11 @@ const PRE09={
 };
 
 const CK={
-  none:{hex:"#87ceeb",label:"변화없음"},
-  "R-T":{hex:"#ffd700",label:"주거→외지인"},
-  "N-T":{hex:"#ff8c00",label:"근린→외지인"},
-  "T-F":{hex:"#9370db",label:"외지인→프랜차이즈"},
-  "to-E":{hex:"#1a1208",label:"공실로 변화"},
+  none:{hex:"#9DB4D3",label:"변화 없음"},
+  "R-T":{hex:"#F59E0B",label:"주택 → 외지인"},
+  "N-T":{hex:"#E53E3E",label:"주민 대상 → 외지인"},
+  "T-F":{hex:"#1255A0",label:"외지인 → 프랜차이즈"},
+  "to-E":{hex:"#18243A",label:"빈 건물로 변화"},
 };
 
 // ══ AUTO-COLOR ══
@@ -432,7 +366,7 @@ function buildTable(){
     const bv=st['b_'+d.id]??(pf?pf.biz:'');
     const cv=st['c_'+d.id]??(pf?pf.cls:'');
     const opts=[
-      ['','— 선택 —'],['R','R  주거'],['N','N  근린상업'],['T','T  외지인'],['F','F  프랜차이즈'],['E','E  공실'],
+      ['','— 선택 —'],['R','R  주택'],['N','N  주민 대상'],['T','T  외지인 대상'],['F','F  프랜차이즈'],['E','E  빈 건물'],
       ['R,N','R+N'],['N,T','N+T'],['R,T','R+T'],['N,T,N,N','N,T,N,N']
     ].map(([v,l])=>`<option value="${v}"${cv===v?' selected':''}>${l}</option>`).join('');
     const tr=document.createElement('tr');tr.id='row_'+d.id;
@@ -462,10 +396,9 @@ function renderBadge(id){
   const cv=(document.getElementById('c_'+id)||{}).value||'';
   const ck=autoColor(cv,d.cls);
   const el=document.getElementById('bdg_'+id);if(!el)return;
-  if(!ck)el.innerHTML=`<span class="badge empty">분류 선택 후 자동</span>`;
+  if(!ck)el.innerHTML=`<span class="badge empty">—</span>`;
   else {
-    const dark = (ck==='to-E');
-    const extra = dark ? ';color:#f5f0e8;border-color:rgba(255,255,255,.25)' : '';
+    const extra = (ck==='none') ? ';color:#18243A' : '';
     el.innerHTML=`<span class="badge" style="background:${CK[ck].hex}${extra}">${CK[ck].label}</span>`;
   }
 }
@@ -533,20 +466,20 @@ Object.keys(BLDG_LL).forEach(id => {
 });
 
 function getFill(id) {
-  const d = D25.find(x => x.id === id); if (!d) return '#d4cdc0';
+  const d = D25.find(x => x.id === id); if (!d) return '#D5DCE8';
   const cv = (document.getElementById('c_' + id) || {}).value || '';
   const ck = autoColor(cv, d.cls);
-  return ck ? CK[ck].hex : '#d4cdc0';
+  return ck ? CK[ck].hex : '#D5DCE8';
 }
 
 function markerStyle(fill) {
-  const classified = fill !== '#d4cdc0';
+  const classified = fill !== '#D5DCE8';
   return {
     radius: 14,
     fillColor: fill,
     fillOpacity: classified ? 0.92 : 0.6,
-    color: classified ? 'rgba(0,0,0,0.5)' : 'rgba(80,60,30,0.3)',
-    weight: classified ? 2 : 1.5,
+    color: '#fff',
+    weight: 2,
   };
 }
 
@@ -556,9 +489,7 @@ function toggleEditMode() {
   const btn   = document.getElementById('editModeBtn');
   const panel = document.getElementById('editPanel');
   btn.textContent   = editMode ? '✅ 편집 중...' : '🔧 좌표 편집 모드';
-  btn.style.background    = editMode ? '#fffbe6' : 'transparent';
-  btn.style.borderColor   = editMode ? '#f0c040' : 'var(--ink2)';
-  btn.style.color         = editMode ? '#7a5200' : 'var(--ink2)';
+  btn.classList.toggle('on', editMode);
   panel.style.display     = editMode ? 'block' : 'none';
 
   if (editMode) {
@@ -574,10 +505,10 @@ function toggleEditMode() {
         html: `<div style="
           width:28px;height:28px;border-radius:50%;
           background:${fill};opacity:0.92;
-          border:2px solid rgba(0,0,0,0.5);
+          border:2px solid #fff;
           display:flex;align-items:center;justify-content:center;
-          font-family:'DM Mono',monospace;font-size:10px;font-weight:700;
-          color:#1a1208;cursor:grab;box-shadow:0 2px 8px rgba(0,0,0,0.3);
+          font-family:'Noto Sans KR',sans-serif;font-size:10px;font-weight:700;
+          color:#18243A;cursor:grab;box-shadow:0 2px 8px rgba(0,0,0,0.3);
         ">${b.id}</div>`,
         iconSize: [28, 28], iconAnchor: [14, 14],
       });
@@ -640,9 +571,9 @@ function drawMap() {
         const lbl = ck ? CK[ck].label : '미분류';
         const tip = document.getElementById('tip');
         tip.style.display = 'block';
-        tip.innerHTML = `<strong style="color:#e8c87a">#${b.id}</strong> <span style="opacity:.7">${lbl}</span><br>
-          <span style="opacity:.55;font-size:10.5px">2009</span> ${bv}<br>
-          <span style="opacity:.55;font-size:10.5px">2025</span> ${d25 ? d25.biz : ''}`;
+        tip.innerHTML = `<strong>#${b.id}</strong> <span style="color:#6B7A99">${lbl}</span><br>
+          <span style="color:#6B7A99;font-size:10.5px">2009</span> ${bv}<br>
+          <span style="color:#6B7A99;font-size:10.5px">2025</span> ${d25 ? d25.biz : ''}`;
         moveTip(e.originalEvent);
       });
       circle.on('mouseout', hideTip);
@@ -660,7 +591,7 @@ function drawMap() {
       const fill = getFill(b.id);
       lDraggable[b.id].setIcon(L.divIcon({
         className: '',
-        html: `<div style="width:28px;height:28px;border-radius:50%;background:${fill};opacity:0.92;border:2px solid rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:10px;font-weight:700;color:#1a1208;cursor:grab;box-shadow:0 2px 8px rgba(0,0,0,0.3);">${b.id}</div>`,
+        html: `<div style="width:28px;height:28px;border-radius:50%;background:${fill};opacity:0.92;border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-family:'Noto Sans KR',sans-serif;font-size:10px;font-weight:700;color:#18243A;cursor:grab;box-shadow:0 2px 8px rgba(0,0,0,0.3);">${b.id}</div>`,
         iconSize:[28,28], iconAnchor:[14,14],
       }));
     }
@@ -676,11 +607,11 @@ function drawStats(){
   });
   const g=document.getElementById('mapStats');if(!g)return;
   g.innerHTML=`
-    <div class="spill" style="background:rgba(135,206,235,.3)"><b>${cnt.none}</b>변화없음</div>
-    <div class="spill" style="background:rgba(255,215,0,.4)"><b>${cnt['R-T']}</b>주거→외지인</div>
-    <div class="spill" style="background:rgba(255,140,0,.35)"><b>${cnt['N-T']}</b>근린→외지인</div>
-    <div class="spill" style="background:rgba(147,112,219,.35)"><b>${cnt['T-F']}</b>외지인→프랜차이즈</div>
-    <div class="spill" style="background:#1a1208;color:#f5f0e8"><b>${cnt['to-E']}</b>공실로 변화</div>`;
+    <div class="spill" style="border-left-color:var(--c-none)"><b>${cnt.none}</b>변화 없음</div>
+    <div class="spill" style="border-left-color:var(--c-rt)"><b>${cnt['R-T']}</b>주택 → 외지인</div>
+    <div class="spill" style="border-left-color:var(--c-nt)"><b>${cnt['N-T']}</b>주민 대상 → 외지인</div>
+    <div class="spill" style="border-left-color:var(--c-tf)"><b>${cnt['T-F']}</b>외지인 → 프랜차이즈</div>
+    <div class="spill" style="border-left-color:var(--c-e)"><b>${cnt['to-E']}</b>빈 건물로 변화</div>`;
 }
 
 // ══ TOOLTIP ══
@@ -700,7 +631,8 @@ function printSection(){
   style.id='printOverride';
   style.textContent=`
     @media print {
-      .pbar,.hero,.lbox,.legends,.tw,.print-bar,.btn,.brow{display:none!important;}
+      .hero-wrap,.lbox,.cls-leg,.sdesc,.tw,.print-bar,.btn,#editModeBtn,#editPanel{display:none!important;}
+      .step{break-inside:avoid;}
       .sec{display:block!important;}
       .map-section,.analysis-section{break-inside:avoid;}
       .qgrid{grid-template-columns:1fr!important;}
