@@ -14,16 +14,20 @@
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:"Pretendard","Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;line-height:1.6}
 .wrap{max-width:980px;margin:0 auto;padding:16px}
-h1{font-size:1.25rem;margin:4px 0 12px}
+h1{font-size:1.6rem;margin:4px 0 14px}
 .stage{border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--bg)}
 .cap{font-size:.85rem;color:var(--sub);padding:6px 12px 0;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
 .cap b{color:var(--ink)}
+.cap2{padding-top:2px;margin-bottom:-4px}
+.lgd{display:flex;align-items:center;flex-wrap:wrap;gap:2px 4px;font-size:.78rem;color:var(--sub)}
+.lgd i{display:inline-block;width:12px;height:12px;border:1px solid var(--line);margin:0 2px 0 8px;vertical-align:middle}
+.lgd i:first-child{margin-left:0}
 svg{display:block;width:100%;height:auto}
 .result{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border-top:1px solid var(--line)}
-.result>div{padding:7px 12px 8px;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.result>div{padding:6px 12px 7px;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
 .result>div+div{border-left:1px solid var(--line)}
 @media (max-width:600px){.result{grid-template-columns:1fr}.result>div+div{border-left:0;border-top:1px solid var(--line)}}
-.result .big{font-size:1.08rem;font-weight:700;font-variant-numeric:tabular-nums}
+.result .big{font-size:.95rem;font-weight:700;font-variant-numeric:tabular-nums}
 .result .lab{color:var(--sub);font-size:.85rem}
 /* 조작판: 네 조건을 한 줄의 계기판으로 */
 .console{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:6px;overflow:hidden;margin-top:12px}
@@ -31,7 +35,8 @@ svg{display:block;width:100%;height:auto}
 @media (max-width:440px){.console{grid-template-columns:1fr}}
 .ctl{background:var(--panel);padding:10px 14px 12px;display:flex;flex-direction:column}
 .ctl .nm{font-size:.86rem;color:var(--sub);font-weight:600}
-.ctl .val{font-size:1.12rem;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.3;margin:1px 0 6px;white-space:nowrap}
+.ctl .hd{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:6px}
+.ctl .val{font-size:.95rem;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.3;white-space:nowrap}
 .ctl .grow{flex:1}
 input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:30px;margin:0;background:transparent;cursor:pointer;--p:50%;--f:var(--ink)}
 input[type=range]::-webkit-slider-runnable-track{height:10px;border-radius:5px;background:linear-gradient(to right,var(--f) var(--p),var(--trk) var(--p))}
@@ -73,7 +78,7 @@ input[type=range]:focus-visible{outline:2px solid var(--act);outline-offset:2px}
 <div class="stage">
   <div class="cap"><span><b>옆에서 본 단면</b> · <span id="tstate">밀물 때</span> · 세로를 가로보다 약 50배 늘려 그림</span>
     <span class="tide"><button data-m="run" aria-pressed="true">움직이기</button><button data-m="hi" aria-pressed="false">밀물</button><button data-m="lo" aria-pressed="false">썰물</button></span></div>
-  <svg id="sec" viewBox="0 0 800 270" aria-label="해안 단면">
+  <svg id="sec" viewBox="0 0 800 205" aria-label="해안 단면">
     <path id="water" fill="var(--sea)"/>
     <path id="ground" fill="var(--land)"/>
     <path id="flat" fill="none" stroke-width="5" stroke-linecap="butt"/>
@@ -84,13 +89,14 @@ input[type=range]:focus-visible{outline:2px solid var(--act);outline-offset:2px}
     <g id="zdim"></g>
     <g id="rdim"></g>
     <text x="16" y="22" font-size="12" fill="var(--sub)">육지</text>
-    <text x="784" y="258" font-size="12" fill="var(--sub)" text-anchor="end">바다</text>
+    <text x="784" y="196" font-size="12" fill="var(--sub)" text-anchor="end">바다</text>
   </svg>
-  <div class="cap"><span><b>썰물 때 위에서 본 모습</b></span></div>
-  <svg id="plan" viewBox="0 0 800 126" aria-label="썰물 때 위에서 본 해안">
-    <rect x="0" y="22" width="800" height="70" fill="var(--seaE)"/>
+  <div class="cap cap2"><span><b>썰물 때 위에서 본 모습</b></span>
+    <span class="lgd"><i style="background:var(--land)"></i>육지<i style="background:var(--pul)"></i>펄<i style="background:var(--mix)"></i>혼성<i style="background:var(--sand)"></i>모래<i style="background:var(--bad)"></i>바위·자갈<i style="background:var(--seaE)"></i>바다</span></div>
+  <svg id="plan" viewBox="0 2 800 92" aria-label="썰물 때 위에서 본 해안">
+    <rect x="0" y="22" width="800" height="44" fill="var(--seaE)"/>
     <g id="zones"></g>
-    <rect id="pland" x="0" y="22" height="70" fill="var(--land)"/>
+    <rect id="pland" x="0" y="22" height="44" fill="var(--land)"/>
     <g id="dim"></g>
     <g id="scale"></g>
   </svg>
@@ -101,19 +107,19 @@ input[type=range]:focus-visible{outline:2px solid var(--act);outline-offset:2px}
 </div>
 <div class="console">
   <div class="ctl">
-    <span class="nm">조차</span><span class="val" id="rlab"></span>
+    <div class="hd"><span class="nm">조차</span><span class="val" id="rlab"></span></div>
     <span class="grow"></span>
     <input type="range" id="r" min="0.2" max="9" step="0.1" value="3" aria-label="조차">
     <div class="ticks" id="rticks"></div>
   </div>
   <div class="ctl">
-    <span class="nm">해안의 경사</span><span class="val" id="slab"></span>
+    <div class="hd"><span class="nm">해안의 경사</span><span class="val" id="slab"></span></div>
     <span class="grow"></span>
     <input type="range" id="s" min="0" max="100" step="1" value="50" aria-label="해안의 경사">
     <div class="ends"><span><svg viewBox="0 0 30 12" aria-hidden="true"><path d="M1 5 L29 7" stroke="currentColor" stroke-width="2" fill="none"/></svg>완만하다</span><span>가파르다<svg viewBox="0 0 30 12" aria-hidden="true" style="margin:0 0 0 3px"><path d="M1 2 L12 2 L18 11 L29 11" stroke="currentColor" stroke-width="2" fill="none"/></svg></span></div>
   </div>
   <div class="ctl">
-    <span class="nm">파랑</span><span class="val" id="wlab"></span>
+    <div class="hd"><span class="nm">파랑</span><span class="val" id="wlab"></span></div>
     <span class="grow"></span>
     <div class="pick" id="wav">
       <button data-v="0" aria-pressed="true"><svg viewBox="0 0 34 16" aria-hidden="true"><path d="M1 9 Q5 7 9 9 T17 9 T25 9 T33 9" stroke="currentColor" stroke-width="2" fill="none"/></svg>약하다</button>
@@ -121,7 +127,7 @@ input[type=range]:focus-visible{outline:2px solid var(--act);outline-offset:2px}
     </div>
   </div>
   <div class="ctl">
-    <span class="nm">강이 실어 오는 퇴적물</span><span class="val" id="dlab"></span>
+    <div class="hd"><span class="nm">강이 실어 오는 퇴적물</span><span class="val" id="dlab"></span></div>
     <span class="grow"></span>
     <div class="pick" id="sed">
       <button data-v="0" aria-pressed="false"><svg viewBox="0 0 34 16" aria-hidden="true" fill="currentColor"><circle cx="12" cy="10" r="2"/><circle cx="22" cy="7" r="2"/></svg>적다</button>
@@ -133,7 +139,6 @@ input[type=range]:focus-visible{outline:2px solid var(--act);outline-offset:2px}
 <div class="qs">
   <h2>분석하기</h2>
   <ol>
-    <li>밀물에서 썰물로 바뀌는 동안 바닷물의 가장자리는 어디까지 물러나는가?</li>
     <li>다른 조건은 그대로 두고 조차만 두 배로 키워 보자. 조간대의 폭은 어떻게 달라지는가?</li>
     <li>조차가 같을 때, 경사가 완만한 해안과 가파른 해안은 무엇이 다른가?</li>
     <li>조차를 가장 크게 하고 경사를 가파르게 해 보자. 조차가 크기만 하면 넓은 갯벌이 생기는가?</li>
@@ -146,10 +151,11 @@ input[type=range]:focus-visible{outline:2px solid var(--act);outline-offset:2px}
 <script>
 const $=id=>document.getElementById(id);
 const NS='http://www.w3.org/2000/svg';
-const XMIN=-3,XMAX=10,ZMAX=38,ZMIN=-42;
+const XMIN=-3,XMAX=10,ZMAX=26,ZMIN=-35;
 const px=x=>(x-XMIN)*(800/(XMAX-XMIN));      // km -> px
 const VE=50,KZ=VE*800/((XMAX-XMIN)*1000);   // 세로 과장 50배
-const pz=z=>130-z*KZ;                              // m -> px (section)
+const SH=205,Z0=88;                                // 단면 높이, 해수면(0 m)의 화면 위치
+const pz=z=>Z0-z*KZ;                              // m -> px (section)
 const R=$('r'),S=$('s');let sed=2,wav=0,mode='run',t0=performance.now();
 function slope(){return Math.pow(100,S.value/100);}   // 조간대 바닥의 경사, m/km: 1(서해안 갯벌, 약 1/1000) ~ 100(동해안 해변, 약 1/10)
 function fmtW(km){if(km>=1)return (km>=10?km.toFixed(0):km.toFixed(1))+' km';const m=km*1000;return m>=100?'약 '+(Math.round(m/10)*10)+' m':'약 '+Math.max(1,Math.round(m))+' m';}
@@ -170,13 +176,13 @@ function draw(level,t){
   const xs=[];for(let i=0;i<=200;i++)xs.push(XMIN+(XMAX-XMIN)*i/200);
   [0,w*0.5,w,w*2].forEach(v=>{if(v>XMIN&&v<XMAX)xs.push(v);});xs.sort((a,b)=>a-b);
   const clampZ=z=>Math.max(ZMIN-3,Math.min(ZMAX+4,z));
-  let g=`M${px(XMIN)},270`;xs.forEach(x=>g+=`L${px(x).toFixed(1)},${pz(clampZ(bed(x))).toFixed(1)}`);g+=`L${px(XMAX)},270Z`;
+  let g=`M${px(XMIN)},${SH}`;xs.forEach(x=>g+=`L${px(x).toFixed(1)},${pz(clampZ(bed(x))).toFixed(1)}`);g+=`L${px(XMAX)},${SH}Z`;
   $('ground').setAttribute('d',g);
   // 파랑이 세면 높이 1 m 안팎의 파도가 해안으로 밀려온다
   const xl=Math.max(XMIN,(hi-level)/s),x0p=px(xl),A=wav===1?5:0.8,L=wav===1?24:14,ph=t/(wav===1?260:400);
   let wd=`M${x0p.toFixed(1)},${pz(level)}`;
   for(let X=x0p;X<=800;X+=3){const damp=wav===1?Math.min(1,0.35+(X-x0p)/40):Math.min(1,(X-x0p)/30);wd+=`L${X.toFixed(1)},${(pz(level)-A*damp*Math.max(-0.6,Math.sin(X/L+ph))).toFixed(1)}`;}
-  wd+=`L800,270L${x0p.toFixed(1)},270Z`;
+  wd+=`L800,${SH}L${x0p.toFixed(1)},${SH}Z`;
   $('water').setAttribute('d',wd);
   const xe=Math.min(w,XMAX);
   $('flat').setAttribute('d',`M${px(0)},${pz(bed(0))}L${px(xe).toFixed(1)},${pz(clampZ(bed(xe))).toFixed(1)}`);
@@ -189,7 +195,7 @@ function draw(level,t){
   const a=px(0),b=px(xe),y=Math.max(30,pz(hi)-22),wide=b-a>60;
   zd.appendChild(el('line',{x1:a,x2:b,y1:y,y2:y,stroke:'var(--act)','stroke-width':1.5}));
   [a,b].forEach(v=>zd.appendChild(el('line',{x1:v,x2:v,y1:y-5,y2:y+5,stroke:'var(--act)','stroke-width':1.5})));
-  zd.appendChild(el('text',{x:wide?(a+b)/2:b+8,y:wide?y-7:y+4,'font-size':12,fill:'var(--act)','font-weight':700,'text-anchor':wide?'middle':'start'},b-a<2?'조간대 '+fmtW(w)+' (이 축척에서는 선보다 좁음)':'조간대'));
+  zd.appendChild(el('text',{x:wide?(a+b)/2:b+8,y:wide?y-7:y+4,'font-size':12,fill:'var(--act)','font-weight':700,'text-anchor':wide?'middle':'start'},b-a<2?'조간대 '+fmtW(w):'조간대'));
   // 조차 치수 (오른쪽)
   const RD=$('rdim');RD.innerHTML='';const rx=700,ya=pz(hi),yb=pz(lo);
   RD.appendChild(el('line',{x1:rx,x2:rx,y1:ya,y2:yb,stroke:'var(--ink)','stroke-width':1.5}));
@@ -203,20 +209,20 @@ function plan(){
   $('pland').setAttribute('width',x0);
   const Z=$('zones');Z.innerHTML='';
   let x=x0;
-  if(W<2)Z.appendChild(el('rect',{x:x0,y:22,width:4,height:70,fill:`var(${B.col})`,stroke:'var(--ink)','stroke-width':0.8}));
-  B.parts.forEach(([n,c,f])=>{const ww=W*f;Z.appendChild(el('rect',{x:x,y:22,width:Math.max(ww,0),height:70,fill:`var(${c})`}));
-    if(ww>50)Z.appendChild(el('text',{x:x+ww/2,y:61,'text-anchor':'middle','font-size':12,fill:n==='펄'?'#fff':'#222'},n));
+  if(W<2)Z.appendChild(el('rect',{x:x0,y:22,width:4,height:44,fill:`var(${B.col})`,stroke:'var(--ink)','stroke-width':0.8}));
+  B.parts.forEach(([n,c,f])=>{const ww=W*f;Z.appendChild(el('rect',{x:x,y:22,width:Math.max(ww,0),height:44,fill:`var(${c})`}));
+    if(ww>50)Z.appendChild(el('text',{x:x+ww/2,y:48,'text-anchor':'middle','font-size':12,fill:n==='펄'?'#fff':'#222'},n));
     x+=ww;});
   // 조간대 치수
   const D=$('dim');D.innerHTML='';const wide=W>60;
   D.appendChild(el('line',{x1:x0,x2:x1,y1:16,y2:16,stroke:'var(--act)','stroke-width':1.5}));
   [x0,x1].forEach(v=>D.appendChild(el('line',{x1:v,x2:v,y1:12,y2:20,stroke:'var(--act)','stroke-width':1.5})));
-  D.appendChild(el('text',{x:wide?(x0+x1)/2:x1+8,y:wide?11:20,'font-size':12,fill:'var(--act)','font-weight':700,'text-anchor':wide?'middle':'start'},W<2?'조간대 '+fmtW(w)+' (이 축척에서는 선보다 좁음)':'조간대'));
+  D.appendChild(el('text',{x:wide?(x0+x1)/2:x1+8,y:wide?11:20,'font-size':12,fill:'var(--act)','font-weight':700,'text-anchor':wide?'middle':'start'},W<2?'조간대 '+fmtW(w):'조간대'));
   // 2 km 눈금
   const sc=$('scale');sc.innerHTML='';
-  for(let k=0;k<=XMAX;k++){const big=k%5===0;sc.appendChild(el('line',{x1:px(k),x2:px(k),y1:94,y2:big?101:97,stroke:'var(--sub)'}));
-    if(big)sc.appendChild(el('text',{x:px(k),y:114,'text-anchor':k===XMAX?'end':'middle','font-size':11,fill:'var(--sub)'},k+(k===XMAX?' km':'')));}
-  sc.appendChild(el('line',{x1:px(0),x2:px(XMAX),y1:94,y2:94,stroke:'var(--sub)'}));
+  for(let k=0;k<=XMAX;k++){const big=k%5===0;sc.appendChild(el('line',{x1:px(k),x2:px(k),y1:68,y2:big?75:71,stroke:'var(--sub)'}));
+    if(big)sc.appendChild(el('text',{x:px(k),y:88,'text-anchor':k===XMAX?'end':'middle','font-size':11,fill:'var(--sub)'},k+(k===XMAX?' km':'')));}
+  sc.appendChild(el('line',{x1:px(0),x2:px(XMAX),y1:68,y2:68,stroke:'var(--sub)'}));
   $('wout').textContent=fmtW(w)+(w>XMAX?' 이상':'');
   $('kind').textContent=B.name;
   $('rlab').textContent=(+R.value).toFixed(1)+' m';
