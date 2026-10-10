@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>용암의 점성과 화산</title>
+<style>
+:root{--ink:#222;--sub:#666;--line:#bbb;--bg:#fff;--panel:#fafafa;--ground:#8a8478;--act:#781b33;--sky:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#e8e8e8;--sub:#aaa;--line:#666;--bg:#1b1b1b;--panel:#232323;--ground:#6b665d;--act:#ff8aa0;--sky:#1b1b1b}}
+:root[data-theme="dark"]{--ink:#e8e8e8;--sub:#aaa;--line:#666;--bg:#1b1b1b;--panel:#232323;--ground:#6b665d;--act:#ff8aa0;--sky:#1b1b1b}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Pretendard","Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;line-height:1.6}
+.wrap{max-width:960px;margin:0 auto;padding:16px}
+h1{font-size:1.6rem;margin:4px 0 14px;letter-spacing:-.01em}
+.stage{border:1px solid var(--line);border-radius:6px;background:var(--sky);position:relative;overflow:hidden}
+svg{display:block;width:100%;height:auto}
+.readout{position:absolute;top:10px;left:12px;font-size:.9rem;color:var(--sub);line-height:1.5}
+.readout b{color:var(--ink);font-size:1.05rem}
+.ctrl{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:14px;margin-top:12px}
+@media (max-width:680px){.ctrl{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:12px 14px}
+.panel h2{font-size:1rem;margin:0 0 6px;display:flex;justify-content:space-between;align-items:baseline}
+.panel h2 span{font-weight:400;font-size:.9rem;color:var(--sub)}
+input[type=range]{width:100%;accent-color:var(--ink);margin:6px 0 0}
+.ends{display:flex;justify-content:space-between;font-size:.82rem;color:var(--sub)}
+.btns{display:flex;gap:6px;flex-wrap:wrap}
+.btns button{flex:1 1 30%;padding:9px 6px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:inherit;font:inherit;cursor:pointer;white-space:nowrap}
+.btns button.main{border-color:var(--ink);font-weight:700}
+.btns button:disabled{opacity:.4;cursor:default}
+.count{margin:8px 0 0;font-size:.9rem;color:var(--sub)}
+.qs{margin-top:18px}
+.qs h2{font-size:1rem;color:var(--act);margin:0 0 6px}
+.qs ol{margin:0;padding-left:1.3em}
+.qs li{margin:0 0 8px}
+.tg{margin-top:8px;width:100%;padding:8px 6px;border:1px dashed var(--act);border-radius:6px;background:var(--bg);color:var(--act);font:inherit;cursor:pointer}
+.tg[aria-pressed="true"]{border-style:solid;font-weight:700}
+button:focus-visible,input:focus-visible{outline:2px solid var(--act);outline-offset:2px}
+.note{color:var(--sub);font-size:.8rem;margin-top:14px;border-top:1px solid var(--line);padding-top:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>용암의 점성과 화산의 모양</h1>
+<div class="stage">
+  <svg id="sv" viewBox="-360 -175 720 193" role="img" aria-label="용암이 쌓여 화산이 만들어지는 단면">
+    <defs><pattern id="hatch" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="5" height="5" fill="var(--sky)"/><line x1="0" y1="0" x2="0" y2="5" stroke="var(--line)" stroke-width="1.3"/></pattern><clipPath id="grow"><rect id="growR" x="0" y="-400" width="0" height="800"/></clipPath></defs>
+    <g id="layers"></g>
+    <g id="newL" clip-path="url(#grow)"></g>
+    <rect x="-360" y="0" width="720" height="18" fill="url(#hatch)"/><line x1="-360" y1="0" x2="360" y2="0" stroke="var(--sub)" stroke-width="1"/>
+    <rect id="pipe" x="-1.6" y="0" width="3.2" height="0" fill="#c9452c"/>
+    <g id="halla"></g>
+    <g id="vent"><path d="M-4 18 L-2 0 L2 0 L4 18Z" fill="#c9452c"/><text x="9" y="13" font-size="8.5" fill="var(--ink)" stroke="var(--sky)" stroke-width="3" paint-order="stroke" stroke-linejoin="round">마그마</text></g>
+  </svg>
+  <div class="readout" id="ro"></div>
+</div>
+<div class="ctrl">
+  <div class="panel">
+    <h2>용암의 점성</h2>
+    <input type="range" id="visc" min="0" max="100" value="10" aria-label="용암의 점성">
+    <div class="ends"><span>작다 · 현무암질</span><span>크다 · 조면암질</span></div>
+  </div>
+  <div class="panel">
+    <div class="btns">
+      <button class="main" id="b1">분출 1회</button>
+      <button id="b5">분출 5회</button>
+      <button id="b0">처음부터</button>
+    </div>
+    <p class="count" id="cnt">분출 0회</p>
+    <button class="tg" id="bh" aria-pressed="false">한라산 단면 겹쳐 보기</button>
+  </div>
+</div>
+<div class="qs">
+  <h2>분석하기</h2>
+  <ol>
+    <li>용암의 점성이 작을 때와 클 때, 각각 10회씩 분출시켜 보자. 화산의 높이와 경사는 어떻게 달라지는가?</li>
+    <li>용암의 점성이 작을수록 화산이 완만해지는 까닭을 용암이 흐르는 거리와 관련지어 설명해 보자.</li>
+    <li>'한라산 단면 겹쳐 보기'를 켜고, 한라산의 전체적인 모양과 비슷해지도록 점성을 정해 분출시켜 보자. 점성을 어떻게 정했는가?</li>
+    <li>한라산 정상 부근에는 점성이 큰 용암이 만든 가파른 용암돔이 있다. 완만한 화산을 먼저 만든 뒤, 점성을 가장 크게 하여 한 번만 분출시켜 보자. 정상부는 어떻게 달라지는가?</li>
+  </ol>
+</div>
+<p class="note">이 모형은 용암이 흘러 쌓이는 경우만 다루며, 용암의 점성만 바꾸어 본 단순한 모형이다. 실제 화산의 모양은 분출량, 분출 방식, 화산재의 양에 따라서도 달라진다.</p>
+</div>
+<script>
+const NS='http://www.w3.org/2000/svg';
+const MOLTEN='#c9452c';
+const HALLA=[[-17.0,0.0],[-16.75,0.0015],[-16.5,0.0049],[-16.25,0.0098],[-16.0,0.0159],[-15.75,0.0232],[-15.5,0.0317],[-15.25,0.0412],[-15.0,0.0517],[-14.75,0.0631],[-14.5,0.0755],[-14.25,0.0888],[-14.0,0.1029],[-13.75,0.1179],[-13.5,0.1337],[-13.25,0.1504],[-13.0,0.1678],[-12.75,0.186],[-12.5,0.2049],[-12.25,0.2247],[-12.0,0.2451],[-11.75,0.2663],[-11.5,0.2882],[-11.25,0.3108],[-11.0,0.3341],[-10.75,0.358],[-10.5,0.3827],[-10.25,0.408],[-10.0,0.434],[-9.75,0.4606],[-9.5,0.4879],[-9.25,0.5158],[-9.0,0.5444],[-8.75,0.5735],[-8.5,0.6033],[-8.25,0.6337],[-8.0,0.6647],[-7.75,0.6962],[-7.5,0.7284],[-7.25,0.7612],[-7.0,0.7945],[-6.75,0.8284],[-6.5,0.8628],[-6.25,0.8978],[-6.0,0.9333],[-5.75,0.9694],[-5.5,1.006],[-5.25,1.0431],[-5.0,1.0807],[-4.75,1.1188],[-4.5,1.1573],[-4.25,1.1963],[-4.0,1.2358],[-3.75,1.2756],[-3.5,1.3158],[-3.25,1.3564],[-3.0,1.3972],[-2.75,1.4382],[-2.5,1.4794],[-2.25,1.5206],[-2.0,1.5615],[-1.75,1.6021],[-1.5,1.6418],[-1.25,1.6802],[-1.0,1.7163],[-0.75,1.8072],[-0.5,1.8849],[-0.25,1.8979],[0.0,1.837],[0.25,1.8979],[0.5,1.8849],[0.75,1.8072],[1.0,1.6985],[1.25,1.6415],[1.5,1.5911],[1.75,1.539],[2.0,1.4861],[2.25,1.4329],[2.5,1.3796],[2.75,1.3266],[3.0,1.2739],[3.25,1.2218],[3.5,1.1703],[3.75,1.1195],[4.0,1.0695],[4.25,1.0203],[4.5,0.9718],[4.75,0.9243],[5.0,0.8777],[5.25,0.832],[5.5,0.7872],[5.75,0.7434],[6.0,0.7006],[6.25,0.6589],[6.5,0.6181],[6.75,0.5784],[7.0,0.5398],[7.25,0.5022],[7.5,0.4658],[7.75,0.4305],[8.0,0.3963],[8.25,0.3633],[8.5,0.3314],[8.75,0.3008],[9.0,0.2714],[9.25,0.2432],[9.5,0.2163],[9.75,0.1908],[10.0,0.1665],[10.25,0.1436],[10.5,0.1222],[10.75,0.1021],[11.0,0.0836],[11.25,0.0666],[11.5,0.0513],[11.75,0.0376],[12.0,0.0257],[12.25,0.0158],[12.5,0.0079],[12.75,0.0024],[13.0,0.0]]; // [남북 거리 km(북 -), 높이 km]
+let hallaOn=false;
+const X0=-350,N=701,V=900,MAXN=24;
+function tanMax(v){return Math.tan((32+18*v)*Math.PI/180);}   // 점성이 클수록 더 가파르게 버팀
+let h=new Float32Array(N),count=0,busy=false;
+const visc=document.getElementById('visc');
+function vv(){return visc.value/100;}
+function reach(v){return 320*Math.pow(24/320,v);}
+function col(v,i){ // gray basalt -> warm light
+  const dark=matchMedia('(prefers-color-scheme: dark)').matches&&document.documentElement.dataset.theme!=='light';
+  const a=[96,96,100],b=[214,190,150],t=v;
+  let c=a.map((x,k)=>x+(b[k]-x)*t);
+  const s=(i%2?1:0.78)*(dark?0.85:1);
+  return `rgb(${c.map(x=>Math.round(x*s)).join(',')})`;
+}
+function poly(lo,hi){
+  // polygon between lower profile lo and upper profile hi (y up = negative)
+  let s='',t='';let first=-1,last=-1;
+  for(let i=0;i<N;i++)if(hi[i]-lo[i]>0.05){if(first<0)first=i;last=i;}
+  if(first<0)return null;
+  first=Math.max(0,first-1);last=Math.min(N-1,last+1);
+  for(let i=first;i<=last;i+=2)s+=`${X0+i},${(-hi[i]).toFixed(2)} `;
+  s+=`${X0+last},${(-hi[last]).toFixed(2)} `;
+  for(let i=last;i>=first;i-=2)t+=`${X0+i},${(-lo[i]).toFixed(2)} `;
+  return s+t;
+}
+function erupt(v){
+  const w=Math.min(1,Math.max(0,(v-0.35)/0.5)),ws=w*w*(3-2*w);
+  const Ve=V*(1-0.55*ws);                                // 끈끈한 용암은 한 번에 나오는 양이 적다
+  const L=reach(v),H=3*Ve/(4*L),old=h.slice(),nh=h.slice(),TANMAX=tanMax(v);
+  const c=(N-1)/2;
+  // 묽은 용암: 얇고 넓은 렌즈 / 끈끈한 용암: 화구 위에 고여 위가 평평한 덩어리 (둘을 점성에 따라 섞음)
+  const par=new Float32Array(N),pond=new Float32Array(N);
+  for(let i=0;i<N;i++){const x=(i-c)/L;if(Math.abs(x)<1)par[i]=H*(1-x*x);}
+  if(ws>0){const i0=Math.max(0,Math.round(c-L)),i1=Math.min(N-1,Math.round(c+L));
+    let lo=Infinity;for(let i=i0;i<=i1;i++)lo=Math.min(lo,old[i]);let hi=lo+Ve,z=lo;
+    for(let it=0;it<50;it++){z=(lo+hi)/2;let s=0;for(let i=i0;i<=i1;i++)s+=Math.max(0,z-old[i]);if(s>Ve)hi=z;else lo=z;}
+    for(let i=i0;i<=i1;i++)pond[i]=Math.max(0,z-old[i]);}
+  for(let i=0;i<N;i++)nh[i]+=(1-0.5*ws)*par[i]+0.5*ws*pond[i];   // 끈끈할수록 고이는 성질이 섞여 둥근 돔이 됨
+  // 가파르면 무너져 내림 (새 층의 물질만 옮김)
+  for(let it=0;it<4000;it++){
+    let moved=false;
+    for(let i=c;i<N-1;i++){const d=nh[i]-nh[i+1];if(d>TANMAX){const m=Math.min((d-TANMAX)/2,nh[i]-old[i]);if(m>1e-4){nh[i]-=m;nh[i+1]+=m;moved=true;}}}
+    for(let i=c;i>0;i--){const d=nh[i]-nh[i-1];if(d>TANMAX){const m=Math.min((d-TANMAX)/2,nh[i]-old[i]);if(m>1e-4){nh[i]-=m;nh[i-1]+=m;moved=true;}}}
+    if(!moved)break;
+  }
+  if(v>0.35){for(let pass=0;pass<14;pass++){const d=nh.map((y,i)=>y-old[i]);      // 모서리를 조금 둥글게
+    for(let i=1;i<N-1;i++)nh[i]=old[i]+(d[i-1]+2*d[i]+d[i+1])/4;}}
+  h=nh;
+  let ext=0;for(let i=0;i<N;i++)if(nh[i]-old[i]>0.05)ext=Math.max(ext,Math.abs(i-c));
+  return {old,nh,v,ext};
+}
+function addLayer(r,animate){
+  const p=poly(r.old,r.nh);if(!p)return Promise.resolve();
+  const pg=document.createElementNS(NS,'polygon');pg.setAttribute('points',p);
+  const rock=col(r.v,count);
+  const newL=document.getElementById('newL'),R=document.getElementById('growR');
+  if(!animate){pg.style.fill=rock;document.getElementById('layers').appendChild(pg);return Promise.resolve();}
+  pg.style.fill=MOLTEN;newL.appendChild(pg);
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const D=reduce?0:700+900*r.v;                        // 끈끈할수록 천천히 밀려 나옴
+  const E=Math.max(8,r.ext+2);                          // 이번 용암이 실제로 닿은 곳까지만
+  return new Promise(res=>{const t0=performance.now();
+    function f(t){const k=D?Math.min(1,(t-t0)/D):1,w=E*(1-Math.pow(1-k,1.6));R.setAttribute('x',-w);R.setAttribute('width',2*w);
+      if(k<1){requestAnimationFrame(f);return;}
+      document.getElementById('layers').appendChild(pg);
+      pg.style.transition=reduce?'none':'fill .7s ease-in';                   // 식어서 굳음
+      requestAnimationFrame(()=>{pg.style.fill=rock;});
+      setTimeout(res,reduce?0:450);}
+    requestAnimationFrame(f);});
+}
+function readout(){
+  const c=(N-1)/2;let top=0;for(let i=0;i<N;i++)top=Math.max(top,h[i]);
+  let lft=c,rgt=c;for(let i=0;i<N;i++)if(h[i]>0.5){lft=Math.min(lft,i);rgt=Math.max(rgt,i);}
+  const half=(rgt-lft)/2;
+  document.getElementById('cnt').textContent=`분출 ${count}회`+(count>=MAXN?' · 더 쌓을 자리가 없다':'');
+  document.getElementById('ro').innerHTML=count?`전체 경사 <b>${(Math.atan(top/Math.max(half,1))*180/Math.PI).toFixed(0)}°</b><br>높이 : 밑면 너비 = 1 : ${(2*half/top).toFixed(1)}`:'';
+  ['b1','b5'].forEach(id=>document.getElementById(id).disabled=busy||count>=MAXN);
+  const pc=(N-1)/2,pt=Math.max(0,h[pc]-0.6);const pp=document.getElementById('pipe');pp.setAttribute('y',(-pt).toFixed(2));pp.setAttribute('height',pt.toFixed(2));
+  drawHalla();
+}
+function drawHalla(){
+  const g=document.getElementById('halla');g.innerHTML='';
+  if(!hallaOn)return;
+  const c=(N-1)/2;let lft=-1,rgt=-1;
+  for(let i=0;i<N;i++)if(h[i]>0.5){if(lft<0)lft=i;rgt=i;}
+  let L,Rr;if(lft<0||rgt-lft<40){L=X0+c-300;Rr=X0+c+300;}else{L=X0+lft;Rr=X0+rgt;}
+  const k=(Rr-L)/30,sx=X0+c;                       // 정상을 분화구에 맞춤 (북쪽 17 km, 남쪽 13 km)
+  const d='M'+HALLA.map(p=>`${(sx+p[0]*k).toFixed(1)},${(-p[1]*k).toFixed(2)}`).join(' L');
+  const path=document.createElementNS(NS,'path');path.setAttribute('d',d);
+  path.setAttribute('fill','none');path.setAttribute('stroke','var(--act)');path.setAttribute('stroke-width','1.6');path.setAttribute('stroke-dasharray','5 4');
+  g.appendChild(path);
+  let top=0;HALLA.forEach(p=>top=Math.max(top,p[1]));
+  const t=document.createElementNS(NS,'text');t.setAttribute('x',(sx+6).toFixed(1));t.setAttribute('y',(-top*k-6).toFixed(1));
+  t.setAttribute('font-size','11');t.setAttribute('fill','var(--act)');t.setAttribute('stroke','var(--sky)');t.setAttribute('stroke-width','3');t.setAttribute('paint-order','stroke');t.setAttribute('stroke-linejoin','round');t.textContent='한라산 (같은 축척)';g.appendChild(t);
+}
+async function run(n){
+  if(busy)return;busy=true;readout();
+  for(let k=0;k<n&&count<MAXN;k++){const r=erupt(vv());await addLayer(r,true);count++;readout();}
+  busy=false;readout();
+}
+document.getElementById('b1').onclick=()=>run(1);
+document.getElementById('b5').onclick=()=>run(5);
+document.getElementById('bh').onclick=()=>{hallaOn=!hallaOn;const b=document.getElementById('bh');b.setAttribute('aria-pressed',hallaOn);b.textContent=hallaOn?'한라산 단면 숨기기':'한라산 단면 겹쳐 보기';drawHalla();};
+document.getElementById('b0').onclick=()=>{if(busy)return;h=new Float32Array(N);count=0;document.getElementById('layers').innerHTML='';readout();};
+readout();
+</script>
+</body>
+</html>
