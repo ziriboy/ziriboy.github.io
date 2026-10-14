@@ -45,7 +45,7 @@ h1{font-size:33px;font-weight:700;letter-spacing:-.03em;line-height:1.25;margin:
 .lead{color:var(--mid);font-size:16.5px;margin:0 0 32px;max-width:70ch}
 .lead b{color:var(--ink)}
 
-.menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:18px;margin-top:28px}
+.menu{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:28px}
 .mcard{text-align:left;background:none;border:1px solid var(--line);border-radius:12px;
   padding:24px;cursor:pointer;transition:border-color .12s}
 .mcard:hover{border-color:var(--acc)}
@@ -96,6 +96,7 @@ textarea:focus,.inp:focus{border-color:var(--acc);outline:none}
   .hin,main{padding-left:16px;padding-right:16px}
   .brand .c{display:none} h1{font-size:26px} .switch .lb{display:none}
   .concept dl{grid-template-columns:1fr}
+  .menu{grid-template-columns:1fr}
 }
 /* ═══ 공통 스타일 v2 끝 ═══ */
 
@@ -147,7 +148,7 @@ html{overflow-y:scroll}
 .case .h{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:4px 18px;align-items:baseline}
 .case .h .seg{margin:0;flex-wrap:nowrap}
 .case .no{font-size:13px;font-weight:700;color:var(--acc)}
-.case .s{font-size:17px;font-weight:600;letter-spacing:-.015em;line-height:1.55}
+.case .s{font-size:16px;font-weight:600;letter-spacing:-.015em;line-height:1.55}
 .rv{margin:12px 0 0 34px;padding:12px 16px;background:var(--wash);border-radius:8px;font-size:14.5px;line-height:1.75}
 .rv .ty{font-weight:700;color:var(--ink)}
 .rv .ty .src{margin-left:8px;font-weight:400}
