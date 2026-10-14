@@ -5,7 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>지리교과교육론 · 지리 오개념</title>
 <style>
-/* ═══ 수업자료 공통 스타일 v1 — 매주 이 블록을 그대로 재사용 ═══ */
+/* ═══ 수업자료 공통 스타일 v2 — 매주 이 블록을 그대로 재사용 ═══
+   폭: --w 하나로 정한다. 980px = 본문 920px + 좌우 여백 30px씩.
+       아이패드 가로(1,024px 이상)에 맞춘 최대 폭이며, 더 좁은 화면에서는 화면에 맞춰 줄어든다.
+       본문 블록에는 따로 max-width를 주지 않는다 — 머리글과 본문의 양 끝이 같은 선에 온다.
+   좁은 화면: 640px 이하(휴대폰)에서만 세로로 쌓는다. 아이패드는 세로로 들어도 같은 배치. */
 :root{
   --ink:#111517; --mid:#525C60; --soft:#8A9296;
   --line:#E2E5E2; --line2:#EFF1EE; --wash:#F5F7F5;
@@ -13,7 +17,7 @@
   --mark:#F6E7B8;
   --warn-l:#E7D8B6; --warn-b:#FCF7EB; --warn-t:#6D5421;
   --f:Pretendard,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
-  --w:1120px; --hh:56px;
+  --w:980px; --hh:56px;
 }
 *{box-sizing:border-box} html,body{margin:0}
 body{background:#fff;color:var(--ink);font-family:var(--f);font-size:16px;
@@ -49,12 +53,12 @@ h1{font-size:33px;font-weight:700;letter-spacing:-.03em;line-height:1.25;margin:
 .mcard h3{margin:6px 0 8px;font-size:19px;font-weight:700;letter-spacing:-.02em;line-height:1.35}
 .mcard p{margin:0;color:var(--mid);font-size:14.5px;line-height:1.65}
 .mcard .m{margin-top:14px;font-size:13px;color:var(--soft)}
-.arc{max-width:860px;margin:34px 0 0;padding-top:20px;border-top:1px solid var(--line2);
+.arc{margin:34px 0 0;padding-top:20px;border-top:1px solid var(--line2);
   font-size:14.5px;color:var(--mid);display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 .arc span{background:var(--wash);border-radius:6px;padding:4px 10px;color:var(--ink)}
 .arc i{font-style:normal;color:var(--soft)}
 
-.concept{background:var(--wash);border-radius:10px;padding:20px 24px;max-width:1000px;margin:6px 0 26px}
+.concept{background:var(--wash);border-radius:10px;padding:20px 24px;margin:6px 0 26px}
 .concept h3{margin:0 0 10px;font-size:13px;color:var(--acc);font-weight:600;letter-spacing:.04em}
 .concept dl{display:grid;grid-template-columns:170px minmax(0,1fr);gap:7px 16px;margin:0;font-size:15px}
 .concept dt{font-weight:600}
@@ -79,7 +83,7 @@ textarea,.inp{width:100%;min-height:96px;border:1px solid var(--line);border-rad
 textarea:focus,.inp:focus{border-color:var(--acc);outline:none}
 .chips{display:flex;gap:6px;flex-wrap:wrap}
 .notice{border:1px solid var(--warn-l);background:var(--warn-b);border-radius:9px;
-  padding:14px 18px;color:var(--warn-t);font-size:14.5px;max-width:1000px;margin:14px 0}
+  padding:14px 18px;color:var(--warn-t);font-size:14.5px;margin:14px 0}
 .count{font-size:14px;color:var(--mid)}
 .count b{color:var(--acc);font-weight:700}
 
@@ -88,7 +92,12 @@ textarea:focus,.inp:focus{border-color:var(--acc);outline:none}
 .foot button{background:none;border:none;cursor:pointer;color:var(--mid);padding:0}
 .foot button:hover{color:var(--ink)}
 .foot .msg{color:var(--acc)}
-/* ═══ 공통 스타일 v1 끝 ═══ */
+@media(max-width:640px){
+  .hin,main{padding-left:16px;padding-right:16px}
+  .brand .c{display:none} h1{font-size:26px} .switch .lb{display:none}
+  .concept dl{grid-template-columns:1fr}
+}
+/* ═══ 공통 스타일 v2 끝 ═══ */
 
 html{overflow-y:scroll}
 
@@ -105,7 +114,6 @@ html{overflow-y:scroll}
 .legend .r{border:1px solid var(--line);box-shadow:0 0 0 2px #fff,0 0 0 3.5px var(--ink)}
 
 /* 읽기 */
-.rd{max-width:860px}
 .rd h2{font-size:20px;font-weight:700;letter-spacing:-.02em;margin:40px 0 10px;line-height:1.4}
 .rd h2:first-child{margin-top:0}
 .rd p{margin:0 0 12px;font-size:15.5px;line-height:1.85}
@@ -116,6 +124,10 @@ html{overflow-y:scroll}
 .rd li b{font-weight:600}
 .qt{border-left:2px solid var(--acc);padding:2px 0 2px 16px;margin:10px 0 16px;font-size:15.5px;line-height:1.85}
 .qt .src{display:block;margin-top:2px}
+.ex{border:1px solid var(--line);border-radius:8px;padding:14px 18px 4px;margin:4px 0 18px}
+.ex .ex-k{display:block;font-size:12.5px;font-weight:600;color:var(--acc);letter-spacing:.04em;margin-bottom:4px}
+.rd .ex p{font-size:15px;line-height:1.8;color:var(--mid)}
+@media print{.ex{break-inside:avoid}}
 .terms{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;margin:8px 0 18px}
 .terms div{border-top:2px solid var(--line);padding-top:10px}
 .terms div.em{border-top-color:var(--acc)}
@@ -130,12 +142,12 @@ html{overflow-y:scroll}
 .tbl td b{color:var(--ink);font-weight:600}
 
 /* 사례 판단 */
-.cases{max-width:920px;border-top:1px solid var(--line)}
+.cases{border-top:1px solid var(--line)}
 .case{padding:18px 0;border-bottom:1px solid var(--line2)}
-.case .h{display:grid;grid-template-columns:30px minmax(0,1fr);gap:4px;align-items:baseline}
+.case .h{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:4px 18px;align-items:baseline}
+.case .h .seg{margin:0;flex-wrap:nowrap}
 .case .no{font-size:13px;font-weight:700;color:var(--acc)}
 .case .s{font-size:17px;font-weight:600;letter-spacing:-.015em;line-height:1.55}
-.case .seg{margin:10px 0 0 34px}
 .rv{margin:12px 0 0 34px;padding:12px 16px;background:var(--wash);border-radius:8px;font-size:14.5px;line-height:1.75}
 .rv .ty{font-weight:700;color:var(--ink)}
 .rv .ty .src{margin-left:8px;font-weight:400}
@@ -145,7 +157,7 @@ html{overflow-y:scroll}
 .chip{display:inline-block;font-size:12.5px;line-height:1.6;padding:0 9px;border-radius:11px;background:#fff;border:1px solid var(--line);color:var(--ink);margin:0 5px 4px 0}
 .rv .chips{display:flex;flex-wrap:wrap;gap:0;margin:1px 0 2px}
 .rv .nt{margin-top:8px;padding-top:8px;border-top:1px solid var(--line);color:var(--warn-t);font-size:13.5px}
-.dist{max-width:920px;margin-top:26px;border-top:2px solid var(--acc);padding-top:16px}
+.dist{margin-top:26px;border-top:2px solid var(--acc);padding-top:16px}
 .dist h4{margin:0 0 12px;font-size:13px;color:var(--acc);font-weight:600;letter-spacing:.04em}
 .bars{display:grid;grid-template-columns:200px minmax(0,1fr) 92px;gap:7px 14px;align-items:center;font-size:14px;max-width:760px}
 .bars .bt{height:12px;background:var(--line2);border-radius:2px;position:relative}
@@ -161,7 +173,7 @@ html{overflow-y:scroll}
 .subj b{display:block;font-size:14.5px;font-weight:600}
 .subj span{display:block;font-size:12px;color:var(--soft)}
 .subj[aria-pressed="true"]{border-color:var(--acc);background:var(--acc-w)}
-.grp{border:1px solid var(--line);border-radius:12px;padding:26px 30px 24px;max-width:1040px;margin:0 0 28px}
+.grp{border:1px solid var(--line);border-radius:12px;padding:26px 30px 24px;margin:0 0 28px}
 .grp .gt{margin:0 0 6px;font-size:21px;font-weight:700;letter-spacing:-.02em}
 .grp .rd{max-width:none}
 .grp .gs{margin:22px 0 4px;font-size:16px;font-weight:700;color:var(--acc)}
@@ -170,14 +182,14 @@ html{overflow-y:scroll}
 .why{list-style:none;padding:0!important}
 .why li{padding:8px 0;border-bottom:1px solid var(--line2);margin:0!important}
 .why li b{display:block;color:var(--ink)}
-.tbl.steps{max-width:860px;margin:4px 0 10px}
+.tbl.steps{margin:4px 0 10px}
 .tbl.steps th{width:130px}
 .tbl.steps th b{color:var(--acc);margin-right:8px}
 .tbl.num{max-width:620px;margin:4px 0 10px}
 .tbl.num th{width:110px}
 .tbl.num thead td{font-size:12.5px;color:var(--soft);font-weight:600}
 .tbl.num tbody td{color:var(--ink);font-variant-numeric:tabular-nums}
-.stp{display:grid;grid-template-columns:110px minmax(0,1fr);gap:0 26px;max-width:1040px;padding:22px 0;border-top:1px solid var(--line)}
+.stp{display:grid;grid-template-columns:110px minmax(0,1fr);gap:0 26px;padding:22px 0;border-top:1px solid var(--line)}
 .stp .lb{font-size:13px;font-weight:700;color:var(--acc);line-height:1.5;padding-top:3px}
 .stp .lb span{display:block;font-weight:400;color:var(--soft);font-size:12.5px;margin-top:2px}
 .stp .big{font-size:18px;font-weight:600;letter-spacing:-.015em;margin:0 0 4px;line-height:1.55}
@@ -195,17 +207,16 @@ html{overflow-y:scroll}
 .cmpbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin:18px 0 0}
 .lk{background:none;border:none;padding:0;cursor:pointer;color:var(--acc);font-size:13.5px}
 .lk:hover{text-decoration:underline}
-.refs{max-width:860px;margin-top:40px;padding-top:16px;border-top:1px solid var(--line2);font-size:13px;color:var(--mid);line-height:1.75}
+.refs{margin-top:40px;padding-top:16px;border-top:1px solid var(--line2);font-size:13px;color:var(--mid);line-height:1.75}
 .refs h4{margin:0 0 6px;font-size:12.5px;color:var(--soft);font-weight:600;letter-spacing:.04em}
 .refs p{margin:0 0 3px;padding-left:2em;text-indent:-2em}
 
-@media(max-width:860px){
-  .hin,main{padding-left:16px;padding-right:16px}
-  .brand .c{display:none} h1{font-size:26px} .switch .lb{display:none}
-  .concept dl{grid-template-columns:1fr}
+@media(max-width:640px){
   .terms{grid-template-columns:1fr}
   .tbl th{width:auto;white-space:normal}
-  .case .seg,.rv{margin-left:0}
+  .case .h{grid-template-columns:30px minmax(0,1fr)}
+  .case .h .seg{grid-column:2;margin-top:8px;flex-wrap:wrap}
+  .rv{margin-left:0}
   .rv dl{grid-template-columns:1fr}
   .stp{grid-template-columns:1fr;gap:8px}
   .grp{padding:18px 16px}
@@ -313,9 +324,10 @@ function home(){
 
 /* ═════ 1. 오개념이란 ═════ */
 function s1(){
-  return '<p class="stage">1</p><h1>오개념이란 무엇인가</h1><div class="rd">'+
+  return '<h1>오개념이란 무엇인가</h1><div class="rd">'+
   '<div class="qt">일반적으로 수용되는 지리학 개념 및 원리에 위배되거나 부분적인 영역에서만 작동하는 문제 지식'+src(K13)+'</div>'+
   '<p>개념을 통째로 잘못 아는 경우뿐 아니라, 일부 상황에서만 맞는 지식을 모든 상황에 쓰는 경우도 오개념이다. 오개념이 문제가 되는 것은 학생이 모르기 때문이 아니라 <b>이미 다르게 알고 있기</b> 때문이다.</p>'+
+  '<div class="ex"><span class="ex-k">사례 · 계절은 왜 생기는가</span><p>계절이 생기는 이유를 지구가 공전하면서 태양에 가까워지거나 멀어지기 때문이라고 생각하는 학생이 많다. 난로에 가까이 가면 따뜻해지는 경험에서 나온 생각이다. 가까울수록 따뜻하다는 규칙은 난로 앞에서는 맞지만, 지구와 태양 사이에서는 맞지 않는다. 지구가 태양에 가장 가까운 때는 1월 초로, 북반구는 한겨울이다. 일상에서 맞는 규칙을 그것이 통하지 않는 규모에까지 쓴 것이다.</p></div>'+
   '<p>틀린 답이 모두 오개념인 것은 아니다. 한 번 잘못 읽었다가 다시 물으면 바로 고치는 것은 <b>오류</b>에 가깝다. 오개념은 그 뒤에 안정된 생각이 있어서 다른 상황에서도 같은 판단을 되풀이하고, 지적해도 쉽게 바뀌지 않는다.</p>'+
   '<div class="terms">'+
    '<div><h4>선개념<small>preconception</small></h4><p>수업 이전에 이미 가지고 있는 생각. 옳을 수도, 틀릴 수도 있다.</p></div>'+
@@ -341,7 +353,7 @@ function caseHTML(c,i){
       '<dt>실제로는</dt><dd>'+esc(c.f)+'</dd>'+
       '<dt>작용했을 배경</dt><dd>'+chips(c.g)+esc(c.w)+'</dd></dl></div>';
   }
-  return '<div class="case" id="c-'+c.id+'"><div class="h"><span class="no">'+(i+1)+'</span><div class="s">'+esc(c.s)+'</div></div>'+seg+rv+'</div>';
+  return '<div class="case" id="c-'+c.id+'"><div class="h"><span class="no">'+(i+1)+'</span><div class="s">'+esc(c.s)+'</div>'+seg+'</div>'+rv+'</div>';
 }
 function bgSummary(){
   return '<div class="dist"><h4>이 문장들에 작용한 배경</h4>'+
@@ -354,7 +366,7 @@ function bgSummary(){
 }
 function s2(){
   var n=caseDone();
-  return '<p class="stage">2</p><h1>지리 오개념 테스트</h1>'+
+  return '<h1>지리 오개념 테스트</h1>'+
   '<div class="legend"><span><i class="a"></i>내 판단</span><span><i class="r"></i>실제</span><span class="count"><b>'+n+'</b> / '+CASES.length+'</span></div>'+
   '<div class="cases">'+CASES.map(caseHTML).join('')+'</div>'+
   (n===CASES.length?bgSummary():'');
@@ -405,11 +417,11 @@ function lesson(k){
   return h;
 }
 function s3(){
-  return '<p class="stage">3</p><h1>오개념은 어떻게 바뀌는가</h1>'+
+  return '<h1>오개념은 어떻게 바뀌는가</h1>'+
   '<section class="grp"><h2 class="gt">오개념을 바꾸려면</h2><div class="rd">'+
   '<h3 class="gs">왜 잘 바뀌지 않는가</h3>'+
-  '<ul class="why"><li><b>그 생각이 지금까지 잘 통했다.</b> 오개념은 학생의 경험과 배운 내용을 나름대로 설명해 준다. 학생에게는 버릴 이유가 없다.</li>'+
-   '<li><b>정답은 기존 생각 위에 덧붙여진다.</b> 시험에서는 배운 답을 쓰고, 다른 상황에서는 원래 생각으로 돌아간다. 오개념이 전통적인 수업으로 쉽게 없어지지 않는 이유다'+src(K13)+'.</li>'+
+  '<ul class="why"><li><b>그 생각이 지금까지 잘 통했다.</b> 오개념은 학생의 경험과 배운 내용을 나름대로 설명해 준다. 학생에게는 버릴 이유가 없다. 난로 앞에서, 모닥불 곁에서 학생은 가까우면 따뜻하다는 것을 계속 확인한다.</li>'+
+   '<li><b>정답은 기존 생각 위에 덧붙여진다.</b> 학생은 수업에서 자전축의 기울기를 배우고 시험에서는 그렇게 답한다. 그러나 수업이 끝나면 기울기를 떠올릴 일은 거의 없고, 거리와 온도의 관계는 생활에서 날마다 쓸모가 있다. 학교에서 배운 설명은 시험을 위한 답으로 남고, 생활에서 통하는 설명은 그대로 남는다. 시험에서는 배운 답을 쓰고, 다른 상황에서는 원래 생각으로 돌아간다. 오개념이 전통적인 수업으로 쉽게 없어지지 않는 이유다'+src(K13)+'.</li>'+
    '<li><b>반례를 만나도 생각을 지킨다.</b> 학생은 맞지 않는 자료를 만나면 자료를 의심하거나, 자기 생각에 맞게 해석하거나, 일부만 고치고 핵심은 그대로 둔다'+src('Chinn and Brewer, 1998; '+K15)+'.</li></ul>'+
   '<h3 class="gs">그래서 어떤 노력이 필요한가</h3>'+
   '<p>정답을 알려 주는 것만으로는 부족하다. 학생이 자기 생각의 한계를 직접 겪고, 새 설명이 더 낫다는 것을 경험해야 한다. 개념변화 수업은 대체로 다음 흐름을 따른다.</p></div>'+
