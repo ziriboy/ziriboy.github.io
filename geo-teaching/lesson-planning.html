@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>중단원 설계와 차시 지도안</title>
+<style>
+/* ═══ 공통 스타일 v2 ═══
+   폭은 --w 하나로 정한다: 본문 920px + 좌우 여백 30px.
+   아이패드 가로(1180px)·세로(820px)에서 같은 배치를 유지하고, 640px 이하에서만 휴대폰 배치로 바꾼다. */
+html{overflow-y:scroll;scrollbar-gutter:stable}
+:root{
+  --w:980px;
+  --ink:#26323B; --soft:#4A5560; --mute:#7A8590; --line:#D5D8D6;
+  --bg:#F7F6F2; --panel:#FFFFFF; --head:#F1EFEA; --accent:#B4532A;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;font-size:16px;line-height:1.65;-webkit-text-size-adjust:100%}
+.wrap{max-width:var(--w);margin:0 auto;padding:0 30px}
+@media (max-width:640px){.wrap{padding:0 16px}}
+/* ═══ 공통 스타일 v2 끝 ═══ */
+
+header{background:var(--ink);color:#F7F6F2}
+header .wrap{padding-top:20px}
+header h1{font-size:22px;font-weight:700}
+nav{display:flex;gap:28px;margin-top:14px}
+nav button{font:inherit;font-size:17px;font-weight:700;background:none;border:none;border-bottom:3px solid transparent;color:#9AA7B0;padding:8px 0 10px;cursor:pointer}
+nav button.on{color:#F7F6F2;border-bottom-color:#E0A07F}
+.sub{display:flex;gap:6px;margin-bottom:24px}
+.sub button{font:inherit;font-size:15px;border:1px solid var(--line);background:var(--panel);color:var(--soft);border-radius:999px;padding:5px 16px;cursor:pointer}
+.sub button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+main{padding:30px 0 90px}
+.page{display:none}.page.on{display:block}
+h2{font-size:25px;font-weight:700;letter-spacing:-.3px;margin:0 0 6px}
+h2.part{margin-top:48px;padding-top:24px;border-top:2px solid var(--ink)}
+h2.part:first-child{margin-top:0;padding-top:0;border-top:none}
+h3{font-size:18px;font-weight:700;margin:30px 0 6px}
+p{margin:6px 0}
+.lead{color:var(--soft);font-size:17px}
+.muted{color:var(--mute)}
+
+/* 설명 도식 */
+.flow{display:grid;grid-template-columns:1fr 36px 1fr 36px 1fr;margin:22px 0 8px;align-items:start}
+.flow .arr{text-align:center;font-size:22px;color:var(--mute);padding-top:2px}
+.flow .st{border-top:3px solid var(--ink);padding-top:10px}
+.flow .st.em{border-top-color:var(--accent)}
+.flow h4{font-size:18px;margin-bottom:4px}
+.flow .w{font-size:14px;color:var(--mute);margin-top:10px}
+.flow ul{list-style:none;font-size:15.5px;color:var(--ink);margin-top:8px}
+.flow ul li{padding:2px 0}
+.flow .q li{padding:4px 0 4px 12px;text-indent:-12px}
+.flow .q li::before{content:"· "}
+.flow2{grid-template-columns:1fr 36px 1fr 36px 1fr}
+@media (max-width:640px){.flow,.flow2{grid-template-columns:1fr}.flow .arr{transform:rotate(90deg);padding:6px 0}}
+
+/* 문서 표 */
+.docview{background:var(--panel);border:1px solid var(--line);padding:34px 36px;margin-top:14px}
+.docview h1{font-size:21px;text-align:center;margin-bottom:16px}
+.docview h3{font-size:16px;margin:22px 0 6px}
+.docview .pb{height:0;border-top:1px dashed var(--line);margin:40px -36px 34px}
+@media (max-width:640px){.docview{padding:20px 14px}.docview .pb{margin:30px -14px 24px}}
+table.t{width:100%;border-collapse:collapse;margin:6px 0;font-size:15px}
+table.t th,table.t td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}
+table.t th{background:var(--head);font-weight:700;vertical-align:middle}
+
+/* 작성 */
+.tools{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;margin-bottom:6px}
+.btn{font:inherit;font-size:14px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:6px;padding:6px 12px;cursor:pointer}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.x{font-size:13px;padding:1px 8px;color:var(--mute)}
+.how{color:var(--soft);font-size:15px;margin:2px 0 8px 18px}
+textarea,input[type=text],input[type=number],select{font:inherit;font-size:16px;width:100%;border:1px solid transparent;border-radius:4px;background:transparent;color:var(--ink);padding:4px 5px}
+textarea{resize:vertical;min-height:36px;line-height:1.5;display:block}
+textarea:focus,input:focus,select:focus{outline:none;border-color:var(--accent);background:#fff}
+textarea::placeholder,input::placeholder{color:#A9B0B5}
+table.f{width:100%;border-collapse:collapse;margin:8px 0}
+table.f th,table.f td{border:1px solid var(--line);padding:5px;vertical-align:top;text-align:left;background:var(--panel)}
+table.f th{background:var(--head);font-size:14px;white-space:nowrap}
+table.f td.lab{background:var(--head);font-weight:700;width:1%;white-space:nowrap;font-size:15px;padding:9px 10px;vertical-align:middle}
+.sum{font-size:15px;margin-top:4px}
+.sum.bad{color:var(--accent);font-weight:700}
+@media (max-width:640px){
+  table.resp thead{display:none}
+  table.resp,table.resp tbody,table.resp tr,table.resp td{display:block;width:100%}
+  table.resp tr{border:1px solid var(--line);margin-bottom:10px}
+  table.resp td{border:none;border-bottom:1px solid var(--line)}
+  table.resp td::before{content:attr(data-l);display:block;font-size:13px;font-weight:700;color:var(--mute)}
+  table.f td.lab{white-space:normal}
+}
+#doc{display:none}
+@media print{
+  header,main{display:none!important}
+  body{background:#fff}
+  #doc{display:block;font-size:10.5pt;color:#000}
+  #doc h1{font-size:15pt;text-align:center;margin:0 0 10pt}
+  #doc h3{font-size:11.5pt;margin:11pt 0 4pt}
+  #doc .pb{page-break-before:always}
+  #doc table{width:100%;border-collapse:collapse;margin:3pt 0 6pt}
+  #doc tr{page-break-inside:avoid}
+  #doc th,#doc td{border:0.6pt solid #888;padding:4pt 5pt;vertical-align:top;text-align:left}
+  #doc th{background:#EEE;vertical-align:middle}
+  #doc p{margin:3pt 0}
+  @page{size:A4;margin:16mm}
+}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>중단원 설계와 차시 지도안</h1>
+  <nav id="nav"><button data-m="u" class="on">중단원 설계</button><button data-m="l">차시 설계</button></nav>
+</div></header>
+
+<main><div class="wrap">
+<div class="sub" id="sub"><button data-t="1" class="on">설명</button><button data-t="2">예시</button><button data-t="3">작성</button></div>
+
+<!-- ════════ 중단원: 설명 ════════ -->
+<section class="page on" id="u1">
+  <h2>중단원 설계</h2>
+  <p class="lead">성취기준 하나를 2~5차시로 나누어 가르치는 계획</p>
+  <div class="flow">
+    <div class="st"><h4>1 성취기준 이해</h4><ul class="q">
+      <li>이 성취기준이 속한 대단원의 제목은 무엇이며, 대단원이 목표로 하는 바는 무엇인가?</li>
+      <li>대단원의 성취기준은 어떤 내용으로 구성·배열되어 있는가?</li>
+      <li>이 성취기준의 해설과 적용 시 고려 사항은 무엇을 강조하는가?</li></ul></div>
+    <div class="arr">→</div>
+    <div class="st em"><h4>2 차시 편성</h4><ul class="q">
+      <li>성취기준을 몇 차시로 나누고, 어떤 순서로 배열하는가?</li>
+      <li>각 차시의 탐구 질문과 핵심 지식은 무엇인가?</li></ul></div>
+    <div class="arr">→</div>
+    <div class="st"><h4>3 평가 계획</h4><ul class="q">
+      <li>성취기준 도달을 무엇으로, 언제 확인하는가?</li></ul></div>
+  </div>
+</section>
+
+<!-- ════════ 차시: 설명 ════════ -->
+<section class="page" id="l1">
+  <h2>차시 교수학습지도안</h2>
+  <p class="lead">중단원 지도 계획의 한 차시를 한 시간의 수업으로 구체화한 계획</p>
+  <div class="flow flow2">
+    <div class="st"><h4>1 학습목표</h4><ul class="q">
+      <li>중단원 목표 가운데 이 차시가 맡는 부분은 무엇인가?</li></ul></div>
+    <div class="arr">→</div>
+    <div class="st em"><h4>2 교수학습 과정</h4><ul class="q">
+      <li>도입–전개–정리의 활동과 정리 단계의 확인으로 학습목표에 이르는가?</li>
+      <li>시간 배분은 수업 시간(중 45분, 고 50분)에 맞는가?</li></ul></div>
+    <div class="arr">→</div>
+    <div class="st"><h4>3 주의점과 자료</h4><ul class="q">
+      <li>수업 운영에서 주의할 점과 필요한 자료는 무엇인가?</li></ul></div>
+  </div>
+</section>
+
+<!-- ════════ 예시 ════════ -->
+<section class="page" id="u2">
+  <p class="lead">[12한탐04-03] 자연재해 — 4차시 중단원 설계안</p>
+  <div class="docview" id="exU"></div>
+</section>
+<section class="page" id="l2">
+  <p class="lead">[12한탐04-03] 자연재해 — 1차시 교수학습지도안</p>
+  <div class="docview" id="exL"></div>
+</section>
+
+<!-- ════════ 작성 ════════ -->
+<section class="page" id="u3"><div class="tools"></div><div class="form" id="formU"></div></section>
+<section class="page" id="l3"><div class="tools"></div><div class="form" id="formL"></div></section>
+<input type="file" id="fileIn" accept=".json,application/json" hidden>
+
+</div></main>
+<div id="doc"></div>
+
+<script>
+/* ───────── 예시: [12한탐04-03] ───────── */
+const EX={
+ u:{level:'고',subject:'한국지리 탐구',unit:'(4) 환경과 지속 가능성 탐구',
+  unitGoal:'한반도의 자연환경을 지속 가능하게 이용하는 방안을 탐구한다. 자연경관의 가치, 개발에 따른 환경 변화, 자연재해, 에너지 전환을 조사하고, 그 결과를 근거로 추천·제안·평가하는 수행을 요구한다.',
+  stdList:'[12한탐04-01] 세계유산으로 등재된 한반도 자연경관의 가치를 탁월성과 보편성의 측면에서 설명하고, 이를 토대로 등재 가능한 자연경관을 추천한다.\n[12한탐04-02] 도시화, 농업, 관광지 개발로 인한 산지, 하천, 해안지역의 변화를 조사하고, 환경과 개발에 대한 관점이 자연환경의 복원 및 지속가능한 활용에 미치는 영향을 파악한다.\n[12한탐04-03] 우리나라 및 우리 지역에서 주로 발생하는 자연재해의 유형과 특징을 분석하고, 이를 토대로 자연재해의 경감 대책을 조사하고 평가한다.\n[12한탐04-04] 우리나라의 에너지원별 발전에 관한 주요 쟁점을 조사하고, 탄소중립 달성을 위한 에너지 정책을 제안한다.',
+  std:'[12한탐04-03] 우리나라 및 우리 지역에서 주로 발생하는 자연재해의 유형과 특징을 분석하고, 이를 토대로 자연재해의 경감 대책을 조사하고 평가한다.',
+  expl:'[12한탐04-03]은 우리나라 및 지역에서 주로 발생하는 자연재해의 유형과 특징을 조사하고, 대책을 평가하는 것이 목적이다. 학생들은 자연현상과 자연재해를 구분하고, 인간의 대응 측면에서 위험과 취약성의 개념을 통해 자연재해를 이해하며, 국가 및 지역 수준의 재해별 대응 방안을 찾아 평가할 수 있도록 한다.',
+  consider:'태풍, 폭염, 도시홍수 등 매년 반복되는 자연재해의 유형은 지역에 상관없이 다루도록 하고, 학생이 거주하는 지역에서 실제 발생했던 자연재해의 사례들은 발생원인, 피해지역과 규모, 지자체의 대응, 개선점 등을 구체적으로 파악한다. 정부기관 및 지자체에서 제공⋅운영하는 공공 데이터 및 공간정보웹서비스를 활용해 홍수위험, 산불위험, 산사태위험, 지진위험 등 구체적인 자연재해의 위험을 분석하고 이를 토대로 자연재해 경감 대책을 평가할 수 있는 기회를 제공할 수 있도록 한다.',
+  n:4,
+  overview:'이 중단원은 우리나라와 우리 지역에서 주로 발생하는 자연재해의 유형과 특징을 분석하고, 이를 토대로 자연재해의 경감 대책을 조사하고 평가하는 데 목적이 있다. 먼저 폭염 사례를 통해 자연현상이 사람과 사회에 피해를 줄 때 자연재해가 된다는 점, 그리고 재해의 피해가 위험뿐 아니라 취약성과 회복탄력성에 따라 달라진다는 점을 이해한다. 이 개념을 틀로 삼아 우리나라에서 매년 반복되는 홍수와, 특정 지역에서 반복되는 대설·산불을 분석한다. 마지막으로 생활안전지도와 자연재해 통계지도 같은 공간정보 서비스를 활용하여 우리 지역의 위험·노출·취약성을 조사하고, 기존 재해 대응 시설과 경감 대책의 적절성을 평가한 뒤 개선 방안을 제안한다.',
+  g1:'자연현상과 자연재해를 구분하고, 위험·취약성·회복탄력성의 관계로 재해 피해의 차이를 설명할 수 있다.',
+  g2:'홍수·대설·산불의 발생 조건과 분포를 자료로 분석할 수 있다. 공간정보 서비스로 우리 지역의 위험·노출·취약성을 조사하고, 기존 대응 시설과 경감 대책의 적절성을 평가하여 개선 방안을 제안할 수 있다.',
+  g3:'같은 재해에도 사람과 지역에 따라 피해가 다름을 인식하고, 취약한 이웃을 고려한 재해 대응에 참여하려는 태도를 가진다.',
+  rows:[
+   {q:'자연현상은 언제 자연재해가 되는가?',know:'자연재해, 위험, 취약성, 회복탄력성',content:'자연현상과 자연재해의 구분\n재해 피해를 결정하는 조건\n재해의 크기 판단',act:'[생각열기] 데스밸리(54.4℃)와 한국의 폭염 피해를 비교하여 자연현상과 자연재해의 차이를 찾는다.\n[활동] 2024년 폭염 사례에서 세 사람의 피해 가능성을 비교하고, 위험·취약성·회복탄력성으로 피해 차이를 설명한다.'},
+   {q:'우리나라는 왜 홍수에 취약한가?',know:'계절풍, 정체전선, 유역, 첨두유량, 불투수면, 도시 침수, 노출, 취약성',content:'강수의 계절적 집중과 하천 특성\n도시화와 빗물 흐름의 변화\n홍수 취약성과 회복탄력성',act:'[생각열기] 월별 강수량과 하천 특성에서 여름철 홍수 위험이 큰 까닭을 찾는다.\n[활동] 유출 곡선과 불투수면 자료로 도시화가 빗물의 흐름을 바꾼 방식을 분석하고, 반지하 침수 사례에서 취약성 요인을 찾는다.'},
+   {q:'대설과 산불은 왜 특정 지역에서 반복되는가?',know:'지형성 강설, 푄 현상, 양간지풍, 산림 인접 지역',content:'대설과 대형 산불의 분포\n태백산맥과 계절별 바람\n산불의 발생과 확산 요인',act:'[생각열기] 적설과 대형 산불 분포 지도에서 공간적 패턴을 찾는다.\n[활동] 태백산맥을 넘는 공기의 변화를 시뮬레이션으로 확인하여 계절별 재해의 발생 조건을 설명하고, 2025년 경북 산불의 피해가 컸던 까닭을 분석한다.'},
+   {q:'우리 지역은 자연재해에 어떻게 대비해야 하는가?',know:'공간정보, 노출, 취약성, 회복탄력성',content:'공간정보로 본 우리 지역의 재해 위험\n노출과 취약성\n기존 대응 시설과 경감 대책의 평가',act:'[생각열기] 우리 지역에서 경험하거나 들어 본 자연재해를 떠올린다.\n[활동] 생활안전지도와 자연재해 통계지도로 우리 지역의 위험·노출·취약성을 조사하고, 기존 재해 대응 시설과 경감 대책의 적절성을 평가한 뒤 개선 방안을 제안한다.'}],
+  ev:[
+   {area:'지식·이해',what:'자연현상과 자연재해의 구분, 위험·취약성·회복탄력성으로 본 피해의 차이, 홍수·대설·산불의 발생 조건과 분포',how:'지필평가(서술형). 재해 사례와 자료(유출 곡선, 분포 지도)를 제시하고 개념으로 설명하게 한다.',when:'중단원 종료 후 (1~3차시 내용)'},
+   {area:'과정·기능',what:'공간정보 서비스로 우리 지역의 재해 위험과 취약성을 조사하고, 기존 대응 시설과 경감 대책을 평가하여 개선 방안을 제안하는 수행',how:'수업 중 수행 평가. 활동지에서 조사 결과, 기존 대책을 평가한 근거, 개선 방안을 확인한다.',when:'4차시 수업 중'}]},
+ l:{pick:1,grade:'고2',
+  topic:'자연현상과 자연재해의 차이, 재해 피해를 결정하는 조건',
+  obj:'자연현상과 자연재해의 차이를 구분할 수 있다.\n2024년 폭염 사례 자료를 분석하여 위험·취약성·회복탄력성이 재해 피해에 미치는 영향을 설명할 수 있다.\n같은 재해에도 피해를 더 크게 입는 사람이 있음을 인식하고, 취약한 이웃을 배려하는 태도를 가진다.',
+  caution:'폭염 사망은 실제 인명 피해이므로 흥미 위주로 다루지 않는다. 취약성은 개인의 부주의가 아니라 연령·직업·주거·소득 같은 조건으로 설명한다. "재해 피해 = 위험 × 취약성 ÷ 회복탄력성"은 계산식이 아니라 개념도임을 분명히 한다.',
+  steps:[
+   {stage:'수업 전',body:'PPT, 활동지①, 자료①~④를 준비하고 4인 소그룹으로 자리를 배치한다.\n- 모둠별로 활동지①을 1부씩 나누어 준다.',min:'',mat:'활동지①'},
+   {stage:'도입',body:'동기 유발 및 탐구 질문 제시\n- 2024년 폭염 사망 108명(자연재난 사망·실종자의 약 89%)을 제시한다.\n- “폭염은 건물을 무너뜨리지 않는데, 왜 가장 많은 사람이 목숨을 잃었을까?”\n- 학생 2~3명의 답(더위에 오래 노출됨, 노약자가 많음 등)을 듣고, 답을 판단하는 기준은 이번 차시에서 정리함을 알린다.\n- 탐구 질문 “자연현상은 언제 자연재해가 되며, 같은 더위에도 피해가 다른 까닭은 무엇인가?”를 제시한다.',min:'5',mat:'자료①'},
+   {stage:'전개',body:'자연현상과 자연재해\n- 여름철 기압 배치도로 북태평양고기압의 확장과 폭염·열대야의 발생을 간단히 설명한다.\n- 데스밸리(54.4℃)와 한국 도심의 폭염 피해를 비교한다.\n- “데스밸리의 54.4℃는 자연현상일까, 자연재해일까?”\n- 학생들은 사람이 거의 살지 않는 곳의 고온은 피해로 이어지지 않는다는 점을 찾는다.\n- 위험(hazard)과 자연재해(disaster)의 개념을 정리하고, 폭염이 2018년부터 자연재난에 포함된 사실을 소개한다.',min:'12',mat:'자료②'},
+   {stage:'전개',body:'같은 더위, 다른 피해 (소그룹)\n- 활동지①의 세 사람(냉방 교실의 학생, 공사장 노동자, 80세 이상 1인 가구) 가운데 피해 가능성이 높은 사람과 그 까닭을 모둠별로 토의한다. (8분)\n- 토의 결과를 위험·취약성·회복탄력성으로 분류하여 발표한다. 교사는 세 사람이 같은 위험 아래에 있었으나 취약성과 회복탄력성이 달랐음을 정리한다. (5분)\n- 폭염 일수 지도와 온열환자 분포 지도를 비교하여 두 분포가 다른 까닭을 찾고, “재해 피해 = 위험 × 취약성 ÷ 회복탄력성”의 개념도로 정리한다. (5분)',min:'18',mat:'활동지①, 자료③'},
+   {stage:'전개',body:'자연재해의 크기 판단\n- 최근 10년 인명·재산 피해 그래프와 월별 피해 그래프를 읽는다.\n- 인명 피해는 폭염에, 재산 피해는 호우·태풍·대설에 집중됨을 확인하고, 재해의 크기는 자연현상의 강도가 아니라 피해로 판단함을 정리한다.',min:'8',mat:'자료④'},
+   {stage:'정리',body:'탐구 질문에 답하기 및 차시 예고\n- “자연현상은 (   ) 때 자연재해가 된다. 같은 더위에도 피해가 다른 까닭은 (   ) 때문이다.”의 두 문장을 완성하여 제출한다(출구 카드).\n- 출구 카드 2~3장을 함께 읽으며 위험·취약성·회복탄력성이 바르게 쓰였는지 확인한다.\n- 다음 차시 “우리나라는 왜 홍수에 취약한가?”를 예고한다.',min:'7',mat:'출구 카드'}],
+  mats:[
+   {no:'자료①',title:'2024년 폭염 인명 피해 통계',intent:'도입에서 폭염의 피해 규모로 문제 제기'},
+   {no:'자료②',title:'데스밸리와 한국 도심의 폭염 비교',intent:'같은 자연현상과 다른 피해의 대비'},
+   {no:'활동지①',title:'세 사람의 폭염',intent:'위험·취약성·회복탄력성의 구분'},
+   {no:'자료③',title:'폭염 일수 지도와 온열환자 분포 지도',intent:'위험의 분포와 피해의 분포 비교'},
+   {no:'자료④',title:'최근 10년 자연재해 피해 그래프',intent:'재해의 크기를 피해로 판단'}]}
+};
+
+/* ───────── 상태 ───────── */
+const KEY='lessonDesign.v2';
+const ROW=()=>({q:'',know:'',content:'',act:''});
+function fresh(){return{
+ u:{level:'고',subject:'',unit:'',unitGoal:'',stdList:'',std:'',expl:'',consider:'',n:3,overview:'',g1:'',g2:'',g3:'',rows:[ROW(),ROW(),ROW()],
+  ev:[{area:'지식·이해',what:'',how:'',when:''},{area:'과정·기능',what:'',how:'',when:''}]},
+ l:{pick:1,grade:'',topic:'',obj:'',caution:'',
+  steps:[{stage:'도입',body:'',min:'',mat:''},{stage:'전개',body:'',min:'',mat:''},{stage:'전개',body:'',min:'',mat:''},{stage:'정리',body:'',min:'',mat:''}],
+  mats:[{no:'자료①',title:'',intent:''}]},
+ page:1};}
+let S=fresh();
+try{const s=localStorage.getItem(KEY);if(s)S=Object.assign(fresh(),JSON.parse(s));}catch(e){}
+let tm=null;const save=()=>{clearTimeout(tm);tm=setTimeout(()=>{try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}},300);};
+const get=p=>p.split('.').reduce((o,k)=>o==null?undefined:o[k],S);
+function set(p,v){const k=p.split('.');let o=S;for(let i=0;i<k.length-1;i++)o=o[k[i]];o[k[k.length-1]]=v;save();}
+const esc=t=>String(t??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const nl=t=>esc(t).replace(/\n/g,'<br>');
+const $=s=>document.querySelector(s);
+const mins=D=>D.u.level==='중'?45:50;
+const total=D=>D.l.steps.reduce((a,r)=>a+(parseFloat(r.min)||0),0);
+function sync(){if(!S.u.rows.length)S.u.rows=[ROW(),ROW(),ROW()];S.u.n=S.u.rows.length;if(S.l.pick>S.u.n)S.l.pick=1;}
+
+/* ───────── 문서 (예시 화면·인쇄·Word 공통) ───────── */
+const blocks=(D,m)=>m==='l'?blocksL(D):blocksU(D);
+function blocksU(D){
+ const B=[];const u=D.u;
+ B.push({title:'중단원 수업 설계안'});
+ B.push({h:'1. 대단원과 성취기준'});
+ B.push({t:[['대단원',u.unit],['대단원의 목표',u.unitGoal],['대단원의 성취기준',u.stdList],['이 중단원의 성취기준',u.std],['성취기준 해설',u.expl],['적용 시 고려 사항',u.consider],['과목·차시',`${u.subject} · ${u.level==='중'?'중학교':'고등학교'} · ${u.n}차시 (차시당 ${mins(D)}분)`]],w:[20,80],lab:1});
+ B.push({h:'2. 중단원 개요'});B.push({p:u.overview});
+ B.push({h:'3. 중단원 목표'});
+ B.push({t:[['지식·이해',u.g1],['과정·기능',u.g2],['가치·태도',u.g3]],w:[16,84],lab:1});
+ B.push({h:'4. 중단원 지도 계획'});
+ B.push({t:[['차시','주제 (탐구 질문)','핵심 지식','주요 학습 내용','학습 활동'],...u.rows.map((r,i)=>[String(i+1),r.q,r.know,r.content,r.act])],w:[6,19,18,22,35],head:1});
+ B.push({h:'5. 평가 계획'});
+ B.push({t:[['평가 영역','평가 내용','평가 방법','평가 시기'],...u.ev.map(r=>[r.area,r.what,r.how,r.when])],w:[13,33,36,18],head:1});
+ return B;}
+function blocksL(D){
+ const B=[],t=x=>String(x??'').trim();const u=D.u,l=D.l;
+ const r=u.rows[l.pick-1]||{};
+ B.push({title:'교수학습지도안'});
+ B.push({t:[['단원',r.q||'','대상',l.grade,'차시',`${l.pick}/${u.n}`]],w:[11,49,10,10,10,10],lab6:1});
+ B.push({t:[['주제',l.topic],['학습목표',t(l.obj).split('\n').filter(Boolean).map((o,i)=>`${i+1}. ${o.replace(/^\d+[.)]\s*/,'')}`).join('\n')],['주의점',l.caution]],w:[11,89],lab:1});
+ B.push({gap:1});
+ B.push({t:[['단계','교수학습활동','시간','자료'],...l.steps.map(s=>[s.stage,s.body,String(s.min??''),s.mat]),['합계','',String(total(D)),'']],w:[11,63,8,18],head:1,col0:1});
+ B.push({h:'자료 및 활동지'});
+ B.push({t:[['번호','제목','활용 의도'],...l.mats.map(m=>[m.no,m.title,m.intent])],w:[13,47,40],head:1});
+ B.push({note:'실제 수업 시연 때는 목록이 아니라 아래에 자료와 활동지 실물을 추가하여 제출한다.'});
+ return B;}
+function isHead(b,ri,ci){return (b.head&&ri===0)||(b.lab&&ci===0)||(b.lab6&&ci%2===0)||(b.col0&&ci===0&&ri>0);}
+function blocksHTML(B,screen=true){
+ return B.map(b=>{
+  if(b.note)return screen?`<p class="muted" style="font-size:14px">${esc(b.note)}</p>`:'';
+  if(b.title)return `<h1>${esc(b.title)}</h1>`;
+  if(b.h)return `<h3>${esc(b.h)}</h3>`;
+  if(b.pb)return `<div class="pb"></div>`;
+  if(b.gap)return `<div style="height:8px"></div>`;
+  if(b.p!==undefined)return `<p>${nl(b.p)}</p>`;
+  if(b.t)return `<table class="t">${b.t.map((row,ri)=>`<tr>${row.map((c,ci)=>{const w=ri===0?` style="width:${b.w[ci]}%"`:'';return isHead(b,ri,ci)?`<th${w}>${nl(c)}</th>`:`<td${w}>${nl(c)}</td>`;}).join('')}</tr>`).join('')}</table>`;
+  return '';}).join('');}
+
+/* ───────── 작성 화면 ───────── */
+const TA=(p,rows=2,ph='')=>`<textarea data-k="${p}" rows="${rows}" placeholder="${esc(ph)}">${esc(get(p))}</textarea>`;
+const TX=(p,ph='')=>`<input type="text" data-k="${p}" value="${esc(get(p))}" placeholder="${esc(ph)}">`;
+const TOOLS=m=>`<button class="btn primary" data-dl="${m}">Word로 내려받기</button><button class="btn" data-pdf="${m}">PDF로 저장</button><button class="btn" data-save>작업 파일 저장</button><button class="btn" data-load>불러오기</button><button class="btn" data-reset>전체 초기화</button>`;
+function renderForm(){renderU();renderL();}
+function renderU(){
+ sync();const u=S.u,n=+u.n;let h='';
+ h+=`<h2>중단원 수업 설계안</h2>`;
+ h+=`<h3>1. 대단원과 성취기준</h3>
+ <ul class="how"><li>대단원명과 대단원을 구성하는 성취기준을 교육과정 문서 그대로 옮기고, 이 중단원의 성취기준을 따로 적는다. 대단원의 목표는 대단원이 강조하는 학습 방향을 1~2문장으로 요약한다.</li><li>성취기준 해설과 적용 시 고려 사항은 단원 개요와 목표를 쓰는 근거가 된다.</li></ul>
+ <table class="f">
+ <tr><td class="lab">학교급·과목</td><td><div style="display:flex;gap:8px"><select data-k="u.level" style="width:90px"><option ${u.level==='중'?'selected':''}>중</option><option ${u.level==='고'?'selected':''}>고</option></select>${TX('u.subject','과목')}</div></td></tr>
+ <tr><td class="lab">대단원</td><td>${TX('u.unit')}</td></tr>
+ <tr><td class="lab">대단원의 목표</td><td>${TA('u.unitGoal',2,'대단원이 강조하는 학습 방향을 1~2문장으로')}</td></tr>
+ <tr><td class="lab">대단원의 성취기준</td><td>${TA('u.stdList',4,'한 줄에 하나씩')}</td></tr>
+ <tr><td class="lab">이 중단원의 성취기준</td><td>${TA('u.std',2)}</td></tr>
+ <tr><td class="lab">성취기준 해설</td><td>${TA('u.expl',3)}</td></tr>
+ <tr><td class="lab">적용 시 고려 사항</td><td>${TA('u.consider',3)}</td></tr></table>`;
+ h+=`<h3>2. 중단원 개요</h3>
+ <ul class="how"><li>해설을 반복하지 않고, 이 중단원에서 다룰 핵심 내용과 차시의 흐름을 한 문단으로 쓴다.</li></ul>
+ <table class="f"><tr><td>${TA('u.overview',5)}</td></tr></table>`;
+ h+=`<h3>3. 중단원 목표</h3>
+ <ul class="how"><li>"~할 수 있다"로 쓴다. "이해한다"보다 설명한다·분석한다·제안한다처럼 확인할 수 있는 동사를 쓴다.</li><li>과정·기능 목표에 성취기준의 동사가 들어가는지 확인한다.</li></ul>
+ <table class="f">${[['u.g1','지식·이해'],['u.g2','과정·기능'],['u.g3','가치·태도']].map(([k,lb])=>`<tr><td class="lab">${lb}</td><td>${TA(k,2)}</td></tr>`).join('')}</table>`;
+ h+=`<h3>4. 중단원 지도 계획</h3>
+ <ul class="how"><li>성취기준 문장을 내용과 동사 단위로 나누어 차시의 순서를 정한다.</li><li>핵심 지식에는 그 차시에서 새로 배우는 개념을, 주요 학습 내용에는 그 개념으로 다루는 내용을 쓴다.</li><li>학습 활동은 [생각열기]와 [활동]으로 나누어 쓴다.</li></ul>
+ <table class="f resp"><thead><tr><th style="width:6%">차시</th><th style="width:19%">주제 (탐구 질문)</th><th style="width:17%">핵심 지식</th><th style="width:21%">주요 학습 내용</th><th style="width:33%">학습 활동</th><th style="width:4%"></th></tr></thead><tbody>
+ ${u.rows.map((r,i)=>`<tr><td class="lab" data-l="차시">${i+1}</td><td data-l="주제 (탐구 질문)">${TA(`u.rows.${i}.q`,3)}</td><td data-l="핵심 지식">${TA(`u.rows.${i}.know`,3)}</td><td data-l="주요 학습 내용">${TA(`u.rows.${i}.content`,3)}</td><td data-l="학습 활동">${TA(`u.rows.${i}.act`,3,'[생각열기]\n[활동]')}</td><td>${u.rows.length>2?`<button class="btn x" data-delrow="${i}" title="차시 삭제">×</button>`:''}</td></tr>`).join('')}
+ </tbody></table>
+ ${u.rows.length<5?'<button class="btn" data-addrow>+ 차시 추가</button>':''}`;
+ h+=`<h3>5. 평가 계획</h3>
+ <ul class="how"><li>지식·이해는 개념과 사례의 이해를, 과정·기능은 탐구 수행을 평가한다.</li><li>평가 시기에는 중단원 종료 후인지, 어느 차시의 수업 중인지를 적는다.</li></ul>
+ <table class="f resp"><thead><tr><th style="width:13%">평가 영역</th><th style="width:33%">평가 내용</th><th style="width:36%">평가 방법</th><th style="width:18%">평가 시기</th></tr></thead><tbody>
+ ${u.ev.map((r,i)=>`<tr><td class="lab" data-l="평가 영역">${esc(r.area)}</td><td data-l="평가 내용">${TA(`u.ev.${i}.what`,3)}</td><td data-l="평가 방법">${TA(`u.ev.${i}.how`,3)}</td><td data-l="평가 시기">${TA(`u.ev.${i}.when`,3)}</td></tr>`).join('')}
+ </tbody></table>`;
+ $('#formU').innerHTML=h;$('#u3 .tools').innerHTML=TOOLS('u');
+ document.querySelectorAll('#formU textarea').forEach(grow);}
+function renderL(){
+ sync();const u=S.u,l=S.l;let h='';
+ h+=`<h2>차시 교수학습지도안</h2>
+ <ul class="how"><li>중단원 지도 계획에서 한 차시를 골라 ${mins(S)}분 수업으로 구체화한다. 차시 목록은 중단원 설계의 지도 계획에서 가져온다.</li></ul>
+ ${l.lost?'<p class="sum bad">지도안을 작성하던 차시가 중단원 지도 계획에서 삭제되었다. 차시를 다시 고르고, 아래 내용이 그 차시에 맞는지 확인한다.</p>':''}
+ <table class="f">
+ <tr><td class="lab">차시</td><td><select data-pick>${u.rows.map((x,i)=>`<option value="${i+1}" ${l.pick==i+1?'selected':''}>${i+1}차시 — ${esc(x.q||'(탐구 질문 미입력)')}</option>`).join('')}</select></td></tr>
+ <tr><td class="lab">대상</td><td>${TX('l.grade','예: 중1, 고2')}</td></tr>
+ <tr><td class="lab">주제</td><td>${TA('l.topic',1)}</td></tr>
+ <tr><td class="lab">학습목표</td><td>${TA('l.obj',3,'한 줄에 하나씩')}</td></tr>
+ <tr><td class="lab">주의점</td><td>${TA('l.caution',2)}</td></tr></table>
+ <ul class="how"><li>학습목표는 중단원 목표 가운데 이 차시가 맡는 부분을 이 차시 분량으로 좁혀 쓴다.</li><li>주의점에는 수업 운영상 위험 요소, 시간 관리, 민감한 주제, 사전 준비를 쓴다.</li></ul>
+ <h3>교수학습 과정</h3>
+ <ul class="how"><li>교사·학생 칸을 나누지 않고 문장에 주체를 넣는다. 첫 줄에 활동명을 쓰고, 세부 절차는 "- "로 시작한다.</li><li>시간은 활동 단위로 나누고, 자료는 자료①·활동지①처럼 번호로 적는다.</li></ul>
+ <table class="f resp"><thead><tr><th style="width:13%">단계</th><th style="width:61%">교수학습활동</th><th style="width:8%">시간</th><th style="width:14%">자료</th><th style="width:4%"></th></tr></thead><tbody>
+ ${l.steps.map((s,i)=>`<tr><td data-l="단계"><select data-k="l.steps.${i}.stage">${['수업 전','도입','전개','정리'].map(a=>`<option ${s.stage===a?'selected':''}>${a}</option>`).join('')}</select></td><td data-l="교수학습활동">${TA(`l.steps.${i}.body`,3)}</td><td data-l="시간 (분)"><input type="number" min="0" data-k="l.steps.${i}.min" value="${esc(s.min)}"></td><td data-l="자료">${TA(`l.steps.${i}.mat`,1)}</td><td><button class="btn x" data-del="steps.${i}" title="행 삭제">×</button></td></tr>`).join('')}
+ </tbody></table>
+ <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><button class="btn" data-add="steps">+ 행 추가</button><p class="sum" id="sum"></p></div>
+ <h3>자료 및 활동지</h3>
+ <table class="f resp"><thead><tr><th style="width:15%">번호</th><th style="width:43%">제목</th><th style="width:38%">활용 의도</th><th style="width:4%"></th></tr></thead><tbody>
+ ${l.mats.map((m,i)=>`<tr><td data-l="번호">${TX(`l.mats.${i}.no`)}</td><td data-l="제목">${TA(`l.mats.${i}.title`,1)}</td><td data-l="활용 의도">${TA(`l.mats.${i}.intent`,1)}</td><td><button class="btn x" data-del="mats.${i}" title="행 삭제">×</button></td></tr>`).join('')}
+ </tbody></table>
+ <button class="btn" data-add="mats">+ 행 추가</button>
+ <p class="muted" style="font-size:14px;margin-top:8px">실제 수업 시연 때는 목록이 아니라 아래에 자료와 활동지 실물을 추가하여 제출한다.</p>`;
+ $('#formL').innerHTML=h;$('#l3 .tools').innerHTML=TOOLS('l');
+ document.querySelectorAll('#formL textarea').forEach(grow);
+ updSum();}
+function grow(t){t.style.height='auto';t.style.height=(t.scrollHeight+2)+'px';}
+function updSum(){const el=$('#sum');if(!el)return;const t=total(S),m=mins(S);el.textContent=`시간 합계 ${t}분 / ${m}분`;el.className='sum'+(t===m?'':' bad');}
+
+/* ───────── 이벤트 ───────── */
+function show(m,t){S.view={m,t};save();
+ document.querySelectorAll('.page').forEach(s=>s.classList.toggle('on',s.id===m+t));
+ document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.m===m));
+ document.querySelectorAll('#sub button').forEach(b=>b.classList.toggle('on',b.dataset.t==t));
+ if(t==3)(m==='u'?renderU:renderL)();scrollTo(0,0);}
+$('#nav').onclick=e=>{const b=e.target.closest('button');if(b)show(b.dataset.m,S.view.t);};
+$('#sub').onclick=e=>{const b=e.target.closest('button');if(b)show(S.view.m,+b.dataset.t);};
+document.addEventListener('input',e=>{const el=e.target;if(el.dataset.k){set(el.dataset.k,el.value);if(el.tagName==='TEXTAREA')grow(el);if(el.dataset.k.endsWith('.min'))updSum();}});
+document.addEventListener('change',e=>{const el=e.target;
+ if(el.dataset.k&&el.tagName==='SELECT'){set(el.dataset.k,el.value);}
+ 
+ if(el.hasAttribute('data-pick')){S.l.pick=+el.value;S.l.lost=false;save();renderL();}});
+document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+ if(b.hasAttribute('data-addrow')){if(S.u.rows.length<5){S.u.rows.push(ROW());sync();save();renderU();}}
+ else if(b.dataset.delrow!==undefined){if(S.u.rows.length>2){const d=+b.dataset.delrow+1;S.u.rows.splice(d-1,1);if(d<S.l.pick)S.l.pick--;else if(d===S.l.pick){S.l.pick=1;S.l.lost=true;}sync();save();renderU();}}
+ else if(b.dataset.add==='steps'){S.l.steps.push({stage:'전개',body:'',min:'',mat:''});save();renderL();}
+ else if(b.dataset.add==='mats'){S.l.mats.push({no:'',title:'',intent:''});save();renderL();}
+ else if(b.dataset.del){const [k,i]=b.dataset.del.split('.');const a=S.l[k];if(a.length>1){a.splice(+i,1);save();renderL();}}
+ else if(b.dataset.dl)downloadDocx(b.dataset.dl);
+ else if(b.dataset.pdf){$('#doc').innerHTML=blocksHTML(blocks(S,b.dataset.pdf),false);window.print();}
+ else if(b.hasAttribute('data-save'))blobDown(new Blob([JSON.stringify(S,null,1)],{type:'application/json'}),'수업설계_작업파일.json');
+ else if(b.hasAttribute('data-load'))$('#fileIn').click();
+ else if(b.hasAttribute('data-reset')){if(confirm('입력한 내용을 모두 지우고 새로 시작할까요? (중단원 설계와 차시 설계 모두)')){const v=S.view;S=fresh();S.view=v;save();renderForm();}}});
+$('#fileIn').onchange=e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{try{const v=S.view;S=Object.assign(fresh(),JSON.parse(rd.result));S.view=v;save();renderForm();}catch(err){alert('작업 파일을 읽지 못했습니다.');}};rd.readAsText(f);e.target.value='';};
+function blobDown(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);}
+
+/* ───────── Word(.docx) ───────── */
+const xe=t=>String(t??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const RUN=(t,o={})=>`<w:r><w:rPr>${o.b?'<w:b/>':''}<w:sz w:val="${o.sz||20}"/></w:rPr><w:t xml:space="preserve">${xe(t)}</w:t></w:r>`;
+const PARA=(runs,o={})=>`<w:p><w:pPr><w:spacing w:before="${o.before||0}" w:after="${o.after??60}" w:line="276" w:lineRule="auto"/>${o.jc?`<w:jc w:val="${o.jc}"/>`:''}</w:pPr>${runs}</w:p>`;
+function cellX(c,w,head){const ps=String(c??'').split('\n').map(x=>PARA(RUN(x,{b:head,sz:19}),{after:30})).join('');
+ return `<w:tc><w:tcPr><w:tcW w:w="${w}" w:type="dxa"/>${head?'<w:shd w:val="clear" w:color="auto" w:fill="F2F2F2"/><w:vAlign w:val="center"/>':''}<w:tcMar><w:top w:w="70" w:type="dxa"/><w:bottom w:w="70" w:type="dxa"/><w:left w:w="100" w:type="dxa"/><w:right w:w="100" w:type="dxa"/></w:tcMar></w:tcPr>${ps}</w:tc>`;}
+function tblX(b){const T=9638;const ws=b.w.map(x=>Math.round(T*x/100));
+ const brd='<w:tblBorders>'+['top','left','bottom','right','insideH','insideV'].map(s=>`<w:${s} w:val="single" w:sz="4" w:space="0" w:color="A6A6A6"/>`).join('')+'</w:tblBorders>';
+ return `<w:tbl><w:tblPr><w:tblW w:w="${T}" w:type="dxa"/>${brd}<w:tblLayout w:type="fixed"/></w:tblPr><w:tblGrid>${ws.map(w=>`<w:gridCol w:w="${w}"/>`).join('')}</w:tblGrid>${b.t.map((row,ri)=>`<w:tr>${ri===0&&b.head?'<w:trPr><w:tblHeader/></w:trPr>':''}${row.map((c,ci)=>cellX(c,ws[ci],isHead(b,ri,ci))).join('')}</w:tr>`).join('')}</w:tbl>`+PARA('',{after:60});}
+function docXml(m){const body=blocks(S,m).map(b=>{
+  if(b.title)return PARA(RUN(b.title,{b:1,sz:32}),{jc:'center',after:200});
+  if(b.h)return PARA(RUN(b.h,{b:1,sz:23}),{before:180,after:80});
+  if(b.pb)return '<w:p><w:r><w:br w:type="page"/></w:r></w:p>';
+  if(b.gap)return '';
+  if(b.p!==undefined)return String(b.p).split('\n').map(x=>PARA(RUN(x),{after:80})).join('');
+  if(b.t)return tblX(b);return '';}).join('');
+ return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>${body}<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1134" w:right="1134" w:bottom="1134" w:left="1134" w:header="567" w:footer="567" w:gutter="0"/></w:sectPr></w:body></w:document>`;}
+const STY=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="Malgun Gothic" w:hAnsi="Malgun Gothic" w:eastAsia="맑은 고딕" w:cs="Malgun Gothic"/><w:sz w:val="20"/><w:lang w:val="ko-KR" w:eastAsia="ko-KR"/></w:rPr></w:rPrDefault><w:pPrDefault><w:pPr><w:spacing w:after="60"/></w:pPr></w:pPrDefault></w:docDefaults><w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/></w:style></w:styles>`;
+const CT=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/></Types>`;
+const RL=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>`;
+const DRL=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`;
+const CRC=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0;}return t;})();
+const crc32=u=>{let c=0xFFFFFFFF;for(let i=0;i<u.length;i++)c=CRC[(c^u[i])&0xFF]^(c>>>8);return(c^0xFFFFFFFF)>>>0;};
+function zip(files){const en=new TextEncoder();const P=[],C=[];let off=0;
+ for(const[name,text]of files){const nb=en.encode(name),db=en.encode(text),crc=crc32(db);
+  const L=new DataView(new ArrayBuffer(30));L.setUint32(0,0x04034b50,true);L.setUint16(4,20,true);L.setUint16(6,0x0800,true);L.setUint16(12,0x21,true);L.setUint32(14,crc,true);L.setUint32(18,db.length,true);L.setUint32(22,db.length,true);L.setUint16(26,nb.length,true);
+  P.push(new Uint8Array(L.buffer),nb,db);
+  const H=new DataView(new ArrayBuffer(46));H.setUint32(0,0x02014b50,true);H.setUint16(4,20,true);H.setUint16(6,20,true);H.setUint16(8,0x0800,true);H.setUint16(14,0x21,true);H.setUint32(16,crc,true);H.setUint32(20,db.length,true);H.setUint32(24,db.length,true);H.setUint16(28,nb.length,true);H.setUint32(42,off,true);
+  C.push(new Uint8Array(H.buffer),nb);off+=30+nb.length+db.length;}
+ const cs=C.reduce((a,u)=>a+u.length,0);const E=new DataView(new ArrayBuffer(22));E.setUint32(0,0x06054b50,true);E.setUint16(8,files.length,true);E.setUint16(10,files.length,true);E.setUint32(12,cs,true);E.setUint32(16,off,true);
+ return new Blob([...P,...C,new Uint8Array(E.buffer)],{type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});}
+function downloadDocx(m){blobDown(zip([['[Content_Types].xml',CT],['_rels/.rels',RL],['word/document.xml',docXml(m)],['word/_rels/document.xml.rels',DRL],['word/styles.xml',STY]]),m==='l'?'차시지도안.docx':'중단원설계안.docx');}
+
+/* ───────── 시작 ───────── */
+$('#exU').innerHTML=blocksHTML(blocks(EX,'u'));
+$('#exL').innerHTML=blocksHTML(blocks(EX,'l'));
+if(!S.view)S.view={m:'u',t:1};
+show(S.view.m,S.view.t);
+</script>
+</body>
+</html>
