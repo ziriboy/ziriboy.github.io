@@ -388,7 +388,25 @@ table.mtx th{font-weight:600;text-decoration:underline;text-underline-offset:3px
 #mcDev input.wline{border:0;border-bottom:1px solid var(--rule);border-radius:0;background:transparent;box-shadow:none;padding:4px 2px;min-height:0}
 #mcDev input.wline:focus{border-bottom-color:var(--ink);box-shadow:none;outline:none}
 .oxs button[data-mok="1"]{font-size:1.15rem}.oxs button[data-mok="0"]{font-size:1.1rem}
-.anq{margin:4px 0 0;padding-left:1.4em;display:grid;gap:8px;line-height:1.6}
+.anq{margin:4px 0 0;padding-left:1.4em;display:grid;gap:8px;line-height:1.6;word-break:keep-all;font-size:.93rem}
+.anq .anl{color:var(--teal);margin-right:8px}
+.revp{display:grid;gap:6px}
+table.goodt.gd td.gq{width:10em;white-space:nowrap}
+#mcGuide .revp+.revp,#crGuide .revp+.revp{margin-top:8px}
+table.goodt.crg td.gq{width:11em}
+table.goodt.crg td.gnote{color:var(--muted);font-size:.9rem}
+@media (max-width:700px){table.goodt.crg thead{display:none}table.goodt.crg tr{display:grid;border-bottom:1px solid var(--soft);padding:8px 0}table.goodt.crg td{border:0;padding:4px 10px}}
+.revgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,340px);gap:22px;align-items:start}
+.revl{display:grid;gap:16px;min-width:0}
+.revr{display:grid;gap:18px;border-left:1px solid var(--soft);padding-left:18px}
+@media (min-width:1000px){.revr{position:sticky;top:110px;max-height:calc(100vh - 130px);overflow:auto}}
+@media (max-width:999px){.revgrid{grid-template-columns:minmax(0,1fr)}.revr{border-left:0;padding-left:0;border-top:1px solid var(--soft);padding-top:14px}}
+.rck{cursor:pointer;border-radius:6px;padding:2px 4px;margin-left:-4px}
+.rck:hover{background:var(--soft)}
+.rck.done{color:var(--muted)}
+.rck.done::marker{content:"✓  ";color:var(--ok)}
+.revp h3{font-size:.95rem;font-weight:600}
+
 html{scrollbar-gutter:stable}
 .depmap{display:block;width:100%;max-width:580px;height:auto}
 .envgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:640px}
@@ -423,34 +441,121 @@ table.survey tr th:first-child{text-align:left;background:#F2F2F2}
 .wtbl{max-width:420px;margin:4px auto 0}.wtbl td:nth-child(2n){text-align:right}
 .mcfigwrap{max-width:740px;margin:8px 0}
 .mcfig{padding:10px}
+table.goodt{width:100%;border-collapse:collapse;font-size:.93rem}
+table.goodt th{font-size:.76rem;color:var(--muted);text-align:left;padding:6px 10px;border-bottom:1px solid var(--rule);white-space:nowrap}
+table.goodt td{padding:12px 10px;border-bottom:1px solid var(--soft);vertical-align:top;word-break:keep-all}
+table.goodt td.gp{white-space:nowrap;color:var(--teal);font-weight:700;font-size:.86rem}
+table.goodt td:first-child{width:15em}
+table.goodt td.gq{width:15em;color:var(--teal)}
+.gx{margin-top:6px;font-size:.86rem;color:var(--muted);border-left:2px solid var(--rule);padding-left:10px}
+.gx .ok{color:var(--ok);font-weight:700;margin-right:4px}.gx .no{color:var(--clay);font-weight:700;margin-right:4px}
+@media (max-width:700px){table.goodt td:first-child,table.goodt td.gq{width:auto}}
+.fmtg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.fmtg section{border:1px solid var(--soft);border-radius:8px;padding:12px 14px;background:#fff}
+.fmtg h3{font-size:.98rem;margin-bottom:6px}
+.fmtg h3.mc{color:var(--teal)}.fmtg h3.cr{color:var(--clay)}.fmtg h3.pf{color:var(--ai)}
+.fmtg ul{margin:0;padding-left:1.1em;display:grid;gap:6px;font-size:.92rem;word-break:keep-all}
+@media (max-width:760px){.fmtg{grid-template-columns:minmax(0,1fr)}}
+.fmtl{display:grid;gap:4px}
+.fmti{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:start;padding:8px 10px;border:1px solid var(--soft);border-radius:8px;background:#fff;cursor:pointer;word-break:keep-all}
+.fmti input{margin-top:6px}
+.ftag{display:inline-block;font-size:.76rem;font-weight:400;border-radius:4px;padding:1px 7px;white-space:nowrap;border:1px solid}
+.ftag.mc{color:var(--teal);border-color:var(--teal)}.ftag.cr{color:var(--clay);border-color:var(--clay)}.ftag.pf{color:var(--ai);border-color:var(--ai)}
+.fmtc b{font-variant-numeric:tabular-nums;margin-right:4px}
+.fmtv{font-size:.95rem}
+.goodl{margin:0;display:grid;grid-template-columns:minmax(0,13em) minmax(0,1fr);gap:10px 18px}
+.goodl dt{font-weight:700;word-break:keep-all}
+.goodl dd{word-break:keep-all}
+.goodl dd{margin:0;font-size:.93rem}
+.goodl .gk{display:inline-block;font-size:.74rem;color:var(--muted);border:1px solid var(--rule);border-radius:4px;padding:0 6px;margin-left:4px;white-space:nowrap}
+@media (max-width:700px){.goodl{grid-template-columns:minmax(0,1fr);gap:2px}.goodl dd{margin-bottom:10px}}
+.mcrules>summary{font-weight:600;color:var(--ink)}
+.rulel{margin:0;padding-left:1.4em;display:grid;gap:8px;line-height:1.6;font-size:.93rem;word-break:keep-all}
+.rulel .rn{color:var(--teal);margin-right:8px}
+.rgrp{display:grid;gap:10px;margin-top:6px}
+.rgrp>div{display:grid;grid-template-columns:4.2em minmax(0,1fr);gap:4px 10px;align-items:start;word-break:keep-all}
+.rgrp>div>.rulel{grid-column:2}
+.rgl{color:var(--teal);font-size:.9rem;padding-top:1px}
+.rgrp p{font-size:.9rem}
+table.cmp td .tag{margin:0 4px 2px 0}
 </style>
 </head><body>
 
 
 <header class="top"><div class="top-inner">
-  <div class="brandline"><h1>지리교육평가 연습</h1><span id="aiChip" class="chip">AI 확인 중</span><span class="spacer"></span><div class="seg type-seg" id="typeSeg" role="group" aria-label="문항 유형"></div></div>
+  <div class="brandline"><h1>지리교육평가 연습</h1><span class="spacer"></span><div class="seg type-seg" id="typeSeg" role="group" aria-label="문항 유형"></div></div>
   <nav class="steps" id="steps" aria-label="단계"></nav>
 </div></header>
 
 <main class="wrap">
 
+<!-- 좋은 지리평가 · 조건 -->
+<section class="view" id="v-base-good" hidden>
+  <div class="card good">
+    <h2>좋은 지리 평가 문항의 조건</h2>
+    <div class="tbl-wrap"><table class="goodt">
+      <thead><tr><th>조건</th><th>확인 질문</th><th>의미</th></tr></thead>
+      <tbody>
+      <tr><td>1. 평가 목표에 충실하다</td><td class="gq">무엇을 평가하는가?</td><td>교육과정과 수업에서 중요한 지식이나 능력을 평가하며, 그 대상이 분명하다.</td></tr>
+      <tr><td>2. 의도한 사고를 요구한다</td><td class="gq">어떤 사고를 해야 답할 수 있는가?</td><td>답하기 위해 거쳐야 하는 사고 과정이 평가하려는 능력과 일치한다.</td></tr>
+      <tr><td>3. 충분하고 적절한 정보를 제공한다</td><td class="gq">답하는 데 필요한 정보가 갖추어졌는가?</td><td>학습한 지식과 제시된 자료만으로 답할 수 있으며, 불필요한 정보가 판단을 방해하지 않는다.</td></tr>
+      <tr><td>4. 명확하고 공정하다</td><td class="gq">실력이 아닌 다른 요인이 개입하지 않는가?</td><td>무엇을 어떻게 답할지와 판단 기준이 분명하고, 주어진 시간과 분량이 적절하여 평가 목표와 무관한 요인이 결과에 영향을 주지 않는다.</td></tr>
+      </tbody></table></div>
+  </div>
+</section>
+
+<!-- 좋은 지리평가 · 형식 고르기 -->
+<section class="view" id="v-base-form" hidden>
+  <div class="card">
+    <h2>어떤 형식으로 물을까</h2>
+    <div class="fmtg">
+      <section><h3 class="ft mc">선택형</h3><ul>
+        <li>개념이나 용어를 정확히 구분하는지 확인할 때</li>
+        <li>지도, 그래프, 통계를 읽고 하나로 정해지는 답을 찾게 할 때</li>
+        <li>한 단원의 여러 내용을 짧은 시간에 고르게 확인할 때</li>
+        <li>많은 학생의 답을 빠르고 일관되게 채점해야 할 때</li></ul></section>
+      <section><h3 class="ft cr">서술형</h3><ul>
+        <li>지형이나 현상이 만들어지는 과정, 원인과 결과를 설명하게 할 때</li>
+        <li>자료에서 특징이나 변화를 찾아 그 까닭을 설명하게 할 때</li>
+        <li>두 지역이나 현상의 공통점과 차이점을 비교하게 할 때</li>
+        <li>답에 들어갈 핵심 요소는 정해져 있고, 표현은 학생마다 달라도 될 때</li></ul></section>
+      <section><h3 class="ft pf">수행형</h3><ul>
+        <li>야외에서 관찰하거나 측정하는 기능을 볼 때</li>
+        <li>자료를 모으고 정리하여 지도나 보고서 같은 결과물을 만들게 할 때</li>
+        <li>여러 차시에 걸친 탐구 과정과 모둠 협업을 볼 때</li>
+        <li>실제 지역 문제에 대안을 세우고 발표하거나 설득하게 할 때</li></ul></section>
+    </div>
+    <div class="panel repp"><p class="plabel">같은 내용, 다른 형식 — 집중 호우와 도시 홍수</p><table>
+      <tr><td><span class="ftag mc">선택형</span></td><td>두 유역의 강수량 그래프와 하천 유량 그래프를 주고, 도시화된 유역의 유량 변화를 나타낸 것을 고르게 한다.</td></tr>
+      <tr><td><span class="ftag cr">서술형</span></td><td>같은 비가 내려도 도시화된 유역에서 홍수 피해가 커지는 까닭을 불투수면의 증가와 관련지어 서술하게 한다.</td></tr>
+      <tr><td><span class="ftag pf">수행형</span></td><td>학교 주변의 침수 위험 지역을 조사하여 지도로 나타내고, 대응 방안을 모둠별로 발표하게 한다.</td></tr></table></div>
+  </div>
+</section>
+
+<!-- 선택형 · 검토 기준 -->
+<section class="view" id="v-mc-guide" hidden>
+  <div class="card good" id="mcGuide"></div>
+</section>
+
 <!-- 선택형 · 예시 보기 -->
 <section class="view" id="v-mc-ex" hidden>
   <div class="card"><div class="tabs" id="mcExTabs" role="tablist"></div><div id="mcExBody" class="exbody"></div></div>
-  <div class="nav"><span></span><button class="btn" data-go="mc:dev">출제 연습으로</button></div>
 </section>
 
 <!-- 선택형 · 출제하기 -->
 <section class="view" id="v-mc-dev" hidden>
   <div class="card range-card"></div>
   <div id="mcDev"></div>
-  <div class="nav"><button class="btn quiet" data-go="mc:ex">문항 검토</button><button class="btn ghost" data-go="cr:ex">서술형으로</button></div>
+</section>
+
+<!-- 서술형 · 검토 기준 -->
+<section class="view" id="v-cr-guide" hidden>
+  <div class="card good" id="crGuide"></div>
 </section>
 
 <!-- 서술형 · 예시 보기 -->
 <section class="view" id="v-cr-ex" hidden>
   <div class="card"><div class="tabs" id="crExTabs" role="tablist"></div><div id="crExBody" class="exbody"></div></div>
-  <div class="nav"><span></span><button class="btn" data-go="cr:score">채점 연습으로</button></div>
 </section>
 
 <!-- 서술형 · 채점하기 -->
@@ -461,7 +566,6 @@ table.survey tr th:first-child{text-align:left;background:#F2F2F2}
   </div>
   <div class="card" id="scBox"></div>
   <div class="card" id="scResult"></div>
-  <div class="nav"><button class="btn quiet" data-go="cr:ex">문항 검토</button><button class="btn" data-go="cr:rub">채점 기준 만들기로</button></div>
 </section>
 
 <!-- 서술형 · 채점 기준 만들기 -->
@@ -469,14 +573,13 @@ table.survey tr th:first-child{text-align:left;background:#F2F2F2}
   <div class="card" id="rbItem"></div>
   <div class="card" id="rbWork"></div>
   <div class="card" id="rbResult"></div>
-  <div class="nav"><button class="btn quiet" data-go="cr:score">채점 연습</button><button class="btn" data-go="cr:dev">출제 연습으로</button></div>
 </section>
 
 <!-- 서술형 · 출제하기 -->
 <section class="view" id="v-cr-dev" hidden>
   <div class="card range-card"></div>
   <div id="crDev"></div>
-  <div class="nav"><button class="btn quiet" data-go="cr:rub">채점 기준 만들기</button><button class="btn quiet" id="btnReset">처음부터 다시</button></div>
+  <div class="nav"><span></span><button class="btn quiet" id="btnReset">처음부터 다시</button></div>
 </section>
 
 </main>
@@ -500,8 +603,7 @@ function toast(msg,actLabel,act){$("#toastMsg").textContent=msg;const b=$("#toas
   if(actLabel){b.hidden=false;b.textContent=actLabel;b.onclick=()=>{act();$("#toast").hidden=true;};}else{b.hidden=true;b.onclick=null;}
   $("#toast").hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>{$("#toast").hidden=true;},actLabel?7000:2800);}
 let sample=null,aiState="checking";
-function setAI(st){aiState=st;const el=$("#aiChip");el.className="chip "+(st==="on"?"on":st==="off"?"off":"");
-  el.textContent=st==="on"?"AI 사용 가능":st==="off"?"AI 사용 불가":"AI 확인 중";if(typeof rerender==="function")rerender();}
+function setAI(st){aiState=st;if(typeof rerender==="function")rerender();}
 async function initAI(){
   try{sample=window.claude&&window.claude.use?await window.claude.use("sample"):null;}catch(e){sample=null;}
   setAI(sample?"on":"off");
@@ -681,20 +783,24 @@ const mtxOpts=(heads,rows)=>`<table class="mtx"><tr><th></th>${heads.map(h=>`<th
 const whyTable=(rows)=>`<table><tr><th>답지</th><th>왜 맞거나 틀린가</th></tr>${rows.map(r=>`<tr><td style="white-space:nowrap">${r[0]}</td><td>${r[1]}</td></tr>`).join("")}</table>`;
 const scan=(k,alt)=>`<figure class="fig snfig"><img class="exfig" style="width:${SNW[k]}px" src="${PHOTOS[k]}" alt="${esc(alt)}"></figure>`;
 const MC_EX=[
+ {src:"2026학년도 대학수학능력시험 한국지리 1번",
+  item:()=>qline("","다음 &lt;조건&gt;을 만족하는 곳을 지도의 A~E에서 고른 것은?")+scan("mk_k1","조건 1: 배타적 경제 수역에 위치 또는 통상 기선의 적용을 받는 영해에 위치. 조건 2: 호미곶 기점을 지나는 위선과 영토 최남단을 지나는 위선 사이. 조건 3: 동경 127°30′00″~131°52′22″ 사이. 조건 4: 조건 1~3을 모두 만족하는 곳 중 같은 날의 일출 시각이 가장 늦은 곳. 우리나라 남해안과 동해안 지도에 A~E가 표시됨")+`<p class="optrow">① A　　② B　　③ C　　④ D　　⑤ E</p>`,
+  key:"④",
+  why:[["①","A는 배타적 경제 수역이지만 호미곶보다 북쪽에 있어 &lt;조건 2&gt;를 만족하지 못한다."],["②","B는 제주도의 통상 기선 영해이지만 동경 127°30′보다 서쪽이어서 &lt;조건 3&gt;을 만족하지 못한다."],["③","C는 직선 기선을 적용한 영해여서 &lt;조건 1&gt;을 만족하지 못한다."],["④ 정답","D는 통상 기선을 적용한 영해로 &lt;조건 1&gt;~&lt;조건 3&gt;을 만족하고, E보다 서쪽이어서 일출 시각이 늦다."],["⑤","E는 배타적 경제 수역으로 &lt;조건 1&gt;~&lt;조건 3&gt;을 만족하지만 D보다 동쪽이어서 일출 시각이 이르다."]]},
+ {src:"2026학년도 대학수학능력시험 한국지리 5번",
+  item:()=>scan("rv5","그래프는 지도에 표시된 네 지역군의 인구 자료를 나타낸 것이다. (가)~(라) 지역군에 대한 설명으로 옳은 것은? 가로축 성비, 세로축 인구인 산포도와 네 지역군이 표시된 지도, 선택지 다섯 개"),
+  key:"③",
+  why:[["자료","인구가 가장 많은 (가)는 청주·세종, (나)는 김해·양산, 인구가 적고 성비가 100에 가까운 (다)는 강릉·동해, 성비가 가장 높은 (라)는 서산·당진이다."],["①","(가)에는 기업도시가 없다. 충청권의 기업도시는 충주와 태안이다."],["②","(나)는 영남권에 있다. 충청권에 있는 것은 (가)와 (라)이다."],["③ 정답","(다)는 청장년층이 빠져나가 고령화가 진행된 지역으로, 제조업이 발달해 청장년층이 많은 (나)보다 노년 부양비가 높다."],["④","(라)는 석유 화학과 제철 공업이 발달해 (다)보다 제조업 출하액이 많다."],["⑤","남성 인구는 인구×성비/(100+성비)로 구한다. (라)는 약 19만 명, (가)는 약 64만 명으로 (가)가 많다."]]},
  {src:"2026학년도 대학수학능력시험 한국지리 6번",
-  item:()=>scan("an6","그래프는 지도에 표시된 네 지역과 강릉 간의 (가), (나) 계절별 강수량 차이를 나타낸 것이다. 이에 대한 설명으로 옳은 것은? 막대그래프와 네 지점이 표시된 지도, 선택지 다섯 개")},
- {src:"2026학년도 대학수학능력시험 한국지리 13번",
-  item:()=>scan("an13","다음 자료의 ㉠~㉤에 대한 설명으로 옳지 않은 것은? 경주 양남 주상 절리, 제주 용천동굴, 울릉도 나리분지 사진과 설명, 선택지 다섯 개"),
+  item:()=>scan("an6","그래프는 지도에 표시된 네 지역과 강릉 간의 (가), (나) 계절별 강수량 차이를 나타낸 것이다. 이에 대한 설명으로 옳은 것은? 막대그래프와 네 지점이 표시된 지도, 선택지 다섯 개"),
   key:"②",
-  why:[["①","주상 절리는 용암이 식으면서 수축하여 생긴 다각형의 기둥 모양 절리이다. 옳다."],["② 정답","용암 동굴의 기반암은 현무암이다. 시멘트 공업의 주원료는 석회암이다."],["③","석회 동굴에서는 종유석과 석순이 나타난다. 옳다."],["④","나리분지는 화구가 함몰하여 형성된 칼데라 분지이다. 옳다."],["⑤","알봉은 칼데라(나리분지)가 만들어진 뒤 그 안에서 분출한 화구구이다. 옳다."]]},
+  why:[["자료","D는 (나) 계절에 강릉보다 강수량이 크게 많으므로 겨울 강수가 많은 울릉도이고, (나)는 겨울, (가)는 여름이다. A는 부산, B는 서울, C는 서귀포이다."],["①","C(서귀포)는 강릉보다 남쪽에 있어 최한월 평균 기온이 높다."],["② 정답","A(부산)는 B(서울)보다 남쪽에 있어 기온이 높으므로 서리가 내리지 않는 무상 일수가 많다."],["③","D(울릉도)는 겨울 강수량이 많지만 여름 강수량이 적어, 여름과 겨울 모두 강수량이 많은 C(서귀포)보다 연 강수량이 적다."],["④","A(부산)와 D(울릉도)의 위도 차이는 약 2°로, B(서울)와 C(서귀포)의 위도 차이(약 4°)보다 작다."],["⑤","겨울 강수량이 가장 적고 여름 강수량이 많은 B(서울)의 여름 강수 집중률이 가장 높다."]]},
  {src:"2025학년도 대학수학능력시험 한국지리 12번",
   item:()=>scan("rv12","지도의 A~E에 대한 설명으로 옳은 것은? 왼쪽은 천지와 최고봉(2744)이 있는 백두산 일대 지형도로 A, B, C 표시, 오른쪽은 해안면 일대 지형도로 D, E 표시. 선택지 다섯 개"),
   key:"③",
   why:[["①","C는 화산 지형인 백두산의 사면이다. 돌리네와 우발라는 석회암 지대에 나타난다."],["②","A(천지를 둘러싼 칼데라)는 화구의 함몰로 생겼지만, E(해안면)는 화강암이 차별 침식을 받아 생긴 침식 분지이다."],["③ 정답","D의 기반암은 시·원생대 변성암이고, B는 신생대 화산 활동으로 형성되었다."],["④","침식 분지의 바닥을 이루는 화강암(E)이 주변 산지의 변성암(D)보다 차별적 풍화·침식에 약하다."],["⑤","한반도에서 화강암은 화산암보다 분포 면적이 넓다."]]},
- {src:"2026학년도 대학수학능력시험 한국지리 5번",
-  item:()=>scan("rv5","그래프는 지도에 표시된 네 지역군의 인구 자료를 나타낸 것이다. (가)~(라) 지역군에 대한 설명으로 옳은 것은? 가로축 성비, 세로축 인구인 산포도와 네 지역군이 표시된 지도, 선택지 다섯 개")},
  {tab:"예시 1",src:"AQA GCSE 지리 2025 · 문제지 1",
-  item:()=>qline("","그래프에서 하천 A의 강수 정점과 첨두유량 사이의 시간 차이는? 하나만 고르시오.",1)+`<div style="max-width:560px">${hydFig(false)}</div>`+optList(["1시간","2시간","3시간","4시간"]),
+  item:()=>qline("","그래프에서 하천 A의 강수 정점과 첨두유량 사이의 시간 차이는? 하나만 고르시오.",1)+`<div style="max-width:460px">${hydFig(false)}</div>`+optList(["1시간","2시간","3시간","4시간"]),
   key:"B",
   why:[["A","첨두유량 시각을 잘못 읽은 경우이다."],["B 정답","강수 정점은 15:30, 하천 A의 첨두유량은 17:30이다."],["C","하천 B의 첨두유량(18:30)으로 계산한 경우이다."],["D","13:30의 작은 강수 봉우리를 정점으로 본 경우이다."]],
   rub:"<p>B를 고르면 1점. 둘 이상 표시하면 점수 없음.</p>",
@@ -736,7 +842,7 @@ const CR_EX=[
   item:()=>`<div class="grid2">${ianFig()}<div class="qlist">${qline("1-1","지도에서 허리케인 이언이 4등급 허리케인이 된 곳에 X를 표시하시오.",1)}${qline("1-2","지도와 글을 활용하여, 허리케인 이언이 지역 주민에게 끼친 사회적 영향 하나를 쓰시오.",1)}${qline("1-3","열대 저기압의 영향을 줄일 수 있는 방법을 설명하시오.",4)}</div></div>`,
   guide:()=>`<div class="g-side"><div>${ianSVG(true)}</div><div style="display:grid;gap:10px;align-content:start">
      <div><b>1-1</b> 멕시코만, 플로리다 해안의 남남서쪽</div>
-     <div><b>1-2</b><ul><li>해안 마을이 물에 잠김</li><li>수천 명이 전기를 쓰지 못함</li><li>집을 잃거나 대피한 사람이 생김</li><li>다치거나 목숨을 잃은 사람이 생김</li><li>일자리를 잃은 사람이 생김</li></ul></div>
+     <div><b>1-2</b> 글에 나온 영향<ul><li>해안 마을이 물에 잠김</li><li>수천 명이 전기를 쓰지 못함</li></ul>지도와 글에서 추론할 수 있는 영향(인정)<ul><li>집을 잃거나 대피한 사람이 생김</li><li>다치거나 목숨을 잃은 사람이 생김</li><li>일자리를 잃은 사람이 생김</li></ul></div>
      <div><b>1-3</b><ul><li><b>감시·예측</b> 기상 위성, 레이더, 미국 국립허리케인센터의 5일 전 경보, 예상 진로의 불확실성 범위</li><li><b>보호</b> 보강한 건물, 기둥 위에 지은 집, 방조제</li><li><b>계획</b> 대피 교육, 비상용품 준비, 대피소와 대피 경로</li></ul></div></div></div>`,
   rub:`<table><tr><th>문항</th><th>채점 기준</th></tr>
    <tr><td>1-1 [1]</td><td>멕시코만, 플로리다 해안의 남남서쪽에 대략 맞게 표시하면 1점. 화살표로 표시해도 되며, 선에 꼭 닿지 않아도 된다.</td></tr>
@@ -751,7 +857,7 @@ const CR_EX=[
  {tab:"예시 4",src:"AQA GCSE 지리 2022 · 문제지 2",
   item:()=>`<p>다음은 네덜란드 위트레흐트의 교통 개선 사례를 보여 주는 사진과 정보이다.</p>
    <figure class="fig"><img class="exfig" src="${PHOTOS.utrecht}" alt="지붕에 식물을 심은 버스 정류장 옆으로 자전거 도로가 지나가는 거리">
-   <div class="factbox"><b>버스 정류장에서 벌 정류장으로</b><ul><li>버스 정류장 316곳의 지붕을 식물로 덮었다.</li><li>모든 정류장에 LED 조명을 달았고, 96곳에는 태양광 패널이 있다.</li><li>정류장의 바닥은 재활용 콘크리트로 만들었다.</li></ul></div></figure>`
+   <div class="factbox"><b>버스 정류장에서 꿀벌 정류장으로</b><ul><li>버스 정류장 316곳의 지붕을 식물로 덮었다.</li><li>모든 정류장에 LED 조명을 달았고, 96곳에는 태양광 패널이 있다.</li><li>정류장의 바닥은 재활용 콘크리트로 만들었다.</li></ul></div></figure>`
    +qline("","이와 같은 개발이 도시를 더 지속 가능하게 만드는 데 어떻게 도움이 되는지 제안하시오. 사진과 정보, 자신의 이해를 활용하시오.",4),
   guide:()=>`<ul><li>버스 노선은 대중교통 이용을 늘려 연료 사용, 교통 혼잡, 배출가스를 줄인다.</li><li>분리된 자전거 도로는 자전거 이용을 더 쉽고 안전하게 한다.</li><li>태양광 패널은 재생에너지를 생산해 화석 연료 의존을 줄인다.</li><li>LED 조명은 에너지 소비를 줄인다.</li><li>녹색 지붕은 녹지와 야생 생물의 서식지를 만든다.</li><li>재활용 콘크리트는 1차 자원과 새 콘크리트를 만드는 데 드는 에너지를 아낀다.</li><li>지속 가능성의 환경적·사회적·경제적·정치적 측면 모두 인정한다.</li><li>자신의 지식으로 든 사례(프라이부르크, 쿠리치바 등)와 물 절약, 쓰레기 재활용도 인정한다.</li></ul>`,
   rub:`<table><tr><th>수준</th><th>기술</th></tr><tr><td>2수준<br>(3–4점)</td><td>도시와 지속 가능성을 분명히 이해함. 자료을 효과적으로 활용하여 개발이 지속 가능성과 어떻게 이어지는지 해석함</td></tr><tr><td>1수준<br>(1–2점)</td><td>이해가 제한적임. 자료이나 자신의 지식으로 연결을 해석하기 시작함. 원인과 결과를 주장만 할 수 있음</td></tr><tr><td>0점</td><td>인정할 내용 없음</td></tr></table><p>지속 가능한 도시를 묘사하기만 한 내용에는 점수를 주지 않는다.</p>`},
@@ -760,7 +866,7 @@ const CR_EX=[
    +qline("","모식도와 자신의 지식을 활용하여, 해안을 따라 퇴적물이 운반·퇴적되면서 여러 지형이 어떻게 만들어지는지 설명하시오.",6),
   guide:()=>`<ul><li><b>연안류(연안 표류)</b> 침식된 물질이 해안을 따라 지그재그로 운반된다. 파도는 탁월풍의 방향에 따라 비스듬히 물질을 해변 위로 밀어 올리고(스워시), 되돌아가는 물(백워시)은 경사를 따라 곧장 내려간다. 모식도에서는 사취가 자란 방향으로 보아 물질이 서쪽에서 동쪽으로 이동한다.</li><li><b>사취(spit)</b> 해안선의 방향이 바뀌는 곳에서 얕고 잔잔한 물에 연안류가 운반한 물질을 쌓아 만든다. 물이 잔잔해져 에너지가 줄면 큰 물질부터 먼저 쌓인다.</li><li><b>만 입구의 사주(bay bar)</b> 연안류가 운반한 퇴적물이 만의 입구를 가로질러 쌓여 두 곶을 잇기도 한다.</li><li><b>해빈(모래사장)</b> 파도의 퇴적과 연안류로 만들어진다. 백워시가 강한 파도는 경사가 급한 해빈을, 스워시가 강한 파도는 완만하게 쌓여 가는 해빈을 만든다.</li></ul>`,
   rub:`<table><tr><th>수준</th><th>기술</th></tr><tr><td>3수준<br>(5–6점)</td><td>지식을 지도 분석에 충분히 적용하여, 지형이 만들어지는 과정을 자세히 설명함. 지도의 증거를 들어 자료를 빠짐없이 분석함</td></tr><tr><td>2수준<br>(3–4점)</td><td>퇴적 해안의 작용과 지형에 대한 지식이 구체적이고 정확함. 해안 환경과 작용의 관계를 분명히 이해함</td></tr><tr><td>1수준<br>(1–2점)</td><td>퇴적 작용에 대한 지식이 연안류에만 그치거나 지형의 생김새를 묘사하는 데 머묾</td></tr><tr><td>0점</td><td>인정할 내용 없음</td></tr></table><ul><li>먼저 가장 알맞은 수준을 정하고, 그 수준 안에서 위 수준의 내용이 얼마나 있는지에 따라 점수를 정한다.</li><li>초점은 설명이다. 지형의 이름이 아니라 작용과 형성 순서를 설명해야 한다.</li><li>분석은 지도에 근거해야 한다.</li><li>운반 작용(견인, 도약, 부유)과 작용을 설명하는 그림도 인정한다. 육계사주, 연안 사주섬 같은 다른 지형도 인정한다.</li></ul>`},
- {tab:"예시 5",src:"AQA GCSE 지리 2023 · 문제지 1",
+ {hide:1,tab:"예시 5",src:"AQA GCSE 지리 2023 · 문제지 1",
   item:()=>`<p>다음은 영국 동부 윈더시의 해안 방어 시설을 찍은 사진이다.</p><figure class="fig"><img class="exfig" src="${PHOTOS.withernsea}" alt="해안 방벽과 큰 바위를 쌓은 호안, 바다 쪽으로 뻗은 돌제가 있는 해안 마을"></figure>`+qline("","해안 관리를 위한 경성 공법의 비용과 이점을 논하시오. 사진과 자신의 이해를 활용하시오.",6),
   guide:()=>WITH_GUIDE,
   rub:WITH_RUB},
@@ -776,7 +882,7 @@ const CR_EX=[
   rub:`<table><tr><th>수준</th><th>기술</th></tr><tr><td>3수준<br>(7–9점)</td><td>극한 환경과 적응을 자세히 알고 깊이 이해함. 적응이 얼마나 중요한지 판단하는 데 지식을 충분히 적용함. 잘 전개되고, 지리 용어를 정확히 씀</td></tr><tr><td>2수준<br>(4–6점)</td><td>지식과 이해가 분명하고, 적용이 적절함. 진술이 서로 이어지고 용어를 어느 정도 씀</td></tr><tr><td>1수준<br>(1–3점)</td><td>지식과 이해가 제한적이고 적용이 기초적이거나 없음. 단순한 진술, 식물이나 동물 한쪽만 다룸, 사진에 기댐</td></tr><tr><td>0점</td><td>인정할 내용 없음</td></tr></table>
    <ul><li>수준은 단계적으로 쌓는 것이 아니라 가장 알맞은 수준을 고른다.</li><li>(가)나 (나) 하나만 다루어도 3수준에 이를 수 있다.</li></ul>
    <p><b>맞춤법·문장·용어 (3점)</b> 3점 높음: 정확하고 뜻을 효과적으로 전달하며 전문 용어를 폭넓게 씀 / 2점 중간 / 1점 기초 / 0점</p>`},
- {id:"pe",src:"AQA GCSE 지리 2024 · 문제지 1",
+ {hide:1,id:"pe",src:"AQA GCSE 지리 2024 · 문제지 1",
   item:()=>`<p>다음은 최근 일어난 화산 분출과 지진의 영향을 보여 주는 사진이다.</p>
    <div class="envgrid one"><figure><figcaption>(가) 스페인 라팔마섬의 화산 분출</figcaption><img src="${PHOTOS.pe_volc}" alt="연기를 내며 흘러내린 용암이 마을의 집과 나무를 덮고 있는 항공 사진"></figure>
    <figure><figcaption>(나) 필리핀의 지진</figcaption><img src="${PHOTOS.pe_quake}" alt="건물이 무너지고 전선이 늘어진 채 잔해가 길을 덮은 거리"></figure></div>`
@@ -786,18 +892,47 @@ const CR_EX=[
 ];
 
 function renderEx(kind){
-  const list=kind==="mc"?MC_EX:CR_EX,k=kind==="mc"?"exMc":"exCr";
+  const list=kind==="mc"?MC_EX:CR_EX.filter(e=>!e.hide),k=kind==="mc"?"exMc":"exCr";
   if(!(S[k]>=0&&S[k]<list.length))S[k]=0;
   const x=list[S[k]];
   $(`#${kind}ExTabs`).innerHTML=list.map((e,i)=>`<button type="button" role="tab" class="tab" data-ex="${i}" aria-selected="${i===S[k]}">예시 ${i+1}</button>`).join("");
   let body=`<div class="qbox">${x.item()}${x.src?`<div class="qsrc">${esc(x.src)}</div>`:""}</div>`;
-  if(kind==="mc")body+=`<ol class="anq">${AN_Q.map(q=>`<li>${esc(q)}</li>`).join("")}</ol>`+(x.key?`<details class="more"><summary>정답과 해설</summary><div class="panel"><p class="keyline">정답 <b>${esc(x.key)}</b></p>${whyTable(x.why)}</div>${x.rub?panel("채점 기준",x.rub,"rubp"):""}</details>`:"");
+  if(kind==="mc"){
+    const mk=(g,i)=>revMarks.has(g+i)?" done":"";
+    const side=`<aside class="revr"><div class="revp"><h3>문항 구성</h3><ol class="anq">${REV_Q.map(([l,q],i)=>`<li class="rck${mk("q",i)}" data-rck="q${i}"><span class="anl">${l}</span> ${esc(q)}</li>`).join("")}</ol></div><div class="revp"><h3>선택지 작성 요령</h3><ol class="rulel">${REV_R.map(([n,t],i)=>`<li class="rck${mk("r",i)}" data-rck="r${i}"><span class="rn">${n}</span> ${esc(t)}</li>`).join("")}</ol></div></aside>`;
+    body=`<div class="revgrid"><div class="revl">${body}${x.key?`<details class="more"><summary>정답과 해설</summary><div class="panel"><p class="keyline">정답 <b>${esc(x.key)}</b></p>${whyTable(x.why)}</div>${x.rub?panel("채점 기준",x.rub,"rubp"):""}</details>`:""}</div>${side}</div>`;
+  }
   else body+=panel("답안 안내",x.guide())+panel("채점 기준",x.rub,"rubp")+(x.note?`<p class="small muted">${esc(x.note)}</p>`:"");
   $(`#${kind}ExBody`).innerHTML=body;
 }
-["mc","cr"].forEach(kind=>$(`#${kind}ExTabs`).addEventListener("click",e=>{const b=e.target.closest("[data-ex]");if(!b)return;S[kind==="mc"?"exMc":"exCr"]=Number(b.dataset.ex);save();renderEx(kind);}));
+["mc","cr"].forEach(kind=>$(`#${kind}ExTabs`).addEventListener("click",e=>{const b=e.target.closest("[data-ex]");if(!b)return;S[kind==="mc"?"exMc":"exCr"]=Number(b.dataset.ex);if(kind==="mc")revMarks.clear();save();renderEx(kind);}));
+/* 검토 기준을 하나씩 확인하며 누르면 표시가 남는다(저장하지 않음, 예시를 바꾸면 처음부터) */
+const revMarks=new Set();
+const CR_STAGES=[
+ ["1. 문항 구성","무엇을 평가하는가? 서술형에 적합한가? 발문과 답안의 범위가 명확하며, 주어진 시간에 수행할 수 있는가?",
+  "'원인을 설명하시오'보다는 '자료를 근거로 원인 두 가지를 설명하시오'처럼 요구하는 사고와 답안의 범위를 구체화한다."],
+ ["2. 모범답안 및 채점 기준 작성","모범답안을 작성하고 핵심 평가 요소, 배점, 부분 점수 기준을 정한다.",
+  "예를 들어 4점 문항이라면 자료 해석 2점, 원인 설명 2점으로 구분한다. 모범답안과 표현이 달라도 타당한 답은 인정한다."],
+ ["3. 실제 답안 채점 및 검토","학생 답안에 채점 기준을 적용하고, 다양한 타당한 답안을 인정하며 채점의 일관성을 점검한다.",
+  "판단이 어려운 답안이나 채점자 간 점수 차이가 나타난 답안을 비교하고, 필요하면 채점 기준을 보완한다."]];
+function renderCrGuide(){
+  $("#crGuide").innerHTML=`<h2>서술형 문항 출제·채점 가이드라인</h2><div class="tbl-wrap"><table class="goodt crg"><thead><tr><th>단계</th><th>핵심 내용</th><th>예시 및 유의점</th></tr></thead><tbody>${CR_STAGES.map(([st,core,ex])=>`<tr><td class="gq">${st}</td><td>${esc(core)}</td><td class="gnote">${esc(ex)}</td></tr>`).join("")}</tbody></table></div>`;
+}
+function renderMcGuide(){
+  const tbl=(rows)=>`<div class="tbl-wrap"><table class="goodt gd"><tbody>${rows.map(([l,t])=>`<tr><td class="gq">${l}</td><td>${esc(t)}</td></tr>`).join("")}</tbody></table></div>`;
+  $("#mcGuide").innerHTML=`<h2>선택형 문항 검토 기준</h2><div class="revp"><h3>문항 구성</h3>${tbl(AN_Q)}</div><div class="revp"><h3>선택지 작성 요령</h3>${tbl(MC_RULES)}</div>`;
+}
+/* 문항 검토 옆 칸에는 짧은 물음만(긴 설명은 출제 연습의 선택지 작성 요령) */
+const REV_Q=[["평가 목표","무엇을 평가하는가?"],["사고 과정","의도한 사고를 거쳐야 풀리는가?"],["발문과 자료","묻는 것이 명확하고, 자료가 꼭 필요한가?"],["정답의 명확성","정답이 하나로 정해지는가?"],["오답의 적절성","오답이 실제 혼동을 반영하는가?"]];
+const REV_R=[["판단 하나","진술마다 판단이 하나인가?"],["자료 근거","자료와 배운 지식만으로 판단되는가?"],["정답 시비 없음","옳고 그름이 분명한가?"],["사실과 개념에 충실","지어낸 사실은 없는가?"],["선택지의 독립성","선택지끼리 겹치거나 서로 단서가 되지 않는가?"],["단서 없음","길이와 표현이 정답을 드러내지 않는가?"]];
+$("#mcExBody").addEventListener("click",e=>{const li=e.target.closest("[data-rck]");if(!li)return;const id=li.dataset.rck;revMarks.has(id)?revMarks.delete(id):revMarks.add(id);li.classList.toggle("done",revMarks.has(id));});
 
-const AN_Q=["이 문항은 학생의 무엇을 평가하는가? (지식, 자료 해석, 비교, 추론, 판단 등)","정답을 선택하기 위해 어떤 사고 과정이 필요한가?","오답 선택지는 어떤 잘못된 이해나 판단에 근거하는가?","이 문항의 질을 높이기 위해 수정할 부분이 있는가?"];
+const AN_Q=[
+ ["평가 목표","학생의 어떤 지식이나 능력을 평가하는가? (개념 이해, 자료 해석, 비교, 추론, 판단 등)"],
+ ["사고 과정","평가하려는 지식이나 사고를 실제로 요구하는가? 불필요하게 복잡한 조건이나 풀이 과정이 학생의 능력 발휘를 방해하지 않는가?"],
+ ["발문과 자료","무엇을 묻는지 명확한가? 필요한 정보를 충분히 제시하고, 자료를 실제로 활용하게 하는가?"],
+ ["정답의 명확성","정답이 하나로 결정되는가? 조건이나 해석에 따라 달라질 여지는 없는가?"],
+ ["오답의 적절성","오답은 학생이 혼동하기 쉬운 개념이나 잘못된 판단을 반영하는가?"]];
 
 /* ===== 서술형 · 채점하기 ===== */
 const SC_ITEMS=[
@@ -819,27 +954,6 @@ const SC_ITEMS=[
     t:"화산이 폭발하자 주민들이 대피소로 피했고 정부가 구호품을 보냈다. 화산재가 하늘을 덮어 비행기도 뜨지 못했다."},
    {id:"e4",intent:2,note:"한 문장에 영향 두 가지(전선이 끊겨 전기가 나감, 잔해가 길을 막음)를 썼다. 한 줄에 두 가지를 써도 모두 인정한다.",
     t:"(나)를 보면 전신주가 쓰러지고 전선이 끊어져 전기가 나갔고, 무너진 건물 잔해가 길을 막았다."}]},
- {id:"depo",tab:"예시 2",mode:"level",max:6,levels:[[0,[0]],[1,[1,2]],[2,[3,4]],[3,[5,6]]],
-  q:"해안의 퇴적 지형 모식도(탁월풍은 남서→북동, 왼쪽 아래 곶에서 동쪽으로 뻗은 갈고리 모양 사취, 가운데 위쪽 작은 만의 입구를 가로지른 퇴적 지형, 하구 앞바다의 퇴적 지형, 오른쪽 위 곶에서 동쪽으로 뻗은 사취)와 자신의 지식을 활용하여, 해안을 따라 퇴적물이 운반·퇴적되면서 여러 지형이 어떻게 만들어지는지 설명하시오. [6점]",
-  item:()=>{const x=CR_EX.find(e=>e.src.includes("견본"));return `<div class="qbox">${x.item()}<div class="qsrc">${esc(x.src)}</div></div>`;},
-  rub:()=>CR_EX.find(e=>e.src.includes("견본")).rub,guide:()=>CR_EX.find(e=>e.src.includes("견본")).guide(),
-  ms:`[채점 기준 — AQA 견본 문제지 1(2024) 채점 기준을 번역]
-수준별 6점.
-3수준(5–6점): 지식을 지도 분석에 충분히 적용하여 지형이 만들어지는 과정을 자세히 설명함. 지도의 증거를 들어 자료를 빠짐없이 분석함.
-2수준(3–4점): 퇴적 해안의 작용과 지형에 대한 지식이 구체적이고 정확함. 해안 환경과 작용의 관계를 분명히 이해함.
-1수준(1–2점): 퇴적 작용에 대한 지식이 연안류에만 그치거나 지형의 생김새를 묘사하는 데 머묾.
-0점: 인정할 내용 없음.
-규칙: 가장 알맞은 수준을 먼저 정하고 그 안에서 점수를 정한다. 초점은 설명이다(지형 이름이 아니라 작용과 형성 순서). 분석은 지도에 근거해야 한다. 운반 작용(견인, 도약, 부유)과 그림도 인정. 다른 지형(육계사주, 연안 사주섬 등)도 인정.
-[답안 안내] 연안류: 탁월풍 방향으로 파도가 비스듬히 물질을 밀어 올리고(스워시) 되돌아가는 물(백워시)은 곧장 내려가 물질이 해안을 따라 지그재그로 이동. 모식도에서는 사취가 자란 방향으로 보아 서→동 이동. 사취: 해안선 방향이 바뀌는 곳의 얕고 잔잔한 물에 퇴적, 끝이 휘기도 함. 만 입구의 사주: 퇴적물이 만 입구를 가로질러 쌓여 두 곶을 이음. 해빈: 파도의 퇴적과 연안류로 형성.`,
-  answers:[
-   {id:"p1",intent:3,note:"연안류의 작용(스워시·백워시)을 정확히 설명하고, 에너지가 줄면 퇴적되어 사취가 생긴다고 이었다. 그러나 모식도를 전혀 쓰지 않아 2수준 하단이다.",
-    t:"연안류는 파도가 해안에 비스듬히 닿을 때 생긴다. 파도가 모래를 해변 위로 비스듬히 밀어 올리고, 물이 빠질 때는 경사를 따라 곧게 끌어내리기 때문에 모래가 해안을 따라 지그재그로 움직인다. 이렇게 운반되던 모래는 물이 잔잔해 파도의 에너지가 약해지는 곳에서 쌓인다. 그래서 해안에는 모래사장과 사취 같은 지형이 생긴다."},
-   {id:"p2",intent:2,note:"모식도의 지형을 찾아 생김새를 묘사했지만, 만들어지는 과정은 '파도가 쌓는다'는 주장에 그쳤다. 1수준이다.",
-    t:"모식도에는 사취와 사주, 모래사장이 있다. 왼쪽 아래의 사취는 바다 쪽으로 길게 뻗어 있고 끝이 휘어져 있다. 가운데 위쪽에는 작은 만의 입구를 모래가 막고 있다. 하천이 바다와 만나는 곳 앞에도 모래가 쌓여 있다. 이런 지형들은 파도가 모래를 쌓아서 만들어진다."},
-   {id:"p3",intent:6,note:"탁월풍 방향에서 연안류를 끌어내고, 사취 → 만 입구의 사주로 이어지는 형성 과정을 지도의 증거(사취가 자란 방향, 곶, 만)와 함께 차례대로 설명했다. 3수준 상단이다.",
-    t:"모식도에서 탁월풍은 남서쪽에서 북동쪽으로 분다. 그래서 파도는 해안에 비스듬히 밀려와 모래와 자갈을 해변 위로 비스듬히 밀어 올리고(스워시), 물이 빠질 때는 경사를 따라 곧장 내려간다(백워시). 이 과정이 되풀이되면서 퇴적물이 해안을 따라 지그재그로 동쪽으로 운반되는데, 이것이 연안류이다. 왼쪽 아래 곶처럼 해안선의 방향이 갑자기 바뀌는 곳에 이르면, 운반되던 물질이 잔잔한 바다 쪽으로 계속 쌓여 동쪽으로 뻗은 사취가 된다. 사취의 끝이 갈고리처럼 휘어진 것은 바람과 파도의 방향이 때때로 바뀌기 때문이다. 오른쪽 위의 사취도 같은 방향으로 자랐으므로 퇴적물이 서쪽에서 동쪽으로 옮겨 간다는 것을 확인할 수 있다. 가운데 위쪽의 작은 만에서는 사취가 입구를 가로질러 끝까지 자라 두 곶을 잇는 사주가 되었고, 그 안쪽은 바다와 막힌 석호가 될 수 있다. 하천이 바다로 운반해 온 퇴적물도 하구 앞에 쌓이고 연안류에 실려 이 지형들의 재료가 된다."},
-   {id:"p4",intent:4,note:"연안류와 사취의 형성을 분명히 설명하고 모식도의 사취 위치도 들었다. 그러나 만 입구의 사주는 설명하지 않았고, 지도의 증거(사취가 자란 방향)로 과정을 분석하지는 않았다. 2수준 상단이다.",
-    t:"탁월풍이 남서쪽에서 불어 파도가 해안에 비스듬히 닿는다. 파도는 모래를 해변 위로 비스듬히 밀어 올리고, 되돌아가는 물은 곧장 아래로 내려가므로 모래가 해안을 따라 조금씩 옆으로 이동한다. 이것을 연안류라고 한다. 이렇게 운반된 모래가 해안선이 꺾이는 곳에 이르면 더 나아가지 못하고 쌓이면서 바다 쪽으로 길게 뻗은 사취가 생긴다. 모식도의 왼쪽 아래와 오른쪽 위에 이런 사취가 있다."}]},
  {id:"with",tab:"예시 3",mode:"level",max:6,levels:[[0,[0]],[1,[1,2]],[2,[3,4]],[3,[5,6]]],
   q:"사진(영국 동부 윈더시의 해안 방어 시설: 해안 방벽, 사석(큰 바위를 쌓은 호안), 돌제)을 보고, 해안 관리를 위한 경성 공법의 비용과 이점을 논하시오. 사진과 자신의 이해를 활용하시오. [6점]",
   item:()=>`<div class="qbox"><p>다음은 영국 동부 윈더시의 해안 방어 시설을 찍은 사진이다.</p><figure class="fig"><img class="exfig" src="${PHOTOS.withernsea}" alt="해안 방벽과 큰 바위를 쌓은 호안, 바다 쪽으로 뻗은 돌제가 있는 해안 마을"></figure>${qline("","해안 관리를 위한 경성 공법의 비용과 이점을 논하시오. 사진과 자신의 이해를 활용하시오.",6)}<div class="qsrc">AQA GCSE 지리 2023 · 문제지 1</div></div>`,
@@ -871,7 +985,7 @@ let scCtl=null;
 
 function renderScore(){
   const it=scItem(),st=scSt(it);
-  $("#scTabs").innerHTML=SC_ITEMS.map(x=>`<button type="button" role="tab" class="tab" data-sc="${x.id}" aria-selected="${x.id===it.id}">${esc(x.tab)}</button>`).join("");
+  $("#scTabs").innerHTML=SC_ITEMS.map((x,i)=>`<button type="button" role="tab" class="tab" data-sc="${x.id}" aria-selected="${x.id===it.id}">예시 ${i+1}</button>`).join("");
   $("#scItem").innerHTML=it.item();
   renderScBox();renderScResult();
 }
@@ -1110,7 +1224,7 @@ function crAiHTML(){const st=crS();let h="";
   return h;}
 async function crGenerate(){
   const K=crK(),st=crS();if(!sample||crCtl)return;
-  const prompt=`당신은 한국 고등학교 지리 서·논술형 문항 검토위원입니다. 예비 지리교사가 핵심 아이디어와 자료를 보고 만든 세트 문항을 짧게 점검하세요. 문항을 대신 고쳐 쓰지 마세요.
+  const prompt=`당신은 한국 고등학교 지리 서술형 문항 검토위원입니다. 예비 지리교사가 핵심 아이디어와 자료를 보고 만든 세트 문항을 짧게 점검하세요. 문항을 대신 고쳐 쓰지 마세요.
 
 [핵심 아이디어] ${K.idea}
 [자료]
@@ -1145,21 +1259,6 @@ $("#crDev").addEventListener("input",e=>{if(!e.target.hasAttribute("data-sprompt
 
 /* ===== 선택형 · 출제하기: 수능·모의평가 문항의 자료와 발문을 보고 선택지 또는 <보기>의 진술 쓰기 ===== */
 const MC_KITS=[
- {mode:"opt",src:"2026학년도 대학수학능력시험 한국지리 1번",img:"mk_k1",alt:"조건 1: 배타적 경제 수역에 위치 또는 통상 기선의 적용을 받는 영해에 위치. 조건 2: 호미곶 기점을 지나는 위선과 영토 최남단을 지나는 위선 사이. 조건 3: 동경 127°30′00″~131°52′22″ 사이. 조건 4: 조건 1~3을 모두 만족하는 곳 중 같은 날 일출 시각이 가장 늦은 곳. 기점과 영해선이 표시된 지도에 A~E 다섯 지점.",
-  stem:"다음 &lt;조건&gt;과 지도의 A~E에 대한 설명으로 옳은 것은?",
-  plain:"<조건 1> (배타적 경제 수역에 위치) OR (통상 기선의 적용을 받는 영해에 위치). <조건 2> 호미곶 기점을 지나는 위선과 우리나라 영토 최남단을 지나는 위선 사이에 위치. <조건 3> 동경 127°30′00″~동경 131°52′22″ 사이에 위치. <조건 4> <조건 1>~<조건 3>을 모두 만족하는 곳 중 같은 날의 일출 시각이 가장 늦은 곳. 지도: A 황해 영해선 바깥(북위 37° 부근), B 제주도 남동쪽 연안, C 남해안 직선 기선 바깥 영해, D 경주 동쪽 연안(호미곶 남쪽, 통상 기선 구간), E D의 동쪽 영해선 바깥.",
-  exs:[["A는 &lt;조건 2&gt;를 만족한다.",false],["E는 배타적 경제 수역에 위치한다.",true]],
-  orig:{stem:"다음 <조건>을 만족하는 곳을 지도의 A~E에서 고른 것은?",stmts:[["A","배타적 경제 수역이지만 호미곶보다 북쪽에 있어 <조건 2>를 만족하지 못한다.",false],["B","제주도의 통상 기선 영해이지만 동경 127°30′보다 서쪽이어서 <조건 3>을 만족하지 못한다.",false],["C","직선 기선을 적용한 영해이다.",false],["D","통상 기선을 적용한 영해이고 <조건 1>~<조건 3>을 만족한다. E보다 서쪽이어서 일출이 늦다.",true],["E","배타적 경제 수역으로 <조건 1>~<조건 3>을 만족하지만 D보다 동쪽이다.",false]],key:"④ D"}},
- {mode:"bogi",wide:1,src:"2026년 6월 모의평가 한국지리 2번",img:"mk_k5",alt:"두 지형도. 왼쪽은 서강과 청령포 일대로 A, B, C가 표시되어 있고, 오른쪽은 남한강과 고씨굴 일대로 D(와지가 모인 곳), E가 표시되어 있다.",
-  stem:"지도의 A~E에 대한 설명으로 옳은 것만을 &lt;보기&gt;에서 고른 것은?",
-  plain:"두 지형도(축척 0~250m). 왼쪽: 서강이 청령포를 휘돌아 흐른다. A는 하천에서 떨어진 높은 곳의 둥글게 휘어진 평탄지 안, B는 서강의 좁은 하도 쪽 하천 가장자리, C는 청령포 쪽 곡류 안쪽의 모래가 쌓인 곳. 오른쪽: 남한강 곡류, 고씨굴이 있다. D는 와지(돌리네 기호)가 모인 곳, E는 곡류 안쪽의 구릉 위.",
-  exs:[["C에서는 하천의 퇴적 작용이 활발하다.",true],["고씨굴은 용암이 흐르면서 형성된 동굴이다.",false]],
-  orig:{stem:"지도의 A~E에 대한 설명으로 옳은 것만을 <보기>에서 고른 것은? [3점]",stmts:[["ㄱ","A는 과거에 하천이 흘렀던 구하도이다.",true],["ㄴ","D의 기반암은 고씨굴의 기반암과 동일하다.",true],["ㄷ","E에서는 논농사가 주로 이루어진다.",false],["ㄹ","B는 C보다 하천에 의한 퇴적 작용이 활발하다.",false]],key:"① ㄱ, ㄴ"}},
- {mode:"opt",src:"AQA GCSE 지리 2025 · 문제지 2",html:()=>FIG_MEGA,
-  stem:"지도에 표시된 도시에 대한 설명으로 옳은 것은?",
-  plain:"〈2050년까지 메가시티가 될 것으로 예상되는 도시〉 2022년 인구 → 2050년 예상 인구(백만 명): 시카고 8.9→10.8, 런던 9.6→10.8, 바그다드 7.6→13.0, 테헤란 9.4→10.6, 청두 9.5→10.6, 난징 9.5→10.4, 아메다바드 8.5→13.0, 수라트 7.9→12.0, 푸네 7.0→10.8, 호찌민 9.1→13.0, 하르툼 6.2→11.2, 나이로비 5.2→10.4, 다르에스살람 7.5→16.4, 루안다 9.0→14.6",
-  exs:[["2050년 예상 인구가 가장 많은 도시는 다르에스살람이다.",true],["2022~2050년에 인구가 두 배 넘게 늘어날 것으로 예상되는 도시는 아시아에 있다.",false]],
-  orig:{stem:"원래 문항은 이 지도로 선택형(4지선다) 두 문항을 냈다. (AQA GCSE 지리 2025 · 문제지 2)",stmts:[["01.2","2050년에 새로운 메가시티가 가장 많을 것으로 예상되는 대륙은? A 아프리카 B 아시아 C 유럽 D 북아메리카",null],["01.3","나이로비의 2022~2050년 예상 인구 증가율은? A 50% B 100% C 150% D 200%",null]],key:"01.2 B 아시아 · 01.3 B 100%"}},
  {mode:"opt",src:"AQA GCSE 지리 2025 · 문제지 1",html:()=>FIG_CLIM,
   stem:"그래프의 (가), (나) 지역에 대한 설명으로 옳은 것은?",
   plain:"기후 그래프. (가) 카이로(이집트, 북위 30°) 월평균 기온(1~12월, ℃): 15.5, 17, 20.5, 24.7, 29, 32, 33.5, 33.5, 31.5, 27.5, 22.5, 17.5 / 월 강수량(mm): 6, 4.7, 3.6, 1.3, 0, 0, 0, 0, 0, 1.3, 2.5, 2.5. (나) 아클라비크(캐나다, 북위 68°) 월평균 기온: -27, -24, -21, -10.5, 1.5, 11.3, 16, 11.5, 5.5, -6, -20, -25 / 월 강수량: 14, 12, 13, 8.8, 15, 19, 40.2, 41.3, 30.1, 32.2, 21, 17",
@@ -1167,6 +1266,17 @@ const MC_KITS=[
   orig:{stem:"원래 문항은 이 그래프로 선택형(4지선다) 한 문항을 냈다. (AQA GCSE 지리 2025 · 문제지 1 02.8)",stmts:[["A","카이로는 7월과 8월에 강수량이 가장 많다.",false],["B","카이로의 최고 월평균 기온은 아클라비크보다 낮다.",false],["C","카이로는 아클라비크보다 월평균 기온의 범위(연교차)가 크다.",false],["D","아클라비크는 카이로보다 총강수량이 많다.",true]],key:"D"}}
 ];
 const MARKS={opt:"①②③④⑤",bogi:"ㄱㄴㄷㄹ"};
+/* 선택지 작성 요령(Haladyna, Downing & Rodriguez, 2002의 선다형 문항 작성 지침을 바탕으로 다듬음) */
+const MC_RULES=[
+ ["판단 하나","진술 하나에 가급적 판단 하나만 담는다. 일부만 옳은 진술을 피한다."],
+ ["자료 근거","제시된 자료와 학습한 지리 지식만으로 옳고 그름을 판단할 수 있게 한다."],
+ ["정답 시비 없음","옳고 그름이 분명해야 한다. 조건이나 예외에 따라 판단이 달라지지 않게 한다."],
+ ["사실과 개념에 충실","임의의 사실을 지어내지 않고, 실제 지리 지식과 개념적 혼동을 바탕으로 오답을 만든다."],
+ ["선택지의 독립성","선택지끼리 의미가 중복되거나 서로 정답의 단서가 되지 않게 한다."],
+ ["단서 없음","길이와 문장 구조를 비슷하게 맞추고, '항상', '반드시' 등으로 오답을 드러내지 않는다."]];
+const mcRules=()=>MC_RULES;
+const rulesList=()=>`<ol class="rulel">${MC_RULES.map(([n,t])=>`<li><span class="rn">${n}</span> ${t}</li>`).join("")}</ol>`;
+let mcRulesOpen=false;
 const freshMcKit=k=>({items:Array.from({length:MARKS[k.mode].length-k.exs.length},()=>({t:"",ok:null})),shown:false,ai:null,err:""});
 const freshMcd=()=>({cur:0,kits:MC_KITS.map(freshMcKit)});
 const mcK=()=>MC_KITS[S.mcd.cur]||MC_KITS[0];
@@ -1177,7 +1287,7 @@ const okLab=v=>v==null?"":v?"옳음":"틀림";
 const unesc=t=>String(t).replace(/&lt;/g,"<").replace(/&gt;/g,">");
 function renderMcDev(){
   const K=mcK(),st=mcS(),M=MARKS[K.mode],isOpt=K.mode==="opt";
-  document.querySelector("#v-mc-dev .range-card").innerHTML=`<div class="tabs" role="tablist">${MC_KITS.map((k,i)=>`<button type="button" role="tab" class="tab" data-mkit="${i}" aria-selected="${i===S.mcd.cur}">예시 ${i+1}</button>`).join("")}</div>
+  document.querySelector("#v-mc-dev .range-card").innerHTML=`${MC_KITS.length>1?`<div class="tabs" role="tablist">${MC_KITS.map((k,i)=>`<button type="button" role="tab" class="tab" data-mkit="${i}" aria-selected="${i===S.mcd.cur}">예시 ${i+1}</button>`).join("")}</div>`:""}
     <div class="qbox">${qline("",K.stem)}${K.html?`<div class="mcfigwrap">${K.html()}</div>`:`<figure class="fig snfig"><img class="exfig" style="width:${SNW[K.img]}px" src="${PHOTOS[K.img]}" alt="${esc(K.alt)}"></figure>`}<div class="qsrc">${esc(K.src)}</div></div>`;
   const seg=(i,v)=>`<span class="oxs" role="group" aria-label="${M[i+E]} 옳고 그름"><button type="button" data-mok="1" aria-pressed="${v===true}" title="옳음">○</button><button type="button" data-mok="0" aria-pressed="${v===false}" title="틀림">×</button></span>`;
   const E=K.exs.length,mine=[...K.exs.map(x=>x[1]),...st.items.map(x=>x.t.trim()?x.ok:undefined)];
@@ -1185,12 +1295,13 @@ function renderMcDev(){
   const check=isOpt?(rights.length>1?`<div class="stale"><span class="l">정답 시비</span> 옳은 선택지가 ${rights.length}개(${rights.join(", ")})입니다. '옳은 것은?'으로 묻는 5지선다의 정답은 하나여야 합니다.</div>`:`<p class="small">옳은 선택지: <b>${rights.join(", ")||"없음"}</b>${rights.length?"":" · 나머지 선택지 가운데 하나는 옳아야 합니다."}</p>`)
     :`<p class="small">내 &lt;보기&gt;에서 옳은 것: <b>${rights.join(", ")||"없음"}</b></p>`;
   $("#mcDev").innerHTML=`<div class="card"><h2>${isOpt?"선택지 쓰기":"&lt;보기&gt; 쓰기"}</h2>
+    
     ${isOpt?`<div class="wsbox">`:`<div class="sbogi wbogi"><span class="sbt">&lt;보 기&gt;</span>`}<div class="wlist">
     ${K.exs.map((x,j)=>`<div class="wl ex"><b>${M[j]}${isOpt?"":"."}</b><span>${x[0]}</span><span class="wj">예시 · ${okLab(x[1])}</span></div>`).join("")}
     ${st.items.map((x,i)=>`<div class="wl" data-mi="${i}"><b>${M[i+E]}${isOpt?"":"."}</b><input type="text" class="wline" data-mtext value="${esc(x.t)}" aria-label="${M[i+E]} 진술">${seg(i,x.ok)}</div>`).join("")}</div></div>
     <div class="row"><span class="spacer"></span><button type="button" class="btn sm" data-a="mccmp"${mcReady(st)?"":" disabled"}>${st.shown?"다시 비교":"원래 문항과 비교"}</button>${aiState==="on"?`<button type="button" class="btn ai sm" data-a="mcai"${mcReady(st)&&!mcCtl?"":" disabled"}>AI 의견</button>`:""}${mcCtl?`<button type="button" class="btn quiet" data-a="mcstop">멈추기</button>`:""}</div>
     ${mcCtl?thinking("AI가 진술을 살펴보고 있습니다."):""}${st.err?`<p class="err">${esc(st.err)}</p>`:""}
-    ${st.ai?`<div class="tbl-wrap"><table class="cmp"><thead><tr><th>${isOpt?"선택지":"보기"}</th><th>AI 판단</th><th>고칠 점</th></tr></thead><tbody>${st.ai.map((a,i)=>a&&st.items[i]&&st.items[i].t.trim()?`<tr><td>${M[i+E]}</td><td>${esc(a.verdict)}</td><td>${esc(a.fix)}</td></tr>`:"").join("")}</tbody></table></div>`:""}</div>
+    ${st.ai?`<div class="tbl-wrap"><table class="cmp"><thead><tr><th>${isOpt?"선택지":"보기"}</th><th>AI 판단</th><th>고칠 점</th></tr></thead><tbody>${st.ai.map((a,i)=>a&&st.items[i]&&st.items[i].t.trim()?`<tr><td>${M[i+E]}</td><td>${esc(a.verdict)}</td><td>${(a.rules||[]).map(r=>`<span class="tag">${esc(r)}</span>`).join("")}${a.fix?esc(a.fix):(a.rules||[]).length?"":"원칙에 맞습니다."}</td></tr>`:"").join("")}</tbody></table></div>`:""}</div>
     ${st.shown?`<div class="card"><h2>원래 문항</h2>${check}
       <p class="small muted">${esc(K.orig.stem)}</p>
       <div class="panel rubp"><table>${K.orig.stmts.map(([l,t,v])=>`<tr><td>${esc(l)}</td><td>${esc(t)}</td>${v==null?"":`<td class="num">${v?"○":"×"}</td>`}</tr>`).join("")}</table>${K.orig.key?`<p><b>정답</b> ${esc(K.orig.key)}</p>`:""}</div></div>`:""}`;
@@ -1205,12 +1316,16 @@ async function mcAI(){
 ${K.exs.map((x,j)=>`${M[j]}. ${unesc(x[0])} (출제자 판단: ${okLab(x[1])}) — 주어진 예시`).join("\n")}
 ${st.items.map((x,i)=>x.t.trim()?`${M[i+E]}. ${x.t} (출제자 판단: ${okLab(x.ok)||"표시 안 함"})`:`${M[i+E]}. (비어 있음)`).join("\n")}
 
-할 일: ${M.slice(E).split("").join(", ")} 순서로 items 배열을 만드세요. 비어 있는 진술은 빈 문자열.
+[${isOpt?"선택지":"<보기>"} 쓰기 원칙 — 이름: 내용]
+${mcRules(K.mode).map(([n,t])=>`${n}: ${t}`).join("\n")}
+
+할 일: ${M.slice(E).split("").join(", ")} 순서로 items 배열을 만드세요. 비어 있는 진술은 verdict와 fix를 빈 문자열, rules를 빈 배열로 두세요.
 - verdict: 자료와 지리 지식으로 옳고 그름을 판단할 수 있는지, 출제자의 판단이 맞는지 한 문장.
-- fix: ${isOpt?"정답이 하나만 되도록 하거나 ":""}정답 시비를 없애거나 더 매력적인 오답으로 만들기 위해 가장 먼저 고칠 점 한 문장.
-JSON 객체만 출력하세요: {"items":[{"verdict":"...","fix":"..."}]}`;
+- rules: 이 진술이 어긋나는 원칙의 이름을 위 목록에서 그대로 골라 배열로(가장 중요한 것부터 최대 2개). 어긋나는 원칙이 없으면 빈 배열. '선택지의 독립성'과 '단서 없음'은 이 진술이 다른 진술과 견주어 그 원칙을 어기게 만들 때 고르세요.
+- fix: rules가 있으면 그 원칙에 맞추려면 무엇을 고쳐야 하는지 한 문장. rules가 없으면 빈 문자열.
+JSON 객체만 출력하세요: {"items":[{"verdict":"...","rules":["..."],"fix":"..."}]}`;
   mcCtl=new AbortController();st.err="";renderMcDev();
-  try{const raw=await sample.json(prompt,{signal:mcCtl.signal,cache:false});const items=(raw&&Array.isArray(raw.items)?raw.items:[]).map(a=>({verdict:String(a.verdict||""),fix:String(a.fix||"")}));
+  try{const raw=await sample.json(prompt,{signal:mcCtl.signal,cache:false});const items=(raw&&Array.isArray(raw.items)?raw.items:[]).map(a=>{const ok=mcRules(K.mode).map(r=>r[0]);return {verdict:String(a&&a.verdict||""),rules:(a&&Array.isArray(a.rules)?a.rules:[]).map(String).filter(r=>ok.includes(r)).slice(0,2),fix:String(a&&a.fix||"")};});
     if(!items.length)throw {code:"invalid_json"};st.ai=items;}
   catch(e){st.err=e&&e.code==="cancelled"?"":errCopy(e);}
   finally{mcCtl=null;save();renderMcDev();}
@@ -1222,11 +1337,13 @@ $("#mcDev").addEventListener("click",e=>{const st=mcS();
   if(a.dataset.a==="mccmp"){st.shown=true;save();renderMcDev();}
   if(a.dataset.a==="mcai")mcAI();
   if(a.dataset.a==="mcstop"&&mcCtl)mcCtl.abort();});
+$("#mcDev").addEventListener("toggle",e=>{if(e.target.classList&&e.target.classList.contains("mcrules"))mcRulesOpen=e.target.open;},true);
 $("#mcDev").addEventListener("input",e=>{if(!e.target.hasAttribute("data-mtext"))return;const st=mcS(),x=st.items[Number(e.target.closest("[data-mi]").dataset.mi)];x.t=e.target.value;save();
   const r=mcReady(st),c=$('#mcDev [data-a="mccmp"]'),a=$('#mcDev [data-a="mcai"]');if(c)c.disabled=!r;if(a)a.disabled=!r||!!mcCtl;});
 
+
 /* ===== state ===== */
-function fresh(){return {v:23,type:"cr",step:{mc:"ex",cr:"ex"},exMc:0,exCr:0,sc:{cur:"pe"},rb:null,crd:freshCrd(),mcd:freshMcd()};}
+function fresh(){return {v:23,type:"base",step:{base:"good",mc:"guide",cr:"guide"},exMc:0,exCr:0,sc:{cur:"pe"},rb:null,crd:freshCrd(),mcd:freshMcd()};}
 let S;
 try{const raw=localStorage.getItem(KEY);S=raw?JSON.parse(raw):null;}catch(e){S=null;}
 if(!S||S.v!==23)S=fresh();
@@ -1234,24 +1351,27 @@ let saveT=null;
 function save(){clearTimeout(saveT);saveT=setTimeout(()=>{try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}},250);}
 
 /* ===== nav ===== */
-const TYPES=[["mc","선택형"],["cr","서술형"]];
-const STEPS={mc:[["ex","문항 검토"],["dev","출제 연습"]],cr:[["ex","문항 검토"],["score","채점 연습"],["rub","채점 기준 만들기"],["dev","출제 연습"]]};
+const TYPES=[["base","좋은 지리평가"],["mc","선택형"],["cr","서술형"]];
+const STEPS={base:[["good","좋은 문항의 조건"],["form","형식 고르기"]],mc:[["guide","검토 기준"],["ex","문항 검토"],["dev","출제 연습"]],cr:[["guide","출제·채점 가이드라인"],["ex","문항 검토"],["score","채점 연습"],["rub","채점 기준 만들기"]]};
 function renderNav(){
   $("#typeSeg").innerHTML=TYPES.map(([k,l])=>`<button type="button" data-type="${k}" aria-pressed="${S.type===k}">${l}</button>`).join("");
   const list=STEPS[S.type],ci=list.findIndex(s=>s[0]===S.step[S.type]);
   $("#steps").innerHTML=list.map(([k,l],i)=>`<button type="button" class="stepb" data-step="${k}" data-state="${i===ci?"current":i<ci?"done":"todo"}"><span class="bar"></span><span class="lbl">${i+1} ${l}</span></button>`).join("");
 }
 function rerender(){
+  if(!S.step)S.step={};if(!STEPS[S.type])S.type="base";Object.keys(STEPS).forEach(t=>{if(!STEPS[t].some(s=>s[0]===S.step[t]))S.step[t]=STEPS[t][0][0];});
   renderNav();const id=`${S.type}-${S.step[S.type]}`;
   document.querySelectorAll(".view").forEach(v=>{v.hidden=v.id!=="v-"+id;});
+  if(id==="mc-guide")renderMcGuide();
   if(id==="mc-ex")renderEx("mc");
+  if(id==="cr-guide")renderCrGuide();
   if(id==="cr-ex")renderEx("cr");
   if(id==="cr-score")renderScore();
   if(id==="cr-rub")renderRub();
   if(id==="cr-dev")renderCrDev();
   if(id==="mc-dev")renderMcDev();
 }
-function go(type,step){S.type=type;if(step)S.step[type]=step;if(!STEPS[type].some(s=>s[0]===S.step[type]))S.step[type]="ex";save();rerender();window.scrollTo({top:0});}
+function go(type,step){S.type=type;if(step)S.step[type]=step;if(!STEPS[type].some(s=>s[0]===S.step[type]))S.step[type]=STEPS[type][0][0];save();rerender();window.scrollTo({top:0});}
 $("#typeSeg").addEventListener("click",e=>{const b=e.target.closest("[data-type]");if(b)go(b.dataset.type);});
 $("#steps").addEventListener("click",e=>{const b=e.target.closest("[data-step]");if(b)go(S.type,b.dataset.step);});
 document.addEventListener("click",e=>{const g=e.target.closest("[data-go]");if(!g)return;const [t,s]=g.dataset.go.split(":");go(t,s);});
