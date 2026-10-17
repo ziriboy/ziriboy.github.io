@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>지리교과교육론 · 논쟁학습</title>
+<style>
+/* ═══ 수업자료 공통 스타일 v2 — 매주 이 블록을 그대로 재사용 ═══
+   폭: --w 하나로 정한다. 980px = 본문 920px + 좌우 여백 30px씩.
+       아이패드 가로(1,024px 이상)에 맞춘 최대 폭이며, 더 좁은 화면에서는 화면에 맞춰 줄어든다.
+       본문 블록에는 따로 max-width를 주지 않는다 — 머리글과 본문의 양 끝이 같은 선에 온다.
+   좁은 화면: 640px 이하(휴대폰)에서만 세로로 쌓는다. 아이패드는 세로로 들어도 같은 배치. */
+html{overflow-y:scroll}
+:root{
+  --ink:#111517; --mid:#525C60; --soft:#8A9296;
+  --line:#E2E5E2; --line2:#EFF1EE; --wash:#F5F7F5;
+  --acc:#0E5A50; --acc-w:#E2EFEA; --red:#A03A26;
+  --mark:#F6E7B8;
+  --warn-l:#E7D8B6; --warn-b:#FCF7EB; --warn-t:#6D5421;
+  --f:Pretendard,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --w:980px; --hh:56px;
+}
+*{box-sizing:border-box} html,body{margin:0}
+body{background:#fff;color:var(--ink);font-family:var(--f);font-size:16px;
+  line-height:1.75;-webkit-font-smoothing:antialiased;letter-spacing:-.005em}
+button,input,textarea{font-family:inherit;font-size:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+
+header{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.96);
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.hin{max-width:var(--w);margin:0 auto;padding:9px 30px;display:flex;align-items:center;gap:18px}
+.brand{background:none;border:none;cursor:pointer;padding:0;text-align:left;line-height:1.3}
+.brand .c{display:block;font-size:11.5px;color:var(--soft)}
+.brand .n{display:block;font-size:14.5px;font-weight:600}
+.switch{margin-left:auto;display:flex;gap:3px;overflow:auto}
+.switch button{background:none;border:1px solid transparent;border-radius:6px;cursor:pointer;
+  padding:5px 10px;font-size:13px;color:var(--mid);white-space:nowrap}
+.switch button:hover{border-color:var(--line);color:var(--ink)}
+.switch button[aria-current="true"]{background:var(--acc-w);color:var(--acc);font-weight:600}
+.switch b{color:var(--soft);font-weight:600;margin-right:5px}
+.switch button[aria-current="true"] b{color:var(--acc)}
+
+main{max-width:var(--w);margin:0 auto;padding:44px 30px 110px}
+.stage{font-size:13px;color:var(--acc);font-weight:600;letter-spacing:.06em;margin:0 0 6px}
+h1{font-size:33px;font-weight:700;letter-spacing:-.03em;line-height:1.25;margin:0 0 14px}
+.lead{color:var(--mid);font-size:16.5px;margin:0 0 32px;max-width:70ch}
+.lead b{color:var(--ink)}
+
+.menu{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:28px}
+.mcard{text-align:left;background:none;border:1px solid var(--line);border-radius:12px;
+  padding:24px;cursor:pointer;transition:border-color .12s}
+.mcard:hover{border-color:var(--acc)}
+.mcard .k{font-size:12.5px;color:var(--acc);font-weight:600;letter-spacing:.06em}
+.mcard h3{margin:6px 0 8px;font-size:19px;font-weight:700;letter-spacing:-.02em;line-height:1.35}
+.mcard p{margin:0;color:var(--mid);font-size:14.5px;line-height:1.65}
+.mcard .m{margin-top:14px;font-size:13px;color:var(--soft)}
+.arc{margin:34px 0 0;padding-top:20px;border-top:1px solid var(--line2);
+  font-size:14.5px;color:var(--mid);display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.arc span{background:var(--wash);border-radius:6px;padding:4px 10px;color:var(--ink)}
+.arc i{font-style:normal;color:var(--soft)}
+
+.concept{background:var(--wash);border-radius:10px;padding:20px 24px;margin:6px 0 26px}
+.concept h3{margin:0 0 10px;font-size:13px;color:var(--acc);font-weight:600;letter-spacing:.04em}
+.concept dl{display:grid;grid-template-columns:170px minmax(0,1fr);gap:7px 16px;margin:0;font-size:15px}
+.concept dt{font-weight:600}
+.concept dd{margin:0;color:var(--mid)}
+.concept p{margin:12px 0 0;font-size:14.5px;color:var(--mid)}
+.concept p b{color:var(--ink)}
+
+.step{margin-bottom:46px}
+.step>h3{margin:0 0 3px;font-size:17px;font-weight:700;letter-spacing:-.02em}
+.step>h3 b{color:var(--acc);margin-right:9px}
+.step>.d{margin:0 0 16px;color:var(--mid);font-size:14.5px;max-width:74ch}
+
+.opt,.tag{background:none;border:1px solid var(--line);border-radius:6px;cursor:pointer;
+  padding:6px 12px;font-size:14px;color:var(--mid)}
+.opt:hover,.tag:hover{border-color:var(--acc);color:var(--ink)}
+.opt[aria-pressed="true"],.tag[aria-pressed="true"]{background:var(--acc);border-color:var(--acc);color:#fff}
+.opt:disabled{opacity:.4;cursor:not-allowed}
+.opt:disabled:hover{border-color:var(--line);color:var(--mid)}
+textarea,.inp{width:100%;min-height:96px;border:1px solid var(--line);border-radius:7px;
+  padding:11px 13px;resize:vertical;background:none;line-height:1.7}
+.inp{min-height:0;padding:7px 11px}
+textarea:focus,.inp:focus{border-color:var(--acc);outline:none}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.notice{border:1px solid var(--warn-l);background:var(--warn-b);border-radius:9px;
+  padding:14px 18px;color:var(--warn-t);font-size:14.5px;margin:14px 0}
+.count{font-size:14px;color:var(--mid)}
+.count b{color:var(--acc);font-weight:700}
+
+.foot{margin-top:54px;padding-top:16px;border-top:1px solid var(--line);
+  display:flex;align-items:center;gap:18px;font-size:14px;color:var(--mid);flex-wrap:wrap}
+.foot button{background:none;border:none;cursor:pointer;color:var(--mid);padding:0}
+.foot button:hover{color:var(--ink)}
+.foot .msg{color:var(--acc)}
+@media(max-width:640px){
+  .hin,main{padding-left:16px;padding-right:16px}
+  .brand .c{display:none} h1{font-size:26px} .switch .lb{display:none}
+  .concept dl{grid-template-columns:1fr}
+  .menu{grid-template-columns:1fr}
+}
+/* ═══ 공통 스타일 v2 끝 ═══ */
+
+
+/* 판단 버튼 (내 판단 = 채움, 참고 판단 = 테두리) */
+.seg{display:flex;gap:5px;flex-wrap:wrap}
+.seg button{background:none;border:1px solid var(--line);border-radius:14px;cursor:pointer;
+  padding:0 12px;font-size:13.5px;color:var(--mid);line-height:1.9}
+.seg button:hover{border-color:var(--acc);color:var(--ink)}
+.seg button[aria-pressed="true"]{background:var(--acc);border-color:var(--acc);color:#fff}
+.seg button.ref{box-shadow:0 0 0 2px #fff,0 0 0 3.5px var(--ink)}
+.legend{display:flex;gap:22px;flex-wrap:wrap;font-size:13.5px;color:var(--mid);align-items:center;margin:0 0 12px}
+.legend i{display:inline-block;width:22px;height:14px;border-radius:8px;vertical-align:-2px;margin-right:7px;box-sizing:border-box}
+.legend .a{background:var(--acc)}
+.legend .r{border:1px solid var(--line);box-shadow:0 0 0 2px #fff,0 0 0 3.5px var(--ink)}
+
+.grp{border:1px solid var(--line);border-radius:12px;padding:24px 28px 20px;margin:0 0 24px}
+.plain{margin:0 0 28px}
+.plain>p{margin:0 0 16px;font-size:15.5px;line-height:1.85}
+.plain>p b{font-weight:700}
+.grp .gt{margin:0 0 12px;font-size:20px;font-weight:700;letter-spacing:-.02em}
+.grp>p{margin:0 0 16px;font-size:15.5px;line-height:1.85}
+.grp>p b{font-weight:700}
+.grp .flow{margin-bottom:2px}
+.grp .items{border-top:1px solid var(--line)}
+.gt2{margin-top:30px!important}
+.model{margin:34px 0 0;padding-top:22px;border-top:2px solid var(--ink)}
+.model>h2{margin:0 0 10px;font-size:22px;font-weight:700;letter-spacing:-.02em}
+.model>p{margin:0 0 16px;font-size:15.5px;line-height:1.85}
+.model>p b{font-weight:700}
+.ah{margin:44px 0 0;font-size:22px;font-weight:700;letter-spacing:-.02em}
+.st{padding:16px 0 4px;border-top:1px solid var(--line2)}
+.grp .st:first-of-type{border-top:none;padding-top:0}
+.st:last-of-type{padding-bottom:0}
+.st>h2{margin:0 0 10px;font-size:18px;font-weight:700;letter-spacing:-.02em}
+.st .def{margin-bottom:6px}
+.st .proto{margin-bottom:6px}
+.st .items{border-top:none}
+.band{display:flex;align-items:stretch;gap:0;margin:4px 0 14px;font-size:14px}
+.band .bc{flex:1;padding:8px 10px;border-top:3px solid var(--acc)}
+.band .bc:nth-of-type(2){border-top-color:#5E8F86}
+.band .bc:nth-of-type(3){border-top-color:#A9C3BD}
+.band .bc.out{border-top-color:var(--line)}
+.band .bc span{display:block;font-size:12px;color:var(--soft)}
+.band .bc b{font-weight:600;line-height:1.5}
+.band i{width:8px}
+.band i.edge{width:2px;background:var(--ink);margin:0 10px}
+.sum{font-size:15.5px;line-height:1.85;margin:0 0 8px}
+.sum b{font-weight:700}
+.wait{font-size:14px;color:var(--soft);margin:0 0 8px}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:0 0 16px}
+.pc{border-top:1px solid var(--line);padding:12px 0 0}
+.pc>b{display:block;font-size:16px;font-weight:700;margin-bottom:2px}
+.pc>p{margin:0 0 10px;font-size:14.5px;line-height:1.7;color:var(--mid)}
+.pc .rv{margin-top:10px}
+.gs2{margin:24px 0 8px;font-size:16px;font-weight:700}
+.std{margin-top:30px}
+.pr2{margin:0 0 12px;font-size:15px;line-height:1.75;color:var(--mid)}
+.pr2 b{color:var(--ink)}
+.cmp2 thead td{font-size:13px;color:var(--acc);font-weight:700}
+.cmp2{width:100%;border-collapse:collapse;margin:6px 0 4px;font-size:15px}
+.cmp2 th,.cmp2 td{text-align:left;vertical-align:top;padding:9px 12px 9px 0;border-bottom:1px solid var(--line2);line-height:1.65}
+.cmp2 tbody th{font-weight:600;color:var(--ink)}
+.cmp2 th{width:90px}
+.cmp2 td{width:42%}
+.std>h2{margin:0 0 10px;font-size:19px;font-weight:700}
+.sq{border-left:3px solid var(--acc);padding:4px 0 4px 16px;font-size:16px!important}
+.it .t u{text-decoration:none;background:var(--mark);padding:0 2px;border-radius:2px}
+.ph{display:flex;gap:12px;margin:0 0 14px}
+.ph figure{margin:0;min-width:0}
+.ph img{display:block;width:100%;height:auto;border-radius:6px}
+.ph figcaption{font-size:12.5px;color:var(--soft);margin-top:5px}
+.qt th{width:90px}
+.tint{background:var(--wash);border-radius:12px;padding:22px 28px 16px;margin:0 0 24px}
+.tint>p{margin:0 0 14px;font-size:15.5px;line-height:1.85}
+.tint .pr2{margin:10px 0 0}
+.tint .ex{margin-bottom:6px}
+.tint .cmp3 th,.tint .cmp3 td{border-bottom-color:var(--line)}
+.items.tight .it .t{font-size:15px}
+.score{margin:12px 0 0;font-size:15px;color:var(--mid)}
+.score b{font-size:20px;color:var(--acc);margin:0 2px}
+.kt{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.kc{border:1px solid var(--line2);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column}
+.kc.on{border-color:var(--acc);box-shadow:0 0 0 1px var(--acc)}
+.kc .kh{font-size:13px;font-weight:700;color:var(--acc);margin:0 0 6px}
+.kc .kh span{color:var(--ink);margin-left:6px}
+.kc p{margin:0;font-size:15px;line-height:1.7}
+.kc .kx{margin-top:10px;padding-top:10px;border-top:1px solid var(--line2);font-size:14px;color:var(--mid)}
+.kb{margin-top:12px;align-self:flex-start;background:none;border:1px solid var(--line);border-radius:14px;padding:0 12px;line-height:1.9;font-size:13.5px;color:var(--mid);cursor:pointer}
+.kb:hover{border-color:var(--acc);color:var(--ink)}
+.rp{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 6px}
+.rp button{background:none;border:1px solid var(--line);border-radius:16px;padding:0 14px;line-height:2.1;font-size:14.5px;color:var(--mid);cursor:pointer}
+.rp button:hover{border-color:var(--acc);color:var(--ink)}
+.rp button[aria-pressed="true"]{background:var(--acc);border-color:var(--acc);color:#fff}
+.rc{margin-top:10px}
+.ex dl.nl{grid-template-columns:28px minmax(0,1fr)}
+.ex dl.nl dt{color:var(--acc)}
+.mm{padding:14px 0;border-top:1px solid var(--line2)}
+.mm:first-of-type{border-top:none;padding-top:4px}
+.ms{margin:0 0 10px;font-size:15.5px;font-weight:600;line-height:1.6}
+.mo{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mb{text-align:left;background:none;border:1px solid var(--line);border-radius:8px;padding:10px 14px;font-size:14.5px;line-height:1.65;color:var(--ink);cursor:pointer}
+.mb:hover{border-color:var(--acc)}
+.mb:disabled{cursor:default;color:var(--mid)}
+.mb.on{border-color:var(--acc);box-shadow:0 0 0 1px var(--acc);color:var(--ink);background:var(--acc-w)}
+.mb .mt{display:block;font-size:12.5px;font-weight:700;color:var(--acc);margin-bottom:3px}
+.cmpk{display:flex;flex-wrap:wrap;gap:8px 28px;margin:16px 0 0;padding:14px 0 0;border-top:2px solid var(--acc)}
+.cmpk span{display:block;font-size:12.5px;color:var(--soft)}
+.cmpk b{font-size:15px}
+main h1+section.grp,main h1+section.plain{margin-top:40px}
+.ah2.gap{margin-top:30px}
+.mt3 th{width:110px}
+.say{margin:0 0 6px;font-size:15px;line-height:1.7;color:var(--ink)}
+.say:last-child{margin:0}
+.ex dl{grid-template-columns:150px minmax(0,1fr)}
+.cp{margin:0;font-size:15px;line-height:1.75}
+.ah2{margin:8px 0 10px;font-size:19px;font-weight:700;letter-spacing:-.02em}
+.cmp3{width:100%;border-collapse:collapse;margin:6px 0 4px;font-size:15px;table-layout:fixed}
+.cmp3 th,.cmp3 td{text-align:left;vertical-align:top;padding:9px 12px 9px 0;border-bottom:1px solid var(--line2);line-height:1.65}
+.cmp3 thead td{font-size:13px;color:var(--acc);font-weight:700}
+.cmp3 th{width:80px;font-weight:600}
+.pr{font-size:15px!important;line-height:1.75!important;background:var(--wash);border-radius:8px;padding:10px 14px;margin:0 0 14px!important}
+.pr b{margin-right:8px;color:var(--acc)}
+.th{margin:0 0 34px}
+.th>h2,.ap>h2{font-size:21px;font-weight:700;letter-spacing:-.02em;margin:0 0 10px}
+.th>p{margin:0 0 16px;font-size:15.5px;line-height:1.85}
+.th>p b{font-weight:700}
+.ex{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:14px 0 10px;margin:0 0 18px}
+.ex+.ex{border-top:none;margin-top:-18px}
+.ex h3{margin:0 0 8px;font-size:13px;color:var(--acc);font-weight:600;letter-spacing:.04em}
+.ex dl{display:grid;grid-template-columns:120px minmax(0,1fr);gap:6px 16px;margin:0;font-size:15px;line-height:1.7}
+.ex dt{font-weight:600}
+.ex dd{margin:0;color:var(--mid)}
+.sh{margin:0 0 6px;font-size:13px;color:var(--soft);font-weight:600;letter-spacing:.04em}
+.flow{margin:0 0 18px;display:flex;flex-wrap:wrap;gap:6px 0;font-size:14.5px}
+.flow span{display:flex;align-items:center}
+.flow span+span::before{content:"→";margin:0 10px;color:var(--soft)}
+.flow b{font-weight:700;margin-right:5px;color:var(--acc)}
+.stl{font-size:12.5px;color:var(--acc);font-weight:700;letter-spacing:.04em;margin:0 0 4px}
+.done .stl{margin-bottom:6px}
+.items.tight .it{padding:8px 0;align-items:center}
+.items.tight .rv{padding:7px 12px}
+.th .flow{color:var(--ink)}
+.ap{border-top:2px solid var(--ink);padding-top:20px}
+.blk{margin:0 0 30px}
+.pq{font-size:18px;font-weight:600;letter-spacing:-.015em;line-height:1.55;margin:0 0 16px}
+.blk>h2{font-size:19px;font-weight:700;letter-spacing:-.02em;margin:0 0 10px}
+.def{border-left:3px solid var(--acc);padding:4px 0 4px 16px;margin:0 0 22px;font-size:16.5px;line-height:1.75}
+.def b{font-weight:700}
+.items{border-top:1px solid var(--line)}
+.it{padding:15px 0;border-bottom:1px solid var(--line2);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 20px;align-items:start}
+.it .t{font-size:16px;line-height:1.65}
+.it .t b{font-weight:700;margin-right:8px}
+.it .t small{display:block;font-size:14.5px;color:var(--mid);margin-top:2px;line-height:1.7}
+.it .seg{justify-content:flex-end;padding-top:1px}
+.rv{grid-column:1/-1;padding:10px 14px;background:var(--wash);border-radius:8px;font-size:14.5px;line-height:1.75;color:var(--mid)}
+.rv b{color:var(--ink);font-weight:700;margin-right:6px}
+.proto{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 28px;background:var(--wash);border-radius:10px;padding:18px 22px;margin:0 0 22px}
+.proto h3{grid-column:1/-1;margin:0 0 6px;font-size:13px;color:var(--acc);font-weight:600;letter-spacing:.04em}
+.proto p{margin:0;font-size:15px;line-height:1.8}
+.proto ul{margin:0;padding-left:18px;font-size:15px;line-height:1.8}
+.done{border-top:2px solid var(--acc);padding-top:14px;margin-top:22px}
+.done h4{margin:0 0 6px;font-size:13px;color:var(--acc);font-weight:600;letter-spacing:.04em}
+.done p{margin:0 0 8px;font-size:15px;line-height:1.8;color:var(--mid)}
+.done p b{color:var(--ink)}
+.grp .sh{margin:0 0 4px}
+.case{display:grid;grid-template-columns:150px minmax(0,1fr);margin:6px 0 0;font-size:15px;line-height:1.75;border-top:1px solid var(--line)}
+.case dt,.case dd{padding:10px 0;border-bottom:1px solid var(--line2)}
+.case dt{font-weight:600;color:var(--acc)}
+.case dd{margin:0;padding-left:16px}
+.case dd:last-of-type,.case dt:last-of-type{border-bottom:none}
+.grp .sq{margin:0 0 12px;line-height:1.75}
+.grp .sum{margin:14px 0 0}
+
+@media(max-width:640px){
+  .it{grid-template-columns:1fr}
+  .it .seg{justify-content:flex-start}
+  .proto{grid-template-columns:1fr;gap:10px}
+  .ex dl{grid-template-columns:1fr;gap:2px}
+  .pair{grid-template-columns:1fr}
+    .case{grid-template-columns:1fr}
+  .kt{grid-template-columns:1fr}
+  .mo{grid-template-columns:1fr}
+    .ex dl.nl{grid-template-columns:28px minmax(0,1fr)}
+  .tint{padding:18px 16px 12px}
+  .ph{flex-direction:column}
+  .cmp3 thead{display:none}
+  .cmp3,.cmp3 tbody,.cmp3 tr,.cmp3 th,.cmp3 td{display:block;width:auto}
+  .cmp3 tr{border-bottom:1px solid var(--line);padding:8px 0}
+  .cmp3 th,.cmp3 td{border:none;padding:3px 0}
+  .cmp3 td::before{content:attr(data-l);display:inline-block;width:76px;font-size:13px;color:var(--acc);font-weight:600}
+  .case dt{border-bottom:none;padding-bottom:0}
+  .case dd{padding:2px 0 10px}
+    .band{flex-direction:column}
+  .band i{height:4px;width:auto}
+  .band i.edge{height:2px;margin:8px 0}
+  .grp{padding:18px 16px}
+}
+@media print{
+  header,.foot{display:none!important}
+  main{padding:0}
+  .seg button{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .it{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<header><div class="hin">
+  <button class="brand" id="brand"><span class="c">지리교과교육론 · 7장</span><span class="n">논쟁학습</span></button>
+  <div class="switch" id="sw"></div>
+</div></header>
+<main id="main"></main>
+
+<script>
+/* ═════ 1. 논쟁적 이슈 ═════ */
+var CHK=[
+ '우리 지역의 대표 음식은 지역 정체성을 지키는 전통일까, 상업적 브랜드일까?',
+ '전국의 ‘리단길’, 모든 골목이 핫플레이스가 될 수 있을까?',
+ '배달이 확대되면 맛집 골목은 사라질까?',
+ '인구 감소 시대, 이민이 대안인가?',
+ '식량 위기 속에서 ‘식량 자급’과 ‘가격 안정’ 가운데 무엇을 선택해야 할까?',
+ '포항–울산–거제로 이어지는 동남권 공업 벨트, 산업 전환의 기회인가 쇠퇴의 신호인가?',
+ '서울의 글로벌 경쟁력을 키우는 것과 국토 균형 발전을 지키는 것 가운데 무엇이 우선일까?',
+ '세계자연유산으로 등재될 수 있는 후보 지역은 어디인가?',
+ '강원도 해안 침식에 경성 공법, 연성 공법, 자연 기반 해법 가운데 무엇을 선택할 것인가?',
+ '강원도의 산불은 왜 반복되는가?',
+ '용인의 반도체 단지, 재생에너지가 풍부한 다른 지역으로 옮겨야 할까?',
+ '라선특별시는 북한의 홍콩이 될 수 있을까?',
+ '동아시아의 평화와 공존을 위해 접경 지역은 어떻게 바뀌어야 할까?'
+].map(function(t,i){return {id:'c'+(i+1),t:t};});
+var CO=[['0','아니다'],['1','그렇다'],['2','매우 그렇다']];
+
+/* ═════ 3. 교사의 역할 ═════ */
+var KT=[
+ {k:'a',q:'오늘 수업은 한국의 인구 통계와 외국인 노동자 관련 법규의 사실 정보만 다루겠습니다. 이민 수용에 대한 가치 판단이나 찬반 논의는 수업 시간에 다루지 않습니다.',n:'배타적 중립성',x:'논쟁문제를 가르치는 것 자체를 피한다. 논란은 막지만, 학생이 가치를 따지고 판단하는 법을 배울 기회가 사라진다.'},
+ {k:'b',q:'인구 문제를 해결하려면 이민 확대가 꼭 필요한 유일한 해결책입니다. 다른 방안은 실현 가능성이 낮습니다. 이 관점에서 자료를 분석해 봅시다.',n:'배타적 편파성',x:'한쪽 입장만 가르치고 다른 입장은 다루지 않는다.'},
+ {k:'c',q:'찬성론과 반대론 모두 합리적인 근거가 있습니다. 제 개인적인 견해는 중요하지 않습니다. 여러분이 양쪽 근거와 통계를 분석해 스스로 결론을 내리세요.',n:'중립적 공정성',x:'여러 시각을 다루되 교사는 어떤 입장도 취하지 않는다. 스텐하우스의 ‘절차적 중립’과 같은 입장이다.'},
+ {k:'d',q:'찬반 근거를 공정하게 살펴본 뒤, 저는 사회 통합 프로그램을 전제로 한 점진적 확대가 낫다고 생각합니다. 하지만 이것은 하나의 관점일 뿐입니다. 제 생각에 반대하는 논리를 환영합니다.',n:'신념을 가진 공정성',x:'여러 시각을 다루면서, 교사가 교육적으로 바람직하다고 보는 방향을 하나의 관점으로 밝힌다.'}
+];
+
+var MOM=[
+ {id:'m1',s:'학생: “선생님은 이민 확대에 찬성이에요, 반대예요?”',o:['d','a','c','b'],r:{
+  a:'그런 건 수업에서 다루지 않아요. 통계 자료로 돌아갑시다.',
+  b:'당연히 찬성이죠. 다른 대안은 현실성이 없어요.',
+  c:'제 생각은 말하지 않을게요. 여러분의 판단에 영향을 줄 수 있으니까요. 양쪽 근거를 더 살펴봅시다.',
+  d:'토론이 끝나면 말해 줄게요. 다만 제 생각도 여러 관점 가운데 하나라는 걸 기억해 주세요.'}},
+ {id:'m2',s:'학생: “이민자가 늘면 범죄가 늘어난대요.”',o:['b','c','a','d'],r:{
+  a:'그 문제는 오늘 수업 범위가 아니에요.',
+  b:'그건 편견이에요. 이민은 꼭 필요하다고 했잖아요.',
+  c:'그 주장을 뒷받침하는 자료가 있나요? 다른 사람은 어떤 자료를 알고 있나요?',
+  d:'어디에서 봤어요? 함께 통계를 확인해 봅시다. 저는 근거 없는 일반화는 위험하다고 생각해요. 그래도 그 걱정은 토론해 볼 만한 주제예요.'}},
+ {id:'m3',s:'토론을 시작했는데 학급 대부분이 이민 확대에 반대한다.',o:['c','b','d','a'],r:{
+  a:'의견은 이 정도로 하고, 오늘 배운 법 조항을 정리합시다.',
+  b:'여러분 생각이 틀렸어요. 자료를 다시 보세요.',
+  c:'찬성하는 쪽은 어떤 근거를 들 수 있을까요? 자료를 보고 찬성 쪽 근거를 찾아봅시다.',
+  d:'반대 근거를 잘 정리했네요. 저는 생각이 조금 다른데, 제 근거를 말해 볼 테니 반박해 보세요.'}}
+];
+var KN={};
+var ROLES=[
+ {k:'cm',n:'신념형',d:'교사가 자신의 의견을 자유롭게 제시한다.',w:'인권이나 차별 금지처럼 학교와 사회가 이미 합의한 가치가 걸려 있을 때',c:'논쟁적인 이슈에서 쓰면 교화가 되기 쉽다. 켈리의 배타적 편파성과 가까워진다.',s:['이주민을 혐오하는 표현은 이 교실에서 허용되지 않습니다.','이민 정책에 반대하는 것과 이주민을 차별하는 것은 다른 문제예요. 정책에 대한 의견은 근거를 들어 말해 주세요.']},
+ {k:'ob',n:'객관형',d:'자신의 의견을 밝히지 않고 다양한 관점을 객관적으로 설명한다.',w:'학생들이 기초 사실이나 쟁점의 배경을 잘 모를 때, 토론 전 도입 단계',c:'교사가 고른 관점과 자료에 이미 선택이 들어간다. 설명이 길어지면 학생 참여가 줄어든다.',s:['이민 확대를 지지하는 쪽은 주로 노동력 부족과 고령화를 근거로 듭니다. 반대하는 쪽은 사회 통합 비용과 일자리 경쟁을 걱정합니다.','두 입장이 같은 통계를 어떻게 다르게 해석하는지 표로 정리해 봅시다.']},
+ {k:'da',n:'악마 옹호형',d:'자신의 의견과 관계없이 학생 의견에 반대 입장을 취하며 토론을 진행한다.',w:'학급 의견이 한쪽으로 몰렸을 때, 학생들이 다른 관점을 진지하게 생각해 보지 않을 때',c:'교사의 실제 견해로 오해받을 수 있다. 역할을 맡기 전과 끝난 뒤에 역할이었음을 분명히 밝힌다.',s:['지금 모두 반대 쪽이네요. 제가 잠깐 찬성 쪽 변호인이 되어 볼게요. 이건 제 생각이 아니라 역할입니다.','그렇다면 일할 사람이 없는 농촌과 공장은 어떻게 해야 할까요?','이제 역할을 내려놓을게요. 방금 들은 주장 가운데 다시 생각해 볼 만한 것이 있었나요?']},
+ {k:'ad',n:'관점 옹호형',d:'다양한 관점을 제시하고, 그것을 종합해 자신의 의견을 제시한다.',w:'관점을 고루 검토한 뒤, 근거를 들어 판단하는 모습을 보여 주고 싶을 때',c:'교사의 견해가 정답으로 받아들여지지 않도록, 반대 의견을 환영한다는 점을 분명히 한다.',s:['찬반 근거를 모두 살펴봤어요. 저는 사회 통합 프로그램을 전제로 한 점진적 확대가 낫다고 봅니다. 이유는 두 가지입니다.','이것은 제 판단일 뿐이에요. 제 근거에서 약한 부분을 찾아 반박해 보세요.']},
+ {k:'ch',n:'공정한 의장형',d:'교사의 의견은 말하지 않고, 교사와 학생이 다양한 관점을 토론하도록 공정하게 진행한다.',w:'학생들의 견해가 다양하고 토론에 익숙할 때, 교사의 말이 학생 판단에 지나친 영향을 줄 수 있을 때',c:'학생들이 모르는 관점은 끝내 나오지 않을 수 있다. 교사의 역할을 너무 소극적으로 줄인다는 비판도 받는다.',s:['지금까지 찬성 근거가 세 가지 나왔어요. 반대하는 사람은 어떤 근거를 들 수 있을까요?','그 주장을 뒷받침하는 자료는 무엇인가요?','반박할 때는 사람이 아니라 근거를 향해 말해 주세요.']},
+ {k:'dc',n:'선언적 관심형',d:'교사가 먼저 자신의 입장을 밝히고, 다양한 견해를 객관적으로 소개한다.',w:'교사의 견해가 이미 알려져 있을 때, 학생들이 교사의 생각을 계속 물을 때',c:'입장을 밝힌 뒤 그쪽 자료에 더 힘이 실리지 않도록 한다.',s:['먼저 밝혀 둘게요. 저는 이민 확대에 찬성하는 편입니다.','그러니 제 설명이 한쪽으로 기울면 바로 지적해 주세요. 반대 입장의 가장 강한 근거부터 함께 봅시다.']}
+];
+
+var MENU=[
+ {k:'s1',lb:'왜 논쟁적 이슈인가'},
+ {k:'s2',lb:'어떻게 수업할까'}
+];
+
+function blank(){return {scr:'s1',a:{},k:null,role:null,mo:{}};}
+var S=blank(),dirty=false;
+function $(s){return document.querySelector(s);}
+function item(id,body,opts,ref,rv){
+  var mine=S.a[id];
+  var refs=[].concat(ref);
+  return '<div class="it"><div class="t">'+body+'</div><div class="seg">'+opts.map(function(o){
+    var cls=(mine&&refs.indexOf(o[0])>=0)?' class="ref"':'';
+    return '<button'+cls+' aria-pressed="'+(mine===o[0])+'" data-a="'+id+'" data-v="'+o[0]+'">'+o[1]+'</button>';}).join('')+'</div>'+
+    (mine?'<div class="rv">'+rv+'</div>':'')+'</div>';
+}
+function pick(id,body,opts){
+  var mine=S.a[id];
+  return '<div class="it"><div class="t">'+body+'</div><div class="seg">'+opts.map(function(o){
+    return '<button aria-pressed="'+(mine===o[0])+'" data-a="'+id+'" data-v="'+o[0]+'">'+o[1]+'</button>';}).join('')+'</div></div>';
+}
+function done(list){return list.every(function(x){return S.a[x.id];});}
+var LEG='<div class="legend"><span><i class="a"></i>내 판단</span><span><i class="r"></i>참고 판단</span></div>';
+function src(s){return '<div class="sh">'+s+'</div>';}
+
+/* ═════ 1 ═════ */
+function s1(){
+  var n=CHK.filter(function(c){return S.a[c.id];}).length;
+  var sc=CHK.reduce(function(s,c){return s+(+(S.a[c.id]||0));},0);
+  return '<h1>왜 논쟁적 이슈인가</h1>'+
+  '<section class="grp"><h2 class="gt">나는 지리 수업에서 이 질문을 다룰 수 있다</h2>'+
+   '<div class="items tight">'+CHK.map(function(c){return pick(c.id,c.t,CO);}).join('')+'</div>'+
+   '<p class="score">'+(n===CHK.length?'나의 점수 <b>'+sc+'</b> / 26':'남은 질문 '+(CHK.length-n)+'개')+'</p>'+
+  '</section>'+
+  '<section class="tint">'+
+   '<h2 class="ah2">논쟁적 이슈란</h2>'+
+   '<p>논쟁적 이슈는 <b>개인이나 집단 사이에 의견이 일치하지 않는 이슈</b>다(Roberts, 2013). 사람들이 서로 다른 경험, 관심, 가치에 근거해 다른 관점을 가지며, 쉽게 답할 수 없을 만큼 복잡하고, 감정을 불러일으키는 가치와 신념의 문제를 다룬다(QCA, 2001). 개인적일 수도, 국지적이거나 세계적일 수도 있다.</p>'+
+   '<h2 class="ah2 gap">왜 지리 수업에서 다뤄야 하는가</h2>'+
+   '<div class="ex"><dl>'+
+    '<dt>지리적인 이슈</dt><dd>버스 노선 변경 같은 로컬 이슈부터 탄소 거래 같은 글로벌 이슈까지, 지금의 많은 이슈는 지리적 측면을 갖는다. 지리는 학생들이 복잡하고 해결되지 않은 이슈 속에서 방향을 찾도록 돕는다(Hopwood, 2007).</dd>'+
+    '<dt>정치적 과목</dt><dd>키스 조지프(Joseph, 1985)는 지리를 “정치적 과목이며 가치판단적인 과목”이라고 보았다. 사실적 지식만으로는 충분하지 않고, 문제가 쉽게 정의되고 해결책이 늘 있다는 인상을 주는 것은 잘못 가르치는 것이라고 했다.</dd>'+
+    '<dt>세뇌에 대한 대응</dt><dd>“학교교육에서 지리를 가르치는 이유 중 하나는 세뇌와 선동으로부터 방어할 수 있도록 하기 위함이다.”(Lambert)</dd>'+
+    '<dt>학생의 관심</dt><dd>영국 11~14세 학생의 93%가 세계의 다른 지역에 영향을 미치는 이슈를 배우는 것이 중요하다고 답했다(Ipsos MORI, 2009).</dd>'+
+   '</dl></div>'+
+  '</section>';
+}
+
+/* ═════ 2 ═════ */
+function s2(){
+  var k=S.k, r=S.role, R=null;ROLES.forEach(function(x){if(x.k===r)R=x;});
+  KT.forEach(function(t){KN[t.k]=t.n;});
+  var mo=S.mo, mdone=MOM.every(function(m){return mo[m.id];});
+  var h='<h1>어떻게 수업할까</h1>'+
+  '<section class="grp"><h2 class="gt">인구 감소 시대, 이민이 대안인가?</h2>'+
+   '<div class="kt">'+KT.map(function(t){
+     return '<div class="kc'+(k===t.k?' on':'')+'"><div class="kh">교사 '+t.k.toUpperCase()+(k?' <span>'+t.n+'</span>':'')+'</div><p>“'+t.q+'”</p>'+
+       (k?'<p class="kx">'+t.x+'</p>':'<button class="kb" data-k="'+t.k+'">나라면 이 교사</button>')+'</div>';}).join('')+'</div>'+
+   (k?'<p class="sum">켈리(Kelly, 1986)의 네 유형이다. 켈리는 신념을 가진 공정성이 가장 바람직하다고 보았고, 교재도 우리 사회의 전통과 학교 문화를 고려하면 이 역할이 가장 적절하다고 본다(차경수·모경환, 2008).</p>':'')+
+  '</section>';
+  h+='<section class="grp"><h2 class="gt">토론에서 나는 어떤 역할을 맡을까</h2>'+
+   '<div class="rp">'+ROLES.map(function(x){return '<button aria-pressed="'+(r===x.k)+'" data-r="'+x.k+'">'+x.n+'</button>';}).join('')+'</div>'+
+   (R?'<div class="rc"><dl class="case">'+
+     '<dt>하는 일</dt><dd>'+R.d+'</dd>'+
+     '<dt>잘 맞는 때</dt><dd>'+R.w+'</dd>'+
+     '<dt>주의할 점</dt><dd>'+R.c+'</dd>'+
+     '<dt>이렇게 말한다</dt><dd>'+R.s.map(function(s){return '<p class="say">“'+s+'”</p>';}).join('')+'</dd>'+
+    '</dl></div>':'')+
+   '<p class="pr2">교재에 실린 하우드(Harwood)의 여섯 역할이다. 하우드는 공정한 의장형을 가장 바람직하다고 보았지만, 교사의 역할을 너무 소극적으로 줄인다는 비판도 받는다.</p>'+
+  '</section>'+
+  '<section class="tint"><h2 class="ah2">이민 수업을 진행하는 방법</h2>'+
+   '<table class="tbl cmp3 mt3"><thead><tr><th></th><td>이렇게 진행한다</td><td>어울리는 교사 역할</td></tr></thead><tbody>'+
+    '<tr><th>충성의 배지</th><td data-l="진행">이민 확대에 대한 찬반 정도를 다섯 단계 배지로 달고, 원으로 둘러앉아 다른 배지를 단 학생과 토론한다.</td><td data-l="역할">공정한 의장형 — 발언 순서와 규칙을 관리한다.</td></tr>'+
+    '<tr><th>뜨거운 의자</th><td data-l="진행">외국인 노동자, 농촌 고용주, 지역 주민, 정책 담당 공무원 역할을 맡은 학생이 차례로 의자에 앉아 질문을 받는다.</td><td data-l="역할">객관형 — 역할마다 자료를 균형 있게 준비해 준다.</td></tr>'+
+    '<tr><th>동심원</th><td data-l="진행">안쪽과 바깥쪽 원으로 마주 앉아 토론하고, 2분마다 바깥 원이 한 칸씩 옮겨 새 짝과 토론한다.</td><td data-l="역할">악마 옹호형 — 의견이 한쪽으로 쏠리면 반대 근거를 던진다.</td></tr>'+
+    '<tr><th>공청회 역할극</th><td data-l="진행">“우리 군에 외국인 계절 노동자 기숙사를 지을 것인가”를 두고 공청회를 열고, 위원회가 결정을 내린다.</td><td data-l="역할">선언적 관심형 — 결정이 끝난 뒤 자신의 견해를 밝힌다.</td></tr>'+
+   '</tbody></table>'+
+  '</section>';
+  return h;
+}
+
+/* ═════ 그리기 ═════ */
+var V={s1:s1,s2:s2};
+function foot(){
+  return '<div class="foot"><button id="print">인쇄 · PDF</button>'+
+   '<button id="save">작업 저장</button><button id="load">불러오기</button>'+
+   '<span class="msg" id="msg"></span><input type="file" id="file" accept=".json" hidden></div>';
+}
+function switcher(){
+  $('#sw').innerHTML=MENU.map(function(m,i){
+    return '<button aria-current="'+(S.scr===m.k)+'" data-go="'+m.k+'"><b>'+(i+1)+'</b><span class="lb">'+m.lb+'</span></button>';}).join('');
+}
+function go(k){S.scr=k;paint();window.scrollTo(0,0);}
+function paint(){
+  switcher();
+  $('#main').innerHTML=V[S.scr]()+foot();
+  if($('#print')){$('#print').onclick=function(){window.print();};
+    $('#save').onclick=save;$('#load').onclick=function(){$('#file').click();};
+    $('#file').onchange=load;}
+}
+function keep(fn){var y=window.scrollY;fn();window.scrollTo(0,y);}
+document.addEventListener('click',function(e){
+  var b=e.target.closest('button');if(!b)return;
+  var d=b.dataset;
+  if(d.go){go(d.go);return;}
+  if(b.id==='brand'){go('s1');return;}
+  if(d.a){S.a[d.a]=d.v;dirty=true;keep(paint);return;}
+  if(d.k){S.k=d.k;dirty=true;keep(paint);return;}
+  if(d.r){S.role=d.r;dirty=true;keep(paint);return;}
+  if(d.m){S.mo[d.m]=d.v;dirty=true;keep(paint);return;}
+  if(b.id==='mreset'){S.mo={};keep(paint);return;}
+});
+function flash(t){var e=$('#msg');if(e){e.textContent=t;setTimeout(function(){e.textContent='';},2400);}}
+function stamp(){var d=new Date();return ''+d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');}
+function save(){var b=new Blob([JSON.stringify(S,null,2)],{type:'application/json'}),a=document.createElement('a');
+  a.href=URL.createObjectURL(b);a.download='논쟁학습_'+stamp()+'.json';a.click();
+  URL.revokeObjectURL(a.href);dirty=false;flash('저장했습니다');}
+function load(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();
+  r.onload=function(){try{var d=JSON.parse(r.result),b=blank();
+    S=Object.assign(b,d);S.a=S.a||{};S.mo=S.mo||{};if(!V[S.scr]||S.scr==='home')S.scr='s1';
+    dirty=false;paint();flash('불러왔습니다');
+  }catch(x){flash('이 화면에서 저장한 파일인지 확인하십시오');}e.target.value='';};
+  r.readAsText(f);}
+window.addEventListener('beforeunload',function(e){if(dirty){e.preventDefault();e.returnValue='';}});
+function setHH(){document.documentElement.style.setProperty('--hh',document.querySelector('header').offsetHeight+'px');}
+window.addEventListener('resize',setHH);
+paint();setHH();
+</script>
+</body>
+</html>

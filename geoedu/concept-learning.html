@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>지리교과교육론 · 개념학습</title>
+<style>
+/* ═══ 수업자료 공통 스타일 v2 — 매주 이 블록을 그대로 재사용 ═══
+   폭: --w 하나로 정한다. 980px = 본문 920px + 좌우 여백 30px씩.
+       아이패드 가로(1,024px 이상)에 맞춘 최대 폭이며, 더 좁은 화면에서는 화면에 맞춰 줄어든다.
+       본문 블록에는 따로 max-width를 주지 않는다 — 머리글과 본문의 양 끝이 같은 선에 온다.
+   좁은 화면: 640px 이하(휴대폰)에서만 세로로 쌓는다. 아이패드는 세로로 들어도 같은 배치. */
+html{overflow-y:scroll}
+:root{
+  --ink:#111517; --mid:#525C60; --soft:#8A9296;
+  --line:#E2E5E2; --line2:#EFF1EE; --wash:#F5F7F5;
+  --acc:#0E5A50; --acc-w:#E2EFEA; --red:#A03A26;
+  --mark:#F6E7B8;
+  --warn-l:#E7D8B6; --warn-b:#FCF7EB; --warn-t:#6D5421;
+  --f:Pretendard,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --w:980px; --hh:56px;
+}
+*{box-sizing:border-box} html,body{margin:0}
+body{background:#fff;color:var(--ink);font-family:var(--f);font-size:16px;
+  line-height:1.75;-webkit-font-smoothing:antialiased;letter-spacing:-.005em}
+button,input,textarea{font-family:inherit;font-size:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+
+header{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.96);
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.hin{max-width:var(--w);margin:0 auto;padding:9px 30px;display:flex;align-items:center;gap:18px}
+.brand{background:none;border:none;cursor:pointer;padding:0;text-align:left;line-height:1.3}
+.brand .c{display:block;font-size:11.5px;color:var(--soft)}
+.brand .n{display:block;font-size:14.5px;font-weight:600}
+.switch{margin-left:auto;display:flex;gap:3px;overflow:auto}
+.switch button{background:none;border:1px solid transparent;border-radius:6px;cursor:pointer;
+  padding:5px 10px;font-size:13px;color:var(--mid);white-space:nowrap}
+.switch button:hover{border-color:var(--line);color:var(--ink)}
+.switch button[aria-current="true"]{background:var(--acc-w);color:var(--acc);font-weight:600}
+.switch b{color:var(--soft);font-weight:600;margin-right:5px}
+.switch button[aria-current="true"] b{color:var(--acc)}
+
+main{max-width:var(--w);margin:0 auto;padding:44px 30px 110px}
+.stage{font-size:13px;color:var(--acc);font-weight:600;letter-spacing:.06em;margin:0 0 6px}
+h1{font-size:33px;font-weight:700;letter-spacing:-.03em;line-height:1.25;margin:0 0 14px}
+.lead{color:var(--mid);font-size:16.5px;margin:0 0 32px;max-width:70ch}
+.lead b{color:var(--ink)}
+
+.menu{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:28px}
+.mcard{text-align:left;background:none;border:1px solid var(--line);border-radius:12px;
+  padding:24px;cursor:pointer;transition:border-color .12s}
+.mcard:hover{border-color:var(--acc)}
+.mcard .k{font-size:12.5px;color:var(--acc);font-weight:600;letter-spacing:.06em}
+.mcard h3{margin:6px 0 8px;font-size:19px;font-weight:700;letter-spacing:-.02em;line-height:1.35}
+.mcard p{margin:0;color:var(--mid);font-size:14.5px;line-height:1.65}
+.mcard .m{margin-top:14px;font-size:13px;color:var(--soft)}
+.arc{margin:34px 0 0;padding-top:20px;border-top:1px solid var(--line2);
+  font-size:14.5px;color:var(--mid);display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.arc span{background:var(--wash);border-radius:6px;padding:4px 10px;color:var(--ink)}
+.arc i{font-style:normal;color:var(--soft)}
+
+.concept{background:var(--wash);border-radius:10px;padding:20px 24px;margin:6px 0 26px}
+.concept h3{margin:0 0 10px;font-size:13px;color:var(--acc);font-weight:600;letter-spacing:.04em}
+.concept dl{display:grid;grid-template-columns:170px minmax(0,1fr);gap:7px 16px;margin:0;font-size:15px}
+.concept dt{font-weight:600}
+.concept dd{margin:0;color:var(--mid)}
+.concept p{margin:12px 0 0;font-size:14.5px;color:var(--mid)}
+.concept p b{color:var(--ink)}
+
+.step{margin-bottom:46px}
+.step>h3{margin:0 0 3px;font-size:17px;font-weight:700;letter-spacing:-.02em}
+.step>h3 b{color:var(--acc);margin-right:9px}
+.step>.d{margin:0 0 16px;color:var(--mid);font-size:14.5px;max-width:74ch}
+
+.opt,.tag{background:none;border:1px solid var(--line);border-radius:6px;cursor:pointer;
+  padding:6px 12px;font-size:14px;color:var(--mid)}
+.opt:hover,.tag:hover{border-color:var(--acc);color:var(--ink)}
+.opt[aria-pressed="true"],.tag[aria-pressed="true"]{background:var(--acc);border-color:var(--acc);color:#fff}
+.opt:disabled{opacity:.4;cursor:not-allowed}
+.opt:disabled:hover{border-color:var(--line);color:var(--mid)}
+textarea,.inp{width:100%;min-height:96px;border:1px solid var(--line);border-radius:7px;
+  padding:11px 13px;resize:vertical;background:none;line-height:1.7}
+.inp{min-height:0;padding:7px 11px}
+textarea:focus,.inp:focus{border-color:var(--acc);outline:none}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.notice{border:1px solid var(--warn-l);background:var(--warn-b);border-radius:9px;
+  padding:14px 18px;color:var(--warn-t);font-size:14.5px;margin:14px 0}
+.count{font-size:14px;color:var(--mid)}
+.count b{color:var(--acc);font-weight:700}
+
+.foot{margin-top:54px;padding-top:16px;border-top:1px solid var(--line);
+  display:flex;align-items:center;gap:18px;font-size:14px;color:var(--mid);flex-wrap:wrap}
+.foot button{background:none;border:none;cursor:pointer;color:var(--mid);padding:0}
+.foot button:hover{color:var(--ink)}
+.foot .msg{color:var(--acc)}
+@media(max-width:640px){
+  .hin,main{padding-left:16px;padding-right:16px}
+  .brand .c{display:none} h1{font-size:26px} .switch .lb{display:none}
+  .concept dl{grid-template-columns:1fr}
+  .menu{grid-template-columns:1fr}
+}
+/* ═══ 공통 스타일 v2 끝 ═══ */
+
+
+/* 판단 버튼 (내 판단 = 채움, 참고 판단 = 테두리) */
+.seg{display:flex;gap:5px;flex-wrap:wrap}
+.seg button{background:none;border:1px solid var(--line);border-radius:14px;cursor:pointer;
+  padding:0 12px;font-size:13.5px;color:var(--mid);line-height:1.9}
+.seg button:hover{border-color:var(--acc);color:var(--ink)}
+.seg button[aria-pressed="true"]{background:var(--acc);border-color:var(--acc);color:#fff}
+.seg button.ref{box-shadow:0 0 0 2px #fff,0 0 0 3.5px var(--ink)}
+.legend{display:flex;gap:22px;flex-wrap:wrap;font-size:13.5px;color:var(--mid);align-items:center;margin:0 0 12px}
+.legend i{display:inline-block;width:22px;height:14px;border-radius:8px;vertical-align:-2px;margin-right:7px;box-sizing:border-box}
+.legend .a{background:var(--acc)}
+.legend .r{border:1px solid var(--line);box-shadow:0 0 0 2px #fff,0 0 0 3.5px var(--ink)}
+
+.grp{border:1px solid var(--line);border-radius:12px;padding:24px 28px 20px;margin:0 0 24px}
+.plain{margin:0 0 28px}
+.plain>p{margin:0 0 16px;font-size:15.5px;line-height:1.85}
+.plain>p b{font-weight:700}
+.grp .gt{margin:0 0 12px;font-size:20px;font-weight:700;letter-spacing:-.02em}
+.grp>p{margin:0 0 16px;font-size:15.5px;line-height:1.85}
+.grp>p b{font-weight:700}
+.grp .flow{margin-bottom:2px}
+.grp .items{border-top:1px solid var(--line)}
+.gt2{margin-top:30px!important}
+.model{margin:34px 0 0;padding-top:22px;border-top:2px solid var(--ink)}
+.model>h2{margin:0 0 10px;font-size:22px;font-weight:700;letter-spacing:-.02em}
+.model>p{margin:0 0 16px;font-size:15.5px;line-height:1.85}
+.model>p b{font-weight:700}
+.ah{margin:44px 0 0;font-size:22px;font-weight:700;letter-spacing:-.02em}
+.st{padding:16px 0 4px;border-top:1px solid var(--line2)}
+.grp .st:first-of-type{border-top:none;padding-top:0}
+.st:last-of-type{padding-bottom:0}
+.st>h2{margin:0 0 10px;font-size:18px;font-weight:700;letter-spacing:-.02em}
+.st .def{margin-bottom:6px}
+.st .proto{margin-bottom:6px}
+.st .items{border-top:none}
+.band{display:flex;align-items:stretch;gap:0;margin:4px 0 14px;font-size:14px}
+.band .bc{flex:1;padding:8px 10px;border-top:3px solid var(--acc)}
+.band .bc:nth-of-type(2){border-top-color:#5E8F86}
+.band .bc:nth-of-type(3){border-top-color:#A9C3BD}
+.band .bc.out{border-top-color:var(--line)}
+.band .bc span{display:block;font-size:12px;color:var(--soft)}
+.band .bc b{font-weight:600;line-height:1.5}
+.band i{width:8px}
+.band i.edge{width:2px;background:var(--ink);margin:0 10px}
+.sum{font-size:15.5px;line-height:1.85;margin:0 0 8px}
+.sum b{font-weight:700}
+.wait{font-size:14px;color:var(--soft);margin:0 0 8px}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:0 0 16px}
+.pc{border-top:1px solid var(--line);padding:12px 0 0}
+.pc>b{display:block;font-size:16px;font-weight:700;margin-bottom:2px}
+.pc>p{margin:0 0 10px;font-size:14.5px;line-height:1.7;color:var(--mid)}
+.pc .rv{margin-top:10px}
+.gs2{margin:24px 0 8px;font-size:16px;font-weight:700}
+.pr{font-size:15px!important;line-height:1.75!important;background:var(--wash);border-radius:8px;padding:10px 14px;margin:0 0 14px!important}
+.pr b{margin-right:8px;color:var(--acc)}
+.th{margin:0 0 34px}
+.th>h2,.ap>h2{font-size:21px;font-weight:700;letter-spacing:-.02em;margin:0 0 10px}
+.th>p{margin:0 0 16px;font-size:15.5px;line-height:1.85}
+.th>p b{font-weight:700}
+.ex{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:14px 0 10px;margin:0 0 18px}
+.ex+.ex{border-top:none;margin-top:-18px}
+.ex h3{margin:0 0 8px;font-size:13px;color:var(--acc);font-weight:600;letter-spacing:.04em}
+.ex dl{display:grid;grid-template-columns:120px minmax(0,1fr);gap:6px 16px;margin:0;font-size:15px;line-height:1.7}
+.ex dt{font-weight:600}
+.ex dd{margin:0;color:var(--mid)}
+.sh{margin:0 0 6px;font-size:13px;color:var(--soft);font-weight:600;letter-spacing:.04em}
+.flow{margin:0 0 18px;display:flex;flex-wrap:wrap;gap:6px 0;font-size:14.5px}
+.flow span{display:flex;align-items:center}
+.flow span+span::before{content:"→";margin:0 10px;color:var(--soft)}
+.flow b{font-weight:700;margin-right:5px;color:var(--acc)}
+.stl{font-size:12.5px;color:var(--acc);font-weight:700;letter-spacing:.04em;margin:0 0 4px}
+.done .stl{margin-bottom:6px}
+.items.tight .it{padding:8px 0;align-items:center}
+.items.tight .rv{padding:7px 12px}
+.th .flow{color:var(--ink)}
+.ap{border-top:2px solid var(--ink);padding-top:20px}
+.blk{margin:0 0 30px}
+.pq{font-size:18px;font-weight:600;letter-spacing:-.015em;line-height:1.55;margin:0 0 16px}
+.blk>h2{font-size:19px;font-weight:700;letter-spacing:-.02em;margin:0 0 10px}
+.def{border-left:3px solid var(--acc);padding:4px 0 4px 16px;margin:0 0 22px;font-size:16.5px;line-height:1.75}
+.def b{font-weight:700}
+.items{border-top:1px solid var(--line)}
+.it{padding:15px 0;border-bottom:1px solid var(--line2);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 20px;align-items:start}
+.it .t{font-size:16px;line-height:1.65}
+.it .t b{font-weight:700;margin-right:8px}
+.it .t small{display:block;font-size:14.5px;color:var(--mid);margin-top:2px;line-height:1.7}
+.it .seg{justify-content:flex-end;padding-top:1px}
+.rv{grid-column:1/-1;padding:10px 14px;background:var(--wash);border-radius:8px;font-size:14.5px;line-height:1.75;color:var(--mid)}
+.rv b{color:var(--ink);font-weight:700;margin-right:6px}
+.proto{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 28px;background:var(--wash);border-radius:10px;padding:18px 22px;margin:0 0 22px}
+.proto h3{grid-column:1/-1;margin:0 0 6px;font-size:13px;color:var(--acc);font-weight:600;letter-spacing:.04em}
+.proto p{margin:0;font-size:15px;line-height:1.8}
+.proto ul{margin:0;padding-left:18px;font-size:15px;line-height:1.8}
+.done{border-top:2px solid var(--acc);padding-top:14px;margin-top:22px}
+.done h4{margin:0 0 6px;font-size:13px;color:var(--acc);font-weight:600;letter-spacing:.04em}
+.done p{margin:0 0 8px;font-size:15px;line-height:1.8;color:var(--mid)}
+.done p b{color:var(--ink)}
+
+@media(max-width:640px){
+  .it{grid-template-columns:1fr}
+  .it .seg{justify-content:flex-start}
+  .proto{grid-template-columns:1fr;gap:10px}
+  .ex dl{grid-template-columns:1fr;gap:2px}
+  .pair{grid-template-columns:1fr}
+  .band{flex-direction:column}
+  .band i{height:4px;width:auto}
+  .band i.edge{height:2px;margin:8px 0}
+  .grp{padding:18px 16px}
+}
+@media print{
+  header,.foot{display:none!important}
+  main{padding:0}
+  .seg button{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .it{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<header><div class="hin">
+  <button class="brand" id="brand"><span class="c">지리교과교육론 · 7장</span><span class="n">개념학습</span></button>
+  <div class="switch" id="sw"></div>
+</div></header>
+<main id="main"></main>
+
+<script>
+/* ═════ 1. 속성모형 — 삼각주 ═════ */
+var ATTR=[
+ {id:'a1',r:'c',t:'하천이 바다나 호수로 흘러드는 하구에 있다.',
+  x:'선상지와 범람원도 하천이 쌓은 지형이지만 하구에 있지 않다.'},
+ {id:'a2',r:'c',t:'하천이 운반해 온 물질이 쌓여 생겼다.',
+  x:'바닷가에도 모래가 쌓인 땅이 있지만, 파랑과 연안류가 쌓은 것은 삼각주가 아니다.'},
+ {id:'a3',r:'n',t:'삼각형 모양이다.',
+  x:'이름은 그리스 문자 Δ(델타)를 닮은 나일강 하구에서 왔지만, 하천과 바다의 힘에 따라 모양은 다양하다.'},
+ {id:'a4',r:'n',t:'평탄하고 비옥해 농경지로 쓰인다.',
+  x:'범람원도 평탄하고 비옥해 농경지로 쓰인다. 삼각주만의 속성이 아니다.'}
+];
+/* 실례·비실례 짝 — 겉모습은 닮고 결정적 속성만 다르게 */
+var PAIRS=[
+ [{id:'p1',r:'y',n:'나일강 하구',d:'나일강이 지중해로 흘러드는 곳에 강이 실어 온 흙과 모래가 부채꼴로 쌓인 땅이다.',
+   x:'하구에 하천 운반 물질이 쌓였다. 결정적 속성을 모두 갖추었다.'},
+  {id:'p2',r:'n',n:'데스밸리 산기슭',d:'산지에서 흘러나온 하천이 평지로 나오는 곳에 모래와 자갈이 부채꼴로 쌓인 땅이다.',
+   x:'선상지다. 하천이 쌓았고 모양도 나일강 하구와 닮았지만, 하구가 아니라 산지 골짜기 입구에 쌓였다.'}],
+ [{id:'p3',r:'y',n:'미시시피강 하구',d:'미시시피강이 멕시코만으로 흘러드는 곳에 강이 실어 온 물질이 새발 모양으로 길게 뻗으며 쌓인 땅이다.',
+   x:'삼각형과 전혀 다른 모양이지만, 하구에 하천 운반 물질이 쌓였으므로 삼각주다.'},
+  {id:'p4',r:'n',n:'강릉 경포 해변',d:'바닷가에 모래가 길게 쌓여 둑을 이루고, 그 안쪽에 경포호가 생겼다.',
+   x:'사주다. 바닷가의 퇴적 지형이지만 하천이 아니라 파랑과 연안류가 모래를 옮겨 쌓았다.'}]
+];
+
+var NEW1={id:'n1',r:'y',n:'낙동강 하구',d:'낙동강이 남해로 흘러드는 곳에 강이 실어 온 흙과 모래가 쌓여 넓은 평야와 여러 개의 모래섬이 생겼다. 전체 모양은 삼각형이 아니다.',
+  x:'하구에 하천 운반 물질이 쌓였으므로 삼각주다. 김해평야와 을숙도 일대가 낙동강 삼각주다.'};
+var NEW2={id:'n2',r:'y',n:'스페인 남동부',d:'건조한 기후에서 관개 농업이 늘어 지하수가 줄고, 흙에 소금기가 쌓이며 비가 오면 흙이 쓸려 내려간다.',
+  x:'부유한 나라의 농업 지역이라 사헬과 모습은 많이 다르지만, 건조 지역의 땅이 사람의 이용으로 황폐해진다는 속성을 갖추었으므로 사막화다.'};
+
+/* ═════ 2. 원형모형 — 사막화 ═════ */
+var DES=[
+ {id:'d1',r:'c',n:'몽골 초원',d:'건조한 초원에 가축이 크게 늘어 풀이 사라지고 모래바람이 잦아졌다.',
+  x:'건조 지역, 과도한 방목, 식생 감소와 토양 노출까지 사헬의 특징을 거의 다 갖추었다.'},
+ {id:'d2',r:'f',n:'아랄해 주변',d:'강물을 목화밭 관개에 끌어 써 호수가 줄고, 마른 바닥에서 소금 먼지가 날린다.',
+  x:'건조 지역의 땅이 황폐해졌다는 점은 같지만, 원인이 방목이 아니라 대규모 관개다. 사막화이지만 원형에서 떨어져 있다.'},
+ {id:'d3',r:'f',n:'스페인 남동부',d:'건조한 기후에서 관개 농업이 늘어 지하수가 줄고, 흙에 소금기가 쌓이며 비가 오면 흙이 쓸려 내려간다.',
+  x:'부유한 나라의 농업 지역이라 사헬과 모습은 많이 다르다. 그래도 건조 지역의 땅이 사람의 이용으로 황폐해지므로 사막화다.'},
+ {id:'d4',r:'n',n:'사하라 사막 한가운데',d:'수천 년 동안 비가 거의 내리지 않은 모래와 암석의 땅이다.',
+  x:'건조하다는 점만 닮았다. 원래부터 사막인 곳으로, 땅이 황폐해지는 과정이 없다.'},
+ {id:'d5',r:'n',n:'아마존 벌채지',d:'열대우림을 베어 낸 뒤 버려진 땅에서 흙이 쓸려 나갔다.',
+  x:'땅이 황폐해진 점은 닮았지만 비가 많은 습윤 지역이다.'}
+];
+
+/* ═════ 3. 어떤 모형으로 가르칠까 ═════ */
+var CON=[
+ {id:'c1',r:['p'],n:'칼데라',x:'대규모 분화 뒤 화산체 윗부분이 무너져 내려 생긴 지형이라는 형성 과정이 판단 기준이다. 꼭대기의 분화구나 마르처럼 닮은 비실례와 분명하게 갈린다.'},
+ {id:'c2',r:['o'],n:'도시화',x:'인구 집중, 산업 구조의 변화, 생활양식의 변화가 얽혀 있어 결정적 속성 하나로 정의하기 어렵다. 전형적인 사례에서 출발해 다양한 사례로 넓히는 편이 낫다.'},
+ {id:'c3',r:['p'],n:'기온 역전',x:'고도가 높아질수록 기온이 높아지는 현상이라는 정의가 곧 판단 기준이다. 실례와 비실례가 분명하게 갈린다.'},
+ {id:'c4',r:['o'],n:'세계도시',x:'뉴욕, 런던, 도쿄 같은 대표 사례로 떠올리는 개념이다. 어디까지가 세계도시인지 경계가 흐리다.'},
+ {id:'c5',r:['p'],n:'우각호',x:'곡류 하천의 굽은 부분이 잘려 남은 호수라는 형성 과정이 분명하다.'},
+ {id:'c6',r:['o'],n:'젠트리피케이션',x:'지역마다 나타나는 양상이 달라 공통 속성을 고정하기 어렵다. 런던이나 성수동 같은 전형 사례에서 출발해 다른 사례와 비교한다.'},
+ {id:'c7',r:['p','o'],n:'열대우림',x:'연중 기온이 높고 비가 많다는 기후 조건으로 정의하면 속성모형으로, 아마존 같은 전형적인 경관에서 출발하면 원형모형으로 가르칠 수 있다. 수업의 목적에 따라 고른다.'},
+ {id:'c8',r:['o'],n:'지속가능한 발전',x:'정의는 있지만 무엇이 지속가능한지는 맥락마다 판단이 달라진다. 대표 사례를 통해 의미를 잡아 가는 편이 낫다.'}
+];
+
+var MENU=[
+ {k:'s1',lb:'속성모형',h:'속성모형',d:'속성모형의 원리와 수업 단계를 포유류로 확인하고, 칼데라의 결정적 속성과 실례·비실례를 가려냅니다.',m:'설명 · 판단 7개'},
+ {k:'s2',lb:'원형모형',h:'원형모형',d:'원형모형의 원리와 수업 단계를 새로 확인하고, 사헬을 원형으로 삼아 사막화 사례를 판단합니다.',m:'설명 · 판단 4개'},
+ {k:'s3',lb:'모형 고르기',h:'어떤 모형으로 가르칠까',d:'지리 개념 8개를 속성모형과 원형모형 가운데 어느 쪽으로 가르칠지 고릅니다.',m:'판단 8개'}
+];
+
+function blank(){return {scr:'s1',a:{}};}
+var S=blank(),dirty=false;
+function $(s){return document.querySelector(s);}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+
+/* 판단 한 줄 */
+function item(id,body,opts,ref,rv){
+  var mine=S.a[id];
+  var refs=[].concat(ref);
+  return '<div class="it"><div class="t">'+body+'</div><div class="seg">'+opts.map(function(o){
+    var cls=(mine&&refs.indexOf(o[0])>=0)?' class="ref"':'';
+    return '<button'+cls+' aria-pressed="'+(mine===o[0])+'" data-a="'+id+'" data-v="'+o[0]+'">'+o[1]+'</button>';}).join('')+'</div>'+
+    (mine?'<div class="rv">'+rv+'</div>':'')+'</div>';
+}
+function done(list){return list.every(function(x){return S.a[x.id];});}
+var LEG='<div class="legend"><span><i class="a"></i>내 판단</span><span><i class="r"></i>참고 판단</span></div>';
+
+/* ═════ 홈 ═════ */
+function steps(arr,on){
+  return '<div class="flow">'+arr.map(function(s,i){return '<span'+(on.indexOf(i)>=0?' class="on"':'')+'><b>'+(i+1)+'</b>'+s+'</span>';}).join('')+'</div>';
+}
+function stl(n,s){return '<div class="stl">'+(n?n+' ':'')+s+'</div>';}
+var ST1=['문제 제기','개념 정의','결정적·비결정적 속성 검토','실례·비실례 제시','새로운 사례에 적용'];
+var ST2=['문제 제기','원형(가장 대표적인 실례) 제시','다양한 실례·비실례와 비교','속성 검토','새로운 사례에 적용'];
+
+/* ═════ 홈 → 속성모형으로 바로 연다 ═════ */
+function home(){return s1();}
+
+/* ═════ 1 ═════ */
+function pairHTML(pr){
+  return '<div class="pair">'+pr.map(function(c){
+    var mine=S.a[c.id];
+    return '<div class="pc"><b>'+c.n+'</b><p>'+c.d+'</p><div class="seg">'+[['y','실례'],['n','비실례']].map(function(o){
+      var cls=(mine&&c.r===o[0])?' class="ref"':'';
+      return '<button'+cls+' aria-pressed="'+(mine===o[0])+'" data-a="'+c.id+'" data-v="'+o[0]+'">'+o[1]+'</button>';}).join('')+'</div>'+
+      (mine?'<div class="rv"><b>'+(c.r==='y'?'실례':'비실례')+'</b>'+c.x+'</div>':'')+'</div>';}).join('')+'</div>';
+}
+function s1(){
+  var CN={c:'결정적 속성',n:'비결정적 속성'};
+  return '<h1>속성모형</h1>'+
+  '<section class="plain">'+
+   '<p><b>속성모형</b>(고전모형)은 개념이 그 개념에 속하는 사례들이 공통으로 가진 <b>결정적 속성</b>으로 정의된다고 본다. 결정적 속성은 그 개념을 다른 것과 구별하는 데 꼭 필요한 속성이고, 개념에 속하는 사례가 흔히 갖지만 다른 것도 가질 수 있는 속성은 <b>비결정적 속성</b>이다. 수업은 정의와 결정적 속성을 먼저 제시하고, 이를 기준으로 개념에 속하는 사례(<b>실례</b>)와 속하지 않는 사례(<b>비실례</b>)를 판단하게 한다. 정의에서 사례로 나아가는 연역적 수업이다.</p>'+
+   '<div class="ex"><h3>예시 — 포유류</h3><dl>'+
+    '<dt>결정적 속성</dt><dd>새끼에게 젖을 먹여 기른다.</dd>'+
+    '<dt>비결정적 속성</dt><dd>새끼를 낳는다(오리너구리는 알을 낳는다) · 땅에서 산다(고래는 바다에 산다) · 날지 못한다(박쥐는 난다)</dd>'+
+    '<dt>실례</dt><dd>고래, 박쥐, 오리너구리 — 겉모습은 달라도 결정적 속성을 갖추었다.</dd>'+
+    '<dt>비실례</dt><dd>상어 — 고래와 닮았지만 새끼에게 젖을 먹이지 않는다. 개념에 가깝지만 결정적 속성이 없는 비실례가 개념의 경계를 가장 분명하게 보여 준다.</dd></dl></div>'+
+   '<div class="ex"><h3>알맞은 개념과 한계</h3><dl>'+
+    '<dt>알맞은 개념</dt><dd>결정적 속성과 경계를 분명하게 말할 수 있는 개념. 지형처럼 위치와 형성 과정으로 정의되는 개념이 대표적이다(삼각주, 칼데라, 우각호).</dd>'+
+    '<dt>한계</dt><dd>모든 실례를 똑같이 취급하지만, 사람들은 실제로 더 전형적인 실례와 덜 전형적인 실례를 구별한다. 결정적 속성을 말하기 어려운 추상적 개념에는 적용하기 어렵다.</dd></dl></div>'+
+  '</section>'+
+  '<section class="grp"><h2 class="gt">삼각주</h2>'+
+   '<div class="st">'+stl(1,'개념 정의')+
+    '<div class="def"><b>삼각주</b> 하천이 바다나 호수로 흘러드는 하구에서 유속이 느려지면서, 하천이 운반해 온 물질이 쌓여 만들어진 퇴적 지형</div></div>'+
+   '<div class="st">'+stl(2,'결정적 속성 찾기')+LEG+
+    '<div class="items tight">'+ATTR.map(function(a){
+     return item(a.id,a.t,[['c','결정적'],['n','비결정적']],a.r,'<b>'+CN[a.r]+'</b>'+a.x);}).join('')+'</div></div>'+
+   '<div class="st">'+stl(3,'결정적 속성으로 실례·비실례 가르기')+PAIRS.map(pairHTML).join('')+'</div>'+
+  '</section>';
+}
+
+/* ═════ 2 ═════ */
+var PO=[['c','원형에 가깝다'],['f','원형에서 멀다'],['n','사막화가 아니다']];
+var PN={c:'원형에 가까운 실례',f:'원형에서 먼 실례',n:'비실례'};
+function s2(){
+  var d=done(DES);
+  return '<h1>원형모형</h1>'+
+  '<section class="plain">'+
+   '<p><b>원형모형</b>(전형모형)은 사람들이 개념을 결정적 속성의 목록보다 그 개념을 가장 잘 대표하는 <b>원형</b>의 이미지로 기억한다고 본다. 원형이 지닌 특징은 대부분의 실례가 갖지만 모든 실례가 꼭 가져야 하는 것은 아니다. 그래서 새로운 사례는 규칙에 맞는지가 아니라 <b>원형과 얼마나 닮았는지</b>로 판단하고, 같은 개념 안에도 원형에 가까운 실례와 먼 실례가 생긴다. 수업은 정의가 아니라 대표적인 실례에서 출발한다. 교재는 사례에서 개념으로 나아간다는 점에서 이를 귀납적 수업모형이라 부른다.</p>'+
+   '<div class="ex"><h3>예시 — 새</h3><dl>'+
+    '<dt>원형</dt><dd>참새, 비둘기 — ‘새’ 하면 가장 먼저 떠오른다.</dd>'+
+    '<dt>덜 전형적인 실례</dt><dd>닭, 오리 → 펭귄, 타조 — 모두 새지만 원형에서 점점 멀어진다.</dd>'+
+    '<dt>비실례</dt><dd>박쥐 — 날개가 있고 날지만 새가 아니다.</dd>'+
+    '<dt>근거</dt><dd>사람들은 “참새는 새다”가 맞는지를 “펭귄은 새다”보다 더 빨리 판단한다. 같은 개념 안에서도 사례마다 전형성이 다르다는 뜻이다(Rosch의 연구).</dd></dl></div>'+
+   '<div class="ex"><h3>알맞은 개념과 한계</h3><dl>'+
+    '<dt>알맞은 개념</dt><dd>여러 특징이 얽혀 결정적 속성을 뽑아내기 어렵거나, 학생에게 낯설고 추상적인 개념(도시화, 사막화).</dd>'+
+    '<dt>한계</dt><dd>경계가 흐려 어떤 사례가 개념에 속하는지 판단 기준이 모호해질 수 있다. 사례들이 왜 하나의 개념으로 묶이는지는 원형만으로 설명하기 어려워, 결국 속성 검토가 함께 필요하다.</dd>'+
+    '<dt>상황모형</dt><dd>원형 대신 학생이 이미 겪은 생활 경험이나 구체적 상황에서 출발하는 변형이다. 개념을 학생의 경험과 연결해 의미를 구성하게 한다.</dd></dl></div>'+
+  '</section>'+
+  '<section class="grp"><h2 class="gt">사막화</h2>'+
+   '<div class="st">'+stl(1,'원형의 특징 파악하기')+
+    '<div class="proto"><h3>원형 — 사헬</h3>'+
+     '<p>사하라 사막 남쪽 가장자리를 따라 동서로 길게 이어진 반건조 지역이다. 1970~80년대에 긴 가뭄이 이어지는 동안 가축 방목과 경작, 땔감 채취가 늘면서 풀과 나무가 사라지고 흙이 바람과 빗물에 쓸려 나갔다.</p>'+
+     '<ul><li>건조·반건조 지역</li><li>가뭄</li><li>과도한 방목·경작·땔감 채취</li><li>식생 감소와 토양 침식</li></ul></div></div>'+
+   '<div class="st">'+stl(2,'원형과 얼마나 닮았는지 견주기')+LEG+
+    '<div class="items tight">'+DES.map(function(c){
+     return item(c.id,'<b>'+c.n+'</b><small>'+c.d+'</small>',PO,c.r,'<b>'+PN[c.r]+'</b>'+c.x);}).join('')+'</div></div>'+
+   (d?'<div class="st">'+stl(3,'개념의 중심과 경계 정리하기')+
+    '<div class="band"><div class="bc"><span>원형</span><b>사헬</b></div><i></i>'+
+     '<div class="bc"><span>원형에 가까운 실례</span><b>몽골 초원</b></div><i></i>'+
+     '<div class="bc"><span>원형에서 먼 실례</span><b>아랄해 주변 · 스페인 남동부</b></div><i class="edge"></i>'+
+     '<div class="bc out"><span>비실례</span><b>사하라 한가운데 · 아마존 벌채지</b></div></div>'+
+    '<p class="sum">사막화라는 개념은 하나의 규칙이 아니라, 원형을 중심으로 닮은 정도에 따라 펼쳐진 범위로 이해된다. 경계 가까이 갈수록 판단이 어려워진다.</p></div>':'')+
+  '</section>';
+}
+
+/* ═════ 3 ═════ */
+function s3(){
+  var MN={p:'속성모형',o:'원형모형'};
+  var h='<h1>어떤 모형으로 가르칠까</h1>'+LEG+
+  '<div class="items tight">'+CON.map(function(c){
+    return item(c.id,c.n,[['p','속성모형'],['o','원형모형']],c.r,'<b>'+c.r.map(function(k){return MN[k];}).join(' · ')+'</b>'+c.x);}).join('')+'</div>';
+  if(done(CON))h+='<div class="done"><h4>모형을 고르는 기준</h4>'+
+    '<p>결정적 속성을 분명하게 말할 수 있고 실례와 비실례가 깔끔하게 갈리면 <b>속성모형</b>, 여러 특징이 얽혀 경계가 흐리고 대표 사례가 떠오르는 개념이면 <b>원형모형</b>이 알맞다. 열대우림처럼 수업의 목적에 따라 둘 다 가능한 개념도 있다.</p>'+
+    '<p>모형에 수업을 맞추기보다, 학생이 개념을 가장 잘 이해하도록 전략을 고르고 조합하는 것이 교사의 판단이다.</p></div>';
+  return h;
+}
+
+/* ═════ 그리기 ═════ */
+var V={home:home,s1:s1,s2:s2,s3:s3};
+function foot(){
+  return '<div class="foot"><button id="print">인쇄 · PDF</button>'+
+   '<button id="save">작업 저장</button><button id="load">불러오기</button>'+
+   '<span class="msg" id="msg"></span><input type="file" id="file" accept=".json" hidden></div>';
+}
+function switcher(){
+  $('#sw').innerHTML=MENU.map(function(m,i){
+    return '<button aria-current="'+(S.scr===m.k)+'" data-go="'+m.k+'"><b>'+(i+1)+'</b><span class="lb">'+m.lb+'</span></button>';}).join('');
+}
+function go(k){S.scr=k;paint();window.scrollTo(0,0);}
+function paint(){
+  switcher();
+  $('#main').innerHTML=V[S.scr]()+foot();
+  if($('#print')){$('#print').onclick=function(){window.print();};
+    $('#save').onclick=save;$('#load').onclick=function(){$('#file').click();};
+    $('#file').onchange=load;}
+}
+function keep(fn){var y=window.scrollY;fn();window.scrollTo(0,y);}
+document.addEventListener('click',function(e){
+  var b=e.target.closest('button');if(!b)return;
+  var d=b.dataset;
+  if(d.go){go(d.go);return;}
+  if(b.id==='brand'){go('s1');return;}
+  if(d.a){S.a[d.a]=d.v;dirty=true;keep(paint);return;}
+});
+function flash(t){var e=$('#msg');if(e){e.textContent=t;setTimeout(function(){e.textContent='';},2400);}}
+function stamp(){var d=new Date();return ''+d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');}
+function save(){var b=new Blob([JSON.stringify(S,null,2)],{type:'application/json'}),a=document.createElement('a');
+  a.href=URL.createObjectURL(b);a.download='개념학습_'+stamp()+'.json';a.click();
+  URL.revokeObjectURL(a.href);dirty=false;flash('저장했습니다');}
+function load(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();
+  r.onload=function(){try{var d=JSON.parse(r.result),b=blank();
+    S=Object.assign(b,d);S.a=S.a||{};if(!V[S.scr]||S.scr==='home')S.scr='s1';
+    dirty=false;paint();flash('불러왔습니다');
+  }catch(x){flash('이 화면에서 저장한 파일인지 확인하십시오');}e.target.value='';};
+  r.readAsText(f);}
+window.addEventListener('beforeunload',function(e){if(dirty){e.preventDefault();e.returnValue='';}});
+function setHH(){document.documentElement.style.setProperty('--hh',document.querySelector('header').offsetHeight+'px');}
+window.addEventListener('resize',setHH);
+paint();setHH();
+</script>
+</body>
+</html>
