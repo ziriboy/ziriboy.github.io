@@ -406,6 +406,8 @@ table.goodt.crg td.gnote{color:var(--muted);font-size:.9rem}
 .rck.done{color:var(--muted)}
 .rck.done::marker{content:"✓  ";color:var(--ok)}
 .revp h3{font-size:.95rem;font-weight:600}
+#mcGuide table.goodt td,#crGuide table.goodt td{padding:6px 10px;line-height:1.5}
+.revr .anq,.revr .rulel{gap:3px;line-height:1.45}
 
 html{scrollbar-gutter:stable}
 .depmap{display:block;width:100%;max-width:580px;height:auto}
@@ -816,7 +818,7 @@ const MC_EX=[
 /* ===== 서술형 예시 ===== */
 const DEP_SVG=`<svg class="depmap" viewBox="5 6 711 448" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="해안의 퇴적 지형 모식도"><defs><pattern id="dots" width="7" height="7" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="0.9" fill="#222"/><circle cx="5.5" cy="5.5" r="0.9" fill="#222"/></pattern><clipPath id="dclip"><rect x="5" y="6" width="711" height="448"/></clipPath></defs><g clip-path="url(#dclip)"><rect x="0" y="0" width="720" height="459" fill="#DADADA"/><path d="M196.8,7.8 L197.0,9.0 L200.5,11.5 L226.0,20.2 L234.8,25.2 L238.5,29.0 L240.0,32.2 L241.5,45.8 L243.5,48.8 L251.0,55.2 L263.2,58.8 L270.5,58.8 L287.2,62.0 L290.8,64.2 L294.5,68.0 L297.8,73.5 L300.0,86.5 L303.5,93.8 L311.0,101.2 L319.2,104.8 L339.5,104.8 L344.8,107.2 L351.0,112.8 L353.0,118.2 L354.5,128.0 L357.0,132.8 L358.8,133.8 L363.5,133.8 L415.2,118.8 L432.5,117.8 L435.2,116.8 L454.5,116.8 L458.2,115.5 L460.2,113.8 L462.5,108.2 L463.8,95.2 L467.2,88.0 L472.8,84.2 L483.2,81.8 L494.5,81.8 L498.8,83.2 L503.0,87.8 L505.0,93.2 L505.0,98.5 L502.0,107.5 L502.0,113.2 L504.5,115.8 L527.5,115.8 L547.2,111.8 L558.5,111.8 L583.2,123.8 L602.0,121.2 L608.8,114.0 L608.8,107.2 L604.8,83.5 L604.8,76.2 L605.8,70.2 L612.2,53.8 L618.2,43.0 L630.2,28.8 L644.0,16.2 L656.8,8.2 L655.2,7.0 L198.0,7.0Z M5.2,8.0 L5.0,403.8 L5.8,405.0 L20.2,401.8 L72.5,401.8 L81.2,399.8 L94.5,398.8 L110.8,394.2 L115.2,387.0 L118.8,370.5 L118.8,347.2 L120.8,338.5 L120.8,330.2 L121.8,327.2 L121.0,322.5 L122.2,317.8 L125.2,312.0 L132.0,304.2 L138.8,299.8 L157.2,293.8 L178.5,294.8 L192.0,299.2 L216.0,311.8 L219.2,312.8 L226.5,311.8 L230.2,313.0 L241.8,320.5 L249.5,323.5 L261.0,325.8 L264.0,322.0 L269.8,320.8 L270.8,319.0 L269.8,314.2 L270.5,308.5 L262.2,299.8 L257.8,291.8 L255.8,283.5 L255.8,270.2 L254.8,267.5 L255.8,250.2 L257.8,240.2 L261.8,228.5 L261.8,221.2 L264.2,215.5 L270.2,211.8 L277.5,211.8 L282.0,213.8 L299.8,226.2 L308.8,228.2 L316.5,227.8 L333.5,233.5 L335.0,233.2 L337.5,228.8 L340.5,227.0 L355.8,229.5 L358.2,226.2 L361.0,225.0 L360.8,223.5 L349.8,210.5 L340.0,204.5 L331.2,196.0 L323.8,187.0 L321.8,181.5 L321.8,167.2 L326.8,153.8 L332.0,148.2 L341.8,142.2 L343.8,139.2 L343.2,134.8 L335.2,121.0 L330.5,118.0 L318.2,117.0 L312.0,115.0 L304.8,110.5 L288.8,91.0 L286.8,84.5 L286.5,74.5 L282.8,69.5 L273.5,66.0 L260.2,66.0 L256.2,65.0 L242.0,58.5 L236.8,52.0 L231.2,34.8 L227.0,29.0 L213.0,25.0 L195.8,17.0 L183.2,7.0 L6.8,7.0Z" fill="#fff" stroke="#111" stroke-width="1.3" stroke-linejoin="round" fill-rule="evenodd"/><path d="M198.8,378.2 L194.2,368.0 L187.8,362.5 L183.5,362.0 L180.5,364.0 L177.8,374.2 L175.2,376.8 L171.5,376.8 L166.8,373.5 L164.8,373.0 L163.2,373.5 L159.0,378.8 L156.5,379.0 L152.2,377.2 L149.5,377.2 L143.8,383.5 L136.5,386.0 L125.2,386.0 L121.5,385.0 L118.8,383.2 L117.0,383.2 L113.2,390.5 L113.2,392.8 L114.8,393.8 L122.5,393.8 L125.2,392.8 L163.5,392.8 L166.2,391.8 L181.5,390.8 L190.5,388.8 L195.8,386.2 L198.2,383.0Z M296.2,224.5 L285.8,216.5 L279.0,212.5 L270.5,212.0 L267.8,213.0 L265.2,214.8 L264.0,216.8 L263.0,225.5 L257.0,244.2 L257.2,247.8 L260.5,249.5 L262.2,249.2 L264.2,244.5 L271.8,238.8 L283.0,234.2 L295.0,227.8 L296.5,226.0Z M398.5,148.0 L397.0,147.0 L389.2,148.0 L376.8,154.0 L361.0,157.0 L348.8,163.0 L344.2,169.5 L344.5,176.0 L346.8,177.8 L350.2,177.8 L361.8,172.2 L369.8,171.2 L377.8,162.8 L383.8,159.2 L396.8,154.2 L398.5,152.2Z M461.2,111.5 L461.5,114.2 L464.5,115.8 L493.5,115.8 L499.5,113.8 L499.8,108.8 L498.0,107.0 L474.2,107.0 L463.5,109.0Z M665.8,106.8 L664.0,105.0 L660.0,105.2 L650.2,113.5 L641.5,116.0 L623.2,116.0 L620.5,115.0 L612.2,115.0 L607.2,116.5 L606.2,118.8 L610.5,122.8 L621.5,122.8 L624.2,123.8 L652.2,123.8 L657.0,121.8 L662.0,118.0 L663.2,114.5 L665.2,112.0Z" fill="#fff" stroke="#111" stroke-width="1" stroke-linejoin="round"/><path d="M198.8,378.2 L194.2,368.0 L187.8,362.5 L183.5,362.0 L180.5,364.0 L177.8,374.2 L175.2,376.8 L171.5,376.8 L166.8,373.5 L164.8,373.0 L163.2,373.5 L159.0,378.8 L156.5,379.0 L152.2,377.2 L149.5,377.2 L143.8,383.5 L136.5,386.0 L125.2,386.0 L121.5,385.0 L118.8,383.2 L117.0,383.2 L113.2,390.5 L113.2,392.8 L114.8,393.8 L122.5,393.8 L125.2,392.8 L163.5,392.8 L166.2,391.8 L181.5,390.8 L190.5,388.8 L195.8,386.2 L198.2,383.0Z M296.2,224.5 L285.8,216.5 L279.0,212.5 L270.5,212.0 L267.8,213.0 L265.2,214.8 L264.0,216.8 L263.0,225.5 L257.0,244.2 L257.2,247.8 L260.5,249.5 L262.2,249.2 L264.2,244.5 L271.8,238.8 L283.0,234.2 L295.0,227.8 L296.5,226.0Z M398.5,148.0 L397.0,147.0 L389.2,148.0 L376.8,154.0 L361.0,157.0 L348.8,163.0 L344.2,169.5 L344.5,176.0 L346.8,177.8 L350.2,177.8 L361.8,172.2 L369.8,171.2 L377.8,162.8 L383.8,159.2 L396.8,154.2 L398.5,152.2Z M461.2,111.5 L461.5,114.2 L464.5,115.8 L493.5,115.8 L499.5,113.8 L499.8,108.8 L498.0,107.0 L474.2,107.0 L463.5,109.0Z M665.8,106.8 L664.0,105.0 L660.0,105.2 L650.2,113.5 L641.5,116.0 L623.2,116.0 L620.5,115.0 L612.2,115.0 L607.2,116.5 L606.2,118.8 L610.5,122.8 L621.5,122.8 L624.2,123.8 L652.2,123.8 L657.0,121.8 L662.0,118.0 L663.2,114.5 L665.2,112.0Z" fill="url(#dots)"/></g><rect x="5.5" y="6.5" width="710" height="447" fill="none" stroke="#111" stroke-width="1.5"/><g font-family="Noto Serif KR, Batang, AppleMyungjo, serif" fill="#111"><text x="78" y="190" font-size="17">육지</text><text x="632" y="232" font-size="17">바다</text><text x="242" y="30" font-size="15" transform="rotate(28 242 30)">하천</text><g stroke="#111" stroke-width="1.4"><line x1="27" y1="78" x2="27" y2="34"/><line x1="18" y1="66" x2="36" y2="66"/></g><path d="M27,26 L22,38 L32,38Z" fill="#111"/><text x="21" y="22" font-size="13">N</text><line x1="190" y1="428" x2="252" y2="381" stroke="#111" stroke-width="2"/><path d="M262,374 L246,377 L254,388Z" fill="#111"/><g stroke="#111" stroke-width="1.3"><line x1="397" y1="430" x2="471" y2="430"/><line x1="397" y1="424" x2="397" y2="430"/><line x1="434" y1="424" x2="434" y2="430"/><line x1="471" y1="424" x2="471" y2="430"/></g><text x="393" y="418" font-size="13">0</text><text x="430" y="418" font-size="13">1</text><text x="467" y="418" font-size="13">2km</text><rect x="518" y="326" width="197" height="127" fill="#fff" stroke="#111" stroke-width="1.2"/><text x="530" y="350" font-size="14" font-weight="600">범례</text><line x1="532" y1="392" x2="560" y2="370" stroke="#111" stroke-width="2"/><path d="M567,365 L553,368 L559,377Z" fill="#111"/><text x="576" y="384" font-size="14">탁월풍의 방향</text><rect x="532" y="417" width="32" height="18" fill="url(#dots)" stroke="#111"/><text x="576" y="431" font-size="14">퇴적물</text></g></svg>`;
 const GLAS_GUIDE=`<ul><li>'동의하는가?'를 물으므로 협약의 역할에 대해 판단을 내릴 수 있다. 양쪽을 짧게 견주어 논해도 된다.</li><li>기후변화는 배출이 전 세계로 퍼지고 모두에게 영향을 주는 지구적 문제여서 지구적 해결이 필요하다.</li><li>각 나라는 국제회의에서 합의한 목표를 이행해야 한다. 목표는 지구 기온 상승을 산업화 이전보다 1.5℃ 이내로 묶는 것이다.</li><li>화석 연료 사용을 줄이는 것이 핵심이다. 산업, 발전소, 자동차에서 연료를 태우는 것이 이산화탄소의 큰 배출원이다.</li><li>배출이 적은 최빈국이 가장 큰 피해를 입으므로 완화와 적응에 국제 지원이 필요하다.</li><li><b>반론도 인정한다.</b> 많은 협약은 '약속'이나 목표일 뿐 확고한 의무가 아니다. 효과가 있으려면 보편적이고 법적 구속력이 있어야 한다. 탈퇴하거나 서명하지 않은 나라가 있고, 내용이 약해진 협약도 있다.</li></ul>`;
-const GLAS_RUB=`<table><tr><th>수준</th><th>기술</th></tr><tr><td>2수준<br>(3–4점)</td><td>기후변화 관리에서 국제 협약이 하는 역할을 분명히 이해하고 설명을 전개함. 지식과 이해를 자료에 적용하여 협약의 중요성을 판단함. 연결된 진술, 정확한 용어, 자료을 자신의 이해와 함께 활용</td></tr><tr><td>1수준<br>(1–2점)</td><td>이해가 제한적이고 설명이 기초적임. 단순한 진술에 그치며, 자료을 그대로 옮기는 데 그칠 수 있음</td></tr><tr><td>0점</td><td>인정할 내용 없음</td></tr></table><p>정해진 입장은 없다. 동의해도, 반대해도, 양쪽을 견주어도 점수를 받을 수 있다.</p>`;
+const GLAS_RUB=`<table><tr><th>수준</th><th>기술</th></tr><tr><td>2수준 (3–4점)</td><td>기후변화 관리에서 국제 협약이 하는 역할을 분명히 이해하고 설명을 전개함. 지식과 이해를 자료에 적용하여 협약의 중요성을 판단함. 연결된 진술, 정확한 용어, 자료을 자신의 이해와 함께 활용</td></tr><tr><td>1수준 (1–2점)</td><td>이해가 제한적이고 설명이 기초적임. 단순한 진술에 그치며, 자료을 그대로 옮기는 데 그칠 수 있음</td></tr><tr><td>0점</td><td>인정할 내용 없음</td></tr></table><p>정해진 입장은 없다. 동의해도, 반대해도, 양쪽을 견주어도 점수를 받을 수 있다.</p>`;
 const FOOD_EX={tab:"예시 3",src:"AQA GCSE 지리 2025 · 문제지 2",tags:["지식·이해","요소별 채점","지시어: outline"],
   item:()=>qline("","자연적 요인이 식량 공급에 영향을 미치는 방법을 하나 이상 개략적으로 쓰시오.",3),
   guide:()=>`<p>요인을 쓰고 그 결과를 이어 쓴 진술을 인정한다. 예:</p><ul><li>홍수가 나면(1) 농작물이 망가질 수 있다(1).</li><li>토양이 척박하면(1) 작물이 자라기 어렵다(1).</li><li>강수량이 적으면(1) 작물이 말라 죽거나 가축이 죽어(1) 식량 공급이 줄어든다(1).</li><li>기후변화로 기온이 높아지면(1) 사막화가 진행되어(1) 식량 공급이 줄어든다(1).</li><li>해충이 번지면(1) 수확량이 줄어든다(1). 예: 케냐의 메뚜기 떼(1)</li><li>화산재는 토양을 비옥하게 하여(1) 수확량을 늘린다(1).</li></ul>`,
@@ -828,7 +830,7 @@ const SNOW_EX={tab:"예시 5",src:"",
    +qline("","이러한 관광·여가 활동이 자연환경에 어떤 영향을 줄 수 있는지 제안하시오.",4),
   guide:()=>`<ul><li>등산로 침식, 대기·수질 오염, 시각적 오염(경관 훼손)을 생각해 볼 수 있다. 소음 공해와 농지에 미치는 영향 등 환경 요소에 대한 진술도 인정한다.</li><li>여름에는 방문객이 많아 차량 혼잡과 대기 오염이 문제가 될 수 있다. 잔디밭이나 갓길에 주차하여 길이 좁아지고 혼잡이 커질 수 있다.</li><li>여가 활동이 지나치게 몰리면 환경이 훼손된다. 등산로 침식으로 토양이 씻겨 나가 동식물의 서식지에 악영향을 준다.</li><li>제트스키 같은 수상 스포츠의 소음은 낚시를 방해하고, 새어 나온 기름과 연료는 물을 오염시켜 수중 생물에 해를 입힌다.</li></ul>`,
   rub:`<ul><li>초점은 물리적 환경에 대한 영향(압력)이다. 경제나 지역 사회에 대한 영향에는 점수를 주지 않는다.</li><li>지시어가 '제안하시오(suggest)'이므로, 환경에 영향을 줄 수 있는 합당한 내용이면 점수를 준다.</li><li>사진에 담긴 구체적인 정보와 관광·여가의 환경적 영향에 대한 지식을 연결해야 한다.</li></ul><p class="small muted">점수 배분을 표로 정하지 않고, 인정 범위와 원칙을 글로 밝힌 안내 방식이다.</p>`};
-const WITH_RUB=`<table><tr><th>수준</th><th>기술</th></tr><tr><td>3수준<br>(5–6점)</td><td>해안 관리 경성 공법의 비용과 이점을 깊이 이해함. 사진에 나타난 공법의 비용과 이점을 논하는 데 지식과 이해를 충분히 적용함</td></tr><tr><td>2수준<br>(3–4점)</td><td>비용 그리고/또는 이점을 어느 정도 이해함. 사진에 나타난 공법을 논하는 데 지식을 적절히 적용함</td></tr><tr><td>1수준<br>(1–2점)</td><td>하나 이상의 경성 공법의 비용 그리고/또는 이점을 제한적으로 이해하고, 적용도 제한적임</td></tr><tr><td>0점</td><td>인정할 내용 없음</td></tr></table><p><b>상한 규칙</b> 사진을 언급하지 않으면 최고 2수준. 한 가지 공법만 다루면 최고 2수준. 연성 공법과 하천 관리 공법에는 점수 없음.</p>`;
+const WITH_RUB=`<table><tr><th>수준</th><th>기술</th></tr><tr><td>3수준 (5–6점)</td><td>해안 관리 경성 공법의 비용과 이점을 깊이 이해함. 사진에 나타난 공법의 비용과 이점을 논하는 데 지식과 이해를 충분히 적용함</td></tr><tr><td>2수준 (3–4점)</td><td>비용 그리고/또는 이점을 어느 정도 이해함. 사진에 나타난 공법을 논하는 데 지식을 적절히 적용함</td></tr><tr><td>1수준 (1–2점)</td><td>하나 이상의 경성 공법의 비용 그리고/또는 이점을 제한적으로 이해하고, 적용도 제한적임</td></tr><tr><td>0점</td><td>인정할 내용 없음</td></tr></table><p><b>상한 규칙</b> 사진을 언급하지 않으면 최고 2수준. 한 가지 공법만 다루면 최고 2수준. 연성 공법과 하천 관리 공법에는 점수 없음.</p>`;
 const WITH_GUIDE=`<ul><li><b>사진에 나타난 공법</b> 돌제, 사석(큰 바위를 쌓은 호안), 해안 방벽</li><li><b>사석</b> 비용: 해변 접근이 어려움, 바위를 다른 곳에서 실어 오면 비쌈, 경관 훼손 / 이점: 파도 에너지를 흩음, 빠르고 비교적 싸게 설치, 오래 감</li><li><b>돌제</b> 비용: 아래쪽 해변에 모래 공급이 끊겨 침식이 심해짐, 유지 관리 필요, 폭풍에 약함 / 이점: 해변을 넓혀 관광에 도움, 비교적 쌈, 40년까지 감</li><li><b>해안 방벽</b> 비용: 1m에 5,000파운드가 넘을 만큼 비쌈, 반사파가 해변을 깎아 기초를 약하게 함 / 이점: 절벽 보호, 범람 방지, 산책로, 주민의 안도감</li><li><b>종합 판단</b> 주민을 안심시키지만 비싸고, 문제를 해안의 다른 곳으로 옮기며 자연과 함께하지 않는다. 지속 가능성이 핵심 쟁점이다.</li></ul>`;
 const GLAS_EX={tab:"예시 5",src:"AQA GCSE 지리 2024 · 문제지 1",
   item:()=>`<p>다음은 2021년 11월 영국 글래스고에서 열린 유엔 기후변화 회의의 포스터와 뉴스 제목이다.</p>
@@ -842,7 +844,7 @@ const CR_EX=[
   item:()=>`<div class="grid2">${ianFig()}<div class="qlist">${qline("1-1","지도에서 허리케인 이언이 4등급 허리케인이 된 곳에 X를 표시하시오.",1)}${qline("1-2","지도와 글을 활용하여, 허리케인 이언이 지역 주민에게 끼친 사회적 영향 하나를 쓰시오.",1)}${qline("1-3","열대 저기압의 영향을 줄일 수 있는 방법을 설명하시오.",4)}</div></div>`,
   guide:()=>`<div class="g-side"><div>${ianSVG(true)}</div><div style="display:grid;gap:10px;align-content:start">
      <div><b>1-1</b> 멕시코만, 플로리다 해안의 남남서쪽</div>
-     <div><b>1-2</b> 글에 나온 영향<ul><li>해안 마을이 물에 잠김</li><li>수천 명이 전기를 쓰지 못함</li></ul>지도와 글에서 추론할 수 있는 영향(인정)<ul><li>집을 잃거나 대피한 사람이 생김</li><li>다치거나 목숨을 잃은 사람이 생김</li><li>일자리를 잃은 사람이 생김</li></ul></div>
+     <div><b>1-2</b> 사회적 영향은 사람들의 생활, 곧 집, 안전, 건강, 전기·물 같은 생활 기반에 미친 영향이다. 경제적·환경적 영향과 나누는 구분이며, 1차·2차 영향과는 다른 기준이다.<br>글에 나온 영향<ul><li>해안 마을의 집이 물에 잠김</li><li>수천 명이 전기를 쓰지 못함</li></ul>지도와 글에서 추론할 수 있는 영향(인정)<ul><li>집을 잃거나 대피한 사람이 생김</li><li>다치거나 목숨을 잃은 사람이 생김</li><li>일자리를 잃은 사람이 생김</li></ul></div>
      <div><b>1-3</b><ul><li><b>감시·예측</b> 기상 위성, 레이더, 미국 국립허리케인센터의 5일 전 경보, 예상 진로의 불확실성 범위</li><li><b>보호</b> 보강한 건물, 기둥 위에 지은 집, 방조제</li><li><b>계획</b> 대피 교육, 비상용품 준비, 대피소와 대피 경로</li></ul></div></div></div>`,
   rub:`<table><tr><th>문항</th><th>채점 기준</th></tr>
    <tr><td>1-1 [1]</td><td>멕시코만, 플로리다 해안의 남남서쪽에 대략 맞게 표시하면 1점. 화살표로 표시해도 되며, 선에 꼭 닿지 않아도 된다.</td></tr>
@@ -860,12 +862,12 @@ const CR_EX=[
    <div class="factbox"><b>버스 정류장에서 꿀벌 정류장으로</b><ul><li>버스 정류장 316곳의 지붕을 식물로 덮었다.</li><li>모든 정류장에 LED 조명을 달았고, 96곳에는 태양광 패널이 있다.</li><li>정류장의 바닥은 재활용 콘크리트로 만들었다.</li></ul></div></figure>`
    +qline("","이와 같은 개발이 도시를 더 지속 가능하게 만드는 데 어떻게 도움이 되는지 제안하시오. 사진과 정보, 자신의 이해를 활용하시오.",4),
   guide:()=>`<ul><li>버스 노선은 대중교통 이용을 늘려 연료 사용, 교통 혼잡, 배출가스를 줄인다.</li><li>분리된 자전거 도로는 자전거 이용을 더 쉽고 안전하게 한다.</li><li>태양광 패널은 재생에너지를 생산해 화석 연료 의존을 줄인다.</li><li>LED 조명은 에너지 소비를 줄인다.</li><li>녹색 지붕은 녹지와 야생 생물의 서식지를 만든다.</li><li>재활용 콘크리트는 1차 자원과 새 콘크리트를 만드는 데 드는 에너지를 아낀다.</li><li>지속 가능성의 환경적·사회적·경제적·정치적 측면 모두 인정한다.</li><li>자신의 지식으로 든 사례(프라이부르크, 쿠리치바 등)와 물 절약, 쓰레기 재활용도 인정한다.</li></ul>`,
-  rub:`<table><tr><th>수준</th><th>기술</th></tr><tr><td>2수준<br>(3–4점)</td><td>도시와 지속 가능성을 분명히 이해함. 자료을 효과적으로 활용하여 개발이 지속 가능성과 어떻게 이어지는지 해석함</td></tr><tr><td>1수준<br>(1–2점)</td><td>이해가 제한적임. 자료이나 자신의 지식으로 연결을 해석하기 시작함. 원인과 결과를 주장만 할 수 있음</td></tr><tr><td>0점</td><td>인정할 내용 없음</td></tr></table><p>지속 가능한 도시를 묘사하기만 한 내용에는 점수를 주지 않는다.</p>`},
+  rub:`<table><tr><th>수준</th><th>기술</th></tr><tr><td>2수준 (3–4점)</td><td>도시와 지속 가능성을 분명히 이해함. 자료을 효과적으로 활용하여 개발이 지속 가능성과 어떻게 이어지는지 해석함</td></tr><tr><td>1수준 (1–2점)</td><td>이해가 제한적임. 자료이나 자신의 지식으로 연결을 해석하기 시작함. 원인과 결과를 주장만 할 수 있음</td></tr><tr><td>0점</td><td>인정할 내용 없음</td></tr></table><p>지속 가능한 도시를 묘사하기만 한 내용에는 점수를 주지 않는다.</p>`},
  {tab:"예시 4",src:"AQA GCSE 지리 견본 문제지 1 (2024)",
   item:()=>`<p>다음은 해안의 퇴적 지형을 나타낸 모식도이다.</p><figure class="fig">${DEP_SVG}</figure>`
    +qline("","모식도와 자신의 지식을 활용하여, 해안을 따라 퇴적물이 운반·퇴적되면서 여러 지형이 어떻게 만들어지는지 설명하시오.",6),
-  guide:()=>`<ul><li><b>연안류(연안 표류)</b> 침식된 물질이 해안을 따라 지그재그로 운반된다. 파도는 탁월풍의 방향에 따라 비스듬히 물질을 해변 위로 밀어 올리고(스워시), 되돌아가는 물(백워시)은 경사를 따라 곧장 내려간다. 모식도에서는 사취가 자란 방향으로 보아 물질이 서쪽에서 동쪽으로 이동한다.</li><li><b>사취(spit)</b> 해안선의 방향이 바뀌는 곳에서 얕고 잔잔한 물에 연안류가 운반한 물질을 쌓아 만든다. 물이 잔잔해져 에너지가 줄면 큰 물질부터 먼저 쌓인다.</li><li><b>만 입구의 사주(bay bar)</b> 연안류가 운반한 퇴적물이 만의 입구를 가로질러 쌓여 두 곶을 잇기도 한다.</li><li><b>해빈(모래사장)</b> 파도의 퇴적과 연안류로 만들어진다. 백워시가 강한 파도는 경사가 급한 해빈을, 스워시가 강한 파도는 완만하게 쌓여 가는 해빈을 만든다.</li></ul>`,
-  rub:`<table><tr><th>수준</th><th>기술</th></tr><tr><td>3수준<br>(5–6점)</td><td>지식을 지도 분석에 충분히 적용하여, 지형이 만들어지는 과정을 자세히 설명함. 지도의 증거를 들어 자료를 빠짐없이 분석함</td></tr><tr><td>2수준<br>(3–4점)</td><td>퇴적 해안의 작용과 지형에 대한 지식이 구체적이고 정확함. 해안 환경과 작용의 관계를 분명히 이해함</td></tr><tr><td>1수준<br>(1–2점)</td><td>퇴적 작용에 대한 지식이 연안류에만 그치거나 지형의 생김새를 묘사하는 데 머묾</td></tr><tr><td>0점</td><td>인정할 내용 없음</td></tr></table><ul><li>먼저 가장 알맞은 수준을 정하고, 그 수준 안에서 위 수준의 내용이 얼마나 있는지에 따라 점수를 정한다.</li><li>초점은 설명이다. 지형의 이름이 아니라 작용과 형성 순서를 설명해야 한다.</li><li>분석은 지도에 근거해야 한다.</li><li>운반 작용(견인, 도약, 부유)과 작용을 설명하는 그림도 인정한다. 육계사주, 연안 사주섬 같은 다른 지형도 인정한다.</li></ul>`},
+  guide:()=>`<ul><li><b>연안류(연안 표류)</b> 침식된 물질이 해안을 따라 지그재그로 운반된다. 파도는 탁월풍의 방향에 따라 비스듬히 물질을 해변 위로 밀어 올리고(스워시), 되돌아가는 물(백워시)은 경사를 따라 곧장 내려간다. 모식도에서는 사취가 자란 방향으로 보아 물질이 서쪽에서 동쪽으로 이동한다.</li><li><b>사취(spit)</b> 해안선이 육지 쪽으로 꺾이는 곳(곶의 끝, 하구 등)에서도 연안류는 원래 방향으로 물질을 계속 운반해, 바다 쪽으로 퇴적물을 쌓아 나간다. 그래서 한쪽 끝은 육지에 붙고 다른 쪽 끝은 바다로 뻗은 좁고 긴 지형이 된다. 물이 얕고 잔잔해져 에너지가 줄면 큰 물질부터 먼저 쌓인다.</li><li><b>만 입구의 사주(bay bar)</b> 사취가 계속 자라 만의 입구를 가로지르면, 만 양쪽의 곶이 퇴적물로 이어진다. 사주 안쪽에는 바다와 떨어진 석호가 생긴다.</li><li><b>해빈(모래사장)</b> 파도의 퇴적과 연안류로 만들어진다. 백워시가 강한 파도는 경사가 급한 해빈을, 스워시가 강한 파도는 완만하게 쌓여 가는 해빈을 만든다.</li></ul>`,
+  rub:`<table><tr><th>수준</th><th>기술</th></tr><tr><td>3수준 (5–6점)</td><td>지식을 지도 분석에 충분히 적용하여, 지형이 만들어지는 과정을 자세히 설명함. 지도의 증거를 들어 자료를 빠짐없이 분석함</td></tr><tr><td>2수준 (3–4점)</td><td>퇴적 해안의 작용과 지형에 대한 지식이 구체적이고 정확함. 해안 환경과 작용의 관계를 분명히 이해함</td></tr><tr><td>1수준 (1–2점)</td><td>퇴적 작용에 대한 지식이 연안류에만 그치거나 지형의 생김새를 묘사하는 데 머묾</td></tr><tr><td>0점</td><td>인정할 내용 없음</td></tr></table><ul><li>먼저 가장 알맞은 수준을 정하고, 그 수준 안에서 위 수준의 내용이 얼마나 있는지에 따라 점수를 정한다.</li><li>초점은 설명이다. 지형의 이름이 아니라 작용과 형성 순서를 설명해야 한다.</li><li>분석은 지도에 근거해야 한다.</li><li>퇴적물이 운반되는 방식(바닥을 구르며, 튀어 오르며, 물에 떠서 이동)과 작용을 설명하는 그림도 인정한다. 육계사주, 연안 사주섬 같은 다른 지형도 인정한다.</li></ul>`},
  {hide:1,tab:"예시 5",src:"AQA GCSE 지리 2023 · 문제지 1",
   item:()=>`<p>다음은 영국 동부 윈더시의 해안 방어 시설을 찍은 사진이다.</p><figure class="fig"><img class="exfig" src="${PHOTOS.withernsea}" alt="해안 방벽과 큰 바위를 쌓은 호안, 바다 쪽으로 뻗은 돌제가 있는 해안 마을"></figure>`+qline("","해안 관리를 위한 경성 공법의 비용과 이점을 논하시오. 사진과 자신의 이해를 활용하시오.",6),
   guide:()=>WITH_GUIDE,
@@ -876,10 +878,10 @@ const CR_EX=[
    <figure><figcaption>(나) 한랭 환경</figcaption><img src="${PHOTOS.ad_cplant}" alt="자갈땅에 낮게 퍼져 자라는 베어베리"><img src="${PHOTOS.ad_cfox}" alt="눈 위를 걷는 흰 털의 북극여우"></figure></div>`
    +qline("","'동식물은 극한 환경에 대처하기 위해 특별한 적응을 해야 한다.' 이 주장에 대해 논하시오. (가)와 (나) 가운데 하나와 자신의 이해를 활용하시오.",9)
    +`<p class="choose">선택한 환경에 ✓ 표시 &nbsp; 열대 사막 <span class="cbox"></span> &nbsp;&nbsp; 한랭 환경 <span class="cbox"></span></p><p class="small muted">맞춤법·문장·전문 용어 3점은 따로 매긴다.</p>`,
-  guide:()=>`<p><b>열대 사막</b> 연 강수량 250mm 미만, 낮 최고 기온 50℃에 이르고 밤에는 서늘하며 생물 다양성이 낮다.</p><ul><li><b>식물</b> 잎이 작거나 우기에만 잎을 냄, 깊고 넓게 뻗은 뿌리, 짧은 생활사, 털이나 왁스층으로 덮인 표면, 느린 생장, 서로 떨어져 자람. 사진의 다육 식물은 줄기에 물을 저장하고 표면이 두껍다.</li><li><b>동물</b> 낙타(혹에 지방 저장, 높은 체온을 견딤), 사막여우(큰 귀로 열을 내보냄, 밝은색 털, 밤에 활동)</li></ul>
-   <p><b>한랭 환경</b> 툰드라와 극지방. 길고 추운 겨울, 적은 강수, 영구 동토층, 매우 짧은 생장기.</p><ul><li><b>식물</b> 낮게 무리 지어 자람, 작은 잎, 왁스층이나 털, 얕은 뿌리, 긴 생활사, 짧은 여름에 빨리 꽃을 피움(북극양귀비). 사진의 베어베리는 낮게 자라고 잎이 두껍다.</li><li><b>동물</b> 두꺼운 털이나 깃털, 짧은 다리와 작은 몸, 이동·겨울잠·굴 파기. 북극여우는 발바닥에도 털이 있고 귀와 다리가 짧으며, 흰 털로 몸을 숨기고 청각이 뛰어나다.</li></ul>
+  guide:()=>`<p><b>열대 사막</b> 연 강수량 250mm 미만, 낮 최고 기온 50℃에 이르고 밤에는 서늘하며 생물 다양성이 낮다.</p><ul><li><b>식물</b> 잎이 작거나 우기에만 잎을 냄, 깊고 넓게 뻗은 뿌리, 비가 온 짧은 기간에 싹을 틔워 꽃을 피우고 씨를 맺음, 털이나 왁스층으로 덮인 표면, 줄기나 잎에 물을 저장함(선인장), 느린 생장, 서로 떨어져 자람. 사진의 유카는 잎이 두껍고 왁스층으로 덮여 수분이 덜 빠져나가며, 뿌리를 깊고 넓게 뻗는다.</li><li><b>동물</b> 낙타(혹에 지방 저장, 높은 체온을 견딤), 사막여우(큰 귀로 열을 내보냄, 밝은색 털, 밤에 활동)</li></ul>
+   <p><b>한랭 환경</b> 툰드라와 극지방. 길고 추운 겨울, 적은 강수, 영구 동토층, 매우 짧은 생장기.</p><ul><li><b>식물</b> 낮게 무리 지어 자람, 작은 잎, 왁스층이나 털, 얕은 뿌리, 여러 해에 걸쳐 천천히 자람, 짧은 여름에 빨리 꽃을 피움(북극양귀비). 사진의 베어베리는 낮게 자라고 잎이 두껍다.</li><li><b>동물</b> 두꺼운 털이나 깃털, 짧은 다리와 작은 몸, 이동·겨울잠·굴 파기. 북극여우는 발바닥에도 털이 있고 귀와 다리가 짧으며, 흰 털로 몸을 숨기고 청각이 뛰어나다.</li></ul>
    <p>기후변화에 대한 적응, 계절에 따른 털갈이, 포식자·경쟁에 대한 적응 등 타당한 내용은 모두 인정한다. 모든 내용을 다루지 않아도 최고 수준에 이를 수 있다.</p>`,
-  rub:`<table><tr><th>수준</th><th>기술</th></tr><tr><td>3수준<br>(7–9점)</td><td>극한 환경과 적응을 자세히 알고 깊이 이해함. 적응이 얼마나 중요한지 판단하는 데 지식을 충분히 적용함. 잘 전개되고, 지리 용어를 정확히 씀</td></tr><tr><td>2수준<br>(4–6점)</td><td>지식과 이해가 분명하고, 적용이 적절함. 진술이 서로 이어지고 용어를 어느 정도 씀</td></tr><tr><td>1수준<br>(1–3점)</td><td>지식과 이해가 제한적이고 적용이 기초적이거나 없음. 단순한 진술, 식물이나 동물 한쪽만 다룸, 사진에 기댐</td></tr><tr><td>0점</td><td>인정할 내용 없음</td></tr></table>
+  rub:`<table><tr><th>수준</th><th>기술</th></tr><tr><td>3수준 (7–9점)</td><td>극한 환경과 적응을 자세히 알고 깊이 이해함. 적응이 얼마나 중요한지 판단하는 데 지식을 충분히 적용함. 잘 전개되고, 지리 용어를 정확히 씀</td></tr><tr><td>2수준 (4–6점)</td><td>지식과 이해가 분명하고, 적용이 적절함. 진술이 서로 이어지고 용어를 어느 정도 씀</td></tr><tr><td>1수준 (1–3점)</td><td>지식과 이해가 제한적이고 적용이 기초적이거나 없음. 단순한 진술, 식물이나 동물 한쪽만 다룸, 사진에 기댐</td></tr><tr><td>0점</td><td>인정할 내용 없음</td></tr></table>
    <ul><li>수준은 단계적으로 쌓는 것이 아니라 가장 알맞은 수준을 고른다.</li><li>(가)나 (나) 하나만 다루어도 3수준에 이를 수 있다.</li></ul>
    <p><b>맞춤법·문장·용어 (3점)</b> 3점 높음: 정확하고 뜻을 효과적으로 전달하며 전문 용어를 폭넓게 씀 / 2점 중간 / 1점 기초 / 0점</p>`},
  {hide:1,id:"pe",src:"AQA GCSE 지리 2024 · 문제지 1",
@@ -924,7 +926,7 @@ function renderMcGuide(){
 }
 /* 문항 검토 옆 칸에는 짧은 물음만(긴 설명은 출제 연습의 선택지 작성 요령) */
 const REV_Q=[["평가 목표","무엇을 평가하는가?"],["사고 과정","의도한 사고를 거쳐야 풀리는가?"],["발문과 자료","묻는 것이 명확하고, 자료가 꼭 필요한가?"],["정답의 명확성","정답이 하나로 정해지는가?"],["오답의 적절성","오답이 실제 혼동을 반영하는가?"]];
-const REV_R=[["판단 하나","진술마다 판단이 하나인가?"],["자료 근거","자료와 배운 지식만으로 판단되는가?"],["정답 시비 없음","옳고 그름이 분명한가?"],["사실과 개념에 충실","지어낸 사실은 없는가?"],["선택지의 독립성","선택지끼리 겹치거나 서로 단서가 되지 않는가?"],["단서 없음","길이와 표현이 정답을 드러내지 않는가?"]];
+const REV_R=[["판단 하나","진술마다 판단이 하나인가?"],["자료 근거","자료와 배운 지식만으로 판단되는가?"],["정답 시비 없음","옳고 그름이 분명한가?"],["지어낸 사실 없음","지어낸 수치나 사례는 없는가?"],["선택지의 독립성","선택지끼리 겹치거나 서로 단서가 되지 않는가?"],["단서 없음","길이와 표현이 정답을 드러내지 않는가?"]];
 $("#mcExBody").addEventListener("click",e=>{const li=e.target.closest("[data-rck]");if(!li)return;const id=li.dataset.rck;revMarks.has(id)?revMarks.delete(id):revMarks.add(id);li.classList.toggle("done",revMarks.has(id));});
 
 const AN_Q=[
@@ -975,10 +977,10 @@ AO2 3점 + AO3 3점, 수준별.
     t:"사진 속 콘크리트 해안 방벽은 파도를 막아 뒤쪽 도로와 집을 보호한다. 방벽 위는 산책로로 쓰여 주민과 관광객에게도 좋다. 하지만 짓고 관리하는 데 돈이 매우 많이 든다. 또 파도가 벽에 부딪혀 되돌아가면서 앞쪽 해변의 모래를 깎아 내므로, 시간이 지나면 벽의 기초가 약해질 수 있다. 그래서 사진처럼 방벽 앞에 바위를 더 쌓아야 한다. 따라서 해안 방벽은 효과가 크지만 비용도 계속 드는 방법이다."},
    {id:"w3",intent:6,note:"세 공법의 비용과 이점을 사진과 연결해 설명하고, 피해가 이웃 해안으로 옮겨 가는 문제와 지속 가능성까지 따져 결론을 냈다.",
     t:"사진에는 해안 방벽, 그 앞을 덮은 사석, 바다로 뻗은 돌제가 함께 쓰이고 있다. 해안 방벽은 파도가 마을과 도로에 닿지 못하게 하여 침식과 범람을 막지만, 1m에 수천 파운드가 들 만큼 비싸고 반사된 파도가 앞쪽 해변을 깎아 낸다. 그래서 방벽 앞에 사석을 쌓았는데, 바위 사이의 틈이 파도의 에너지를 흡수해 방벽을 보호한다. 다만 바위를 다른 지역에서 실어 오면 비용이 늘고, 해변으로 내려가기 어려워 관광에는 불리하다. 돌제는 연안류에 실려 오는 모래를 붙잡아 해변을 넓히고 파도의 힘을 줄이지만, 그만큼 아래쪽 해안에는 모래 공급이 끊겨 침식이 더 심해질 수 있다. 결국 경성 공법은 윈더시 주민에게 당장의 안전을 주지만, 비용이 계속 들고 문제를 이웃 해안으로 옮기기 때문에 지속 가능한 방법이라고 보기는 어렵다."}]}];
-const SEAS_RUB=`<table><tr><th>수준</th><th>기술</th></tr><tr><td>3수준<br>(5–6점)</td><td>제철 식품 소비와 음식물 쓰레기 줄이기를 자세히 알고, 둘이 지속 가능성에 어떻게 기여하는지 깊이 이해함</td></tr><tr><td>2수준<br>(3–4점)</td><td>제철 소비 그리고/또는 쓰레기 줄이기를 분명히 알고, 지속 가능성과의 관계를 적절히 이해함. 적어도 암시적으로 연결함</td></tr><tr><td>1수준<br>(1–2점)</td><td>기초적으로 다루거나 지속 가능성과의 연결을 주장만 함</td></tr><tr><td>0점</td><td>인정할 내용 없음</td></tr></table><p><b>상한 규칙</b> 한 요소만 다루면 최고 2수준. 사례는 필수가 아님. 환경·경제·사회적 지속 가능성 모두 인정.</p>`;
+const SEAS_RUB=`<table><tr><th>수준</th><th>기술</th></tr><tr><td>3수준 (5–6점)</td><td>제철 식품 소비와 음식물 쓰레기 줄이기를 자세히 알고, 둘이 지속 가능성에 어떻게 기여하는지 깊이 이해함</td></tr><tr><td>2수준 (3–4점)</td><td>제철 소비 그리고/또는 쓰레기 줄이기를 분명히 알고, 지속 가능성과의 관계를 적절히 이해함. 적어도 암시적으로 연결함</td></tr><tr><td>1수준 (1–2점)</td><td>기초적으로 다루거나 지속 가능성과의 연결을 주장만 함</td></tr><tr><td>0점</td><td>인정할 내용 없음</td></tr></table><p><b>상한 규칙</b> 한 요소만 다루면 최고 2수준. 사례는 필수가 아님. 환경·경제·사회적 지속 가능성 모두 인정.</p>`;
 const SEAS_GUIDE=`<p><b>제철 식품 소비</b></p><ul><li>많은 식품이 수천 km를 이동해 들어온다. 사람들이 특정 식품을 일 년 내내 기대하기 때문이다.</li><li>제철 식품을 먹으면 더 많은 식품을 가까운 곳에서 기를 수 있어 푸드 마일이 줄어든다.</li><li>난방하는 온실이 덜 필요하다.</li><li>농장 직판장은 신선한 지역 농산물 구매를 늘린다. 지역 농산물은 방부제와 플라스틱 포장이 덜 필요할 수 있다.</li></ul><p><b>음식물 쓰레기 줄이기</b></p><ul><li>필요한 만큼만 사도록 하여 버리는 음식을 줄인다.</li><li>생산·운송·가공 과정의 손실을 줄이고, 보관을 개선해 신선 식품의 수명을 늘린다.</li><li>'유통 기한'과 '소비 기한' 표시를 바르게 이해하게 한다. 남은 음식을 나누는 지역 푸드 허브, 모양이 고르지 않은 채소를 파는 가게도 있다.</li></ul><p><b>지속 가능성과의 연결</b> 운송 거리가 줄어 항공기·트럭이 태우는 연료와 CO₂가 줄고, 온실 난방에 드는 에너지와 화석 연료가 줄어든다. 환경·경제·사회적 지속 가능성 모두 인정한다.</p>`;
 const scItem=()=>SC_ITEMS.find(x=>x.id===S.sc.cur)||SC_ITEMS[0];
-const scSt=it=>S.sc[it.id]||(S.sc[it.id]={a:0,pen:"ok",r:{},shown:false,ai:null,aiErr:""});
+const scSt=it=>{const st=S.sc[it.id]||(S.sc[it.id]={a:0,pen:"ok",r:{},ai:{},aiErr:""});if(!st.ai||typeof st.ai!=="object")st.ai={};return st;};
 const scRes=(it,a)=>{const st=scSt(it);return st.r[a.id]||(st.r[a.id]={hl:{}});};
 const scDone=(it,a)=>{const r=scSt(it).r[a.id];return !!r&&r.score!=null&&(it.mode!=="level"||r.level!=null);};
 let scCtl=null;
@@ -991,8 +993,8 @@ function renderScore(){
 }
 function renderScBox(focusSel){
   const it=scItem(),st=scSt(it),ans=it.answers;if(!(st.a>=0&&st.a<ans.length))st.a=0;
-  const a=ans[st.a],r=scRes(it,a),sents=splitSent(a.t),ai=st.shown&&st.ai&&st.ai[a.id];
-  const tabs=ans.map((x,i)=>`<button type="button" role="tab" class="tab" data-a="tab" data-i="${i}" aria-selected="${i===st.a}"><span class="d ${scDone(it,x)?(st.shown?"ai":"on"):""}"></span>답안 ${i+1}</button>`).join("");
+  const a=ans[st.a],r=scRes(it,a),sents=splitSent(a.t),ai=r.shown&&st.ai[a.id];
+  const tabs=ans.map((x,i)=>`<button type="button" role="tab" class="tab" data-a="tab" data-i="${i}" aria-selected="${i===st.a}"><span class="d ${scDone(it,x)?((st.r[x.id]||{}).shown?"ai":"on"):""}"></span>답안 ${i+1}</button>`).join("");
   const sheet=sents.map((s,i)=>{const h=r.hl[i],ah=ai?(ai.ok.includes(i)?"ok":ai.part.includes(i)?"part":""):"";
     return `<span class="s${h?" hl-"+h:""}${ah?" ai-"+ah:""}" data-i="${i}" role="button" tabindex="0" aria-pressed="${!!h}"><span class="sn">${i+1}</span>${esc(s)}${ah?`<sup class="at">AI ${ah==="ok"?"✓":"△"}</sup>`:""}</span> `;}).join("");
   const nOk=Object.values(r.hl).filter(v=>v==="ok").length,nPart=Object.values(r.hl).filter(v=>v==="part").length;
@@ -1006,19 +1008,17 @@ function renderScBox(focusSel){
       <div style="display:grid;gap:10px;min-width:0">
         <div class="row" style="gap:8px"><span class="small muted">칠하기</span><div class="seg pens" role="group" aria-label="칠하기">
           <button type="button" data-a="pen" data-v="ok" aria-pressed="${st.pen==="ok"}"><i class="sw-ok"></i>인정</button>
-          <button type="button" data-a="pen" data-v="part" aria-pressed="${st.pen==="part"}"><i class="sw-part"></i>관련 있으나 부족</button></div></div>
+          <button type="button" data-a="pen" data-v="part" aria-pressed="${st.pen==="part"}"><i class="sw-part"></i>관련 있으나 점수 없음</button></div></div>
         <div class="answer">${sheet}</div>
-        ${st.shown?`<div class="intent"><b>출제 의도 ${a.intentLabel||""}${it.mode==="level"?levelOf(it,a.intent)+"수준 ":""}${a.intent}점</b> · ${esc(a.note)}</div>`:""}
+        ${r.shown?`<div class="intent"><b>출제 의도 ${a.intentLabel||""}${it.mode==="level"?levelOf(it,a.intent)+"수준 ":""}${a.intent}점</b> · ${esc(a.note)}</div>`:""}
         ${ai?`<div class="aibox"><span class="l">AI ${it.mode==="level"?ai.level+"수준 ":""}${ai.score}점</span><span>${esc(ai.reason)}</span></div>`:""}
       </div>
       <div class="scside">
         <div class="crit" style="gap:12px">${scoreUI}
-          <div class="small muted">인정 ${nOk}문장 · 관련 있으나 부족 ${nPart}문장</div></div>
+          <div class="small muted">인정 ${nOk}문장 · 관련 있으나 점수 없음 ${nPart}문장</div></div>
         ${panel("채점 기준",it.rub(),"rubp")}${panel("답안 안내",it.guide())}
       </div>
-    </div>
-    <div class="nav"><div class="row"><button type="button" class="btn ghost sm" data-a="prev"${st.a===0?" disabled":""}>이전 답안</button><button type="button" class="btn ghost sm" data-a="next"${st.a===ans.length-1?" disabled":""}>다음 답안</button></div>
-      <span class="small muted">채점 ${ans.filter(x=>scDone(it,x)).length}/${ans.length}</span></div>`;
+    </div>`;
   if(focusSel){const el=$("#scBox").querySelector(focusSel);if(el)el.focus({preventScroll:true});}
 }
 const levelOf=(it,score)=>{const l=it.levels.find(l=>l[1].includes(score));return l?l[0]:0;};
@@ -1027,9 +1027,7 @@ $("#scBox").addEventListener("click",e=>{
   const it=scItem(),st=scSt(it),a=it.answers[st.a],r=scRes(it,a);
   const s=e.target.closest(".s");if(s){const i=Number(s.dataset.i);if(r.hl[i]===st.pen)delete r.hl[i];else r.hl[i]=st.pen;save();renderScBox(`.s[data-i="${i}"]`);return;}
   const b=e.target.closest("button[data-a]");if(!b||b.disabled)return;const A=b.dataset.a,v=b.dataset.v;
-  if(A==="tab")st.a=Number(b.dataset.i);
-  if(A==="prev")st.a=Math.max(0,st.a-1);
-  if(A==="next")st.a=Math.min(it.answers.length-1,st.a+1);
+  if(A==="tab"){st.a=Number(b.dataset.i);st.aiErr="";}
   if(A==="pen")st.pen=v;
   if(A==="score")r.score=Number(v);
   if(A==="level"){const l=Number(v);if(r.level!==l){r.level=l;const opts=it.levels.find(x=>x[0]===l)[1];r.score=opts.length===1?opts[0]:null;}}
@@ -1038,49 +1036,48 @@ $("#scBox").addEventListener("click",e=>{
 $("#scBox").addEventListener("keydown",e=>{if(e.key!=="Enter"&&e.key!==" ")return;const s=e.target.closest(".s");if(!s)return;e.preventDefault();s.click();});
 
 function renderScResult(){
-  const it=scItem(),st=scSt(it),ans=it.answers,all=ans.every(a=>scDone(it,a));
+  const it=scItem(),st=scSt(it),ans=it.answers,a=ans[st.a],r=scRes(it,a),i=st.a;
   const fmt=(lvl,sc)=>sc==null?"–":(it.mode==="level"?`${lvl}수준 ${sc}점`:`${sc}점`);
-  let html=`<div class="row"><h2>채점 결과</h2><span class="spacer"></span>${st.shown&&aiState!=="on"?"":`<button type="button" class="btn ai" id="scReveal"${!scCtl?"":" disabled"}>${st.shown?"AI 다시 채점":"채점 결과 확인"}</button>`}${scCtl?`<button type="button" class="btn quiet" id="scStop">멈추기</button>`:""}</div>`;
-    if(scCtl)html+=thinking("AI가 AQA 채점 기준으로 채점하고 있습니다.");
+  const btn=scCtl?`<button type="button" class="btn quiet" id="scStop">멈추기</button>`
+    :(r.shown&&aiState!=="on")?"":`<button type="button" class="btn ai" id="scReveal"${scDone(it,a)?"":" disabled"}>${r.shown?"AI 다시 채점":"채점 결과 확인"}</button>`;
+  let html=`<div class="row"><h2>답안 ${i+1} 채점 결과</h2><span class="spacer"></span>${btn}</div>`;
+  if(scCtl)html+=thinking("AI가 AQA 채점 기준으로 채점하고 있습니다.");
   if(st.aiErr)html+=`<p class="err">${esc(st.aiErr)}</p>`;
-  if(st.shown){
-    const rows=ans.map((a,i)=>{const r=st.r[a.id]||{},x=st.ai&&st.ai[a.id];const mine=r.score,gapI=mine!=null&&mine!==a.intent,gapA=x&&mine!=null&&mine!==x.score;
-      return `<tr><td>답안 ${i+1}</td><td class="num">${fmt(r.level,mine)}</td><td class="num${gapA?" gap":""}">${x?fmt(x.level,x.score):"–"}</td><td class="num${gapI?" gap":""}">${fmt(it.mode==="level"?levelOf(it,a.intent):null,a.intent)}</td></tr>`;}).join("");
-    const g=ans.filter(a=>{const r=st.r[a.id];return r&&r.score===a.intent;}).length;
-    html+=`<div class="tbl-wrap"><table class="cmp"><thead><tr><th>답안</th><th class="num">나</th><th class="num">AI</th><th class="num">출제 의도</th></tr></thead><tbody>${rows}</tbody></table></div>
-      <p class="small">출제 의도와 같은 점수 <b>${g}/${ans.length}</b>${st.ai?` · AI와 같은 점수 <b>${ans.filter(a=>{const r=st.r[a.id],x=st.ai[a.id];return r&&x&&r.score===x.score;}).length}/${ans.length}</b>`:aiState!=="on"?" · AI 사용 불가":""}</p>
-      <p class="small muted">답안을 다시 열면 출제 의도${st.ai?"와 AI가 표시한 문장(점선 밑줄)":""}을 볼 수 있습니다.</p>`;
+  if(r.shown){
+    const x=st.ai[a.id],mine=r.score,gapI=mine!=null&&mine!==a.intent,gapA=x&&mine!=null&&mine!==x.score;
+    html+=`<div class="tbl-wrap"><table class="cmp"><thead><tr><th class="num">나</th><th class="num">AI</th><th class="num">출제 의도</th></tr></thead><tbody><tr><td class="num">${fmt(r.level,mine)}</td><td class="num${gapA?" gap":""}">${x?fmt(x.level,x.score):(aiState!=="on"?"사용 불가":"–")}</td><td class="num${gapI?" gap":""}">${fmt(it.mode==="level"?levelOf(it,a.intent):null,a.intent)}</td></tr></tbody></table></div>`
+      +(x?`<p class="small muted">AI가 인정한 문장(✓)과 관련 있으나 점수가 없다고 본 문장(△)은 답안에 점선 밑줄로 표시됩니다.</p>`:"");
   }
   $("#scResult").innerHTML=html;
   const rb=$("#scReveal");if(rb)rb.onclick=revealScore;const sb=$("#scStop");if(sb)sb.onclick=()=>{if(scCtl)scCtl.abort();};
 }
 async function revealScore(){
-  const it=scItem(),st=scSt(it);st.shown=true;st.aiErr="";save();renderScBox();
+  const it=scItem(),st=scSt(it),a=it.answers[st.a],r=scRes(it,a);r.shown=true;st.aiErr="";save();renderScBox();
   if(!sample||aiState!=="on"){renderScResult();return;}
   scCtl=new AbortController();renderScResult();
-  const prompt=`당신은 영국 AQA GCSE 지리 시험의 숙련된 채점자입니다. 아래 채점 기준만 근거로 학생 답안 ${it.answers.length}편을 채점하세요. 답안은 한국어로 옮겨 쓴 것입니다.
+  const sents=splitSent(a.t);
+  const prompt=`당신은 영국 AQA GCSE 지리 시험의 숙련된 채점자입니다. 아래 채점 기준만 근거로 학생 답안 한 편을 채점하세요. 답안은 한국어로 옮겨 쓴 것입니다.
 
 [문항] ${it.q}
 
 ${it.ms}
 
 [학생 답안 — 문장마다 번호]
-${JSON.stringify(it.answers.map(a=>({id:a.id,문장:splitSent(a.t).map((s,i)=>`${i+1}) ${s}`)})),null,1)}
+${sents.map((s,i)=>`${i+1}) ${s}`).join("\n")}
 
 규칙:
-- score: ${it.mode==="level"?`수준을 먼저 정하고(${it.levels.map(([l,s])=>`${l}수준=${s.join("~")}점`).join(", ")}), 그 수준의 점수 범위 안에서 점수를 고릅니다.`:`0~${it.max}점.`}
-- ok: 점수를 인정한 문장 번호 배열. part: 관련은 있으나 점수를 주기에 부족한 문장 번호 배열.
+- score: ${it.mode==="level"?`수준을 먼저 정하고(${it.levels.map(([l,s])=>`${l}수준=${s.join("~")}점`).join(", ")}), 그 수준의 점수 범위 안에서 점수를 고릅니다.`:`0~${it.max}점, 정수.`}
+- ok: 점수를 인정한 문장 번호 배열. part: 관련은 있으나 점수를 줄 수 없는 문장 번호 배열.
 - reason: 왜 그 점수인지 한 문장. 채점 기준의 어느 규칙을 적용했는지 밝힙니다.
 
-JSON 배열만 출력하세요:
-[{"id":"답안 id",${it.mode==="level"?'"level":2,':""}"score":2,"ok":[1],"part":[2],"reason":"..."}]`;
-  try{const raw=await sample.json(prompt,{signal:scCtl.signal,cache:false});const arr=Array.isArray(raw)?raw:(raw&&Array.isArray(raw.results)?raw.results:[]);const out={};
-    it.answers.forEach(a=>{const o=arr.find(x=>x&&String(x.id)===a.id);if(!o)return;const n=splitSent(a.t).length;
-      const nums=v=>[...new Set((Array.isArray(v)?v:[]).map(x=>Number(x)-1).filter(x=>Number.isInteger(x)&&x>=0&&x<n))];
-      let sc=Math.max(0,Math.min(it.max,Math.round(Number(o.score)||0)));
-      out[a.id]={score:sc,level:it.mode==="level"?levelOf(it,sc):null,ok:nums(o.ok),part:nums(o.part),reason:String(o.reason||"")};});
-    if(!Object.keys(out).length)throw {code:"invalid_json"};
-    st.ai=out;}
+JSON 객체 하나만 출력하세요:
+{${it.mode==="level"?'"level":2,':""}"score":2,"ok":[1],"part":[2],"reason":"..."}`;
+  try{const raw=await sample.json(prompt,{signal:scCtl.signal,cache:false});
+    const o=Array.isArray(raw)?raw[0]:(raw&&Array.isArray(raw.results)?raw.results[0]:raw);
+    if(!o||o.score==null)throw {code:"invalid_json"};
+    const n=sents.length,nums=w=>[...new Set((Array.isArray(w)?w:[]).map(x=>Number(x)-1).filter(x=>Number.isInteger(x)&&x>=0&&x<n))];
+    const sc=Math.max(0,Math.min(it.max,Math.round(Number(o.score)||0)));
+    st.ai[a.id]={score:sc,level:it.mode==="level"?levelOf(it,sc):null,ok:nums(o.ok),part:nums(o.part),reason:String(o.reason||"")};}
   catch(e){st.aiErr=e&&e.code==="cancelled"?"":errCopy(e);}
   finally{scCtl=null;save();renderScBox();renderScResult();}
 }
@@ -1090,8 +1087,8 @@ const RB_EX=[
  {src:"",max:4,q:"스노도니아 국립공원의 관광·여가 활동 사진 두 장(산길을 오르는 등산객, 차와 텐트가 많은 호숫가 캠핑장)을 보고, 이러한 관광·여가 활동이 자연환경에 어떤 영향을 줄 수 있는지 제안하시오.",
   item:()=>SNOW_EX.item(),
   guide:()=>SNOW_EX.guide(),
-  rows:[["2수준<br>(3–4점)","관광·여가 활동이 자연환경에 주는 영향을 분명히 이해함. 사진의 구체적 정보와 지식을 연결해 영향이 생기는 과정을 제안함"],
-        ["1수준<br>(1–2점)","영향에 대한 이해가 제한적임. 영향을 나열하거나 사진을 묘사하는 데 그침"],
+  rows:[["2수준 (3–4점)","관광·여가 활동이 자연환경에 주는 영향을 분명히 이해함. 사진의 구체적 정보와 지식을 연결해 영향이 생기는 과정을 제안함"],
+        ["1수준 (1–2점)","영향에 대한 이해가 제한적임. 영향을 나열하거나 사진을 묘사하는 데 그침"],
         ["0점","인정할 내용 없음"]],
   blank:1,
   rules:"초점은 자연환경(물리적 환경)에 미치는 영향이다. 경제나 지역 사회에 대한 영향에는 점수를 주지 않는다. '제안하시오'이므로 합당한 영향이면 인정한다.",
@@ -1100,8 +1097,8 @@ const RB_EX=[
  {src:"AQA GCSE 지리 2024 · 문제지 1",max:4,q:"2021년 글래스고 유엔 기후변화 회의 포스터와 뉴스 제목(1.5℃ 목표를 위한 모든 나라의 긴급한 기후 행동, 화석 연료 사용 감축 합의, 최빈국 원조 확대)을 보고, '국제 협약은 기후변화를 관리하는 데 꼭 필요하다.' 이 주장에 동의하는가? 자료와 자신의 이해를 활용하여 답을 설명하시오.",
   item:()=>GLAS_EX.item(),
   guide:()=>GLAS_GUIDE,
-  rows:[["2수준<br>(3–4점)","기후변화 관리에서 국제 협약이 하는 역할을 분명히 이해하고 설명을 전개함. 지식과 이해를 자료에 적용하여 협약의 중요성을 판단함. 연결된 진술, 정확한 용어, 자료를 자신의 이해와 함께 활용"],
-        ["1수준<br>(1–2점)","이해가 제한적이고 설명이 기초적임. 단순한 진술에 그치며, 자료를 그대로 옮기는 데 그칠 수 있음"],
+  rows:[["2수준 (3–4점)","기후변화 관리에서 국제 협약이 하는 역할을 분명히 이해하고 설명을 전개함. 지식과 이해를 자료에 적용하여 협약의 중요성을 판단함. 연결된 진술, 정확한 용어, 자료를 자신의 이해와 함께 활용"],
+        ["1수준 (1–2점)","이해가 제한적이고 설명이 기초적임. 단순한 진술에 그치며, 자료를 그대로 옮기는 데 그칠 수 있음"],
         ["0점","인정할 내용 없음"]],
   blank:0,
   rules:"정해진 입장은 없다. 동의해도, 반대해도, 양쪽을 견주어도 점수를 받을 수 있다.",
@@ -1268,10 +1265,10 @@ const MC_KITS=[
 const MARKS={opt:"①②③④⑤",bogi:"ㄱㄴㄷㄹ"};
 /* 선택지 작성 요령(Haladyna, Downing & Rodriguez, 2002의 선다형 문항 작성 지침을 바탕으로 다듬음) */
 const MC_RULES=[
- ["판단 하나","진술 하나에 가급적 판단 하나만 담는다. 일부만 옳은 진술을 피한다."],
+ ["판단 하나","진술 하나에 판단 하나만 담는다. 두 판단을 묶어 일부만 옳은 진술을 만들지 않는다."],
  ["자료 근거","제시된 자료와 학습한 지리 지식만으로 옳고 그름을 판단할 수 있게 한다."],
  ["정답 시비 없음","옳고 그름이 분명해야 한다. 조건이나 예외에 따라 판단이 달라지지 않게 한다."],
- ["사실과 개념에 충실","임의의 사실을 지어내지 않고, 실제 지리 지식과 개념적 혼동을 바탕으로 오답을 만든다."],
+ ["지어낸 사실 없음","실제로 확인할 수 없는 수치, 지명, 사례를 지어내 오답을 만들지 않는다."],
  ["선택지의 독립성","선택지끼리 의미가 중복되거나 서로 정답의 단서가 되지 않게 한다."],
  ["단서 없음","길이와 문장 구조를 비슷하게 맞추고, '항상', '반드시' 등으로 오답을 드러내지 않는다."]];
 const mcRules=()=>MC_RULES;
