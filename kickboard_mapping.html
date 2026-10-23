@@ -1,16 +1,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>우리 동네 전동킥보드 주차 실태 지도</title>
+<title>잘못 주차된 전동킥보드를 찾아라!</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
 
 <style>
 :root{
   --ink:#14171A; --ink2:#333A41; --mute:#6B7076;
   --paper:#F4F3EF; --card:#FFFFFF; --line:#DFDBD2; --line2:#EDEAE3;
-  --tactile:#F5C518; --tow:#D93B2B; --warn:#DE8A2C; --calm:#2C6E6A; --ok:#2F7D4F; --stn:#12456F;
+  --tactile:#2B3338; --me:#2F6FD1; --tow:#D93B2B; --warn:#DE8A2C; --calm:#2C6E6A; --ok:#2F7D4F; --stn:#12456F;
   --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
-  --sans: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard",
+  --sans: Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
           "Noto Sans KR", "Malgun Gothic", "맑은 고딕", sans-serif;
 }
 *{box-sizing:border-box}
@@ -19,19 +20,18 @@ body{font-family:var(--sans);background:var(--paper);color:var(--ink);font-size:
   -webkit-text-size-adjust:100%;display:flex;flex-direction:column;height:100dvh;overflow:hidden}
 button{font-family:inherit;font-size:inherit;cursor:pointer}
 input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
-:focus-visible{outline:2.5px solid var(--tactile);outline-offset:2px}
+:focus-visible{outline:2px solid var(--ink2);outline-offset:2px}
 
-header{background:var(--ink);color:#fff;padding:9px 14px 8px;flex:none}
+header{background:var(--card);color:var(--ink);padding:10px 16px 9px;flex:none;border-bottom:1px solid var(--line)}
 .hbar{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
-.brand{font-size:15.5px;font-weight:800;letter-spacing:-.03em;white-space:nowrap}
-.brand small{font-weight:500;opacity:.55;font-size:11.5px;letter-spacing:0;margin-left:6px}
+.brand{font-size:22px;font-weight:800;letter-spacing:-.035em;white-space:nowrap;line-height:1.25}
+.brand small{display:block;font-weight:600;color:var(--mute);font-size:11.5px;letter-spacing:0;margin:0 0 2px}
 .hspace{flex:1}
-.chip{font-family:var(--mono);font-size:11px;background:rgba(255,255,255,.11);
-  border:1px solid rgba(255,255,255,.18);color:#fff;padding:3px 9px;border-radius:99px;white-space:nowrap}
-.chip b{color:var(--tactile);font-weight:700}
-.chip:hover{background:rgba(255,255,255,.2)}
-.dots{height:11px;flex:none;
-  background:radial-gradient(circle at 6px 5.5px, var(--tactile) 2.9px, transparent 3.3px) 0 0/15px 11px repeat-x, var(--ink)}
+.chip{font-size:12px;background:var(--paper);
+  border:1px solid var(--line);color:var(--mute);padding:3px 10px;border-radius:99px;white-space:nowrap}
+.chip b{color:var(--ink);font-weight:700}
+.chip:hover{background:var(--line2)}
+
 
 nav{display:flex;background:var(--card);border-bottom:1px solid var(--line);flex:none}
 nav button{border:0;background:none;padding:11px 18px 9px;font-weight:700;font-size:13.5px;
@@ -49,7 +49,7 @@ main{flex:1;min-height:0;display:flex}
 .sec{border-bottom:1px solid var(--line2);padding:14px}
 .sec:last-child{border-bottom:0}
 h2{font-size:12px;font-weight:800;letter-spacing:.06em;margin:0 0 9px}
-h2 .num{font-family:var(--mono);color:var(--tactile);margin-right:6px;-webkit-text-stroke:.4px var(--ink2)}
+h2 .num{font-family:var(--mono);color:var(--mute);margin-right:6px}
 h3{font-size:12.5px;font-weight:700;margin:0 0 7px}
 label.f{display:block;font-size:11.5px;font-weight:700;color:var(--ink2);margin:0 0 5px}
 label.f span{font-weight:500;color:var(--mute)}
@@ -65,7 +65,7 @@ textarea{resize:vertical;line-height:1.6}
 .btn:disabled{opacity:.35;cursor:not-allowed}
 .btn.ghost{background:#fff;color:var(--ink);border-color:var(--line)}
 .btn.ghost:hover{background:#F6F5F2}
-.btn.ghost.on{background:var(--tactile);border-color:#C9A00E;color:var(--ink)}
+.btn.ghost.on{background:var(--ink);border-color:var(--ink);color:#fff}
 .btn.sm{padding:6px 10px;font-size:12px;border-radius:6px;font-weight:600}
 .btn.wide{width:100%}
 .btn.danger{background:#fff;color:var(--tow);border-color:#EFC4BE}
@@ -82,7 +82,8 @@ textarea{resize:vertical;line-height:1.6}
 
 .coord{font-family:var(--mono);font-size:12px;background:#FBFAF7;border:1px solid var(--line);
   border-radius:7px;padding:8px 10px;display:flex;justify-content:space-between;gap:8px;align-items:center}
-.coord.empty{color:var(--mute)}
+.coord.empty{color:var(--mute);font-family:var(--sans);padding:8px 10px;text-align:left;border:1px solid var(--line);border-radius:7px;font-size:12.5px}
+.coord.empty::before{content:none}
 .coord b{color:var(--calm)}
 
 /* 위반 유형 — 하나의 목록, 여러 개 체크 */
@@ -99,12 +100,13 @@ textarea{resize:vertical;line-height:1.6}
 .chk span small{display:block;font-weight:500;font-size:11px;color:var(--mute);margin-top:1px}
 .chk input:checked+span{border-color:var(--ink);background:#FBFAF7}
 .chk input:checked+span small{color:var(--ink2)}
+.chk input:checked+span:before{background:var(--ink);border-color:var(--ink)}
 .chk.t input:checked+span{border-color:var(--tow);background:#FDF3F1}
 .chk.t input:checked+span:before{background:var(--tow);border-color:var(--tow)}
 .chk.w input:checked+span:before{background:var(--warn);border-color:var(--warn)}
 .chk input:checked+span:after{content:"";position:absolute;left:14.5px;top:13px;width:6px;height:3px;
   border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg)}
-.chk input:focus-visible+span{outline:2.5px solid var(--tactile);outline-offset:2px}
+.chk input:focus-visible+span{outline:2px solid var(--ink2);outline-offset:2px}
 .chksum{font-size:11.5px;color:var(--mute);margin-top:2px}
 
 .entry{display:flex;gap:9px;padding:9px;border:1px solid var(--line2);border-radius:9px;
@@ -119,6 +121,29 @@ textarea{resize:vertical;line-height:1.6}
 .empty{text-align:center;color:var(--mute);font-size:12.5px;padding:22px 10px;
   border:1.5px dashed var(--line);border-radius:10px;background:#FBFAF7}
 
+.ncols{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ncols h3{margin:0;font-size:12.5px}
+.sm2{font-size:10.5px;color:var(--mute);margin:1px 0 6px;line-height:1.35}
+.nrow{display:flex;justify-content:space-between;gap:6px;width:100%;border:0;background:none;padding:4px 6px;margin:0 0 1px;
+  border-radius:6px;font-size:12px;text-align:left;color:var(--ink);cursor:pointer;align-items:baseline}
+.nrow:hover{background:var(--line2)}
+.nrow.act{background:#F1F2F2;box-shadow:inset 0 0 0 1.5px var(--ink2)}
+.nrow b{font-family:var(--mono);font-weight:700;flex:none}
+.nrow.zero{color:var(--mute)}
+.tchart{width:100%;height:auto;display:block}
+.ctab{width:100%;border-collapse:collapse;font-size:12px}
+.ctab th{font-size:10.5px;font-weight:600;color:var(--mute);text-align:left;padding:5px 8px;border-bottom:1.5px solid var(--ink2)}
+.ctab th:last-child,.ctab td.n{text-align:right;font-family:var(--mono);width:52px}
+.ctab td{padding:6px 8px;border-bottom:1px solid var(--line2);vertical-align:middle}
+.ctab td.g{font-weight:700;width:30%;border-right:1px solid var(--line2);line-height:1.35}
+.ctab td.g small{display:block;font-weight:400;font-size:10px;color:var(--mute);margin-top:2px}
+.ctab td.g i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:1px}
+.ctab tr.it{cursor:pointer}
+.ctab tr.it:hover td:not(.g){background:var(--line2)}
+.ctab tr.it.act td:not(.g){background:#ECEEEE;font-weight:700}
+.ctab tr.it.zero td:not(.g){color:var(--mute)}
+.ctab tr.sub td{font-weight:700;background:#FAFAF8}
+.ctab tr.gend td{border-bottom:1.5px solid var(--line)}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:12px}
 .stat{border:1px solid var(--line2);border-radius:9px;padding:9px 10px;background:#FBFAF7}
 .stat .v{font-family:var(--mono);font-size:19px;font-weight:700;letter-spacing:-.04em;line-height:1.1}
@@ -128,7 +153,7 @@ textarea{resize:vertical;line-height:1.6}
 .bar{display:block;width:100%;text-align:left;border:0;background:none;padding:4px 5px;margin:0 0 2px;
   border-radius:6px}
 .bar:hover{background:#F6F5F2}
-.bar.act{background:#FFF6D6;box-shadow:inset 0 0 0 1.5px var(--tactile)}
+.bar.act{background:#F1F2F2;box-shadow:inset 0 0 0 1.5px var(--ink2)}
 .bar .bl{display:flex;justify-content:space-between;font-size:11.5px;margin-bottom:3px;gap:8px;align-items:baseline}
 .bar .bl b{font-weight:600}
 .bar .bl span{font-family:var(--mono);color:var(--mute);flex:none;font-size:10.5px}
@@ -146,7 +171,7 @@ table.mini td.n{font-family:var(--mono);text-align:right}
 .note.calm{background:#F0F5F5;border-color:#C6DBDA;color:#1E4C4A}
 .gate{text-align:center;padding:18px 14px}
 .gate .prog{height:9px;background:var(--line2);border-radius:99px;overflow:hidden;margin:10px 0 7px}
-.gate .prog i{display:block;height:100%;background:var(--tactile)}
+.gate .prog i{display:block;height:100%;background:var(--calm)}
 .counter{font-family:var(--mono);font-size:11px;color:var(--mute);text-align:right;margin-top:4px}
 .counter.ok{color:var(--ok);font-weight:700}
 .ringpick{display:flex;gap:6px;margin-top:8px}
@@ -166,23 +191,23 @@ table.mini td.n{font-family:var(--mono);text-align:right}
 .mapctl input{font-weight:400;width:118px}
 .mapctl button{background:var(--ink);color:#fff;border-color:var(--ink)}
 .mapctl button.ghost{background:rgba(255,255,255,.97);color:var(--ink);border-color:var(--line)}
-.mapctl button.ghost.on{background:var(--tactile);border-color:#C9A00E}
+.mapctl button.ghost.on{background:var(--ink);border-color:var(--ink);color:#fff}
 .zoomer{position:absolute;z-index:650;right:12px;bottom:74px;display:flex;flex-direction:column;
   border-radius:11px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.22);border:1px solid var(--line)}
 .zoomer button{width:46px;height:46px;border:0;background:#fff;font-size:24px;line-height:1;
   color:var(--ink);display:flex;align-items:center;justify-content:center}
-.zoomer button:hover{background:var(--tactile)}
+.zoomer button:hover{background:var(--line2)}
 .zoomer button+button{border-top:1px solid var(--line2)}
 .zoomer .lv{height:32px;background:var(--ink);color:#fff;font-family:var(--mono);font-size:11px;
   display:flex;align-items:center;justify-content:center}
-.zoomer .lv b{color:var(--tactile)}
+.zoomer .lv b{color:#fff}
 .legend{position:absolute;z-index:600;bottom:18px;left:10px;background:rgba(255,255,255,.95);
   border:1px solid var(--line);border-radius:9px;padding:8px 10px;font-size:11.5px;
   box-shadow:0 1px 5px rgba(0,0,0,.13);line-height:1.75}
 .legend i{width:10px;height:10px;border-radius:99px;display:inline-block;margin-right:6px}
 .picking #map{cursor:crosshair}
 .pickbar{position:absolute;z-index:700;top:52px;left:50%;transform:translateX(-50%);
-  background:var(--tactile);color:var(--ink);font-weight:800;font-size:12.5px;padding:8px 14px;
+  background:var(--ink);color:#fff;font-weight:700;font-size:12.5px;padding:8px 14px;
   border-radius:99px;box-shadow:0 2px 10px rgba(0,0,0,.22);white-space:nowrap;text-align:center}
 .pickbar small{display:block;font-weight:600;font-size:11px;opacity:.75}
 .filtbar{position:absolute;z-index:650;bottom:18px;right:12px;background:var(--ink);color:#fff;
@@ -197,8 +222,11 @@ table.mini td.n{font-family:var(--mono);text-align:right}
   font-weight:800;font-size:11px;padding:1px 6px;border-radius:5px;box-shadow:0 1px 3px rgba(0,0,0,.2);
   white-space:nowrap;margin-left:2px}
 .leaflet-tooltip.stnlab:before{display:none}
-.draft{width:22px;height:22px;border-radius:99px;background:var(--tactile);border:3px solid var(--ink);
-  box-shadow:0 0 0 6px rgba(245,197,24,.35)}
+.draft{width:22px;height:22px;border-radius:99px;background:#fff;border:4px solid var(--ink);
+  box-shadow:0 0 0 6px rgba(20,23,26,.16)}
+.me{width:16px;height:16px;border-radius:50%;background:var(--me);border:3px solid #fff;
+  box-shadow:0 0 0 1.5px var(--me),0 1px 4px rgba(0,0,0,.4)}
+.coord .sw{border:0;background:none;color:var(--me);font-weight:700;font-size:11.5px;padding:0;text-decoration:underline}
 .leaflet-popup-content{margin:11px 13px;font-family:var(--sans);font-size:12.5px;min-width:190px}
 .leaflet-popup-content img{width:100%;border-radius:7px;margin-bottom:7px;display:block}
 .leaflet-popup-content .who{font-family:var(--mono);font-size:10.5px;color:var(--mute);margin-top:5px}
@@ -208,9 +236,23 @@ table.mini td.n{font-family:var(--mono);text-align:right}
   display:flex;align-items:center;justify-content:center;padding:16px}
 .modal .box{background:var(--card);border-radius:14px;max-width:640px;width:100%;max-height:86dvh;
   overflow-y:auto;box-shadow:0 18px 50px rgba(0,0,0,.3)}
-.modal .box>.dots{border-radius:14px 14px 0 0}
 .modal .bd{padding:18px}
 .modal h1{font-size:19px;margin:0 0 6px;letter-spacing:-.03em}
+.modal.join{background:rgba(20,23,26,.35);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+.modal.join .box{max-width:420px;border-radius:16px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.25)}
+.modal.join .bd{padding:0}
+.jart{height:150px;display:block;line-height:0}
+.jbd{padding:20px 22px 22px}
+.jey{margin:0 0 6px;font-size:11.5px;font-weight:600;color:var(--mute)}
+.modal.join h1{font-size:21px;line-height:1.35;margin:0 0 8px;letter-spacing:-.03em}
+.jsub{margin:0 0 18px;font-size:13px;color:var(--mute);line-height:1.5}
+.jf{display:block;margin:0 0 12px}
+.jf>span{display:block;font-size:11.5px;font-weight:600;color:var(--ink2);margin:0 0 5px}
+.jf>span i{font-style:normal;font-weight:400;color:var(--mute)}
+.jf input{width:100%;height:42px;font-size:14px}
+.jf input:focus,.jf input:focus-visible{outline:0;border-color:var(--ink2);box-shadow:0 0 0 3px rgba(20,23,26,.08);background:#fff}
+.jrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.jgo{height:46px;font-size:14.5px;margin-top:6px;border-radius:10px}
 .toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:3000;background:var(--ink);
   color:#fff;padding:10px 18px;border-radius:99px;font-size:12.5px;font-weight:600;max-width:88vw;
   box-shadow:0 4px 16px rgba(0,0,0,.3);opacity:0;transition:opacity .2s;pointer-events:none;text-align:center}
@@ -223,9 +265,9 @@ table.mini td.n{font-family:var(--mono);text-align:right}
 .doc{background:#fff;color:#14171A;font-family:var(--sans);line-height:1.75;font-size:13.5px}
 .doc h1{font-size:21px;margin:0 0 4px;letter-spacing:-.03em;line-height:1.3}
 .doc .by{font-family:var(--mono);font-size:11.5px;color:#6B7076;margin-bottom:14px;
-  padding-bottom:10px;border-bottom:3px solid #F5C518}
+  padding-bottom:10px;border-bottom:2px solid #333A41}
 .doc h2{font-size:12px;letter-spacing:.06em;margin:18px 0 7px;color:#333A41;
-  border-left:3px solid #F5C518;padding-left:7px}
+  border-left:3px solid #333A41;padding-left:7px}
 .doc p{margin:0 0 8px}
 .doc figure{margin:0 0 12px}
 .doc figure img{width:100%;border:1px solid #DFDBD2;border-radius:6px;display:block}
@@ -240,43 +282,43 @@ table.mini td.n{font-family:var(--mono);text-align:right}
 .doc .b i{display:block;height:100%;border-radius:99px}
 
 @media (max-width:860px){
+  .savebar{position:sticky;bottom:0;z-index:5;background:var(--card);border-top:1px solid var(--line);box-shadow:0 -4px 12px rgba(0,0,0,.05)}
   main{flex-direction:column}
   #map{height:46dvh;flex:none}
   .panel{width:100%;border-left:0;border-top:1px solid var(--line);flex:1;min-height:0}
-  .brand small{display:none}
   .zoomer{bottom:12px}
   .legend,.filtbar{display:none}
+  nav button{white-space:nowrap;padding:10px 12px 8px}
+  nav .tool{padding:0 8px;white-space:nowrap}
+}
+@media (max-width:480px){
+  header{padding:8px 12px}
+  .brand{font-size:18px}
+  nav button .n{display:none}
+  .chip{font-size:11px;padding:2px 8px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 
 <header>
   <div class="hbar">
-    <div class="brand">우리 동네 전동킥보드 주차 실태 지도<small>커뮤니티 매핑 과제</small></div>
+    <div class="brand"><small>한국지리 탐구</small>잘못 주차된 전동킥보드를 찾아라!</div>
     <div class="hspace"></div>
     <button class="chip" id="chipProj">과제코드 <b>—</b></button>
     <button class="chip" id="chipMe">이름 <b>—</b></button>
   </div>
 </header>
-<div class="dots"></div>
 
 <nav role="tablist">
   <button role="tab" id="tabIn" aria-selected="true"><span class="n">01</span>입력</button>
   <button role="tab" id="tabAn" aria-selected="false"><span class="n">02</span>분석</button>
   <button role="tab" id="tabRep" aria-selected="false"><span class="n">03</span>보고서</button>
   <div class="navsp"></div>
-  <button class="tool" id="btnHelp">유형 기준 ?</button>
-  <button class="tool" id="btnSync">새로고침</button>
 </nav>
 
 <main>
   <div id="map">
     <div class="mapctl">
-      <select id="selSido"><option value="">시·도</option></select>
-      <select id="selSgg"><option value="">시·군·구</option></select>
-      <select id="selDong"><option value="">읍·면·동</option></select>
-      <input type="text" id="qAddr" placeholder="장소 검색">
-      <button id="btnAddr">검색</button>
       <button class="ghost on hidden" id="btnStn">지하철역 표시 중</button>
     </div>
     <div class="zoomer">
@@ -284,38 +326,44 @@ table.mini td.n{font-family:var(--mono);text-align:right}
       <div class="lv">z<b id="zLv">7</b></div>
       <button id="zOut" title="축소" aria-label="지도 축소">−</button>
     </div>
-    <div class="legend">
+    <div class="legend hidden">
       <div><i style="background:var(--tow)"></i>즉시견인 대상 포함</div>
       <div><i style="background:var(--warn)"></i>보행 방해만</div>
       <div id="lgStn" class="hidden"><i style="background:var(--stn);border:2px solid #fff;box-shadow:0 0 0 1px var(--stn)"></i>지하철역</div>
     </div>
     <div class="pickbar hidden" id="stnhint" style="background:#fff;color:var(--ink2);font-weight:600;top:auto;bottom:60px">지도를 조금 더 확대하면 지하철역이 나타납니다</div>
-    <div class="pickbar hidden" id="pickbar">지도를 눌러 킥보드 위치를 찍으세요<small>+ 버튼으로 확대한 뒤 · 핀은 끌어서 조정</small></div>
+    <div class="pickbar hidden" id="pickbar">킥보드가 있는 곳을 지도에서 누르세요<small>확대·축소한 뒤 눌러도 됩니다 · 다시 누르면 핀이 옮겨집니다</small></div>
     <div class="filtbar hidden" id="filtbar"><span id="filtbarT"></span><button id="filtbarX" aria-label="필터 해제">×</button></div>
   </div>
 
   <section class="panel" id="panelIn">
     <div class="sec">
-      <h2><span class="num">01</span>사진 올리기</h2>
+      <h2><span class="num">01</span>위치 정하기</h2>
+      <div class="row">
+        <input type="text" id="qAddr" placeholder="장소·지하철역 검색">
+        <button class="btn sm" id="btnAddr" style="flex:none">검색</button>
+      </div>
+      <div class="row" style="margin-top:7px">
+        <select id="selSido"><option value="">시·도</option></select>
+        <select id="selSgg"><option value="">시·군·구</option></select>
+        <select id="selDong"><option value="">읍·면·동</option></select>
+      </div>
+      <div class="row" style="margin-top:7px;align-items:stretch">
+        <div class="coord empty" id="coord" style="flex:1">지도에서 킥보드가 있는 곳을 누르세요</div>
+        <button class="btn ghost sm" id="btnGeo" style="flex:none">내 위치</button>
+      </div>
+    </div>
+
+    <div class="sec">
+      <h2><span class="num">02</span>사진 올리기</h2>
       <div class="drop">
         <input type="file" id="file" accept="image/*" capture="environment">
         <div class="big" id="dropTitle">사진 선택 · 촬영</div>
-        <div class="hint" style="margin-top:3px">촬영 원본이면 위치 좌표를 자동으로 읽습니다</div>
       </div>
       <div id="photoBox" class="hidden" style="margin-top:9px">
         <img class="thumb" id="thumb" alt="선택한 사진 미리보기">
         <div class="exif" id="exif"></div>
       </div>
-    </div>
-
-    <div class="sec">
-      <h2><span class="num">02</span>위치 지정</h2>
-      <div class="coord empty" id="coord"><span>아직 위치가 없습니다</span></div>
-      <div class="row" style="margin-top:7px">
-        <button class="btn ghost sm" id="btnPick">지도에서 찍기</button>
-        <button class="btn ghost sm" id="btnGeo">현재 위치</button>
-      </div>
-      <div class="hint" style="margin-top:6px">위쪽 메뉴에서 시·도 → 시·군·구 → 읍·면·동을 고르면 그 동네로 바로 이동합니다.</div>
     </div>
 
     <div class="sec">
@@ -328,8 +376,8 @@ table.mini td.n{font-family:var(--mono);text-align:right}
       <div class="chksum" id="chksum">아직 고르지 않았습니다</div>
     </div>
 
-    <div class="sec">
-      <button class="btn wide" id="btnSave">이 지점 등록하기</button>
+    <div class="sec savebar">
+      <button class="btn wide" id="btnSave" disabled>등록</button>
       <button class="btn ghost wide sm hidden" id="btnCancel" style="margin-top:7px">수정 취소</button>
     </div>
 
@@ -347,14 +395,11 @@ table.mini td.n{font-family:var(--mono);text-align:right}
     <div class="sec" id="gateBox"></div>
 
     <div class="sec">
-      <h2><span class="num">05</span>유형별 분포</h2>
+      <h2><span class="num">05</span>무엇이, 언제</h2>
       <div class="stats" id="statBox"></div>
-      <div class="hint" style="margin-bottom:7px">막대를 누르면 그 유형만 지도에 남습니다. 다시 누르면 해제됩니다.</div>
-      <h3 style="color:var(--tow)">즉시견인 대상</h3>
-      <div id="barsT"></div>
-      <h3 style="margin-top:12px;color:var(--warn)">보행 방해</h3>
-      <div id="barsW"></div>
-      <h3 style="margin-top:12px">시간대별</h3>
+      <table class="ctab"><thead><tr><th>구분</th><th>유형</th><th>지점</th></tr></thead><tbody id="ctab"></tbody></table>
+      <div class="sm2" style="margin-top:5px">한 지점에서 여러 유형을 고를 수 있어 유형별 합이 전체보다 클 수 있습니다. 유형을 누르면 그 유형만 지도에 남습니다.</div>
+      <h3 style="margin-top:14px">시간대별</h3>
       <div id="barsH"></div>
     </div>
 
@@ -372,80 +417,46 @@ table.mini td.n{font-family:var(--mono);text-align:right}
     </div>
 
     <div class="sec">
-      <h2><span class="num">07</span>격자 집계와 군집도</h2>
-      <div class="hint" style="margin-bottom:8px">히트맵은 눈으로 보는 도구이고, 이 둘은 <b>숫자로 말하는</b> 도구입니다. 격자는 칸마다 건수를 세고, 군집도는 점들이 실제로 뭉쳐 있는지 하나의 값으로 판정합니다.</div>
+      <h2><span class="num">07</span>격자 집계</h2>
+      <div class="hint" style="margin-bottom:8px">지도를 같은 크기의 칸으로 나누고 칸마다 몇 건인지 셉니다.</div>
       <div class="segs" id="gridSegs">
         <button data-g="0" class="on">격자 끄기</button>
         <button data-g="250">250 m</button>
         <button data-g="500">500 m</button>
       </div>
       <div id="gridOut" style="margin-top:10px"></div>
-      <button class="btn ghost wide sm" id="btnNni" style="margin-top:9px">군집도(최근접이웃) 계산</button>
-      <div id="nniOut" style="margin-top:10px"></div>
+      <div class="hidden"><button id="btnNni"></button><div id="nniOut"></div></div>
     </div>
 
-    <div class="sec">
-      <h2><span class="num">08</span>지하철역 버퍼 분석</h2>
-      <div class="hint" style="margin-bottom:8px">역 출입구 앞 5m는 즉시견인 구역입니다. 역에서 <b>100m</b>와 <b>250m</b> 두 겹의 버퍼를 그려, 각 지점이 어느 띠에 속하는지 나눠 봅니다.</div>
-      <div class="ringpick">
-        <div class="k"><b style="color:#0F5C57">100 m</b><span>역 바로 앞</span></div>
-        <div class="k"><b style="color:#2C6E6A">250 m</b><span>도보 역세권</span></div>
-      </div>
-      <button class="btn ghost wide" id="btnBuf" style="margin-top:9px">100m · 250m 버퍼 그리기</button>
-      <div class="row" style="margin-top:7px">
-        <button class="btn ghost sm" id="btnBufOff">버퍼 지우기</button>
-        <button class="btn ghost sm" id="btnBufC">반경 직접 정하기</button>
-      </div>
-      <div id="bufOut" style="margin-top:11px"></div>
-      <div class="hint" style="margin-top:8px" id="stnInfo"></div>
-      <button class="btn ghost wide sm" id="btnStnLoad" style="margin-top:7px">이 지역 지하철역 더 불러오기</button>
+    <div class="hidden" aria-hidden="true">
+      <button id="btnBuf"></button><button id="btnBufOff"></button><button id="btnBufC"></button>
+      <div id="bufOut"></div><div id="stnInfo"></div><button id="btnStnLoad"></button>
     </div>
-
   </section>
 
   <section class="panel hidden" id="panelRep">
     <div class="sec">
-      <h2><span class="num">09</span>보고서 기본 정보</h2>
+      <h2><span class="num">08</span>보고서 쓰기</h2>
       <label class="f" for="rTitle">제목</label>
-      <input type="text" id="rTitle" placeholder="예: 서현역 일대 전동킥보드 주차 실태 조사">
-      <div style="height:10px"></div>
-      <label class="f" for="rAim">조사 목적 <span>· 1~2문장</span></label>
-      <textarea id="rAim" rows="3" placeholder="예: 우리 동네에서 전동킥보드가 어디에 어떻게 잘못 세워지는지 확인하고, 가장 먼저 고쳐야 할 곳을 찾기 위해 조사하였다."></textarea>
-    </div>
-
-    <div class="sec">
-      <h2><span class="num">10</span>지도 담기 <span id="shotCnt" style="font-family:var(--mono);color:var(--mute)"></span></h2>
-      <div class="hint">분석 탭에서 보고 싶은 화면(히트맵·격자·버퍼)을 만든 뒤 여기서 담으면 그 모습 그대로 보고서에 들어갑니다. 최대 3장.</div>
-      <label class="f" for="shotCap" style="margin-top:9px">그림 설명</label>
-      <input type="text" id="shotCap" placeholder="예: 250m 격자로 본 밀집 분포">
-      <button class="btn ghost wide sm" id="btnShot" style="margin-top:7px">지금 지도 담기</button>
-      <div id="shots" style="margin-top:9px"></div>
-    </div>
-
-    <div class="sec">
-      <h2><span class="num">11</span>분석 결과</h2>
-      <div class="note calm" style="margin-bottom:9px">지도와 수치를 근거로 <b>4~5문장</b>으로 쓰세요. ① 어디에 몰려 있는지 ② 어떤 유형이 많은지 ③ 지하철역과 어떤 관계인지 ④ 왜 그런지 ⑤ 무엇을 바꿔야 하는지</div>
-      <textarea id="report" rows="9" placeholder="예) 우리 조가 조사한 32건 중 21건이 …"></textarea>
+      <input type="text" id="rTitle" placeholder="예: 신촌역 일대 전동킥보드 주차 실태">
+      <p class="hint" style="margin:8px 0 0"><b>조사 목적</b> 우리 동네에서 전동킥보드가 어디에, 어떻게 잘못 세워져 있는지 찾고, 그 까닭과 해결 방법을 생각해 본다.</p>
+      <p class="hint" style="margin:4px 0 0"><b>지도</b> 지금 화면에 보이는 지도가 그대로 들어갑니다.</p>
+      <div style="height:12px"></div>
+      <label class="f" for="report">분석 결과 <span>· 어디에 몰려 있는지, 어떤 유형이 많은지, 왜 그런지</span></label>
+      <textarea id="report" rows="8" placeholder="예) 우리 반이 기록한 32건 중 21건이 …"></textarea>
       <div class="counter" id="repCount">0문장 · 0자</div>
-      <div style="height:11px"></div>
-      <label class="f" for="rSug">제언 <span>· 선택, 1~2문장</span></label>
-      <textarea id="rSug" rows="3" placeholder="예: 서현역 2번 출구 옆 자투리 공간에 주차구역을 지정하면 …"></textarea>
+      <div style="height:10px"></div>
+      <label class="f" for="rSug">제언</label>
+      <textarea id="rSug" rows="3" placeholder="예) 2번 출구 옆 자투리 공간에 주차구역을 정하면 …"></textarea>
     </div>
 
     <div class="sec">
-      <h2><span class="num">12</span>미리보기와 제출</h2>
-      <button class="btn wide ghost" id="btnPrev">완성본 미리보기</button>
-      <button class="btn wide" id="btnSubmit" style="margin-top:7px" disabled>보고서 제출하기</button>
+      <h2><span class="num">09</span>완성본</h2>
+      <button class="btn wide ghost" id="btnPrev">미리보기</button>
       <div class="row" style="margin-top:7px">
+        <button class="btn sm" id="btnPdf">PDF로 저장</button>
         <button class="btn ghost sm" id="btnDl">HTML로 내려받기</button>
-        <button class="btn ghost sm" id="btnCsv">전체 자료 CSV</button>
       </div>
-      <div id="repState" style="margin-top:9px"></div>
-    </div>
-
-    <div class="sec">
-      <h2><span class="num">13</span>제출된 보고서</h2>
-      <div id="repList"></div>
     </div>
   </section>
 </main>
@@ -506,21 +517,24 @@ const Store = (()=>{
 
 /* ── 위반 유형: 하나의 목록, 여러 개 선택 ── */
 const CATS = [
-  {id:'T1', tow:true,  label:'차가 다니는 길에 세움',        sub:'차도·자전거도로 위'},
-  {id:'T2', tow:true,  label:'지하철역 입구 바로 앞',        sub:'출입구에서 다섯 걸음(5m) 안쪽'},
-  {id:'T3', tow:true,  label:'버스·택시 타는 곳 앞',         sub:'정류소·승강장에서 다섯 걸음 안쪽'},
-  {id:'T4', tow:true,  label:'횡단보도 앞·안전지대 위',      sub:'횡단보도에서 세 걸음(3m) 안쪽, 교통섬'},
-  {id:'T5', tow:true,  label:'노란 점자블록 위·엘리베이터 입구', sub:'교통약자가 지나는 길'},
-  {id:'T6', tow:true,  label:'학교 앞 어린이 보호구역',      sub:'노인·장애인 보호구역 포함'},
-  {id:'W1', tow:false, label:'보도 한가운데를 막음',         sub:'사람이 비켜서 지나가야 함'},
-  {id:'W2', tow:false, label:'가게·건물 입구를 막음',        sub:''},
-  {id:'W3', tow:false, label:'쓰러져 있음',                  sub:''},
-  {id:'W4', tow:false, label:'여러 대가 뒤엉켜 있음',        sub:''},
-  {id:'W5', tow:false, label:'화단·공원·풀밭에 세움',        sub:''},
-  {id:'W6', tow:false, label:'그 밖에 지나가기 불편함',      sub:''},
+  {id:'T1', tow:true,  label:'차도에 있음'},
+  {id:'T2', tow:true,  label:'지하철 입구를 가로막고 있음'},
+  {id:'T4', tow:true,  label:'횡단보도에 세워져 있음'},
+  {id:'T5', tow:true,  label:'점자 블록 위에 세워져 있음'},
+  {id:'W1', tow:false, label:'보도(인도) 가운데를 막고 있음'},
+  {id:'W3', tow:false, label:'쓰러져 있거나 여러 대가 뒤엉켜 있음'},
+  {id:'W6', tow:false, label:'기타'},
 ];
-const CAT={}; CATS.forEach(c=>CAT[c.id]=c);
+/* 예전 버전 자료 호환 */
+const LEGACY={T3:{id:'T3',tow:true,label:'버스·택시 타는 곳 앞'},T6:{id:'T6',tow:true,label:'어린이 보호구역'},
+  W2:{id:'W2',tow:false,label:'가게·건물 입구를 막음'},W5:{id:'W5',tow:false,label:'화단·공원·풀밭에 세움'}};
+const ALIAS={W4:'W3'};
+const CAT={}; CATS.forEach(c=>CAT[c.id]=c); Object.assign(CAT,LEGACY);
 const CATS_T=CATS.filter(c=>c.tow), CATS_W=CATS.filter(c=>!c.tow);
+const COL_N='#2B3338';
+const AIM='우리 동네에서 전동킥보드가 어디에, 어떻게 잘못 세워져 있는지 찾고, 그 까닭과 해결 방법을 생각해 본다.';
+function inInput(){ return !$('#panelIn').classList.contains('hidden'); }
+function tagHTML(c){ return inInput()?'':`<span class="tag" style="background:${c.tow?COL_T:COL_W}">${c.tow?'견인':'방해'}</span>`; }
 const COL_T='#D93B2B', COL_W='#DE8A2C';
 const OLD_MAP={A1:'T1',A2:'T2',A3:'T3',A4:'T4',A5:'T5',A6:'T6',B1:'W1',B2:'W2',B3:'W3',B4:'W4',B5:'W5',B6:'W6'};
 
@@ -569,7 +583,7 @@ const kRep=sid=>`pkb:${state.proj}:r:${sid}`;
 /* ── 지도 ── */
 const map=L.map('map',{zoomControl:false,minZoom:6,maxZoom:19,
   scrollWheelZoom:true,touchZoom:true,doubleClickZoom:true,keyboard:true}).setView([36.4,127.9],7);
-L.control.zoom({position:'topright'}).addTo(map);
+
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
   {maxZoom:19,attribution:'&copy; OpenStreetMap 기여자'}).addTo(map);
 const gEntries=L.layerGroup().addTo(map);
@@ -581,7 +595,7 @@ $('#zIn').onclick=()=>map.zoomIn();
 $('#zOut').onclick=()=>map.zoomOut();
 map.on('zoomend moveend',()=>{ $('#zLv').textContent=map.getZoom(); refreshStations(); });
 
-function catsOf(e){ return e.cats||[]; }
+function catsOf(e){ return [...new Set((e.cats||[]).map(c=>ALIAS[c]||c))]; }
 function isTow(e){ return catsOf(e).some(c=>CAT[c]&&CAT[c].tow); }
 function catText(e){ return catsOf(e).map(c=>CAT[c]?CAT[c].label:c).join(' + ')||'미분류'; }
 function passFilter(e){
@@ -599,8 +613,8 @@ function drawEntries(){
   for(const e of state.entries){
     if(!passFilter(e)) continue;
     if(fw==='me'&&e.sid!==state.me.sid) continue;
-    const st={radius:dim?4:7.5,color:'#fff',weight:dim?1:2,
-      fillColor:isTow(e)?COL_T:COL_W,fillOpacity:dim?.5:.92};
+    const st={radius:dim?2.5:3.5,color:'#fff',weight:1,
+      fillColor:inInput()?COL_N:(isTow(e)?COL_T:COL_W),fillOpacity:dim?.5:.92};
     if(state.bufOn&&!dim){
       if(e._ring===1){ st.color='#0F5C57'; st.weight=4; st.radius=8.5; }
       else if(e._ring){ st.color='#2C6E6A'; st.weight=3; st.dashArray='2 3'; st.radius=8; }
@@ -633,8 +647,7 @@ async function openPopup(e,m){
   if(e.hasPhoto){ const d=await Store.get(kPho(e.id),true); if(d) img=`<img src="${d}" alt="현장 사진">`; }
   const own=e.sid===state.me.sid;
   const html=`${img}
-    ${catsOf(e).map(c=>CAT[c]?`<div><span class="tag" style="background:${CAT[c].tow?COL_T:COL_W}">${
-      CAT[c].tow?'견인':'방해'}</span><b>${esc(CAT[c].label)}</b></div>`:'').join('')}
+    ${catsOf(e).map(c=>CAT[c]?`<div>${tagHTML(CAT[c])}<b>${esc(CAT[c].label)}</b></div>`:'').join('')}
     <div class="who">${esc(e.name)}${e.klass?' · '+esc(e.klass):''} · ${esc(fmtDT(e.ts))}</div>
     <div class="who">${e.lat.toFixed(5)}, ${e.lng.toFixed(5)} · ${e.src==='exif'?'사진 좌표':'직접 지정'}</div>
     ${own?`<div style="margin-top:8px;display:flex;gap:6px">
@@ -670,20 +683,20 @@ selSgg.onchange=()=>{
 selDong.onchange=()=>{
   const ds=(ADM[selSido.value]||{})[selSgg.value]; if(!ds) return;
   const d=ds.find(x=>x.n===selDong.value); if(!d) return;
-  map.setView([d.lat,d.lng],16);
+  map.setView([d.lat,d.lng],16); startPick();
 };
 $('#btnAddr').onclick=searchAddr;
 $('#qAddr').addEventListener('keydown',e=>{ if(e.key==='Enter') searchAddr(); });
 async function searchAddr(){
   const q=$('#qAddr').value.trim(); if(!q) return;
   const st=state.stations.find(s=>s.name===q||s.name===q.replace(/역$/,''));
-  if(st){ map.setView([st.lat,st.lng],17); toast(st.name+'역으로 이동'); return; }
+  if(st){ map.setView([st.lat,st.lng],17); startPick(); return; }
   toast('검색 중…');
   try{
     const r=await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=kr&q=${encodeURIComponent(q)}`);
     const j=await r.json();
     if(!j.length){ toast('찾지 못했습니다. 위의 지역 메뉴를 쓰세요'); return; }
-    map.setView([+j[0].lat,+j[0].lon],17);
+    map.setView([+j[0].lat,+j[0].lon],17); startPick();
   }catch(e){ toast('검색을 쓸 수 없습니다. 지역 메뉴로 이동하세요'); }
 }
 
@@ -829,14 +842,20 @@ $('#file').onchange=async ev=>{
     $('#dropTitle').textContent='다른 사진으로 바꾸기';
     const box=$('#exif');
     if(ex&&ex.lat){
-      setPoint(ex.lat,ex.lng,'exif');
-      map.setView([ex.lat,ex.lng],18);
-      box.className='exif ok';
-      box.textContent=`사진에서 좌표를 읽었습니다 · ${ex.lat.toFixed(5)}, ${ex.lng.toFixed(5)}`;
+      if(state.draft.lat==null){
+        setPoint(ex.lat,ex.lng,'exif'); map.setView([ex.lat,ex.lng],18);
+        box.className='exif ok';
+        box.textContent=`사진의 좌표로 위치를 정했습니다 · ${ex.lat.toFixed(5)}, ${ex.lng.toFixed(5)}`;
+      }else{
+        const dm=map.distance([state.draft.lat,state.draft.lng],[ex.lat,ex.lng]);
+        box.className='exif ok';
+        box.innerHTML=`사진 좌표는 정한 위치에서 ${Math.round(dm)}m 떨어져 있습니다 · <button class="btn ghost sm" id="useExif">사진 좌표로 바꾸기</button>`;
+        $('#useExif').onclick=()=>{ setPoint(ex.lat,ex.lng,'exif'); map.setView([ex.lat,ex.lng],18);
+          box.textContent=`사진의 좌표로 바꿨습니다 · ${ex.lat.toFixed(5)}, ${ex.lng.toFixed(5)}`; };
+      }
     }else{
       box.className='exif no';
-      box.textContent='사진에 좌표가 없습니다 · 위치를 직접 지정하세요';
-      if(state.draft.lat==null) startPick();
+      box.textContent='사진에 좌표가 없습니다';
     }
     if(ex&&ex.dt){
       const m=ex.dt.match(/^(\d{4}):(\d{2}):(\d{2})[ T](\d{2}):(\d{2})/);
@@ -857,34 +876,42 @@ function setPoint(lat,lng,src){
   if(draftMarker) map.removeLayer(draftMarker);
   draftMarker=L.marker([lat,lng],{draggable:true,zIndexOffset:1000,
     icon:L.divIcon({className:'',html:'<div class="draft"></div>',iconSize:[22,22],iconAnchor:[11,11]})}).addTo(map);
+  updSave();
   draftMarker.on('dragend',()=>{ const p=draftMarker.getLatLng(); setPoint(p.lat,p.lng,'manual'); });
+}
+let meMarker=null, meCircle=null;
+function showMe(lat,lng,acc){
+  if(meMarker){ meMarker.setLatLng([lat,lng]); }
+  else meMarker=L.marker([lat,lng],{interactive:false,zIndexOffset:500,
+    icon:L.divIcon({className:'',html:'<div class="me"></div>',iconSize:[16,16],iconAnchor:[8,8]})}).addTo(map);
+  if(meCircle) map.removeLayer(meCircle);
+  if(acc) meCircle=L.circle([lat,lng],{radius:Math.min(acc,300),color:'#2F6FD1',weight:1,fillColor:'#2F6FD1',fillOpacity:.08,interactive:false}).addTo(map);
+}
+function locateMe(quiet){
+  if(!navigator.geolocation||!window.isSecureContext){ if(!quiet) toast('이 화면에서는 내 위치를 쓸 수 없습니다. 검색이나 지역 메뉴로 찾아 주세요'); return; }
+  navigator.geolocation.getCurrentPosition(
+    p=>{ const {latitude:la,longitude:lo,accuracy:ac}=p.coords;
+      showMe(la,lo,ac); map.setView([la,lo],17); startPick(); },
+    err=>{ if(!quiet) toast(err.code===1?'위치 권한이 꺼져 있습니다. 검색이나 지역 메뉴로 찾아 주세요':'내 위치를 찾지 못했습니다. 검색이나 지역 메뉴로 찾아 주세요'); },
+    {enableHighAccuracy:true,timeout:9000});
 }
 function startPick(){
   state.picking=true; document.body.classList.add('picking');
-  $('#pickbar').classList.remove('hidden'); $('#btnPick').classList.add('on');
+  $('#pickbar').classList.remove('hidden');
 }
 function stopPick(){
   state.picking=false; document.body.classList.remove('picking');
-  $('#pickbar').classList.add('hidden'); $('#btnPick').classList.remove('on');
+  $('#pickbar').classList.add('hidden');
 }
-$('#btnPick').onclick=()=>state.picking?stopPick():startPick();
-map.on('click',e=>{ if(!state.picking) return; setPoint(e.latlng.lat,e.latlng.lng,'manual'); stopPick(); });
-$('#btnGeo').onclick=()=>{
-  if(!navigator.geolocation||!window.isSecureContext){
-    toast('이 화면에서는 현재 위치를 쓸 수 없습니다. https 주소로 열면 작동합니다');
-    return;
-  }
-  toast('위치를 확인하는 중…');
-  navigator.geolocation.getCurrentPosition(
-    p=>{ setPoint(p.coords.latitude,p.coords.longitude,'gps'); map.setView([p.coords.latitude,p.coords.longitude],18); },
-    err=>{
-      const msg = err.code===1 ? '위치 권한이 거부되었습니다. 이 화면(미리보기)에서는 대개 막혀 있으니 지도에서 직접 찍어 주세요'
-                : err.code===3 ? '위치 확인이 너무 오래 걸립니다. 지도에서 직접 찍어 주세요'
-                : '위치를 알 수 없습니다. 지도에서 직접 찍어 주세요';
-      toast(msg);
-    },
-    {enableHighAccuracy:true,timeout:9000});
-};
+// 지도 위 버튼(확대·축소 등)을 눌러도 지도 클릭으로 처리되지 않게
+document.querySelectorAll('#map .zoomer, #map .mapctl, #map .legend, #map .filtbar, #pickbar').forEach(el=>{
+  L.DomEvent.disableClickPropagation(el); L.DomEvent.disableScrollPropagation(el); });
+map.on('click',e=>{
+  const inTab=!$('#panelIn').classList.contains('hidden');
+  if(!state.picking && !inTab) return;
+  setPoint(e.latlng.lat,e.latlng.lng,'manual'); stopPick();
+});
+$('#btnGeo').onclick=()=>locateMe(false);
 
 /* ── 유형 체크박스 ── */
 (function buildCats(){
@@ -894,9 +921,7 @@ $('#btnGeo').onclick=()=>{
       <span>${c.label}${c.sub?`<small>${c.sub}</small>`:''}</span></label>`;
     return h+'</div>';
   };
-  $('#cats').innerHTML =
-    grp(CATS_T,'견인될 수 있어요','법으로 정한 즉시견인 구역',COL_T,'t') +
-    grp(CATS_W,'지나가기 불편해요','견인 대상은 아니지만 보행 방해',COL_W,'w');
+  $('#cats').innerHTML = CATS.map(c=>`<label class="chk"><input type="checkbox" name="cat" value="${c.id}"><span>${c.label}</span></label>`).join('');
   document.querySelectorAll('input[name=cat]').forEach(i=>i.addEventListener('change',updateChkSum));
   const fc=$('#filtCat');
   CATS.forEach(c=>fc.add(new Option((c.tow?'[견인] ':'[방해] ')+c.label,c.id)));
@@ -904,11 +929,11 @@ $('#btnGeo').onclick=()=>{
 function pickedCats(){
   return [...document.querySelectorAll('input[name=cat]:checked')].map(i=>i.value);
 }
-function updateChkSum(){
+function updSave(){ $('#btnSave').disabled = state.draft.lat==null || !pickedCats().length; }
+function updateChkSum(){ updSave();
   const p=pickedCats();
-  const t=p.filter(x=>CAT[x].tow).length;
   $('#chksum').textContent = p.length
-    ? `${p.length}개 선택${t?` · 즉시견인 대상 ${t}개 포함`:' · 견인 대상은 아님'}`
+    ? `${p.length}개 선택`
     : '아직 고르지 않았습니다';
 }
 
@@ -917,14 +942,14 @@ function resetForm(){
   state.editing=null;
   $('#file').value=''; $('#photoBox').classList.add('hidden');
   $('#dropTitle').textContent='사진 선택 · 촬영';
-  $('#coord').className='coord empty'; $('#coord').innerHTML='<span>아직 위치가 없습니다</span>';
+  $('#coord').className='coord empty'; $('#coord').innerHTML='지도에서 킥보드가 있는 곳을 누르세요';
   document.querySelectorAll('input[name=cat]').forEach(i=>i.checked=false);
   updateChkSum();
   $('#dt').value=nowLocal();
   if(draftMarker){ map.removeLayer(draftMarker); draftMarker=null; }
-  $('#btnSave').textContent='이 지점 등록하기';
+  $('#btnSave').textContent='등록';
   $('#btnCancel').classList.add('hidden');
-  stopPick();
+  stopPick(); updSave();
 }
 function nowLocal(){
   const d=new Date(); d.setMinutes(d.getMinutes()-d.getTimezoneOffset());
@@ -946,7 +971,6 @@ $('#btnSave').onclick=async ()=>{
   if(!was) state.entries.push(rec);
   await saveMine();
   drawEntries(); renderList(); resetForm();
-  btn.disabled=false; btn.textContent='이 지점 등록하기';
   toast(was?'수정했습니다':'등록했습니다');
 };
 $('#btnCancel').onclick=resetForm;
@@ -968,7 +992,7 @@ window.editEntry=id=>{
   $('#dt').value=d.toISOString().slice(0,16);
   document.querySelectorAll('input[name=cat]').forEach(i=>i.checked=catsOf(e).includes(i.value));
   updateChkSum();
-  $('#btnSave').textContent='수정 내용 저장';
+  $('#btnSave').textContent='수정 저장';
   $('#btnCancel').classList.remove('hidden');
   if(e.hasPhoto) Store.get(kPho(e.id),true).then(d=>{ if(d){ $('#thumb').src=d;
     $('#photoBox').classList.remove('hidden'); $('#exif').className='exif';
@@ -999,8 +1023,7 @@ function renderList(){
       ${e.hasPhoto?`<img class="ph" id="th-${e.id}" alt="현장 사진">`
         :`<div class="ph" style="display:flex;align-items:center;justify-content:center;font-size:9px;color:#9A9A94;text-align:center">사진<br>없음</div>`}
       <div class="meta">
-        <div class="tt">${catsOf(e).map(c=>CAT[c]?`<div><span class="tag" style="background:${
-          CAT[c].tow?COL_T:COL_W}">${CAT[c].tow?'견인':'방해'}</span>${esc(CAT[c].label)}</div>`:'').join('')}</div>
+        <div class="tt">${catsOf(e).map(c=>CAT[c]?`<div>${tagHTML(CAT[c])}${esc(CAT[c].label)}</div>`:'').join('')}</div>
         <div class="sub">${esc(e.name)}${e.klass?' · '+esc(e.klass):''} · ${esc(fmtDT(e.ts))}${
           state.bufOn?` · ${esc(e._sn||'')} ${Math.round(e._nd)}m`:''}</div>
         <div class="acts">
@@ -1043,7 +1066,8 @@ async function syncAll(){
   state.entries=all;
   drawEntries(); renderList(); renderAnalysis();
 }
-$('#btnSync').onclick=async ()=>{ toast('불러오는 중…'); await syncAll(); toast(`전체 ${state.entries.length}건`); };
+/* 함께 쓰기 모드에서는 친구들의 기록을 저절로 불러옴 */
+if(HAS_SHARED) setInterval(()=>{ if(state.me&&!document.hidden) syncAll(); },45000);
 
 /* ── 분석 ── */
 function dist(a,b,c,d){
@@ -1053,15 +1077,11 @@ function dist(a,b,c,d){
   return 2*R*Math.asin(Math.sqrt(x));
 }
 function drawBars(el,list,counts,n,col){
-  const items=list.filter(c=>counts[c.id]).sort((a,b)=>counts[b.id]-counts[a.id]);
-  if(!items.length){ el.innerHTML='<div class="hint">해당 유형으로 기록된 지점이 없습니다.</div>'; return; }
-  el.innerHTML=items.map(c=>{
-    const v=counts[c.id], pct=n?v/n*100:0;
-    return `<button class="bar${state.filterCat===c.id?' act':''}" data-cat="${c.id}">
-      <div class="bl"><b>${c.label}</b><span>${v}건 ${Math.round(pct)}%</span></div>
-      <div class="bt"><div class="bf" style="width:${pct}%;background:${col}"></div></div></button>`;
-  }).join('')+`<div class="scale"><span>0%</span><span>전체 ${n}건 기준</span><span>100%</span></div>`;
-  el.querySelectorAll('.bar').forEach(b=>b.onclick=()=>{
+  el.innerHTML=list.map(c=>{
+    const v=counts[c.id]||0;
+    return `<button class="nrow${v?'':' zero'}${state.filterCat===c.id?' act':''}" data-cat="${c.id}"><span>${c.label}</span><b>${v}</b></button>`;
+  }).join('');
+  el.querySelectorAll('.nrow').forEach(b=>b.onclick=()=>{
     const id=b.dataset.cat;
     state.filterCat = state.filterCat===id ? 'all' : id;
     $('#filtCat').value=state.filterCat;
@@ -1076,9 +1096,40 @@ function counts(){
   return cc;
 }
 function renderBarsOnly(){
-  const n=state.entries.length, cc=counts();
-  drawBars($('#barsT'),CATS_T,cc,n,COL_T);
-  drawBars($('#barsW'),CATS_W,cc,n,COL_W);
+  const cc=counts();
+  const grp=(list,title,sub,col)=>{
+    const tot=state.entries.filter(e=>catsOf(e).some(c=>list.some(x=>x.id===c))).length;
+    return list.map((c,i)=>{
+      const v=cc[c.id]||0;
+      return `<tr class="it${v?'':' zero'}${state.filterCat===c.id?' act':''}${i===list.length-1?' gend':''}" data-cat="${c.id}">
+        ${i===0?`<td class="g" rowspan="${list.length+1}" style="color:${col}"><i style="background:${col}"></i>${title}<small>${sub}</small></td>`:''}
+        <td>${c.label}</td><td class="n">${v}</td></tr>`;
+    }).join('')+`<tr class="sub gend"><td>소계 (한 유형 이상 해당)</td><td class="n">${tot}</td></tr>`;
+  };
+  $('#ctab').innerHTML=grp(CATS_T,'즉시견인 대상','조례로 정한 즉시견인 구역',COL_T)+grp(CATS_W,'보행 방해','견인 대상은 아니지만 지나가기 불편함',COL_W);
+  $('#ctab').querySelectorAll('tr.it').forEach(tr=>tr.onclick=()=>{
+    const id=tr.dataset.cat;
+    state.filterCat = state.filterCat===id ? 'all' : id;
+    $('#filtCat').value=state.filterCat;
+    drawEntries(); renderList(); renderBarsOnly();
+    if(state.gridSize) drawGrid(state.gridSize);
+    if(heatLayer) makeHeat(false);
+  });
+}
+function timeChart(hb){
+  const W=340,H=128,L=26,Rm=8,T=10,B=22, mx=Math.max(1,...hb);
+  const top=mx<=4?mx:Math.ceil(mx/2)*2;
+  const x=i=>L+(i+.5)*(W-L-Rm)/12, y=v=>T+(H-T-B)*(1-v/top);
+  const pts=hb.map((v,i)=>`${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
+  let g='';
+  [0,top/2,top].forEach(v=>{ g+=`<line x1="${L}" x2="${W-Rm}" y1="${y(v)}" y2="${y(v)}" stroke="#E6E8E6" stroke-width="1"/>
+    <text x="${L-6}" y="${y(v)+3.5}" text-anchor="end" font-size="9.5" fill="#8A9296">${Number.isInteger(v)?v:''}</text>`; });
+  [0,6,12,18,24].forEach(h=>{ const xx=L+h/24*(W-L-Rm);
+    g+=`<text x="${xx}" y="${H-6}" text-anchor="middle" font-size="9.5" fill="#8A9296">${h}시</text>`; });
+  const dots=hb.map((v,i)=>v?`<circle cx="${x(i)}" cy="${y(v)}" r="3" fill="#2B3338"><title>${i*2}~${i*2+2}시 ${v}건</title></circle>`:'').join('');
+  return `<svg class="tchart" viewBox="0 0 ${W} ${H}" role="img" aria-label="두 시간 단위 시간대별 건수">${g}
+    <polyline points="${pts}" fill="none" stroke="#2B3338" stroke-width="1.8" stroke-linejoin="round"/>${dots}</svg>
+    <div class="sm2" style="text-align:right;margin:2px 0 0">두 시간 단위 · 세로축 건수</div>`;
 }
 function renderAnalysis(){
   const n=state.entries.length, need=state.minCount;
@@ -1088,7 +1139,7 @@ function renderAnalysis(){
       <div style="font-weight:800;font-size:14px">자료를 조금 더 모아 주세요</div>
       <div class="prog"><i style="width:${Math.min(100,n/need*100)}%"></i></div>
       <div class="hint"><b style="font-family:var(--mono);color:var(--ink)">${n} / ${need}</b>건 ·
-      최소 ${need}건이 모이면 히트맵과 버퍼 분석이 열립니다.</div>
+      최소 ${need}건이 모이면 히트맵이 열립니다.</div>
       <div style="margin-top:10px;font-size:11.5px;color:var(--mute)">기준 건수
         <input type="number" id="minC" value="${need}" min="1" max="200" style="width:64px;padding:3px 6px;display:inline-block">
         <button class="btn ghost sm" id="minCB">바꾸기</button></div></div>`;
@@ -1103,16 +1154,13 @@ function renderAnalysis(){
   const avg=n?(state.entries.reduce((a,e)=>a+catsOf(e).length,0)/n):0;
   $('#statBox').innerHTML=`
     <div class="stat"><div class="v">${n}</div><div class="k">전체 지점</div></div>
-    <div class="stat"><div class="v" style="color:${COL_T}">${n?Math.round(nT/n*100):0}<span style="font-size:12px">%</span></div><div class="k">견인 대상 포함</div></div>
-    <div class="stat"><div class="v">${avg.toFixed(1)}</div><div class="k">지점당 문제 수</div></div>`;
+    <div class="stat"><div class="v" style="color:${COL_T}">${nT}<span style="font-size:12px"> · ${n?Math.round(nT/n*100):0}%</span></div><div class="k">즉시견인 대상 포함</div></div>
+    <div class="stat"><div class="v" style="color:${COL_W}">${n-nT}</div><div class="k">보행 방해만</div></div>`;
   renderBarsOnly();
 
-  const hb=new Array(6).fill(0), labels=['00-04','04-08','08-12','12-16','16-20','20-24'];
-  state.entries.forEach(e=>{ const h=new Date(e.ts).getHours(); if(!isNaN(h)) hb[Math.floor(h/4)]++; });
-  $('#barsH').innerHTML=hb.map((v,i)=>`
-    <div class="bar" style="cursor:default"><div class="bl"><b>${labels[i]}시</b><span>${v}건 ${n?Math.round(v/n*100):0}%</span></div>
-    <div class="bt"><div class="bf" style="width:${n?v/n*100:0}%;background:var(--calm)"></div></div></div>`).join('')
-    +`<div class="scale"><span>0%</span><span>전체 ${n}건 기준</span><span>100%</span></div>`;
+  const hb=new Array(12).fill(0);
+  state.entries.forEach(e=>{ const h=new Date(e.ts).getHours(); if(!isNaN(h)) hb[Math.floor(h/2)]++; });
+  $('#barsH').innerHTML=timeChart(hb);
 
   const cc=counts();
   const topT=CATS_T.filter(c=>cc[c.id]).sort((a,b)=>cc[b.id]-cc[a.id])[0];
@@ -1350,18 +1398,16 @@ function countSentences(t){
 }
 function checkReport(){
   const t=$('#report').value.trim();
-  const s=countSentences(t), c=t.length;
-  const el=$('#repCount');
-  el.textContent=`${s}문장 · ${c}자${s>=4&&s<=6?' · 좋습니다':''}`;
-  el.className='counter'+(s>=4&&c>=80?' ok':'');
-  const ok = s>=4 && c>=80 && state.entries.length>=state.minCount && $('#rTitle').value.trim().length>=2;
-  $('#btnSubmit').disabled=!ok;
-  $('#btnSubmit').textContent = ok ? '보고서 제출하기'
-    : (!$('#rTitle').value.trim() ? '제목을 먼저 입력하세요'
-       : s<4 ? '분석 결과를 4문장 이상 쓰세요' : '보고서 제출하기');
+  $('#repCount').textContent=`${countSentences(t)}문장 · ${t.length}자`;
 }
-$('#rTitle').oninput=checkReport;
-$('#report').oninput=checkReport;
+let repTimer=null;
+function saveDraft(){
+  clearTimeout(repTimer);
+  repTimer=setTimeout(()=>{ if(state.me) Store.set(kRep(state.me.sid),JSON.stringify({title:$('#rTitle').value,text:$('#report').value,sug:$('#rSug').value,at:new Date().toISOString()}),true); },800);
+}
+$('#rTitle').oninput=saveDraft;
+$('#report').oninput=()=>{ checkReport(); saveDraft(); };
+$('#rSug').oninput=saveDraft;
 function statLine(){
   const s=state.lastStats||{};
   const bits=[`전체 ${s.n||0}건`, `견인 대상 포함 ${s.towRate||0}%`];
@@ -1473,11 +1519,11 @@ async function captureMap(){
     if(!passFilter(e)) continue;
     const [x,y]=P([e.lat,e.lng]);
     if(x<-20||y<-20||x>W+20||y>H+20) continue;
-    ctx.beginPath(); ctx.arc(x,y,7,0,Math.PI*2);
+    ctx.beginPath(); ctx.arc(x,y,3.5,0,Math.PI*2);
     ctx.fillStyle=isTow(e)?COL_T:COL_W; ctx.fill();
     if(state.bufOn&&e._ring===1){ ctx.strokeStyle='#0F5C57'; ctx.lineWidth=3.5; }
     else if(state.bufOn&&e._ring){ ctx.strokeStyle='#2C6E6A'; ctx.lineWidth=2.5; }
-    else { ctx.strokeStyle='#fff'; ctx.lineWidth=2; }
+    else { ctx.strokeStyle='#fff'; ctx.lineWidth=1; }
     ctx.stroke();
   }
   // 축척 막대
@@ -1492,31 +1538,6 @@ async function captureMap(){
   try{ return cv.toDataURL('image/jpeg',0.75); }
   catch(e){ toast('지도 그림을 만들지 못했습니다'); return null; }
 }
-state.shots=[];
-$('#btnShot').onclick=async ()=>{
-  if(state.shots.length>=3){ toast('그림은 최대 3장까지 담을 수 있습니다'); return; }
-  const btn=$('#btnShot'); btn.disabled=true; btn.textContent='담는 중…';
-  const img=await captureMap();
-  btn.disabled=false; btn.textContent='지금 지도 담기';
-  if(!img) return;
-  state.shots.push({img, cap:$('#shotCap').value.trim()||`그림 ${state.shots.length+1}`});
-  $('#shotCap').value='';
-  renderShots(); toast('지도를 담았습니다');
-};
-function renderShots(){
-  $('#shotCnt').textContent=`${state.shots.length}/3`;
-  $('#shots').innerHTML = state.shots.length ? state.shots.map((s,i)=>`
-    <div class="shot"><img src="${s.img}" alt="담은 지도">
-      <div class="c"><b>${esc(s.cap)}</b>
-        <div style="margin-top:5px;display:flex;gap:5px">
-          <button class="btn ghost sm" onclick="renameShot(${i})">설명 고치기</button>
-          <button class="btn danger sm" onclick="delShot(${i})">빼기</button>
-        </div></div></div>`).join('')
-    : '<div class="empty">담은 지도가 없습니다.</div>';
-}
-window.delShot=i=>{ state.shots.splice(i,1); renderShots(); };
-window.renameShot=i=>{ const v=prompt('그림 설명',state.shots[i].cap); if(v!==null){ state.shots[i].cap=v.trim()||('그림 '+(i+1)); renderShots(); } };
-
 /* ── 보고서 문서 만들기 ── */
 function areaName(){
   if(!state.entries.length) return '';
@@ -1552,7 +1573,7 @@ function buildDoc(r){
   if(s.dTow) rows.push(['유형별 역거리',`견인 대상 평균 ${s.dTow}m · 보행 방해 평균 ${s.dOth}m`]);
   let k=0; const H=t=>`<h2>${++k}. ${t}</h2>`;
   const parts=[];
-  if(r.aim) parts.push(H('조사 목적')+`<p>${esc(r.aim).replace(/\n/g,'<br>')}</p>`);
+  parts.push(H('조사 목적')+`<p>${esc(AIM)}</p>`);
   parts.push(H('조사 개요')+`<div class="kv">
       <div><span>조사 지역</span>${esc(r.area||'-')}</div>
       <div><span>조사 기간</span>${esc(r.period||'-')}</div>
@@ -1561,15 +1582,14 @@ function buildDoc(r){
       <div><span>견인 대상 포함</span>${s.towRate||0}%</div>
       <div><span>지점당 문제 수</span>${(r.avg||0).toFixed(1)}개</div>
     </div>`);
-  if(r.shots&&r.shots.length) parts.push(H('지도')+r.shots.map((x,i)=>
-    `<figure><img src="${x.img}" alt="지도 그림"><figcaption>그림 ${i+1}. ${esc(x.cap)}</figcaption></figure>`).join(''));
+  if(r.mapImg) parts.push(H('지도')+`<figure><img src="${r.mapImg}" alt="조사 지도"></figure>`);
   parts.push(H('유형별 분포')
     +(barRow(CATS_T,'#D93B2B')||'<p style="font-size:12.5px;color:#6B7076">견인 대상 유형 없음</p>')
     +'<div style="height:6px"></div>'
     +(barRow(CATS_W,'#DE8A2C')||'<p style="font-size:12.5px;color:#6B7076">보행 방해 유형 없음</p>'));
   if(rows.length) parts.push(H('공간 분석 결과')
     +`<table>${rows.map(x=>`<tr><th style="width:26%">${x[0]}</th><td>${esc(x[1])}</td></tr>`).join('')}</table>`);
-  parts.push(H('분석과 해석')+`<p>${esc(r.text||'').replace(/\n/g,'<br>')}</p>`);
+  parts.push(H('분석 결과')+`<p>${esc(r.text||'').replace(/\n/g,'<br>')}</p>`);
   if(r.sug) parts.push(H('제언')+`<p>${esc(r.sug).replace(/\n/g,'<br>')}</p>`);
   return `<div class="doc">
     <h1>${esc(r.title||'전동킥보드 주차 실태 조사 보고서')}</h1>
@@ -1577,37 +1597,29 @@ function buildDoc(r){
     ${parts.join('')}
   </div>`;
 }
-function collectReport(){
-  return {
+async function collectReport(){
+  const mapImg=await captureMap();
+  return { mapImg,
     sid:state.me.sid, name:state.me.name, klass:state.me.klass, proj:state.projLabel,
-    title:$('#rTitle').value.trim(), aim:$('#rAim').value.trim(),
+    title:$('#rTitle').value.trim(),
     text:$('#report').value.trim(), sug:$('#rSug').value.trim(),
-    shots:state.shots, stats:state.lastStats||{}, counts:counts(),
+    stats:state.lastStats||{}, counts:counts(),
     area:areaName(), period:periodTxt(),
     people:new Set(state.entries.map(e=>e.sid)).size,
     avg:state.entries.length?state.entries.reduce((a,e)=>a+catsOf(e).length,0)/state.entries.length:0,
     at:new Date().toISOString()
   };
 }
-$('#btnPrev').onclick=()=>{
-  const r=collectReport();
+$('#btnPrev').onclick=async ()=>{
+  const r=await collectReport();
   const m=modal(`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
       <b style="font-size:12px;letter-spacing:.06em">완성본 미리보기</b>
       <button class="btn ghost sm" id="pvClose">닫기</button></div>
     ${buildDoc(r)}`);
   m.querySelector('#pvClose').onclick=()=>m.remove();
 };
-$('#btnSubmit').onclick=async ()=>{
-  const r=collectReport();
-  const ok=await Store.set(kRep(state.me.sid), JSON.stringify(r), true);
-  if(ok===false) return;
-  toast('보고서를 제출했습니다');
-  loadReports();
-  $('#repState').innerHTML=`<div class="note calm">제출 완료 · ${esc(fmtDT(r.at))} · 다시 눌러 덮어쓸 수 있습니다.</div>`;
-};
-$('#btnDl').onclick=()=>{
-  const r=collectReport();
-  if(!r.text){ toast('먼저 분석 결과를 쓰세요'); return; }
+async function docHTML(){
+  const r=await collectReport();
   const css=[...document.querySelectorAll('style')].map(x=>x.textContent).join('\n');
   const html=`<!doctype html><html lang="ko"><meta charset="utf-8">
 <title>${esc(r.title||'전동킥보드 주차 실태 조사 보고서')}</title>
@@ -1615,41 +1627,22 @@ $('#btnDl').onclick=()=>{
 body{background:#fff;display:block;height:auto;overflow:visible;padding:36px 24px;max-width:760px;margin:0 auto}
 @media print{body{padding:0}}</style>
 ${buildDoc(r)}</html>`;
+  return {r,html};
+}
+$('#btnDl').onclick=async ()=>{
+  if(!$('#report').value.trim()){ toast('먼저 분석 결과를 쓰세요'); return; }
+  const {r,html}=await docHTML();
   dl(new Blob([html],{type:'text/html'}), `보고서_${r.name}.html`);
 };
-$('#btnCsv').onclick=()=>{
-  const head=['id','학생','학반','일시','위도','경도','좌표출처','유형수','유형코드','유형이름','견인대상','최근접역','역거리m'];
-  const rows=[head];
-  state.entries.forEach(e=>{
-    const cs=catsOf(e);
-    rows.push([e.id,e.name,e.klass||'',e.ts,e.lat,e.lng,e.src||'',cs.length,
-      cs.join(';'), cs.map(c=>CAT[c]?CAT[c].label:c).join(';'), isTow(e)?'Y':'N',
-      e._sn||'', e._nd!=null?Math.round(e._nd):'']);
-  });
-  const csv='\uFEFF'+rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
-  dl(new Blob([csv],{type:'text/csv'}),`킥보드_자료_${state.projLabel}.csv`);
-};
-async function loadReports(){
-  const keys=await Store.list(`pkb:${state.proj}:r:`,true);
-  const rs=[];
-  for(const k of keys){ const raw=await Store.get(k,true); if(!raw) continue;
-    try{ rs.push(JSON.parse(raw)); }catch(e){} }
-  rs.sort((a,b)=>b.at.localeCompare(a.at));
-  window.__reps=rs;
-  $('#repList').innerHTML=rs.length?rs.map((r,i)=>`
-    <div class="entry"><div class="meta">
-      <div class="tt">${esc(r.title||'제목 없음')}</div>
-      <div class="sub">${esc(r.name)}${r.klass?' · '+esc(r.klass):''} · ${esc(fmtDT(r.at))}${
-        r.shots&&r.shots.length?` · 지도 ${r.shots.length}장`:''}</div>
-      <div class="acts"><button class="btn ghost sm" onclick="viewRep(${i})">보고서 열기</button></div>
-    </div></div>`).join('') : '<div class="empty">아직 제출된 보고서가 없습니다.</div>';
-}
-window.viewRep=i=>{
-  const r=(window.__reps||[])[i]; if(!r) return;
-  const m=modal(`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-      <b style="font-size:12px;letter-spacing:.06em">제출된 보고서</b>
-      <button class="btn ghost sm" id="pvClose">닫기</button></div>${buildDoc(r)}`);
-  m.querySelector('#pvClose').onclick=()=>m.remove();
+$('#btnPdf').onclick=async ()=>{
+  if(!$('#report').value.trim()){ toast('먼저 분석 결과를 쓰세요'); return; }
+  const {html}=await docHTML();
+  const f=document.createElement('iframe');
+  f.style.cssText='position:fixed;right:0;bottom:0;width:0;height:0;border:0';
+  document.body.appendChild(f);
+  f.contentDocument.open(); f.contentDocument.write(html); f.contentDocument.close();
+  setTimeout(()=>{ try{ f.contentWindow.focus(); f.contentWindow.print(); }catch(e){ toast('인쇄 창을 열지 못했습니다. HTML로 내려받아 인쇄하세요'); }
+    setTimeout(()=>f.remove(),60000); },400);
 };
 function dl(blob,name){
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name;
@@ -1665,38 +1658,36 @@ function showTab(w){
   $('#panelIn').classList.toggle('hidden',!isIn);
   $('#panelAn').classList.toggle('hidden',!isAn);
   $('#panelRep').classList.toggle('hidden',!isRep);
-  $('#btnStn').classList.toggle('hidden',isIn);
-  showStations=!isIn;
-  $('#lgStn').classList.toggle('hidden',isIn);
+  $('#btnStn').classList.add('hidden');
+  showStations=false;
+  $('#lgStn').classList.add('hidden');
   $('#btnStn').classList.toggle('on',showStations);
   $('#btnStn').textContent=showStations?'지하철역 표시 중':'지하철역 숨김';
   refreshStations();
-  if(isIn){ state.filterRing='all'; drawEntries(); renderList(); }
-  else stopPick();
+  $('.legend').classList.toggle('hidden',isIn);
+  if(isIn){ state.filterRing='all'; } else stopPick();
+  drawEntries(); renderList();
   if(isAn) renderAnalysis();
-  if(isRep){ renderShots(); loadReports(); checkReport(); }
+  if(isRep){ checkReport(); }
+  if(!isIn&&HAS_SHARED&&state.me) syncAll().then(()=>{ if(isAn) renderAnalysis(); });
   setTimeout(()=>map.invalidateSize(),80);
 }
 $('#tabIn').onclick=()=>showTab('in');
 $('#tabAn').onclick=()=>showTab('an');
 $('#tabRep').onclick=()=>showTab('rep');
 
-$('#btnHelp').onclick=()=>{
+window.__help=()=>{
   modal(`<h1>무엇이 잘못된 주차일까?</h1>
-  <p class="hint" style="margin:0 0 14px">두 가지를 함께 봅니다. 하나는 <b>법으로 견인할 수 있는가</b>, 다른 하나는 <b>사람이 지나가기 불편한가</b>입니다. 둘 다 해당하는 경우가 많으니 해당하는 것을 모두 고르세요.</p>
-  <h3 style="color:${COL_T}">견인될 수 있어요</h3>
+  <p class="hint" style="margin:0 0 12px">해당하는 것을 모두 고르세요.</p>
   <table class="mini" style="margin-bottom:14px">
-    <tr><th style="width:52%">고르는 항목</th><th>서울시 조례 기준</th></tr>
-    <tr><td><b>차가 다니는 길에 세움</b></td><td>보·차도가 구분된 도로의 차도, 자전거도로</td></tr>
-    <tr><td><b>지하철역 입구 바로 앞</b></td><td>진·출입구 전면 5m 이내</td></tr>
-    <tr><td><b>버스·택시 타는 곳 앞</b></td><td>버스정류소·택시승강장 5m 이내</td></tr>
-    <tr><td><b>횡단보도 앞·안전지대 위</b></td><td>횡단보도 3m 이내, 교통섬 내부</td></tr>
-    <tr><td><b>노란 점자블록 위·엘리베이터 입구</b></td><td>점자블록 위, 교통약자 엘리베이터 진입로</td></tr>
-    <tr><td><b>학교 앞 어린이 보호구역</b></td><td>주정차 금지된 어린이·노인·장애인 보호구역</td></tr>
+    <tr><td><b>차도에 있음</b></td><td>차나 자전거가 다니는 길 위</td></tr>
+    <tr><td><b>지하철 입구를 가로막고 있음</b></td><td>출입구 앞 다섯 걸음 안쪽</td></tr>
+    <tr><td><b>횡단보도에 세워져 있음</b></td><td>횡단보도 위나 바로 앞 세 걸음 안쪽</td></tr>
+    <tr><td><b>점자 블록 위에 세워져 있음</b></td><td>노란 점자 블록 위나 그 바로 옆</td></tr>
+    <tr><td><b>보도(인도) 가운데를 막고 있음</b></td><td>사람이 비켜서 지나가야 함</td></tr>
+    <tr><td><b>쓰러져 있거나 여러 대가 뒤엉켜 있음</b></td><td></td></tr>
+    <tr><td><b>기타</b></td><td>가게 입구, 화단, 버스 정류장 앞 등</td></tr>
   </table>
-  <div class="note" style="margin-bottom:14px"><b>거리를 자로 잴 필요는 없습니다.</b> 5m는 어른 걸음으로 다섯 걸음, 3m는 세 걸음쯤입니다. 애매하면 "이 정도면 입구를 막는다" 싶은지로 판단하고, 사진에 주변 바닥이 함께 나오게 찍어 두면 나중에 다시 확인할 수 있습니다.</div>
-  <h3 style="color:${COL_W}">지나가기 불편해요</h3>
-  <p style="font-size:13px;margin:0 0 14px">보도 한가운데를 차지하거나, 가게 입구를 막거나, 쓰러져 있는 경우입니다. 법으로는 견인 대상이 아니어도 유모차·휠체어·흰지팡이 이용자에게는 똑같은 장벽이 됩니다. <b>이 둘의 차이를 견주어 보는 것</b>이 이번 조사의 핵심입니다.</p>
   <h3>사진을 찍을 때</h3>
   <ul style="font-size:13px;margin:0;padding-left:20px;line-height:1.8">
     <li>킥보드만이 아니라 <b>주변 바닥</b>이 함께 보이게 찍으세요. 점자블록, 차선, 보도 경계가 근거가 됩니다.</li>
@@ -1705,30 +1696,47 @@ $('#btnHelp').onclick=()=>{
   </ul>`);
 };
 function modal(inner,opts={}){
-  const d=document.createElement('div'); d.className='modal';
-  d.innerHTML=`<div class="box"><div class="dots"></div><div class="bd">${inner}</div></div>`;
+  const d=document.createElement('div'); d.className='modal'+(opts.cls?' '+opts.cls:'');
+  d.innerHTML=`<div class="box"><div class="bd">${inner}</div></div>`;
   document.body.appendChild(d);
   if(!opts.sticky) d.addEventListener('click',e=>{ if(e.target===d) d.remove(); });
   return d;
 }
 
+const JOIN_ART=`<svg viewBox="0 0 420 150" preserveAspectRatio="xMidYMid slice" width="100%" height="100%">
+  <rect width="420" height="150" fill="#E9ECE8"/>
+  <g fill="#DDE2DC"><rect x="18" y="14" width="92" height="46" rx="3"/><rect x="132" y="14" width="120" height="46" rx="3"/><rect x="274" y="14" width="66" height="46" rx="3"/><rect x="362" y="14" width="70" height="46" rx="3"/>
+  <rect x="18" y="84" width="58" height="70" rx="3"/><rect x="98" y="84" width="154" height="70" rx="3"/><rect x="274" y="84" width="158" height="70" rx="3"/></g>
+  <path d="M-10 72H440M121 -10V160M263 -10V160M351 -10V72M87 72V160" stroke="#fff" stroke-width="12" fill="none"/>
+  <path d="M-10 72H440" stroke="#fff" stroke-width="20"/>
+  <path d="M-10 72H440" stroke="#D3D8D1" stroke-width="1.2" stroke-dasharray="7 7"/>
+  <rect x="226" y="60" width="26" height="24" fill="none"/>
+  <g fill="#fff" opacity=".9"><rect x="238" y="62" width="4" height="20"/><rect x="246" y="62" width="4" height="20"/><rect x="230" y="62" width="4" height="20"/></g>
+  <g stroke="#fff" stroke-width="2.5">
+    <circle cx="121" cy="70" r="7" fill="#C8362B"/><circle cx="263" cy="76" r="7" fill="#C8362B"/><circle cx="196" cy="66" r="7" fill="#D9822B"/>
+    <circle cx="351" cy="60" r="7" fill="#D9822B"/><circle cx="62" cy="76" r="7" fill="#D9822B"/><circle cx="300" cy="72" r="7" fill="#C8362B"/>
+  </g>
+  <circle cx="160" cy="96" r="18" fill="#2F6FD1" opacity=".14"/><circle cx="160" cy="96" r="6.5" fill="#2F6FD1" stroke="#fff" stroke-width="3"/>
+</svg>`;
 async function boot(){
   $('#dt').value=nowLocal();
   $('#zLv').textContent=map.getZoom();
   const saved=await Store.get('pkb:me',false);
   let me=null; try{ me=saved?JSON.parse(saved):null; }catch(e){}
-  const d=modal(`<h1>과제에 참여하기</h1>
-    <p class="hint" style="margin:0 0 14px">같은 <b>과제 코드</b>를 입력한 사람끼리 하나의 지도를 함께 작성합니다. 선생님이 알려 준 코드를 그대로 넣으세요.</p>
-    <label class="f" for="iProj">과제 코드</label>
-    <input type="text" id="iProj" placeholder="예: 3학년2반-킥보드" value="${esc(me?me.proj:'')}">
-    <div style="height:11px"></div>
-    <div class="row">
-      <div><label class="f" for="iName">이름</label><input type="text" id="iName" placeholder="김지리" value="${esc(me?me.name:'')}"></div>
-      <div><label class="f" for="iKlass">학반·모둠 <span>선택</span></label><input type="text" id="iKlass" placeholder="2반 3모둠" value="${esc(me?me.klass:'')}"></div>
-    </div>
-    <button class="btn wide" id="iGo" style="margin-top:14px">들어가기</button>
-    <p class="hint" style="margin:11px 0 0">입력한 이름은 내가 올린 지점 위에 표시됩니다.
-    ${HAS_SHARED?'':'<br><b>주의</b> 지금은 이 브라우저에만 저장되는 혼자 쓰기 모드입니다.'}</p>`,{sticky:true});
+  const d=modal(`<div class="jart" aria-hidden="true">${JOIN_ART}</div>
+    <div class="jbd">
+      <h1>우리 동네 킥보드 지도,<br>함께 만들어요</h1>
+      <p class="jsub">같은 과제 코드를 넣은 친구들의 기록이 한 지도에 모입니다.</p>
+      <label class="jf"><span>과제 코드</span>
+        <input type="text" id="iProj" placeholder="3학년2반-킥보드" value="${esc(me?me.proj:'')}" autocomplete="off"></label>
+      <div class="jrow">
+        <label class="jf"><span>이름</span>
+          <input type="text" id="iName" placeholder="김지리" value="${esc(me?me.name:'')}" autocomplete="off"></label>
+        <label class="jf"><span>학반·모둠 <i>선택</i></span>
+          <input type="text" id="iKlass" placeholder="2반 3모둠" value="${esc(me?me.klass:'')}" autocomplete="off"></label>
+      </div>
+      <button class="btn wide jgo" id="iGo">시작</button>
+    </div>`,{sticky:true,cls:'join'});
   const go=async ()=>{
     const p=d.querySelector('#iProj').value.trim(), n=d.querySelector('#iName').value.trim();
     if(!p||!n){ toast('과제 코드와 이름을 모두 넣어 주세요'); return; }
@@ -1741,12 +1749,11 @@ async function boot(){
     d.remove();
     await syncAll();
     if(state.entries.length) map.fitBounds(L.latLngBounds(state.entries.map(e=>[e.lat,e.lng])).pad(0.3));
+    locateMe(true);
     const r=await Store.get(kRep(state.me.sid),true);
     if(r){ try{ const o=JSON.parse(r);
       $('#report').value=o.text||''; $('#rTitle').value=o.title||'';
-      $('#rAim').value=o.aim||''; $('#rSug').value=o.sug||'';
-      state.shots=o.shots||[]; renderShots(); checkReport();
-      $('#repState').innerHTML=`<div class="note calm">지난 제출 · ${esc(fmtDT(o.at))}</div>`; }catch(e){} }
+      $('#rSug').value=o.sug||''; checkReport(); }catch(e){} }
     toast(`${n} 님, 시작합니다`);
   };
   d.querySelector('#iGo').onclick=go;
