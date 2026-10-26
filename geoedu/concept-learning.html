@@ -216,6 +216,61 @@ textarea:focus,.inp:focus{border-color:var(--acc);outline:none}
   .seg button{-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .it{break-inside:avoid}
 }
+main{padding-top:22px}
+h1{margin-bottom:10px}
+.plain>p{font-size:15px;line-height:1.65;margin:0 0 12px}
+.ex{padding:10px 0 8px}
+.ex dl{font-size:14.5px;line-height:1.6;gap:4px 16px}
+.grp{background:#EEF3F6;border:none}
+.grp .gt{font-size:18px;margin-bottom:8px}
+.st{padding:12px 0 2px;border-top-color:rgba(0,0,0,.07)}
+.stl{margin-bottom:6px}
+.def{font-size:14.5px;line-height:1.6;margin:0 0 10px}
+.grp .items{border-top-color:rgba(0,0,0,.08)}
+.it{border-bottom-color:rgba(0,0,0,.06)}
+.it .t,.items.tight .it .t{font-size:14.5px;line-height:1.55}
+.it .t small{font-size:13.5px;line-height:1.55}
+.items.tight .it{padding:6px 0}
+.rv,.items.tight .rv{font-size:13.5px;line-height:1.6;background:#fff;padding:7px 12px}
+.grp .seg button{background:#fff}
+.grp .seg button[aria-pressed="true"]{background:var(--acc)}
+.legend{margin:0 0 8px;font-size:13px}
+.pair{gap:14px;margin:0 0 10px}
+.pc{border-top-color:rgba(0,0,0,.1);padding-top:10px}
+.pc>b{font-size:15px}
+.pc>p{font-size:14px;line-height:1.6;margin:0 0 8px}
+.proto{background:none;border:1px solid rgba(0,0,0,.15);padding:14px 18px;margin:0 0 12px}
+.proto p,.proto ul{font-size:14px;line-height:1.6}
+.band{font-size:13.5px}
+.sum{font-size:14.5px;line-height:1.6}
+.done p{font-size:14.5px;line-height:1.6}
+.sec{border-top:1px solid var(--line);padding-top:16px;margin:0 0 24px}
+.sec .gt{margin:0 0 12px;font-size:18px;font-weight:700;letter-spacing:-.02em}
+.kt3 .kc:nth-child(1){background:#F2F6F4}
+.kt3 .kc:nth-child(2){background:#F2F4F8}
+.kt3 .kc:nth-child(3){background:#F8F5EF}
+.kt3 .kb{background:#fff}
+.kt3 .kc .kx{border-top-color:rgba(0,0,0,.1)}
+.kt3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.kc{display:flex;flex-direction:column;background:#fff;border:1px solid transparent;border-radius:10px;padding:14px 16px}
+.kc.on{border-color:var(--acc);box-shadow:0 0 0 1px var(--acc)}
+.kc .kh{font-size:13px;font-weight:700;color:var(--acc);margin:0 0 6px}
+.kc .kh span{color:var(--ink);margin-left:6px}
+.kc p{margin:0;font-size:14px;line-height:1.6;flex:1}
+.kc .kx{flex:0;margin-top:10px;padding-top:10px;border-top:1px solid var(--line);font-size:13.5px;color:var(--mid)}
+.kb{margin-top:12px;align-self:flex-start;background:none;border:1px solid var(--line);border-radius:14px;padding:0 12px;line-height:1.9;font-size:13.5px;color:var(--mid);cursor:pointer}
+.kb:hover{border-color:var(--acc);color:var(--ink)}
+.tint{background:var(--wash);border-radius:12px;padding:18px 24px 14px;margin:0 0 24px}
+.tint .ah2{margin:0 0 8px;font-size:17px;font-weight:700}
+.pr2{margin:8px 0 0;font-size:14px;line-height:1.6;color:var(--mid)}
+.q1{margin:0 0 4px;font-size:14.5px;line-height:1.6}
+.cg{display:block;width:100%;max-width:300px;height:auto;margin:4px 0 2px}
+.cg .gl{stroke:rgba(0,0,0,.08);stroke-width:1}
+.cg .ax{font-size:9px;fill:var(--soft)}
+.cg .pb{fill:#9DBDB6}
+.cg .tl{fill:none;stroke:var(--red);stroke-width:1.8}
+.gs{margin:0 0 6px!important;font-size:12px!important;color:var(--soft)!important;line-height:1.5!important}
+@media(max-width:640px){.kt3{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -227,33 +282,38 @@ textarea:focus,.inp:focus{border-color:var(--acc);outline:none}
 <main id="main"></main>
 
 <script>
-/* ═════ 1. 속성모형 — 삼각주 ═════ */
-var ATTR=[
- {id:'a1',r:'c',t:'하천이 바다나 호수로 흘러드는 하구에 있다.',
-  x:'선상지와 범람원도 하천이 쌓은 지형이지만 하구에 있지 않다.'},
- {id:'a2',r:'c',t:'하천이 운반해 온 물질이 쌓여 생겼다.',
-  x:'바닷가에도 모래가 쌓인 땅이 있지만, 파랑과 연안류가 쌓은 것은 삼각주가 아니다.'},
- {id:'a3',r:'n',t:'삼각형 모양이다.',
-  x:'이름은 그리스 문자 Δ(델타)를 닮은 나일강 하구에서 왔지만, 하천과 바다의 힘에 따라 모양은 다양하다.'},
- {id:'a4',r:'n',t:'평탄하고 비옥해 농경지로 쓰인다.',
-  x:'범람원도 평탄하고 비옥해 농경지로 쓰인다. 삼각주만의 속성이 아니다.'}
-];
-/* 실례·비실례 짝 — 겉모습은 닮고 결정적 속성만 다르게 */
-var PAIRS=[
- [{id:'p1',r:'y',n:'나일강 하구',d:'나일강이 지중해로 흘러드는 곳에 강이 실어 온 흙과 모래가 부채꼴로 쌓인 땅이다.',
-   x:'하구에 하천 운반 물질이 쌓였다. 결정적 속성을 모두 갖추었다.'},
-  {id:'p2',r:'n',n:'데스밸리 산기슭',d:'산지에서 흘러나온 하천이 평지로 나오는 곳에 모래와 자갈이 부채꼴로 쌓인 땅이다.',
-   x:'선상지다. 하천이 쌓았고 모양도 나일강 하구와 닮았지만, 하구가 아니라 산지 골짜기 입구에 쌓였다.'}],
- [{id:'p3',r:'y',n:'미시시피강 하구',d:'미시시피강이 멕시코만으로 흘러드는 곳에 강이 실어 온 물질이 새발 모양으로 길게 뻗으며 쌓인 땅이다.',
-   x:'삼각형과 전혀 다른 모양이지만, 하구에 하천 운반 물질이 쌓였으므로 삼각주다.'},
-  {id:'p4',r:'n',n:'강릉 경포 해변',d:'바닷가에 모래가 길게 쌓여 둑을 이루고, 그 안쪽에 경포호가 생겼다.',
-   x:'사주다. 바닷가의 퇴적 지형이지만 하천이 아니라 파랑과 연안류가 모래를 옮겨 쌓았다.'}]
+/* ═════ 0. 시작 — 도시화를 어떻게 가르칠까 ═════ */
+var OPEN=[
+ {k:'p',n:'속성모형',t:'“도시화는 전체 인구 가운데 도시에 사는 인구의 비율이 높아지는 현상이다.” 정의와 결정적 속성을 먼저 칠판에 적는다. 그다음 여러 나라의 사례를 주고 도시화에 해당하는지 판단하게 한다.',
+  x:'정의와 결정적 속성에서 출발해 사례를 판단한다. 정의에서 사례로 나아가는 연역적 수업이다.'},
+ {k:'o',n:'원형모형',t:'1960년대 이후 서울의 변화를 사진과 그래프로 보여 준다. 농촌에서 올라온 사람들, 늘어나는 아파트 단지. 이 모습을 도시화의 대표 사례로 삼고, 상하이와 라고스, 우리 지역을 서울과 견준다.',
+  x:'가장 대표적인 사례(원형)에서 출발해, 다른 사례가 원형과 얼마나 닮았는지로 개념의 범위를 넓힌다.'},
+ {k:'s',n:'상황모형',t:'부모님이나 조부모님이 어디에서 자랐고 왜 지금 사는 곳으로 옮겼는지 물어 오게 한다. 학생들의 가족 이야기를 모아 공통점을 찾고, 그 경험을 ‘도시화’라는 말로 묶는다.',
+  x:'학생이 이미 겪은 생활 경험이나 구체적 상황에서 출발해, 경험을 개념과 연결하며 의미를 구성하게 한다.'}
 ];
 
-var NEW1={id:'n1',r:'y',n:'낙동강 하구',d:'낙동강이 남해로 흘러드는 곳에 강이 실어 온 흙과 모래가 쌓여 넓은 평야와 여러 개의 모래섬이 생겼다. 전체 모양은 삼각형이 아니다.',
-  x:'하구에 하천 운반 물질이 쌓였으므로 삼각주다. 김해평야와 을숙도 일대가 낙동강 삼각주다.'};
-var NEW2={id:'n2',r:'y',n:'스페인 남동부',d:'건조한 기후에서 관개 농업이 늘어 지하수가 줄고, 흙에 소금기가 쌓이며 비가 오면 흙이 쓸려 내려간다.',
-  x:'부유한 나라의 농업 지역이라 사헬과 모습은 많이 다르지만, 건조 지역의 땅이 사람의 이용으로 황폐해진다는 속성을 갖추었으므로 사막화다.'};
+/* ═════ 1. 속성모형 — 열대 우림 기후 ═════ */
+var ATTR=[
+ {id:'a1',r:'c',t:'가장 추운 달의 평균 기온이 18℃ 이상이다.',x:'열대 기후 전체의 기준이다. 열대 우림 기후도 이 속성을 갖추므로, 이것만으로는 사바나 기후를 가를 수 없다.'},
+ {id:'a2',r:'c',t:'건기가 뚜렷하다. 가장 건조한 달의 강수량이 60mm에 못 미친다.',x:'사바나 기후를 열대 우림 기후와 가르는 기준이다.'},
+ {id:'a3',r:'n',t:'연 강수량이 적다.',x:'다윈처럼 연 강수량이 1,700mm가 넘는 곳도 있다. 기준은 비의 양이 아니라 계절에 따른 분포다.'},
+ {id:'a4',r:'n',t:'키 큰 풀 사이로 나무가 드문드문 자란다.',x:'이 기후에서 흔히 나타나는 식생이지만 기후의 결과다. 같은 기후 지역에도 농경지와 도시, 숲이 있다.'},
+ {id:'a5',r:'n',t:'기린과 얼룩말 같은 큰 초식 동물이 산다.',x:'아프리카 사바나의 모습일 뿐이다. 같은 기후인 방콕이나 다윈에는 없다.'}
+];
+/* 월평균 기온(℃)·강수량(mm) */
+var CL={
+ sg:{n:'싱가포르',d:'말레이반도 끝, 북위 약 1°',r:'n',t:[27.2,27.8,28.3,28.9,28.9,28.3,28.3,28.3,28.3,28.3,27.8,27.2],p:[218,107,155,173,158,142,213,173,152,198,244,310],s:'창이 관측소, 1991~2020년 평년값(NOAA)',
+  x:'방콕처럼 연중 덥고 비가 많지만, 가장 건조한 2월에도 강수량이 약 107mm다. 건기가 없는 열대 우림 기후다.'},
+ bk:{n:'방콕',d:'타이, 북위 약 14°',r:'y',t:[28.3,29.4,30.6,31.7,31.1,30.0,30.0,29.4,29.4,28.9,28.9,27.8],p:[36,31,33,79,231,175,218,257,340,274,43,13],s:'방콕 관측소, 1991~2020년 평년값(NOAA)',
+  x:'연중 27℃ 이상이고, 12~3월 강수량이 40mm 아래로 떨어지는 건기가 뚜렷하다. 두 결정적 속성을 모두 갖추었다.'},
+ bl:{n:'벨렝',d:'브라질 아마존강 하구, 남위 약 1°',r:'n',t:[26.1,26.1,26.1,26.7,26.7,26.7,26.7,27.2,27.2,27.2,27.2,27.2],p:[394,437,506,465,323,206,155,130,119,135,152,285],s:'벨렝 관측소, 1991~2020년 평년값(브라질 기상청)',
+  x:'가장 건조한 9월에도 강수량이 약 119mm다. 비가 줄어드는 철은 있어도 건기라 할 만큼 마르지 않는다. 열대 우림 기후다.'},
+ dw:{n:'다윈',d:'오스트레일리아 북부, 남위 약 12°',r:'y',t:[28.4,28.2,28.3,28.5,27.2,25.4,25.0,26.0,27.9,29.2,29.4,29.1],p:[432,372,313,102,20,2,1,4,17,70,147,256],s:'다윈 공항, 1941~2026년 평균(오스트레일리아 기상청)',
+  x:'연 강수량은 1,700mm가 넘지만 6~8월에는 거의 비가 오지 않는다. 비가 많아도 건기가 뚜렷하면 사바나 기후다.'}
+};
+var PAIRS=[['bk','sg'],['dw','bl']];
+var NEW1={id:'n1',r:'n',n:'키토',d:'에콰도르의 수도. 적도에서 남쪽으로 약 25km, 해발 약 2,850m에 있다. 일 년 내내 월평균 기온이 14℃ 안팎이고, 6~8월에는 비가 적다.',
+  x:'6~8월에 비가 적어 건기가 있지만, 해발 고도가 높아 가장 추운 달의 기온이 18℃에 크게 못 미친다. 결정적 속성 하나가 빠져 사바나 기후가 아니다.'};
 
 /* ═════ 2. 원형모형 — 사막화 ═════ */
 var DES=[
@@ -261,38 +321,39 @@ var DES=[
   x:'건조 지역, 과도한 방목, 식생 감소와 토양 노출까지 사헬의 특징을 거의 다 갖추었다.'},
  {id:'d2',r:'f',n:'아랄해 주변',d:'강물을 목화밭 관개에 끌어 써 호수가 줄고, 마른 바닥에서 소금 먼지가 날린다.',
   x:'건조 지역의 땅이 황폐해졌다는 점은 같지만, 원인이 방목이 아니라 대규모 관개다. 사막화이지만 원형에서 떨어져 있다.'},
- {id:'d3',r:'f',n:'스페인 남동부',d:'건조한 기후에서 관개 농업이 늘어 지하수가 줄고, 흙에 소금기가 쌓이며 비가 오면 흙이 쓸려 내려간다.',
-  x:'부유한 나라의 농업 지역이라 사헬과 모습은 많이 다르다. 그래도 건조 지역의 땅이 사람의 이용으로 황폐해지므로 사막화다.'},
  {id:'d4',r:'n',n:'사하라 사막 한가운데',d:'수천 년 동안 비가 거의 내리지 않은 모래와 암석의 땅이다.',
   x:'건조하다는 점만 닮았다. 원래부터 사막인 곳으로, 땅이 황폐해지는 과정이 없다.'},
  {id:'d5',r:'n',n:'아마존 벌채지',d:'열대우림을 베어 낸 뒤 버려진 땅에서 흙이 쓸려 나갔다.',
   x:'땅이 황폐해진 점은 닮았지만 비가 많은 습윤 지역이다.'}
 ];
+var NEW2={id:'n2',r:'c',n:'1930년대 미국 대평원',d:'반건조 초원을 대규모로 갈아엎어 밀을 심었는데, 긴 가뭄이 오자 흙이 바람에 날려 거대한 모래 폭풍(더스트 볼)이 일었다.',
+  x:'부유한 나라의 기계화된 농업 지역이라 겉모습은 사헬과 다르지만, 반건조 지역, 가뭄, 과도한 경작, 토양 침식이라는 원형의 특징을 거의 다 갖추었다. 닮음은 겉모습이 아니라 특징으로 판단한다.'};
 
 /* ═════ 3. 어떤 모형으로 가르칠까 ═════ */
 var CON=[
  {id:'c1',r:['p'],n:'칼데라',x:'대규모 분화 뒤 화산체 윗부분이 무너져 내려 생긴 지형이라는 형성 과정이 판단 기준이다. 꼭대기의 분화구나 마르처럼 닮은 비실례와 분명하게 갈린다.'},
- {id:'c2',r:['o'],n:'도시화',x:'인구 집중, 산업 구조의 변화, 생활양식의 변화가 얽혀 있어 결정적 속성 하나로 정의하기 어렵다. 전형적인 사례에서 출발해 다양한 사례로 넓히는 편이 낫다.'},
+ {id:'c2',r:['o','s'],n:'도시화',x:'인구 집중, 산업 구조의 변화, 생활양식의 변화가 얽혀 있어 결정적 속성 하나로 정의하기 어렵다. 서울 같은 전형적인 사례에서 출발하거나, 가족의 이주 경험에서 출발할 수 있다.'},
  {id:'c3',r:['p'],n:'기온 역전',x:'고도가 높아질수록 기온이 높아지는 현상이라는 정의가 곧 판단 기준이다. 실례와 비실례가 분명하게 갈린다.'},
  {id:'c4',r:['o'],n:'세계도시',x:'뉴욕, 런던, 도쿄 같은 대표 사례로 떠올리는 개념이다. 어디까지가 세계도시인지 경계가 흐리다.'},
+ {id:'c9',r:['s'],n:'생활권',x:'학생이 매일 오가는 통학, 쇼핑, 여가의 경로를 지도에 그려 보는 데서 출발하면 개념의 의미가 분명해진다.'},
  {id:'c5',r:['p'],n:'우각호',x:'곡류 하천의 굽은 부분이 잘려 남은 호수라는 형성 과정이 분명하다.'},
- {id:'c6',r:['o'],n:'젠트리피케이션',x:'지역마다 나타나는 양상이 달라 공통 속성을 고정하기 어렵다. 런던이나 성수동 같은 전형 사례에서 출발해 다른 사례와 비교한다.'},
- {id:'c7',r:['p','o'],n:'열대우림',x:'연중 기온이 높고 비가 많다는 기후 조건으로 정의하면 속성모형으로, 아마존 같은 전형적인 경관에서 출발하면 원형모형으로 가르칠 수 있다. 수업의 목적에 따라 고른다.'},
+ {id:'c6',r:['o','s'],n:'젠트리피케이션',x:'지역마다 양상이 달라 공통 속성을 고정하기 어렵다. 성수동 같은 전형 사례에서 출발하거나, 동네의 단골 가게가 사라진 학생의 경험에서 출발할 수 있다.'},
+ {id:'c7',r:['s'],n:'도시 열섬',x:'여름날 아스팔트 위와 공원 그늘에서 느낀 온도 차이처럼 학생이 이미 겪은 경험에서 출발하기 좋다. 그 경험을 기온 자료와 연결하면 개념이 된다.'},
  {id:'c8',r:['o'],n:'지속가능한 발전',x:'정의는 있지만 무엇이 지속가능한지는 맥락마다 판단이 달라진다. 대표 사례를 통해 의미를 잡아 가는 편이 낫다.'}
 ];
 
 var MENU=[
- {k:'s1',lb:'속성모형',h:'속성모형',d:'속성모형의 원리와 수업 단계를 포유류로 확인하고, 칼데라의 결정적 속성과 실례·비실례를 가려냅니다.',m:'설명 · 판단 7개'},
- {k:'s2',lb:'원형모형',h:'원형모형',d:'원형모형의 원리와 수업 단계를 새로 확인하고, 사헬을 원형으로 삼아 사막화 사례를 판단합니다.',m:'설명 · 판단 4개'},
- {k:'s3',lb:'모형 고르기',h:'어떤 모형으로 가르칠까',d:'지리 개념 8개를 속성모형과 원형모형 가운데 어느 쪽으로 가르칠지 고릅니다.',m:'판단 8개'}
+ {k:'s0',lb:'어떻게 가르칠까'},
+ {k:'s1',lb:'속성모형'},
+ {k:'s2',lb:'원형모형'},
+ {k:'s3',lb:'모형 고르기'}
 ];
 
-function blank(){return {scr:'s1',a:{}};}
+function blank(){return {scr:'s0',a:{},o:null};}
 var S=blank(),dirty=false;
 function $(s){return document.querySelector(s);}
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 
-/* 판단 한 줄 */
 function item(id,body,opts,ref,rv){
   var mine=S.a[id];
   var refs=[].concat(ref);
@@ -303,29 +364,49 @@ function item(id,body,opts,ref,rv){
 }
 function done(list){return list.every(function(x){return S.a[x.id];});}
 var LEG='<div class="legend"><span><i class="a"></i>내 판단</span><span><i class="r"></i>참고 판단</span></div>';
+function stl(n,s){return '<div class="stl">'+n+' '+s+'</div>';}
 
-/* ═════ 홈 ═════ */
-function steps(arr,on){
-  return '<div class="flow">'+arr.map(function(s,i){return '<span'+(on.indexOf(i)>=0?' class="on"':'')+'><b>'+(i+1)+'</b>'+s+'</span>';}).join('')+'</div>';
+/* ═════ 0 ═════ */
+function s0(){
+  var o=S.o;
+  var h='<h1>개념을 어떻게 가르칠까</h1>'+
+  '<section class="plain"><p>개념은 명칭, 정의, 속성, 실례와 비실례로 이루어진다. 개념을 가르치는 방법은 이 가운데 무엇에서 출발하느냐에 따라 달라진다.</p></section>'+
+  '<section class="sec"><h2 class="gt">도시화를 가르친다면, 어떻게 시작할까?</h2>'+
+   '<div class="kt3">'+OPEN.map(function(c,i){
+     return '<div class="kc'+(o===c.k?' on':'')+'"><div class="kh">수업 '+'ABC'[i]+(o?' <span>'+c.n+'</span>':'')+'</div><p>'+c.t+'</p>'+
+       (o?'<p class="kx">'+c.x+'</p>':'<button class="kb" data-o="'+c.k+'">나라면 이 수업</button>')+'</div>';}).join('')+'</div>'+
+  '</section>';
+  if(o)h+='<section class="tint"><h2 class="ah2">개념학습의 세 모형</h2><div class="ex"><dl>'+
+    '<dt>속성모형</dt><dd>정의와 결정적 속성 → 실례·비실례 판단 → 새로운 사례에 적용</dd>'+
+    '<dt>원형모형</dt><dd>원형(가장 대표적인 실례) → 다양한 실례·비실례와 비교 → 속성 검토 → 새로운 사례에 적용</dd>'+
+    '<dt>상황모형</dt><dd>학생의 생활 경험이나 구체적 상황 → 경험에서 공통점 찾기 → 개념으로 묶고 이름 붙이기</dd></dl></div>'+
+    '<p class="pr2">세 모형은 서로를 대신하기보다, 개념의 성격과 학생에 따라 고르고 섞어 쓴다. 이어지는 화면에서 속성모형과 원형모형을 직접 겪어 본다.</p></section>';
+  return h;
 }
-function stl(n,s){return '<div class="stl">'+(n?n+' ':'')+s+'</div>';}
-var ST1=['문제 제기','개념 정의','결정적·비결정적 속성 검토','실례·비실례 제시','새로운 사례에 적용'];
-var ST2=['문제 제기','원형(가장 대표적인 실례) 제시','다양한 실례·비실례와 비교','속성 검토','새로운 사례에 적용'];
-
-/* ═════ 홈 → 속성모형으로 바로 연다 ═════ */
-function home(){return s1();}
 
 /* ═════ 1 ═════ */
-function pairHTML(pr){
-  return '<div class="pair">'+pr.map(function(c){
-    var mine=S.a[c.id];
-    return '<div class="pc"><b>'+c.n+'</b><p>'+c.d+'</p><div class="seg">'+[['y','실례'],['n','비실례']].map(function(o){
+function graph(c){
+  var W=260,H=150,L=30,R=30,T=10,B=22,iw=W-L-R,ih=H-T-B,bw=iw/12;
+  var py=function(v){return T+ih-ih*v/550;},ty=function(v){return T+ih-ih*v/35;};
+  var s='<svg viewBox="0 0 '+W+' '+H+'" class="cg" role="img" aria-label="'+c.n+' 기후 그래프">';
+  [0,100,200,300,400,500].forEach(function(v){s+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+py(v)+'" y2="'+py(v)+'" class="gl"/><text x="'+(L-4)+'" y="'+(py(v)+3)+'" class="ax" text-anchor="end">'+v+'</text>';});
+  [0,10,20,30].forEach(function(v){s+='<text x="'+(W-R+4)+'" y="'+(ty(v)+3)+'" class="ax">'+v+'</text>';});
+  c.p.forEach(function(v,i){s+='<rect x="'+(L+i*bw+2)+'" y="'+py(v)+'" width="'+(bw-4)+'" height="'+(T+ih-py(v))+'" class="pb"/>';});
+  s+='<polyline points="'+c.t.map(function(v,i){return (L+i*bw+bw/2)+','+ty(v);}).join(' ')+'" class="tl"/>';
+  [1,4,7,10].forEach(function(m){s+='<text x="'+(L+(m-1)*bw+bw/2)+'" y="'+(H-8)+'" class="ax" text-anchor="middle">'+m+'월</text>';});
+  s+='<text x="'+(L-4)+'" y="'+(T-2)+'" class="ax" text-anchor="end">mm</text><text x="'+(W-R+4)+'" y="'+(T-2)+'" class="ax">℃</text>';
+  return s+'</svg>';
+}
+function caseHTML(k){
+  var c=CL[k],id='g'+k,mine=S.a[id];
+  return '<div class="pc"><b>'+c.n+'</b><p>'+c.d+'</p>'+graph(c)+'<p class="gs">'+c.s+'</p><div class="seg">'+[['y','실례'],['n','비실례']].map(function(o){
       var cls=(mine&&c.r===o[0])?' class="ref"':'';
-      return '<button'+cls+' aria-pressed="'+(mine===o[0])+'" data-a="'+c.id+'" data-v="'+o[0]+'">'+o[1]+'</button>';}).join('')+'</div>'+
-      (mine?'<div class="rv"><b>'+(c.r==='y'?'실례':'비실례')+'</b>'+c.x+'</div>':'')+'</div>';}).join('')+'</div>';
+      return '<button'+cls+' aria-pressed="'+(mine===o[0])+'" data-a="'+id+'" data-v="'+o[0]+'">'+o[1]+'</button>';}).join('')+'</div>'+
+      (mine?'<div class="rv"><b>'+(c.r==='y'?'실례':'비실례')+'</b>'+c.x+'</div>':'')+'</div>';
 }
 function s1(){
   var CN={c:'결정적 속성',n:'비결정적 속성'};
+  var pd=PAIRS.every(function(p){return S.a['g'+p[0]]&&S.a['g'+p[1]];});
   return '<h1>속성모형</h1>'+
   '<section class="plain">'+
    '<p><b>속성모형</b>(고전모형)은 개념이 그 개념에 속하는 사례들이 공통으로 가진 <b>결정적 속성</b>으로 정의된다고 본다. 결정적 속성은 그 개념을 다른 것과 구별하는 데 꼭 필요한 속성이고, 개념에 속하는 사례가 흔히 갖지만 다른 것도 가질 수 있는 속성은 <b>비결정적 속성</b>이다. 수업은 정의와 결정적 속성을 먼저 제시하고, 이를 기준으로 개념에 속하는 사례(<b>실례</b>)와 속하지 않는 사례(<b>비실례</b>)를 판단하게 한다. 정의에서 사례로 나아가는 연역적 수업이다.</p>'+
@@ -335,16 +416,21 @@ function s1(){
     '<dt>실례</dt><dd>고래, 박쥐, 오리너구리 — 겉모습은 달라도 결정적 속성을 갖추었다.</dd>'+
     '<dt>비실례</dt><dd>상어 — 고래와 닮았지만 새끼에게 젖을 먹이지 않는다. 개념에 가깝지만 결정적 속성이 없는 비실례가 개념의 경계를 가장 분명하게 보여 준다.</dd></dl></div>'+
    '<div class="ex"><h3>알맞은 개념과 한계</h3><dl>'+
-    '<dt>알맞은 개념</dt><dd>결정적 속성과 경계를 분명하게 말할 수 있는 개념. 지형처럼 위치와 형성 과정으로 정의되는 개념이 대표적이다(삼각주, 칼데라, 우각호).</dd>'+
+    '<dt>알맞은 개념</dt><dd>결정적 속성과 경계를 분명하게 말할 수 있는 개념. 지형처럼 위치와 형성 과정으로 정의되거나, 기후 구분처럼 기준값으로 정의되는 개념이 대표적이다(삼각주, 칼데라, 사바나 기후).</dd>'+
     '<dt>한계</dt><dd>모든 실례를 똑같이 취급하지만, 사람들은 실제로 더 전형적인 실례와 덜 전형적인 실례를 구별한다. 결정적 속성을 말하기 어려운 추상적 개념에는 적용하기 어렵다.</dd></dl></div>'+
   '</section>'+
-  '<section class="grp"><h2 class="gt">삼각주</h2>'+
-   '<div class="st">'+stl(1,'개념 정의')+
-    '<div class="def"><b>삼각주</b> 하천이 바다나 호수로 흘러드는 하구에서 유속이 느려지면서, 하천이 운반해 온 물질이 쌓여 만들어진 퇴적 지형</div></div>'+
-   '<div class="st">'+stl(2,'결정적 속성 찾기')+LEG+
+  '<section class="grp"><h2 class="gt">사바나 기후로 해 보는 속성모형 수업</h2>'+
+   '<div class="st">'+stl(1,'문제 제기')+'<p class="q1">방콕과 싱가포르는 모두 일 년 내내 덥고 비가 많은 도시다. 두 도시는 같은 기후일까?</p></div>'+
+   '<div class="st">'+stl(2,'개념 정의')+
+    '<div class="def"><b>사바나 기후</b> 가장 추운 달의 평균 기온이 18℃ 이상이고, 우기와 건기가 뚜렷하여 가장 건조한 달의 강수량이 60mm에 못 미치는 기후(쾨펜의 Aw)</div></div>'+
+   '<div class="st">'+stl(3,'결정적·비결정적 속성 검토')+LEG+
     '<div class="items tight">'+ATTR.map(function(a){
      return item(a.id,a.t,[['c','결정적'],['n','비결정적']],a.r,'<b>'+CN[a.r]+'</b>'+a.x);}).join('')+'</div></div>'+
-   '<div class="st">'+stl(3,'결정적 속성으로 실례·비실례 가르기')+PAIRS.map(pairHTML).join('')+'</div>'+
+   '<div class="st">'+stl(4,'실례·비실례 제시')+
+    PAIRS.map(function(p){return '<div class="pair">'+caseHTML(p[0])+caseHTML(p[1])+'</div>';}).join('')+
+    '<p class="gs">막대는 월 강수량(왼쪽 눈금, mm), 선은 월평균 기온(오른쪽 눈금, ℃)이다.</p></div>'+
+   (pd?'<div class="st">'+stl(5,'새로운 사례에 적용')+'<div class="items tight">'+
+     item(NEW1.id,'<b>'+NEW1.n+'</b><small>'+NEW1.d+'</small>',[['y','실례'],['n','비실례']],NEW1.r,'<b>'+(NEW1.r==='y'?'실례':'비실례')+'</b>'+NEW1.x)+'</div></div>':'')+
   '</section>';
 }
 
@@ -363,40 +449,42 @@ function s2(){
     '<dt>근거</dt><dd>사람들은 “참새는 새다”가 맞는지를 “펭귄은 새다”보다 더 빨리 판단한다. 같은 개념 안에서도 사례마다 전형성이 다르다는 뜻이다(Rosch의 연구).</dd></dl></div>'+
    '<div class="ex"><h3>알맞은 개념과 한계</h3><dl>'+
     '<dt>알맞은 개념</dt><dd>여러 특징이 얽혀 결정적 속성을 뽑아내기 어렵거나, 학생에게 낯설고 추상적인 개념(도시화, 사막화).</dd>'+
-    '<dt>한계</dt><dd>경계가 흐려 어떤 사례가 개념에 속하는지 판단 기준이 모호해질 수 있다. 사례들이 왜 하나의 개념으로 묶이는지는 원형만으로 설명하기 어려워, 결국 속성 검토가 함께 필요하다.</dd>'+
-    '<dt>상황모형</dt><dd>원형 대신 학생이 이미 겪은 생활 경험이나 구체적 상황에서 출발하는 변형이다. 개념을 학생의 경험과 연결해 의미를 구성하게 한다.</dd></dl></div>'+
+    '<dt>한계</dt><dd>경계가 흐려 어떤 사례가 개념에 속하는지 판단 기준이 모호해질 수 있다. 사례들이 왜 하나의 개념으로 묶이는지는 원형만으로 설명하기 어려워, 결국 속성 검토가 함께 필요하다.</dd></dl></div>'+
   '</section>'+
-  '<section class="grp"><h2 class="gt">사막화</h2>'+
-   '<div class="st">'+stl(1,'원형의 특징 파악하기')+
+  '<section class="grp"><h2 class="gt">사막화로 해 보는 원형모형 수업</h2>'+
+   '<div class="st">'+stl(1,'문제 제기')+'<p class="q1">사막이 넓어진다는 뉴스는 사막이 움직여 온다는 뜻일까?</p></div>'+
+   '<div class="st">'+stl(2,'원형 제시')+
     '<div class="proto"><h3>원형 — 사헬</h3>'+
      '<p>사하라 사막 남쪽 가장자리를 따라 동서로 길게 이어진 반건조 지역이다. 1970~80년대에 긴 가뭄이 이어지는 동안 가축 방목과 경작, 땔감 채취가 늘면서 풀과 나무가 사라지고 흙이 바람과 빗물에 쓸려 나갔다.</p>'+
      '<ul><li>건조·반건조 지역</li><li>가뭄</li><li>과도한 방목·경작·땔감 채취</li><li>식생 감소와 토양 침식</li></ul></div></div>'+
-   '<div class="st">'+stl(2,'원형과 얼마나 닮았는지 견주기')+LEG+
+   '<div class="st">'+stl(3,'다양한 실례·비실례와 비교')+LEG+
     '<div class="items tight">'+DES.map(function(c){
      return item(c.id,'<b>'+c.n+'</b><small>'+c.d+'</small>',PO,c.r,'<b>'+PN[c.r]+'</b>'+c.x);}).join('')+'</div></div>'+
-   (d?'<div class="st">'+stl(3,'개념의 중심과 경계 정리하기')+
+   (d?'<div class="st">'+stl(4,'속성 검토')+
     '<div class="band"><div class="bc"><span>원형</span><b>사헬</b></div><i></i>'+
      '<div class="bc"><span>원형에 가까운 실례</span><b>몽골 초원</b></div><i></i>'+
-     '<div class="bc"><span>원형에서 먼 실례</span><b>아랄해 주변 · 스페인 남동부</b></div><i class="edge"></i>'+
+     '<div class="bc"><span>원형에서 먼 실례</span><b>아랄해 주변</b></div><i class="edge"></i>'+
      '<div class="bc out"><span>비실례</span><b>사하라 한가운데 · 아마존 벌채지</b></div></div>'+
-    '<p class="sum">사막화라는 개념은 하나의 규칙이 아니라, 원형을 중심으로 닮은 정도에 따라 펼쳐진 범위로 이해된다. 경계 가까이 갈수록 판단이 어려워진다.</p></div>':'')+
+    '<p class="sum">견주고 나면 원형의 특징이 모두 필요한 것은 아님이 드러난다. 실례들이 함께 가진 속성은 <b>건조 지역의 땅이 사람의 이용으로 황폐해진다</b>는 것이다. 사막화는 하나의 규칙이 아니라, 원형을 중심으로 닮은 정도에 따라 펼쳐진 범위로 이해된다.</p></div>'+
+    '<div class="st">'+stl(5,'새로운 사례에 적용')+'<div class="items tight">'+
+     item(NEW2.id,'<b>'+NEW2.n+'</b><small>'+NEW2.d+'</small>',PO,NEW2.r,'<b>'+PN[NEW2.r]+'</b>'+NEW2.x)+'</div></div>':'')+
   '</section>';
 }
 
 /* ═════ 3 ═════ */
 function s3(){
-  var MN={p:'속성모형',o:'원형모형'};
-  var h='<h1>어떤 모형으로 가르칠까</h1>'+LEG+
+  var MN={p:'속성모형',o:'원형모형',s:'상황모형'};
+  var h='<h1>어떤 모형으로 가르칠까</h1><section class="grp">'+LEG+
   '<div class="items tight">'+CON.map(function(c){
-    return item(c.id,c.n,[['p','속성모형'],['o','원형모형']],c.r,'<b>'+c.r.map(function(k){return MN[k];}).join(' · ')+'</b>'+c.x);}).join('')+'</div>';
+    return item(c.id,c.n,[['p','속성모형'],['o','원형모형'],['s','상황모형']],c.r,'<b>'+c.r.map(function(k){return MN[k];}).join(' · ')+'</b>'+c.x);}).join('')+'</div></section>';
   if(done(CON))h+='<div class="done"><h4>모형을 고르는 기준</h4>'+
-    '<p>결정적 속성을 분명하게 말할 수 있고 실례와 비실례가 깔끔하게 갈리면 <b>속성모형</b>, 여러 특징이 얽혀 경계가 흐리고 대표 사례가 떠오르는 개념이면 <b>원형모형</b>이 알맞다. 열대우림처럼 수업의 목적에 따라 둘 다 가능한 개념도 있다.</p>'+
+    '<p>결정적 속성을 분명하게 말할 수 있고 실례와 비실례가 깔끔하게 갈리면 <b>속성모형</b>, 여러 특징이 얽혀 경계가 흐리고 대표 사례가 떠오르는 개념이면 <b>원형모형</b>, 학생이 이미 생활 속에서 겪고 있는 개념이면 <b>상황모형</b>이 알맞다. 도시화나 젠트리피케이션처럼 둘 이상이 가능한 개념도 있다.</p>'+
     '<p>모형에 수업을 맞추기보다, 학생이 개념을 가장 잘 이해하도록 전략을 고르고 조합하는 것이 교사의 판단이다.</p></div>';
   return h;
 }
 
 /* ═════ 그리기 ═════ */
-var V={home:home,s1:s1,s2:s2,s3:s3};
+var V={s0:s0,s1:s1,s2:s2,s3:s3};
 function foot(){
   return '<div class="foot"><button id="print">인쇄 · PDF</button>'+
    '<button id="save">작업 저장</button><button id="load">불러오기</button>'+
@@ -419,7 +507,8 @@ document.addEventListener('click',function(e){
   var b=e.target.closest('button');if(!b)return;
   var d=b.dataset;
   if(d.go){go(d.go);return;}
-  if(b.id==='brand'){go('s1');return;}
+  if(b.id==='brand'){go('s0');return;}
+  if(d.o){S.o=d.o;dirty=true;keep(paint);return;}
   if(d.a){S.a[d.a]=d.v;dirty=true;keep(paint);return;}
 });
 function flash(t){var e=$('#msg');if(e){e.textContent=t;setTimeout(function(){e.textContent='';},2400);}}
@@ -429,7 +518,7 @@ function save(){var b=new Blob([JSON.stringify(S,null,2)],{type:'application/jso
   URL.revokeObjectURL(a.href);dirty=false;flash('저장했습니다');}
 function load(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();
   r.onload=function(){try{var d=JSON.parse(r.result),b=blank();
-    S=Object.assign(b,d);S.a=S.a||{};if(!V[S.scr]||S.scr==='home')S.scr='s1';
+    S=Object.assign(b,d);S.a=S.a||{};if(!V[S.scr])S.scr='s0';
     dirty=false;paint();flash('불러왔습니다');
   }catch(x){flash('이 화면에서 저장한 파일인지 확인하십시오');}e.target.value='';};
   r.readAsText(f);}
