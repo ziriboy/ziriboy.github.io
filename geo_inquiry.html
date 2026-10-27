@@ -302,6 +302,7 @@ try{const s=JSON.parse(localStorage.getItem('geoq10')||'null');
     if(s.d&&typeof s.d==='object') ST.d=Object.assign(ST.d,s.d,{rows:s.d.rows||{},show:s.d.show||{}});
   }}catch(e){}
 const save=()=>{try{localStorage.setItem('geoq10',JSON.stringify(ST));}catch(e){}};
+{const HT={'#intro':0,'#question':1,'#data':2,'#design':3}; if(HT[location.hash]!==undefined) ST.tab=HT[location.hash];}
 
 const TABS=['지리적 질문이란?','질문 만들기','데이터 찾기','탐구 설계하기'];
 function done(i){
