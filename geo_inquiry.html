@@ -211,6 +211,10 @@ textarea,input[type=text]{width:100%;border:1px solid var(--line);border-radius:
 .exd{padding:2px 0}
 @media print{.plan .chips .note{display:none} .plan .btn{display:none} .plan ::placeholder{color:transparent} .plan textarea{resize:none} .stage .step .no{display:none}}
 .src2{display:block;font-size:11.5px;color:var(--soft);margin-top:1px}
+.xrow{display:grid;grid-template-columns:240px 1fr;gap:10px;align-items:start;padding:4px 0}
+.xrow .xl{font-size:13px;color:var(--mid);padding-top:6px;line-height:1.45}
+@media (max-width:700px){.xrow{grid-template-columns:1fr;gap:2px}}
+@media print{.xrow input,.xrow textarea{border:none!important;padding:0}}
 .drow .dn{font-size:13.5px;font-weight:600;padding:4px 0 0}
 .beyond{margin-top:14px;border-top:1px solid var(--acc);padding-top:8px;font-size:13.5px}
 .beyond b{font-size:13.5px;font-weight:600;display:block;margin-bottom:4px}
@@ -516,7 +520,9 @@ const EX={title:'폭염에 취약한 동네 찾기 — 대구광역시 읍·면�
  area:'대구광역시의 읍·면·동', unit:'읍·면·동',
  data:[['65세 이상 고령자 인구','더위에 약한 사람이 어디에 많이 사는지 보여 준다.','SGIS 통계주제도 (읍면동)'],
        ['무더위 쉼터 위치','더위를 피할 곳이 가까이 있는지 보여 준다.','SGIS 통계주제도 (읍면동)'],
-       ['한낮의 열분포','같은 시 안에서도 실제로 더 뜨거운 곳을 보여 준다.','생활안전지도']]};
+       ['한낮의 열분포','같은 시 안에서도 실제로 더 뜨거운 곳을 보여 준다.','생활안전지도']],
+ ex:['구도심의 오래된 주거지에 65세 이상 인구 비율이 높게 나타날 것이다.','노인이 많은 동 가운데 일부는 무더위 쉼터가 적거나 멀 것이다.','녹지가 적고 건물이 빽빽한 구도심이 한낮에 더 뜨거울 것이다.'],
+ con:'노인이 많고 무더위 쉼터가 멀며 한낮에 더 뜨거운 구도심의 동이 폭염에 가장 취약할 것이다.'};
 const UNITS=['시·도','시·군·구','읍·면·동','한 동네'];
 function dMatch(q){ q=q||''; let x=q; Object.keys(SYN).forEach(k=>{ if(q.includes(k)) x+=' '+SYN[k]; });
   const sc=DCAT.map(d=>[d,d.k.split(' ').reduce((a,w)=>a+(w&&x.includes(w)?1:0),0)]);
@@ -569,24 +575,30 @@ function p4(){
     ${!M.pk.length&&!R.some(r=>r.add)?'<p class="note">2에서 데이터를 고르면 여기에 들어온다.</p>':''}
     <div class="acts noprint" style="margin-top:8px"><button class="chip" id="addM">+ 목록에 없는 데이터 더하기</button><button class="chip" id="aiAsk">AI에게 더 물어보기</button></div>
     <div id="aiBox"></div></td></tr>
+  <tr><td class="k2">예상 결론</td><td>${(()=>{const D=allData().filter(r=>r.n);
+    if(!D.length) return '<p class="note">데이터를 고르면 데이터마다 예상되는 결과를 쓰는 칸이 생긴다.</p>';
+    return D.map(r=>`<div class="xrow"><span class="xl">${esc(r.n)}에서는</span><input type="text" data-xe="${r.key}" value="${esc((M.xe||{})[r.key]||'')}" placeholder="어떤 결과가 나올 것으로 예상하는가"></div>`).join('')+
+      `<div class="xrow"><span class="xl"><b style="font-weight:600">그래서 질문에 대해</b></span><textarea rows="2" data-mf="con" placeholder="데이터별 예상을 묶어 질문에 대한 예상 결론을 쓴다">${esc(M.con||'')}</textarea></div>`;})()}</td></tr>
   </table>
   <div class="chkl noprint" id="chkl">${chkl()}</div>
   <div class="acts noprint">${ST.p.cmp?'':`<a href="#" class="exl ${cmpReady()?'':'off'}" id="exShow" style="margin:0 14px 0 0">폭염 예시와 비교하기</a>`}<button class="btn" id="pprint">설계도 인쇄하기</button><a href="#" class="exl" id="pall" style="margin:0 0 0 14px">전체 과정 인쇄하기(확장)</a></div></div>`;
   if(ST.p.cmp) h+=`<div class="stage pstage"><div class="step" style="margin:0 0 2px">폭염 예시 설계도</div>
-  <div class="stepd2">나의 설계도와 비교한다. 특히 '왜 중요한가'와 '왜 적절한가'를 어떻게 썼는지 본다.</div>
+  <div class="stepd2">나의 설계도와 비교한다. 특히 '왜 중요한가', '왜 적절한가', '예상 결론'을 어떻게 썼는지 본다.</div>
   <table class="dt plan exm"><tr><td class="k2">제목</td><td>${esc(EX.title)}</td></tr>
   <tr><td class="k2">탐구 질문</td><td>${esc(EX.q)}</td></tr>
   <tr><td class="k2">왜 중요한가</td><td>${esc(EX.imp)}</td></tr>
   <tr><td class="k2">탐구 지역</td><td>${esc(EX.area)}<span class="src">비교 단위 ${esc(EX.unit)}</span></td></tr>
-  <tr><td class="k2">필요한 데이터</td><td>${EX.data.map(d=>`<div class="exd"><b>${esc(d[0])}</b> — ${esc(d[1])}<span class="src">${esc(d[2])}</span></div>`).join('')}</td></tr></table></div>`;
+  <tr><td class="k2">필요한 데이터</td><td>${EX.data.map(d=>`<div class="exd"><b>${esc(d[0])}</b> — ${esc(d[1])}<span class="src">${esc(d[2])}</span></div>`).join('')}</td></tr>
+  <tr><td class="k2">예상 결론</td><td>${EX.data.map((d,i)=>`<div class="exd">${esc(d[0])}에서는 ${esc(EX.ex[i])}</div>`).join('')}<div class="exd"><b>그래서 질문에 대해</b> ${esc(EX.con)}</div></td></tr></table></div>`;
   return h;
 }
 function allData(){ const M=ST.p.my; M.pk=M.pk||[]; M.dw=M.dw||{}; M.dk=M.dk||{};
-  return [...M.pk.map(id=>({n:(DCAT.find(d=>d.id===id)||{}).n,why:M.dw[id],src:true,ok:!!M.dk[id]})),
-          ...rowsOf('mine').filter(r=>r.add&&(r.n||'').trim()).map(r=>({n:r.n,why:r.why,src:!!(r.svc||r.snone),ok:r.snone||(r.svc&&r.ok),none:r.snone}))]; }
+  const X=M.xe||{}, R=rowsOf('mine');
+  return [...M.pk.map(id=>({key:'p:'+id,n:(DCAT.find(d=>d.id===id)||{}).n,why:M.dw[id],src:true,ok:!!M.dk[id],xe:X['p:'+id]})),
+          ...R.filter(r=>r.add&&(r.n||'').trim()).map(r=>({key:'m:'+R.indexOf(r),n:r.n,why:r.why,src:!!(r.svc||r.snone),ok:r.snone||(r.svc&&r.ok),none:r.snone,xe:X['m:'+R.indexOf(r)]}))]; }
 function cmpReady(){ const M=ST.p.my; return !!(M.q||'').trim()&&allData().length>=3; }
 function chkl(){ const M=ST.p.my, D=allData(), has=D.length>0;
-  const it=[['질문',!!(M.q||'').trim()],['데이터 3가지',D.length>=3],['제목',!!(M.title||'').trim()],['중요성',!!(M.imp||'').trim()],['탐구 지역',!!(M.area||'').trim()&&!!M.unit],['적절한 이유',has&&D.every(r=>(r.why||'').trim())],['출처',has&&D.every(r=>r.src)],['사이트 확인',has&&D.every(r=>r.ok)]];
+  const it=[['질문',!!(M.q||'').trim()],['데이터 3가지',D.length>=3],['제목',!!(M.title||'').trim()],['중요성',!!(M.imp||'').trim()],['탐구 지역',!!(M.area||'').trim()&&!!M.unit],['적절한 이유',has&&D.every(r=>(r.why||'').trim())],['출처',has&&D.every(r=>r.src)],['사이트 확인',has&&D.every(r=>r.ok)],['예상 결론',has&&D.every(r=>(r.xe||'').trim())&&!!(M.con||'').trim()]];
   const none=D.filter(r=>r.none);
   return it.map(([t,ok])=>`<span class="${ok?'o':'x'}">${ok?'✓':'·'} ${t}</span>`).join('')+
     (none.length?`<div style="margin-top:4px">${none.map(r=>esc(r.n)).join(', ')}: 공간정보웹서비스에 없으면 설문, 관찰, 야외조사로 직접 모으는 1차 데이터가 된다.</div>`:''); }
@@ -612,9 +624,10 @@ function b4(){
   document.querySelectorAll('[data-myq]').forEach(b=>b.onclick=()=>{M.q=qs[+b.dataset.myq];save();keepScroll(render);});
   bindDp();
   document.querySelectorAll('[data-dw]').forEach(el=>el.oninput=()=>{M.dw[el.dataset.dw]=el.value;save();upd();});
+  document.querySelectorAll('[data-xe]').forEach(el=>el.oninput=()=>{(M.xe=M.xe||{})[el.dataset.xe]=el.value;save();upd();});
   document.querySelectorAll('[data-dk]').forEach(el=>el.onchange=()=>{M.dk[el.dataset.dk]=el.checked;save();upd();});
   document.querySelectorAll('[data-un]').forEach(b=>b.onclick=()=>{M.unit=M.unit===b.dataset.un?'':b.dataset.un;save();keepScroll(render);});
-  document.querySelectorAll('[data-mn]').forEach(el=>el.oninput=()=>{MR[+el.dataset.mn].n=el.value;save();upd();});
+  document.querySelectorAll('[data-mn]').forEach(el=>{el.oninput=()=>{MR[+el.dataset.mn].n=el.value;save();upd();};el.onchange=()=>keepScroll(render);});
   document.querySelectorAll('[data-mw]').forEach(el=>el.oninput=()=>{MR[+el.dataset.mw].why=el.value;save();upd();});
   document.querySelectorAll('[data-mo]').forEach(el=>el.onchange=()=>{MR[+el.dataset.mo].ok=el.checked;save();upd();});
   document.querySelectorAll('[data-svc]').forEach(el=>el.onclick=e=>{e.preventDefault();openSvc(el.dataset.svc);});
@@ -657,7 +670,8 @@ function fullHTML(){
     ...rowsOf('mine').filter(r=>r.add&&(r.n||'').trim()).map(r=>({n:r.n,why:r.why,src:r.svc||(r.snone?'찾을 수 없음(1차 데이터)':''),ok:r.snone||r.ok}))];
   h+=`<section><h3>3 나의 탐구 설계도</h3><table><tr><th>제목</th><td>${v(M.title)}</td></tr><tr><th>탐구 질문</th><td>${v(M.q)}</td></tr><tr><th>왜 중요한가</th><td>${v(M.imp)}</td></tr>
    <tr><th>탐구 지역</th><td>${v(M.area)}${M.unit?' · 비교 단위 '+esc(M.unit):''}</td></tr>
-   <tr><th>필요한 데이터</th><td>${rows.length?rows.map(r=>`<div style="padding:2px 0"><b style="font-weight:600">${esc(r.n)}</b> — ${v(r.why)} <span style="color:var(--mid)">${esc(r.src||'출처 없음')}${r.ok?' · 사이트 확인':''}</span></div>`).join(''):'<span class="x">고르지 않음</span>'}</td></tr></table></section>`;
+   <tr><th>필요한 데이터</th><td>${rows.length?rows.map(r=>`<div style="padding:2px 0"><b style="font-weight:600">${esc(r.n)}</b> — ${v(r.why)} <span style="color:var(--mid)">${esc(r.src||'출처 없음')}${r.ok?' · 사이트 확인':''}</span></div>`).join(''):'<span class="x">고르지 않음</span>'}</td></tr>
+   <tr><th>예상 결론</th><td>${allData().filter(r=>r.n).map(r=>`<div style="padding:2px 0">${esc(r.n)}에서는 ${v(r.xe)}</div>`).join('')}<div style="padding:2px 0"><b style="font-weight:600">그래서 질문에 대해</b> ${v(M.con)}</div></td></tr></table></section>`;
   return h;
 }
 function printAll(){
