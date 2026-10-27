@@ -221,6 +221,15 @@ textarea,input[type=text]{width:100%;border:1px solid var(--line);border-radius:
   .dt td.s{width:auto}
 }
 @media print{header,.noprint,.drawer,.shade{display:none!important} .wrap{padding:0}}
+@media print{body.printAll #main{display:none!important} body.printAll #fullprint{display:block!important}}
+#fullprint h2{font-size:17px;margin:0 0 4px} #fullprint h3{font-size:14.5px;margin:18px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--acc)}
+#fullprint .fp-meta{font-size:12.5px;color:var(--mid);margin-bottom:10px}
+#fullprint table{width:100%;border-collapse:collapse;font-size:13px;margin:4px 0 8px}
+#fullprint td,#fullprint th{border-bottom:1px solid var(--line);padding:4px 6px;text-align:left;vertical-align:top;font-weight:400}
+#fullprint th{color:var(--mid);font-size:12px;width:150px}
+#fullprint .fp-sub{font-size:13px;font-weight:600;margin:10px 0 2px}
+#fullprint .o{color:var(--ok)} #fullprint .x{color:var(--red)}
+#fullprint section{break-inside:avoid-page}
 </style>
 </head>
 <body>
@@ -229,6 +238,7 @@ textarea,input[type=text]{width:100%;border:1px solid var(--line);border-radius:
   <nav class="seg" id="seg"></nav>
 </div></header>
 <main class="wrap" id="main"></main>
+<div class="wrap" id="fullprint" hidden></div>
 <div id="drawerHost"></div>
 
 <script>
@@ -561,7 +571,7 @@ function p4(){
     <div id="aiBox"></div></td></tr>
   </table>
   <div class="chkl noprint" id="chkl">${chkl()}</div>
-  <div class="acts noprint">${ST.p.cmp?'':`<a href="#" class="exl ${cmpReady()?'':'off'}" id="exShow" style="margin:0 14px 0 0">폭염 예시와 비교하기</a>`}<button class="btn" id="pprint">설계도 인쇄하기</button></div></div>`;
+  <div class="acts noprint">${ST.p.cmp?'':`<a href="#" class="exl ${cmpReady()?'':'off'}" id="exShow" style="margin:0 14px 0 0">폭염 예시와 비교하기</a>`}<button class="btn" id="pprint">설계도 인쇄하기</button><a href="#" class="exl" id="pall" style="margin:0 0 0 14px">전체 과정 인쇄하기(확장)</a></div></div>`;
   if(ST.p.cmp) h+=`<div class="stage pstage"><div class="step" style="margin:0 0 2px">폭염 예시 설계도</div>
   <div class="stepd2">나의 설계도와 비교한다. 특히 '왜 중요한가'와 '왜 적절한가'를 어떻게 썼는지 본다.</div>
   <table class="dt plan exm"><tr><td class="k2">제목</td><td>${esc(EX.title)}</td></tr>
@@ -621,6 +631,39 @@ function b4(){
   document.querySelectorAll('[data-find]').forEach(el=>el.onclick=e=>{e.preventDefault();openFinder(el.dataset.find);});
   document.querySelectorAll('[data-svc]').forEach(el=>el.onclick=e=>{e.preventDefault();openSvc(el.dataset.svc);});
   $('#pprint').onclick=()=>window.print();
+  $('#pall').onclick=e=>{e.preventDefault();printAll();};
+}
+
+/* 전체 과정 인쇄(확장) */
+function fullHTML(){
+  const G=ST.g, D=ST.d, B=D.best||{}, H=DQ.find(x=>x.k==='heat'), M=ST.p.my, v=t=>(t||'').trim()?esc(t):'<span class="x">쓰지 않음</span>';
+  const qn=n=>Q7.find(q=>q.n==n);
+  let h=`<h2>1단원 지리탐구 — 전체 과정</h2><div class="fp-meta">이름 ____________________ · 인쇄한 날 ${new Date().toLocaleDateString('ko-KR')}</div>`;
+  /* 1 질문 만들기 */
+  h+=`<section><h3>1 질문 만들기</h3><div class="fp-sub">사진: ${esc(PRAC.cap)}</div><table>${Object.keys(PRAC.models).map(k=>`<tr><th>${k} ${esc(qn(k).t)}</th><td>${v(G.p[k])}</td></tr>`).join('')}</table>
+  <div class="fp-sub">동영상: ${esc(BUS.t)}</div><table><tr><th>0 ${esc(qn(0).t)}</th><td>${esc(BUS.given[0])} <span style="color:var(--mid)">(주어진 질문)</span></td></tr>${Object.keys(BUS.models).map(k=>`<tr><th>${k} ${esc(qn(k).t)}</th><td>${v(G.b[k])}</td></tr>`).join('')}</table></section>`;
+  /* 2 데이터 찾기 */
+  const picks=(B.top||[]).map(id=>H.cands.find(c=>c.id===id)).filter(Boolean), core=H.cands.filter(c=>c.core);
+  h+=`<section><h3>2 데이터 찾기</h3><div class="fp-sub">연습 — 폭염: ${esc(H.q)}</div>`;
+  if(!picks.length) h+=`<p class="x" style="font-size:13px">핵심 데이터를 고르지 않았다.</p>`;
+  else{ h+=`<table><tr><th>내가 고른 데이터</th><th style="width:auto">SGIS 연결</th>${B.mchk?'<th style="width:auto">모범 연결</th>':''}</tr>${picks.map(c=>{const r=(B.map||{})[c.id]||{};
+      const ok=(c.ind&&r.ind&&r.ind.t===c.ind)||(!c.ind&&r.miss);
+      return `<tr><td>${esc(c.n)}${c.core?' <span class="o">· 모범 사례</span>':''}</td><td>${r.ind?esc(r.ind.t):(r.miss?'SGIS에 없음':'<span class="x">연결하지 않음</span>')}</td>${B.mchk?`<td><span class="${ok?'o':'x'}">${ok?'✓':'✗'}</span> ${c.ind?esc(c.ind):'SGIS에 없음'}</td>`:''}</tr>`;}).join('')}</table>
+    <p style="font-size:12.5px;color:var(--mid)">${B.chk?`모범 사례 핵심 3가지와 ${picks.filter(c=>c.core).length}가지가 같다.`:'모범 사례와 아직 비교하지 않았다.'} ${B.mchk?'':'SGIS 모범 연결과 아직 비교하지 않았다.'}</p>`; }
+  const SR=(D.rows.study||[]).filter(r=>(r.n||'').trim());
+  h+=`<div class="fp-sub">혼자 해 보기 — 스터디카페</div>${SR.length?`<table>${SR.map(r=>`<tr><td>${esc(r.n)}</td><td>${r.ind?esc(r.ind.t)+' ('+esc(r.ind.g)+')':(r.miss?'SGIS에 없음':'<span class="x">연결하지 않음</span>')}</td></tr>`).join('')}</table>`:'<p class="x" style="font-size:13px">데이터를 적지 않았다.</p>'}</section>`;
+  /* 3 탐구 설계도 */
+  const byId=id=>DCAT.find(d=>d.id===id), rows=[...(M.pk||[]).map(byId).filter(Boolean).map(d=>({n:d.n,why:(M.dw||{})[d.id],src:d.s+' · '+d.g+' 단위',ok:(M.dk||{})[d.id]})),
+    ...rowsOf('mine').filter(r=>r.add&&(r.n||'').trim()).map(r=>({n:r.n,why:r.why,src:r.svc||(r.snone?'찾을 수 없음(1차 데이터)':''),ok:r.snone||r.ok}))];
+  h+=`<section><h3>3 나의 탐구 설계도</h3><table><tr><th>제목</th><td>${v(M.title)}</td></tr><tr><th>탐구 질문</th><td>${v(M.q)}</td></tr><tr><th>왜 중요한가</th><td>${v(M.imp)}</td></tr>
+   <tr><th>탐구 지역</th><td>${v(M.area)}${M.unit?' · 비교 단위 '+esc(M.unit):''}</td></tr>
+   <tr><th>필요한 데이터</th><td>${rows.length?rows.map(r=>`<div style="padding:2px 0"><b style="font-weight:600">${esc(r.n)}</b> — ${v(r.why)} <span style="color:var(--mid)">${esc(r.src||'출처 없음')}${r.ok?' · 사이트 확인':''}</span></div>`).join(''):'<span class="x">고르지 않음</span>'}</td></tr></table></section>`;
+  return h;
+}
+function printAll(){
+  const fp=$('#fullprint'); fp.innerHTML=fullHTML(); document.body.classList.add('printAll');
+  const done=()=>{document.body.classList.remove('printAll');fp.innerHTML='';window.removeEventListener('afterprint',done);};
+  window.addEventListener('afterprint',done); window.print();
 }
 
 /* 공간정보웹서비스 찾기 패널 */
