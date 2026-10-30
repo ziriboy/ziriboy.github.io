@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>우리 지역 자연재해 위험 조사</title>
+<title>우리 지역 자연재해 조사</title>
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
  :root{--ink:#12222C;--soft:#4E626D;--faint:#94A2A9;--paper:#EDF0F2;--card:#FFFFFF;
@@ -15,9 +15,9 @@
  h1{font-size:clamp(22px,4.2vw,30px);font-weight:800;letter-spacing:-.035em;margin:0 0 6px}
  .lede{margin:0 0 18px;font-size:14.5px;color:var(--soft)}
  .bar{position:sticky;top:0;z-index:20;background:var(--paper);padding:10px 0 12px;margin-bottom:14px;border-bottom:1px solid var(--line)}
- .tabs{display:inline-flex;background:#DFE6EA;border-radius:999px;padding:3px;margin-bottom:10px}
+ .tabs{display:inline-flex;max-width:100%;overflow-x:auto;background:#DFE6EA;border-radius:999px;padding:3px;margin-bottom:10px}
  .tabs button{font-family:var(--sans);font-size:13.5px;font-weight:700;border:0;background:transparent;
-   color:var(--soft);padding:8px 20px;border-radius:999px;cursor:pointer;transition:.2s}
+   color:var(--soft);padding:8px 15px;border-radius:999px;cursor:pointer;transition:.2s;white-space:nowrap}
  .tabs button[aria-pressed="true"]{background:#fff;color:var(--ink);box-shadow:0 1px 3px #0001}
  .prog{display:flex;align-items:center;gap:10px}
  .prog .track{flex:1;height:6px;background:#DCE3E7;border-radius:99px;overflow:hidden}
@@ -146,10 +146,34 @@
  .rule{margin-top:16px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
  .rule h2{font-size:13px;font-weight:800;margin:0 0 7px}
  .rule li{font-size:12.5px;color:var(--soft);margin-bottom:4px}
+ .stq{font-size:15px;font-weight:800;letter-spacing:-.02em;margin:0 0 12px}
+ .xt{width:100%;border-collapse:collapse;font-size:12.5px}
+ .xt th{font-weight:700;color:var(--soft);text-align:left;padding:6px 6px;border-bottom:1px solid var(--line)}
+ .xt td{padding:5px 6px;border-bottom:1px solid #EEF2F4;vertical-align:middle}
+ .xt td .nm{font-weight:700;color:var(--ink)} .xt td .ds{display:block;font-size:11.5px;color:var(--faint)}
+ .xt input{width:92px;padding:6px 8px;border:1px solid var(--line);border-radius:7px;font-family:var(--mono);font-size:13px}
+ .xt input:focus{outline:2px solid var(--a);outline-offset:-1px}
+ .xt .pc{font-family:var(--mono);font-weight:700;color:var(--a);white-space:nowrap}
+ .ex{margin:2px 0 12px;background:#F6F9FA;border-radius:8px;padding:8px 11px}
+ .ex summary{font-size:12.5px;font-weight:700;color:var(--soft);cursor:pointer}
+ .ex .xt{margin-top:6px}
+ .fb{margin-top:6px;border-top:1px solid #EEF2F4;padding-top:12px}
+ .fbh{font-size:13px;font-weight:800;margin-bottom:8px}
+ .fbx{display:flex;gap:9px;align-items:flex-start;margin-bottom:8px}
+ .fbx .k{font-family:var(--mono);font-size:10px;letter-spacing:.1em;padding:4px 9px;border-radius:99px;background:#EAF1F6;color:#2C6E96;flex:none;margin-top:2px}
+ .fbx .k.opt{background:#F1F0EC;color:#6E6A5E}
+ .fbx p{margin:0;font-size:13px;line-height:1.65} .fbx b{color:var(--a)}
+ .fbn{font-size:12.5px;color:var(--soft);margin:4px 0 8px}
+ .fbl{margin:0;padding-left:18px;font-size:12.5px;color:var(--soft)} .fbl li{margin-bottom:3px}
+ .rsec{font-size:15px;font-weight:800;margin:18px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--ink)}
+ .rsec:first-of-type{margin-top:4px}
+ .rtx{font-size:13px;margin:0 0 6px} .rtx b{font-weight:700;color:var(--soft);margin-right:6px}
+ @media (max-width:560px){.xt input{width:72px}}
  @media (max-width:560px){.ihead{flex-wrap:wrap} .go{margin-top:6px}
    .rrow{grid-template-columns:1fr;gap:3px} .rrow .rk{text-align:left}}
  @media print{
-   .bar,.pick,.warn,.btns,#viewA,.lede,.eyebrow,.me{display:none !important}
+   .bar,.pick,.warn,.btns,#view1,#view2,#view3,#view4,.lede,.eyebrow,.me{display:none !important}
+   #viewR{display:block !important}
    body{background:#fff} .wrap{padding:0;max-width:none}
    .rep{border:0;padding:0} .rgroup{page-break-inside:avoid;padding-bottom:9px;margin-bottom:10px}
    .rshot .box{width:210px}
@@ -157,20 +181,23 @@
  }
 </style></head><body>
 <div class="wrap">
-<p class="eyebrow">한국지리 탐구 · 4.11</p>
-<h1>우리 지역 자연재해 위험 조사</h1>
-<p class="lede">같은 자연재해라도 지역의 자연환경과 생활 공간에 따라 위험의 정도는 달라진다. 국가가 제공하는 지도를 이용해 우리 지역의 자연재해 위험을 직접 확인해 보자.</p>
+<p class="eyebrow">한국지리 탐구 · 4.12</p>
+<h1>우리 지역 자연재해 조사</h1>
+<p class="lede">국가가 제공하는 공간정보로 우리 지역의 자연재해 위험, 노출과 취약성, 대응 시설을 차례로 확인하고, 이를 근거로 우리 지역에 필요한 재해 대응 한 가지를 제안한다.</p>
 
 
 
 <div class="bar">
   <div class="tabs">
-    <button id="tabA" aria-pressed="true">조사하기</button>
-    <button id="tabB" aria-pressed="false">보고서</button>
+    <button data-v="1" aria-pressed="true">1 위험</button>
+    <button data-v="2" aria-pressed="false">2 노출·취약성</button>
+    <button data-v="3" aria-pressed="false">3 대응 시설</button>
+    <button data-v="4" aria-pressed="false">4 제안</button>
+    <button data-v="R" aria-pressed="false">보고서</button>
   </div>
   <div class="prog">
     <div class="track"><div class="fill" id="fill"></div></div>
-    <div class="n" id="pn">0 / 4 항목</div>
+    <div class="n" id="pn">0 / 4 단계</div>
   </div>
 </div>
 
@@ -180,7 +207,8 @@
 </div></div>
 
 
-<div id="viewA">
+<div id="view1" class="view">
+<p class="stq">우리 지역에는 어떤 자연재해 위험이 있는가?</p>
 
 <div class="pick">
   <h2>조사할 항목 고르기</h2>
@@ -192,12 +220,73 @@
 <div id="list"></div>
 </div>
 
-<div id="viewB" style="display:none">
+<div id="view2" class="view" style="display:none">
+<p class="stq">재해 영향구역에는 누가 살고 있는가?</p>
+<div class="item"><div class="ihead"><div class="t"><h3>노출과 취약성 <span class="chk" id="ck_s2"></span></h3>
+<div class="src"><b>자연재해통계지도</b> · 재해 고르기(홍수·산사태·태풍·폭염) → 우리 지역 선택 → 재해 영향정보</div></div>
+<a class="go" href="https://ndsm.mods.go.kr/ndsm/srv/" target="_blank" rel="noopener">자료 열기</a></div>
+<div class="ibody">
+<div class="about"><b>노출</b>은 자연재해의 영향을 받을 수 있는 지역에 사람과 시설 등이 놓여 있는 정도이고, <b>취약성</b>은 자연재해의 영향을 받았을 때 피해를 크게 만들 수 있는 사람이나 생활 환경의 특성이다. 자연재해통계지도는 재해의 영향이 예상되는 범위와 그 안에 있는 인구·가구·건물·시설의 통계를 함께 보여 준다.</div>
+<div class="f"><div class="lb">조사할 재해</div><div class="grades" id="s2haz"></div></div>
+<div class="f"><div class="lb">영향구역의 통계 <span class="opt2">인구와 한 항목 이상</span></div>
+<table class="xt"><thead><tr><th>항목</th><th>행정구역 전체</th><th>영향구역 안</th><th>비율</th></tr></thead><tbody id="s2rows"></tbody></table></div>
+<details class="ex"><summary>예시 보기 — 인천광역시 계양구 작전서운동의 홍수 노출</summary>
+<table class="xt"><thead><tr><th>항목</th><th>행정구역 전체</th><th>영향구역 안</th><th>비율</th></tr></thead><tbody id="s2ex"></tbody></table></details>
+<div class="f"><div class="lb">이 결과는 무엇을 뜻하는가 — 한두 문장으로</div>
+<textarea class="memo" id="s2see" placeholder="예) 작전서운동 인구의 22.7%가 홍수 영향구역 안에 살고, 침수 피해가 나기 쉬운 지하 건물도 59동이 영향구역 안에 있다."></textarea></div>
+<div class="f"><div class="lb">확인한 화면 붙이기 <span class="opt2">선택</span></div>
+<div class="shot"><input type="file" accept="image/*" data-xshot="s2" id="sh_s2"><label class="shotb" for="sh_s2">화면 캡처 고르기</label><button type="button" class="shotx" data-xdel="s2">지우기</button></div><div class="shotp" id="sp_s2"></div></div>
+</div></div>
+</div>
+
+<div id="view3" class="view" style="display:none">
+<p class="stq">대응 시설은 필요한 곳에 있는가?</p>
+<div class="item"><div class="ihead"><div class="t"><h3>폭염과 무더위쉼터 <span class="chk" id="ck_s3"></span></h3>
+<div class="src"><b>생활안전지도</b> · 재난 → 열분포도 &nbsp;+&nbsp; 시설 → 재난안전 → 무더위쉼터</div></div>
+<a class="go" href="https://www.safemap.go.kr/main/smap.do" target="_blank" rel="noopener">자료 열기</a></div>
+<div class="ibody">
+<div class="about"><b>회복탄력성</b>은 자연재해에 대응하여 피해를 줄이고, 피해를 입은 뒤에는 일상생활을 신속하게 회복할 수 있는 능력이다. 무더위쉼터 같은 대응 시설은 그 수만큼, 필요한 사람이 이용할 수 있는 곳에 있는지가 중요하다. 열분포도와 무더위쉼터를 함께 켜고, 기온이 높은 곳과 쉼터의 위치를 견주어 본다.</div>
+<div class="hint">열분포도는 전국과 일부 대도시만 제공된다. 우리 지역의 열분포도가 없으면 무더위쉼터의 분포를 2단계에서 확인한 취약한 사람의 분포와 견준다.</div>
+<div class="frow" style="margin-bottom:9px">
+<div class="f"><div class="lb">대응이 부족해 보이는 곳</div><input class="txin" id="s3where" placeholder="예: ○○동 시장 뒤 주택가" style="width:240px"></div>
+<div class="f"><div class="lb">그곳에서 가장 가까운 쉼터까지 <span class="opt2">선택</span></div><div class="numin"><input type="number" step="any" id="s3dist" placeholder="예: 700"><span class="u">m</span></div></div>
+</div>
+<div class="f"><div class="lb">그렇게 판단한 까닭</div>
+<textarea class="memo" id="s3why" placeholder="예) 열분포도에서 기온이 높게 나타나는 주택가인데, 무더위쉼터는 큰길 건너 주민센터에만 있다."></textarea></div>
+<div class="f"><div class="lb">확인한 화면 붙이기 <span class="opt2">선택</span></div>
+<div class="shot"><input type="file" accept="image/*" data-xshot="s3" id="sh_s3"><label class="shotb" for="sh_s3">화면 캡처 고르기</label><button type="button" class="shotx" data-xdel="s3">지우기</button></div><div class="shotp" id="sp_s3"></div></div>
+</div></div>
+</div>
+
+<div id="view4" class="view" style="display:none">
+<p class="stq">우리 지역에 필요한 재해 대응 한 가지를 제안한다.</p>
+<div class="item"><div class="ihead"><div class="t"><h3>재해 대응 제안 <span class="chk" id="ck_s4"></span></h3>
+<div class="src">1~3단계에서 확인한 자료를 근거로 쓴다.</div></div></div>
+<div class="ibody">
+<div class="f"><div class="lb">문제 — 우리 지역에서 무엇이 부족한가?</div><textarea class="memo" id="s4p"></textarea></div>
+<div class="f"><div class="lb">근거 — 어떤 자료에서 확인했는가?</div><textarea class="memo" id="s4e"></textarea></div>
+<div class="f"><div class="lb">제안 — 무엇을 어떻게 바꾸면 좋을까?</div><textarea class="memo" id="s4s"></textarea></div>
+<div id="s4fb" class="fb" style="display:none">
+<div class="fbh">다른 제안과 견주어 보기</div>
+<div class="fbx"><span class="k">예시 1</span><p><b>문제</b> ○○동은 폭염에 취약한 고령 인구가 많지만 무더위쉼터가 부족하다. <b>근거</b> 생활안전지도에서 ○○동 주택가는 열분포도의 기온이 높게 나타났지만, 가장 가까운 무더위쉼터는 큰길 건너 주민센터 한 곳뿐이었다. <b>제안</b> ○○동의 경로당을 무더위쉼터로 추가 지정할 것을 제안한다.</p></div>
+<div class="fbx"><span class="k opt">예시 2</span><p><b>문제</b> ○○동 저지대 주택가는 집중호우 때 지하 공간이 잠기기 쉽다. <b>근거</b> 도시침수지도에서 이 지역은 2등급이었고, 자연재해통계지도에서 영향구역 안에 지하 건물이 많았다. <b>제안</b> 지하 건물에 차수판 설치를 지원하고, 침수 위험이 있을 때 주민에게 재난 정보를 더 빨리 알릴 것을 제안한다.</p></div>
+<p class="fbn">새로운 시설을 만드는 것만이 대책은 아니다. 시설의 위치를 바꾸거나, 안내를 개선하거나, 재난 정보를 더 쉽게 전달하는 것도 재해 대응이 될 수 있다.</p>
+<ul class="fbl"><li>문제가 한 장소, 한 집단으로 좁혀져 있는가?</li><li>근거가 앞 단계에서 직접 확인한 자료인가?</li><li>제안이 그 문제를 직접 줄이는가?</li></ul>
+</div>
+</div></div>
+</div>
+
+<div id="viewR" class="view" style="display:none">
 
 <div class="rep">
-  <h2 id="repTitle">조사 결과</h2>
-  <p class="sub" id="repSub">항목마다 그 자료의 눈금 위에 표시된다. 눈금이 서로 다르므로 항목끼리 견주지 않는다.</p>
+  <h2 id="repTitle">우리 지역 자연재해 조사</h2>
+  <p class="sub" id="repSub"></p>
+  <div class="rsec">1 · 우리 지역의 자연재해 위험</div>
+  <p class="rnote" style="margin:0 0 10px">항목마다 그 자료의 눈금 위에 표시된다. 눈금이 서로 다르므로 항목끼리 견주지 않는다.</p>
   <div id="repBody"></div>
+  <div class="rsec">2 · 노출과 취약성</div><div id="rep2"></div>
+  <div class="rsec">3 · 대응 시설</div><div id="rep3"></div>
+  <div class="rsec">4 · 재해 대응 제안</div><div id="rep4"></div>
 </div>
 
 <div class="btns">
@@ -212,7 +301,7 @@
 
 <script>
 (function(){
- var ITEMS = [{"id": "flood", "name": "홍수 · 침수", "req": true, "src": "생활안전지도", "path": "재난안전 → 도시침수지도 / 하천범람지도", "link": "https://www.safemap.go.kr/main/smap.do", "about": "드물게 내리는 큰비를 가정해 잠길 수 있는 범위와 깊이를 나타낸 지도다. <b>도시침수지도</b>는 빗물펌프장·저류조가 물을 다 처리하지 못한 경우, <b>하천범람지도</b>는 100년에 한 번쯤 올 큰비에 강이 넘치거나 제방이 무너진 경우를 가정한다.", "scaleNote": "숫자가 클수록 깊이 잠긴다.", "interp": "예) 아주 큰비가 내리면 우리 지역은 1.0~2.0m 정도 잠길 수 있다.", "interpKey": "urban", "interpBy": {"없음": "예) 우리 지역은 두 지도 모두 색칠되지 않았다. 지대가 높기 때문일 것이다.", "1등급": "예) 아주 큰비가 내리면 우리 지역은 무릎 아래 정도로 얕게 잠길 수 있다.", "2등급": "예) 아주 큰비가 내리면 우리 지역은 허리 높이까지 잠길 수 있다.", "3등급": "예) 아주 큰비가 내리면 우리 지역은 키를 넘길 만큼 잠길 수 있다.", "4등급": "예) 아주 큰비가 내리면 우리 지역은 건물 1층이 잠길 만큼 물이 찰 수 있다.", "5등급": "예) 아주 큰비가 내리면 우리 지역은 2층까지 잠길 만큼 물이 찰 수 있다."}, "fields": [{"key": "urban", "label": "도시침수지도", "type": "grade", "colors": ["#DDE3E7", "#FDE96A", "#B9E86B", "#5FE0E0", "#C89BE8", "#F14C9A"], "options": [["없음", "색칠되지 않음"], ["1등급", "0.5m 미만 · 무릎 아래"], ["2등급", "0.5~1.0m 미만 · 허리 높이"], ["3등급", "1.0~2.0m 미만 · 키를 넘긴다"], ["4등급", "2.0~5.0m 미만 · 1층이 잠긴다"], ["5등급", "5.0m 이상 · 2층까지"]]}, {"key": "river", "label": "하천범람지도", "type": "grade", "colors": ["#DDE3E7", "#FDE96A", "#B9E86B", "#5FE0E0", "#C89BE8", "#F14C9A"], "options": [["없음", "색칠되지 않음"], ["1등급", "0.5m 미만 · 무릎 아래"], ["2등급", "0.5~1.0m 미만 · 허리 높이"], ["3등급", "1.0~2.0m 미만 · 키를 넘긴다"], ["4등급", "2.0~5.0m 미만 · 1층이 잠긴다"], ["5등급", "5.0m 이상 · 2층까지"]]}], "rowLabels": {}}, {"id": "landslide", "name": "산사태", "req": true, "src": "생활안전지도", "path": "재난안전 → 산사태위험지도", "link": "https://www.safemap.go.kr/main/smap.do", "about": "산림청이 지형·경사·토양·지질·강우량·숲의 모습을 종합해 산사태가 일어날 가능성을 다섯 등급으로 나눈 지도다. <b>1등급이 가장 위험하다.</b> 등급이 낮다고 안전한 것은 아니며, 비가 그친 뒤에도 산사태는 일어날 수 있다.", "scaleNote": "1등급이 가장 위험하다. 다른 지도와 방향이 반대다.", "interp": "예) 우리 동네 뒷산은 3등급으로 중간 정도다. 그렇다고 안전한 것은 아니다.", "interpBy": {"없음": "예) 우리 동네는 산지가 아니어서 색칠되지 않았다. 다만 가까운 산자락에는 등급이 표시되어 있었다.", "1등급": "예) 우리 동네 뒷산은 1등급으로 가장 위험한 구간이다. 큰비가 오면 특히 조심해야 한다.", "2등급": "예) 우리 동네 뒷산은 2등급으로 위험도가 높은 편이다. 경사가 급하고 흙이 두껍기 때문일 것이다.", "3등급": "예) 우리 동네 뒷산은 3등급으로 중간 정도다. 등급이 중간이라고 안전한 것은 아니다.", "4등급": "예) 우리 동네 뒷산은 4등급으로 위험도가 낮은 편이다. 그래도 큰비가 오면 산사태가 날 수 있다.", "5등급": "예) 우리 동네 뒷산은 5등급으로 위험도가 가장 낮다. 경사가 완만하기 때문일 것이다."}, "fields": [{"key": "grade", "label": "산사태위험지도", "type": "grade", "rev": true, "colors": ["#DDE3E7", "#E8483C", "#F4A62A", "#B7E8A0", "#7FD3F0", "#3A56D6"], "options": [["없음", "색칠되지 않음 · 산지가 아니다"], ["1등급", "가장 위험도가 높은 구간"], ["2등급", "위험도가 높은 구간"], ["3등급", "중간 위험도 구간"], ["4등급", "위험도가 낮은 구간"], ["5등급", "가장 낮은 위험도 구간"]]}], "rowLabels": {}}, {"id": "fire", "name": "산불", "req": true, "src": "생활안전지도", "noInterp": true, "path": "재난안전 → 산불발생이력", "link": "https://www.safemap.go.kr/main/smap.do", "about": "지금까지 산불이 난 자리를 점으로 찍은 <b>실제 기록</b>이다. 위험 등급이 아니다. 우리 지역이 화면에 들어오도록 지도를 맞춘 뒤 표시된 지점을 세고, 가까운 곳에 기록이 있으면 눌러서 발생 시기·원인·피해 면적을 확인한다.", "scaleNote": "건수는 등급이 아니다. 주변과 견주어 판단한다.", "interp": "예) 우리 지역에 산불 이력이 3건 있었다. 가까운 곳의 산불은 쓰레기를 태우다 난 불이었다.", "interpKey": "rel", "interpBy": {"적음": "예) 우리 지역에는 산불 이력이 거의 없었다. 산림이 적기 때문일 것이다.", "비슷": "예) 우리 지역의 산불 이력은 주변과 비슷했다. 원인은 대부분 사람의 활동이었다.", "많음": "예) 우리 지역에 산불이 자주 났다. 산자락에 마을과 밭이 붙어 있기 때문일 것이다."}, "fields": [{"key": "cnt", "label": "산불 발생 건수", "type": "num", "unit": "건", "ph": "예: 3", "pair": 1}, {"key": "rel", "label": "주변 지역과 견주면", "type": "grade", "colors": ["#DDE3E7", "#BFD8E6", "#F5C97B", "#EE8B5B"], "options": [["적음", "적은 편이다"], ["비슷", "비슷하다"], ["많음", "많은 편이다"]], "pair": 1}, {"key": "when", "label": "발생 시기", "type": "text", "opt": true, "ph": "예: 2016년 6월", "pair": 2}, {"key": "cause", "label": "발생 원인", "type": "text", "opt": true, "ph": "예: 농산폐기물 소각", "pair": 2}, {"key": "area", "label": "피해 면적", "type": "num", "unit": "ha", "opt": true, "ph": "예: 0.5", "pair": 2}], "rowLabels": {"1": "우리 지역", "2": "가까운 산불 기록 — 있는 경우에만"}}, {"id": "heat", "name": "폭염", "req": true, "src": "기상자료개방포털", "noInterp": true, "path": "기후통계분석 → 기상현상일수 → 폭염일수 → 분포도 → 자료구분 '년' → 지점 '전체'", "link": "https://data.kma.go.kr/", "about": "일최고기온이 33℃ 이상이었던 날의 수다. <b>지난 한 해</b>를 기준으로 조회한다. 지점 '전체'로 보면 전국 값이 한 지도에 나온다.", "scaleNote": "기상청 분포도의 색 구간을 그대로 쓴다. 지난 한 해 기준이다.", "fields": [{"key": "stn", "label": "확인한 지점", "type": "text", "ph": "예: 청주", "pair": 1}, {"key": "days", "label": "폭염일수", "type": "band", "unit": "일", "ph": "예: 17", "bands": [[0, 5, "0~5일"], [5, 10, "5~10일"], [10, 15, "10~15일"], [15, 20, "15~20일"], [20, 30, "20~30일"], [30, 9999, "30일 이상"]], "pair": 1}, {"key": "range", "label": "전국의 범위", "type": "text", "ph": "예: 3일 ~ 32일", "pair": 2}, {"key": "rel", "label": "우리 지역은", "type": "grade", "colors": ["#DDE3E7", "#BFD8E6", "#F5C97B", "#EE8B5B"], "options": [["적음", "적은 편이다"], ["중간", "중간쯤이다"], ["많음", "많은 편이다"]], "pair": 2}], "rowLabels": {"1": "우리 지역", "2": "전국과 견주면"}}, {"id": "snow", "name": "대설", "req": false, "src": "기상자료개방포털", "noInterp": true, "path": "기후통계분석 → 기상현상일수 → 눈일수 → 분포도 → 자료구분 '년' → 지점 '전체'", "link": "https://data.kma.go.kr/", "about": "눈이 관측된 날의 수다. <b>지난 한 해</b> 기준이며, 눈이 얼마나 쌓였는지는 알려주지 않는다. 관측 지점이 23곳뿐이라 우리 지역에 없으면 가장 가까운 지점을 쓴다.", "scaleNote": "눈일수는 빈도이며 적설량이 아니다. 지난 한 해 기준이다.", "fields": [{"key": "stn", "label": "확인한 지점", "type": "text", "ph": "예: 청주", "pair": 1}, {"key": "days", "label": "눈일수", "type": "band", "unit": "일", "ph": "예: 32", "bands": [[0, 5, "0~5일"], [5, 10, "5~10일"], [10, 15, "10~15일"], [15, 20, "15~20일"], [20, 30, "20~30일"], [30, 9999, "30일 이상"]], "pair": 1}, {"key": "range", "label": "전국의 범위", "type": "text", "ph": "예: 3일 ~ 62일", "pair": 2}, {"key": "rel", "label": "우리 지역은", "type": "grade", "colors": ["#DDE3E7", "#BFD8E6", "#F5C97B", "#EE8B5B"], "options": [["적음", "적은 편이다"], ["중간", "중간쯤이다"], ["많음", "많은 편이다"]], "pair": 2}], "rowLabels": {"1": "우리 지역", "2": "전국과 견주면"}}, {"id": "coast", "name": "해안 침수", "req": false, "src": "생활안전지도", "path": "재난안전 → 해안침수예상도", "link": "https://www.safemap.go.kr/main/smap.do", "about": "100년에 한 번쯤 올 큰 태풍이 왔을 때 바닷물이 얼마나 높아져 어디까지 잠길지를 예측한 지도다.", "scaleNote": "숫자가 클수록 깊이 잠긴다.", "interp": "예) 큰 태풍이 오면 우리 지역은 1.5m 정도까지 물에 잠길 수 있다.", "interpKey": "grade", "interpBy": {"없음": "예) 우리 지역은 해안에서 멀어 색칠되지 않았다.", "1등급": "예) 큰 태풍이 와도 우리 지역은 0.5m 미만으로 얕게 잠긴다.", "2등급": "예) 큰 태풍이 오면 우리 지역은 1m 가까이 물에 잠길 수 있다.", "3등급": "예) 큰 태풍이 오면 우리 지역은 1.5m 가까이 물에 잠길 수 있다.", "4등급": "예) 큰 태풍이 오면 우리 지역은 2m 가까이 물에 잠길 수 있다.", "5등급": "예) 큰 태풍이 오면 우리 지역은 건물 1층이 잠길 만큼 물이 찰 수 있다.", "6등급": "예) 큰 태풍이 오면 우리 지역은 3m 이상 물에 잠길 수 있다."}, "fields": [{"key": "grade", "label": "해안침수예상도", "type": "grade", "colors": ["#DDE3E7", "#FDE96A", "#C4EE6E", "#8BE8B0", "#5FE0E0", "#7FC9F5", "#A98BE8"], "options": [["없음", "색칠되지 않음"], ["1등급", "0.5m 미만"], ["2등급", "0.5~1.0m 미만"], ["3등급", "1.0~1.5m 미만"], ["4등급", "1.5~2.0m 미만"], ["5등급", "2.0~3.0m 미만 · 1층이 잠긴다"], ["6등급", "3.0m 이상"]]}], "rowLabels": {}}, {"id": "quake", "name": "지진", "req": false, "src": "생활안전지도", "path": "재난안전 → 지진발생이력", "link": "https://www.safemap.go.kr/main/smap.do", "about": "지금까지 지진이 일어난 자리를 규모별로 색을 달리해 찍은 기록이다. 우리 지역에서 <b>가장 가까운 지점</b>을 찾아 눌러 발생일시·발생지점·규모를 확인한다.", "scaleNote": "규모는 지진의 크기다. 가까운 한 건을 예로 기록한 것이다.", "interp": "예) 우리 지역에서 가장 가까운 지진은 규모 2.2로, 사람이 느끼기 어려운 크기였다.", "interpKey": "mag", "interpBy": {"없음": "예) 우리 지역 가까이에 기록된 지진이 없었다.", "3 미만": "예) 가장 가까운 지진은 규모 3 미만으로, 사람이 느끼기 어려운 크기였다.", "4 미만": "예) 가장 가까운 지진은 규모 4 미만으로, 실내에서 흔들림을 느낄 수 있는 크기였다.", "5 미만": "예) 가장 가까운 지진은 규모 5 미만으로, 건물이 흔들릴 수 있는 크기였다.", "6 미만": "예) 가장 가까운 지진은 규모 6 미만으로, 물건이 떨어질 수 있는 크기였다.", "7 미만": "예) 가장 가까운 지진은 규모 7 미만으로, 건물이 손상될 수 있는 크기였다.", "7 이상": "예) 가장 가까운 지진은 규모 7 이상으로, 큰 피해가 날 수 있는 크기였다."}, "fields": [{"key": "when", "label": "발생일시", "type": "text", "ph": "예: 2014년 8월 2일", "pair": 1}, {"key": "where", "label": "발생지점", "type": "text", "ph": "예: 경기 광주시 남서쪽 6km", "pair": 1}, {"key": "val", "label": "규모 (M)", "type": "num", "ph": "예: 2.2", "pair": 2}, {"key": "mag", "label": "규모 구간", "type": "grade", "colors": ["#DDE3E7", "#4FD0E0", "#5FC26A", "#F5DC5A", "#F0A050", "#E8544A", "#3A3A3A"], "options": [["없음", "기록이 없다"], ["3 미만", "사람이 느끼기 어렵다"], ["4 미만", "실내에서 느낀다"], ["5 미만", "건물이 흔들린다"], ["6 미만", "물건이 떨어진다"], ["7 미만", "건물이 손상된다"], ["7 이상", "큰 피해가 난다"]], "pair": 2}], "rowLabels": {"1": "가장 가까운 지진", "2": "그 지진의 규모"}}];
+ var ITEMS = [{"id": "flood", "name": "홍수 · 침수", "req": true, "src": "생활안전지도", "path": "재난 → 도시침수지도 / 하천범람지도", "link": "https://www.safemap.go.kr/main/smap.do", "about": "드물게 내리는 큰비를 가정해 잠길 수 있는 범위와 깊이를 나타낸 지도다. <b>도시침수지도</b>는 빗물펌프장·저류조가 물을 다 처리하지 못한 경우, <b>하천범람지도</b>는 100년에 한 번쯤 올 큰비에 강이 넘치거나 제방이 무너진 경우를 가정한다.", "scaleNote": "숫자가 클수록 깊이 잠긴다.", "interp": "예) 아주 큰비가 내리면 우리 지역은 1.0~2.0m 정도 잠길 수 있다.", "interpKey": "urban", "interpBy": {"없음": "예) 우리 지역은 두 지도 모두 색칠되지 않았다. 지대가 높기 때문일 것이다.", "1등급": "예) 아주 큰비가 내리면 우리 지역은 무릎 아래 정도로 얕게 잠길 수 있다.", "2등급": "예) 아주 큰비가 내리면 우리 지역은 허리 높이까지 잠길 수 있다.", "3등급": "예) 아주 큰비가 내리면 우리 지역은 키를 넘길 만큼 잠길 수 있다.", "4등급": "예) 아주 큰비가 내리면 우리 지역은 건물 1층이 잠길 만큼 물이 찰 수 있다.", "5등급": "예) 아주 큰비가 내리면 우리 지역은 2층까지 잠길 만큼 물이 찰 수 있다."}, "fields": [{"key": "urban", "label": "도시침수지도", "type": "grade", "colors": ["#DDE3E7", "#FDE96A", "#B9E86B", "#5FE0E0", "#C89BE8", "#F14C9A"], "options": [["없음", "색칠되지 않음"], ["1등급", "0.5m 미만 · 무릎 아래"], ["2등급", "0.5~1.0m 미만 · 허리 높이"], ["3등급", "1.0~2.0m 미만 · 키를 넘긴다"], ["4등급", "2.0~5.0m 미만 · 1층이 잠긴다"], ["5등급", "5.0m 이상 · 2층까지"]]}, {"key": "river", "label": "하천범람지도", "type": "grade", "colors": ["#DDE3E7", "#FDE96A", "#B9E86B", "#5FE0E0", "#C89BE8", "#F14C9A"], "options": [["없음", "색칠되지 않음"], ["1등급", "0.5m 미만 · 무릎 아래"], ["2등급", "0.5~1.0m 미만 · 허리 높이"], ["3등급", "1.0~2.0m 미만 · 키를 넘긴다"], ["4등급", "2.0~5.0m 미만 · 1층이 잠긴다"], ["5등급", "5.0m 이상 · 2층까지"]]}], "rowLabels": {}}, {"id": "landslide", "name": "산사태", "req": true, "src": "생활안전지도", "path": "재난 → 산사태위험지도", "link": "https://www.safemap.go.kr/main/smap.do", "about": "산림청이 지형·경사·토양·지질·강우량·숲의 모습을 종합해 산사태가 일어날 가능성을 다섯 등급으로 나눈 지도다. <b>1등급이 가장 위험하다.</b> 등급이 낮다고 안전한 것은 아니며, 비가 그친 뒤에도 산사태는 일어날 수 있다.", "scaleNote": "1등급이 가장 위험하다. 다른 지도와 방향이 반대다.", "interp": "예) 우리 동네 뒷산은 3등급으로 중간 정도다. 그렇다고 안전한 것은 아니다.", "interpBy": {"없음": "예) 우리 동네는 산지가 아니어서 색칠되지 않았다. 다만 가까운 산자락에는 등급이 표시되어 있었다.", "1등급": "예) 우리 동네 뒷산은 1등급으로 가장 위험한 구간이다. 큰비가 오면 특히 조심해야 한다.", "2등급": "예) 우리 동네 뒷산은 2등급으로 위험도가 높은 편이다. 경사가 급하고 흙이 두껍기 때문일 것이다.", "3등급": "예) 우리 동네 뒷산은 3등급으로 중간 정도다. 등급이 중간이라고 안전한 것은 아니다.", "4등급": "예) 우리 동네 뒷산은 4등급으로 위험도가 낮은 편이다. 그래도 큰비가 오면 산사태가 날 수 있다.", "5등급": "예) 우리 동네 뒷산은 5등급으로 위험도가 가장 낮다. 경사가 완만하기 때문일 것이다."}, "fields": [{"key": "grade", "label": "산사태위험지도", "type": "grade", "rev": true, "colors": ["#DDE3E7", "#E8483C", "#F4A62A", "#B7E8A0", "#7FD3F0", "#3A56D6"], "options": [["없음", "색칠되지 않음 · 산지가 아니다"], ["1등급", "가장 위험도가 높은 구간"], ["2등급", "위험도가 높은 구간"], ["3등급", "중간 위험도 구간"], ["4등급", "위험도가 낮은 구간"], ["5등급", "가장 낮은 위험도 구간"]]}], "rowLabels": {}}, {"id": "fire", "name": "산불", "req": true, "src": "생활안전지도", "noInterp": true, "path": "재난 → 산불발생이력", "link": "https://www.safemap.go.kr/main/smap.do", "about": "지금까지 산불이 난 자리를 점으로 찍은 <b>실제 기록</b>이다. 위험 등급이 아니다. 우리 지역이 화면에 들어오도록 지도를 맞춘 뒤 표시된 지점을 세고, 가까운 곳에 기록이 있으면 눌러서 발생 시기·원인·피해 면적을 확인한다.", "scaleNote": "건수는 등급이 아니다. 주변과 견주어 판단한다.", "interp": "예) 우리 지역에 산불 이력이 3건 있었다. 가까운 곳의 산불은 쓰레기를 태우다 난 불이었다.", "interpKey": "rel", "interpBy": {"적음": "예) 우리 지역에는 산불 이력이 거의 없었다. 산림이 적기 때문일 것이다.", "비슷": "예) 우리 지역의 산불 이력은 주변과 비슷했다. 원인은 대부분 사람의 활동이었다.", "많음": "예) 우리 지역에 산불이 자주 났다. 산자락에 마을과 밭이 붙어 있기 때문일 것이다."}, "fields": [{"key": "cnt", "label": "산불 발생 건수", "type": "num", "unit": "건", "ph": "예: 3", "pair": 1}, {"key": "rel", "label": "주변 지역과 견주면", "type": "grade", "colors": ["#DDE3E7", "#BFD8E6", "#F5C97B", "#EE8B5B"], "options": [["적음", "적은 편이다"], ["비슷", "비슷하다"], ["많음", "많은 편이다"]], "pair": 1}, {"key": "when", "label": "발생 시기", "type": "text", "opt": true, "ph": "예: 2016년 6월", "pair": 2}, {"key": "cause", "label": "발생 원인", "type": "text", "opt": true, "ph": "예: 농산폐기물 소각", "pair": 2}, {"key": "area", "label": "피해 면적", "type": "num", "unit": "ha", "opt": true, "ph": "예: 0.5", "pair": 2}], "rowLabels": {"1": "우리 지역", "2": "가까운 산불 기록 — 있는 경우에만"}}, {"id": "heat", "name": "폭염", "req": true, "src": "기상자료개방포털", "noInterp": true, "path": "기후통계분석 → 기상현상일수 → 폭염일수 → 분포도 → 자료구분 '년' → 지점 '전체'", "link": "https://data.kma.go.kr/", "about": "일최고기온이 33℃ 이상이었던 날의 수다. <b>지난 한 해</b>를 기준으로 조회한다. 지점 '전체'로 보면 전국 값이 한 지도에 나온다.", "scaleNote": "기상청 분포도의 색 구간을 그대로 쓴다. 지난 한 해 기준이다.", "fields": [{"key": "stn", "label": "확인한 지점", "type": "text", "ph": "예: 청주", "pair": 1}, {"key": "days", "label": "폭염일수", "type": "band", "unit": "일", "ph": "예: 17", "bands": [[0, 5, "0~5일"], [5, 10, "5~10일"], [10, 15, "10~15일"], [15, 20, "15~20일"], [20, 30, "20~30일"], [30, 9999, "30일 이상"]], "pair": 1}, {"key": "range", "label": "전국의 범위", "type": "text", "ph": "예: 3일 ~ 32일", "pair": 2}, {"key": "rel", "label": "우리 지역은", "type": "grade", "colors": ["#DDE3E7", "#BFD8E6", "#F5C97B", "#EE8B5B"], "options": [["적음", "적은 편이다"], ["중간", "중간쯤이다"], ["많음", "많은 편이다"]], "pair": 2}], "rowLabels": {"1": "우리 지역", "2": "전국과 견주면"}}, {"id": "snow", "name": "대설", "req": false, "src": "기상자료개방포털", "noInterp": true, "path": "기후통계분석 → 기상현상일수 → 눈일수 → 분포도 → 자료구분 '년' → 지점 '전체'", "link": "https://data.kma.go.kr/", "about": "눈이 관측된 날의 수다. <b>지난 한 해</b> 기준이며, 눈이 얼마나 쌓였는지는 알려주지 않는다. 관측 지점이 23곳뿐이라 우리 지역에 없으면 가장 가까운 지점을 쓴다.", "scaleNote": "눈일수는 빈도이며 적설량이 아니다. 지난 한 해 기준이다.", "fields": [{"key": "stn", "label": "확인한 지점", "type": "text", "ph": "예: 청주", "pair": 1}, {"key": "days", "label": "눈일수", "type": "band", "unit": "일", "ph": "예: 32", "bands": [[0, 5, "0~5일"], [5, 10, "5~10일"], [10, 15, "10~15일"], [15, 20, "15~20일"], [20, 30, "20~30일"], [30, 9999, "30일 이상"]], "pair": 1}, {"key": "range", "label": "전국의 범위", "type": "text", "ph": "예: 3일 ~ 62일", "pair": 2}, {"key": "rel", "label": "우리 지역은", "type": "grade", "colors": ["#DDE3E7", "#BFD8E6", "#F5C97B", "#EE8B5B"], "options": [["적음", "적은 편이다"], ["중간", "중간쯤이다"], ["많음", "많은 편이다"]], "pair": 2}], "rowLabels": {"1": "우리 지역", "2": "전국과 견주면"}}, {"id": "coast", "name": "해안 침수", "req": false, "src": "생활안전지도", "path": "재난 → 해안침수예상도", "link": "https://www.safemap.go.kr/main/smap.do", "about": "100년에 한 번쯤 올 큰 태풍이 왔을 때 바닷물이 얼마나 높아져 어디까지 잠길지를 예측한 지도다.", "scaleNote": "숫자가 클수록 깊이 잠긴다.", "interp": "예) 큰 태풍이 오면 우리 지역은 1.5m 정도까지 물에 잠길 수 있다.", "interpKey": "grade", "interpBy": {"없음": "예) 우리 지역은 해안에서 멀어 색칠되지 않았다.", "1등급": "예) 큰 태풍이 와도 우리 지역은 0.5m 미만으로 얕게 잠긴다.", "2등급": "예) 큰 태풍이 오면 우리 지역은 1m 가까이 물에 잠길 수 있다.", "3등급": "예) 큰 태풍이 오면 우리 지역은 1.5m 가까이 물에 잠길 수 있다.", "4등급": "예) 큰 태풍이 오면 우리 지역은 2m 가까이 물에 잠길 수 있다.", "5등급": "예) 큰 태풍이 오면 우리 지역은 건물 1층이 잠길 만큼 물이 찰 수 있다.", "6등급": "예) 큰 태풍이 오면 우리 지역은 3m 이상 물에 잠길 수 있다."}, "fields": [{"key": "grade", "label": "해안침수예상도", "type": "grade", "colors": ["#DDE3E7", "#FDE96A", "#C4EE6E", "#8BE8B0", "#5FE0E0", "#7FC9F5", "#A98BE8"], "options": [["없음", "색칠되지 않음"], ["1등급", "0.5m 미만"], ["2등급", "0.5~1.0m 미만"], ["3등급", "1.0~1.5m 미만"], ["4등급", "1.5~2.0m 미만"], ["5등급", "2.0~3.0m 미만 · 1층이 잠긴다"], ["6등급", "3.0m 이상"]]}], "rowLabels": {}}, {"id": "quake", "name": "지진", "req": false, "src": "생활안전지도", "path": "재난 → 지진발생이력", "link": "https://www.safemap.go.kr/main/smap.do", "about": "지금까지 지진이 일어난 자리를 규모별로 색을 달리해 찍은 기록이다. 우리 지역에서 <b>가장 가까운 지점</b>을 찾아 눌러 발생일시·발생지점·규모를 확인한다.", "scaleNote": "규모는 지진의 크기다. 가까운 한 건을 예로 기록한 것이다.", "interp": "예) 우리 지역에서 가장 가까운 지진은 규모 2.2로, 사람이 느끼기 어려운 크기였다.", "interpKey": "mag", "interpBy": {"없음": "예) 우리 지역 가까이에 기록된 지진이 없었다.", "3 미만": "예) 가장 가까운 지진은 규모 3 미만으로, 사람이 느끼기 어려운 크기였다.", "4 미만": "예) 가장 가까운 지진은 규모 4 미만으로, 실내에서 흔들림을 느낄 수 있는 크기였다.", "5 미만": "예) 가장 가까운 지진은 규모 5 미만으로, 건물이 흔들릴 수 있는 크기였다.", "6 미만": "예) 가장 가까운 지진은 규모 6 미만으로, 물건이 떨어질 수 있는 크기였다.", "7 미만": "예) 가장 가까운 지진은 규모 7 미만으로, 건물이 손상될 수 있는 크기였다.", "7 이상": "예) 가장 가까운 지진은 규모 7 이상으로, 큰 피해가 날 수 있는 크기였다."}, "fields": [{"key": "when", "label": "발생일시", "type": "text", "ph": "예: 2014년 8월 2일", "pair": 1}, {"key": "where", "label": "발생지점", "type": "text", "ph": "예: 경기 광주시 남서쪽 6km", "pair": 1}, {"key": "val", "label": "규모 (M)", "type": "num", "ph": "예: 2.2", "pair": 2}, {"key": "mag", "label": "규모 구간", "type": "grade", "colors": ["#DDE3E7", "#4FD0E0", "#5FC26A", "#F5DC5A", "#F0A050", "#E8544A", "#3A3A3A"], "options": [["없음", "기록이 없다"], ["3 미만", "사람이 느끼기 어렵다"], ["4 미만", "실내에서 느낀다"], ["5 미만", "건물이 흔들린다"], ["6 미만", "물건이 떨어진다"], ["7 미만", "건물이 손상된다"], ["7 이상", "큰 피해가 난다"]], "pair": 2}], "rowLabels": {"1": "가장 가까운 지진", "2": "그 지진의 규모"}}];
  var BANDC = ["#DDE3E7", "#CFEBFA", "#8FD8F5", "#2FA8E8", "#2A6FD6", "#1C3FA8", "#141414"];
  var state={}, on={};
  ITEMS.forEach(function(it){ state[it.id]={}; on[it.id]=it.req; });
@@ -284,7 +373,7 @@
  }
 
  function bind(){
-  [].forEach.call(document.querySelectorAll('.grades'),function(g){
+  [].forEach.call(document.querySelectorAll('.grades[data-item]'),function(g){
    g.addEventListener('click',function(e){
     var b=e.target.closest('button'); if(!b) return;
     var id=g.dataset.item,k=g.dataset.key;
@@ -409,10 +498,6 @@
    box.className="item"+(f?" done":"");
    if(ck) ck.textContent=f?"✓":"";
   });
-  var r=$("mRegion").value, nm=$("mName").value;
-  $("repTitle").textContent = r? (r+" 자연재해 위험 조사") : "조사 결과";
-  $("repSub").textContent = (nm? nm+"  ·  " : "")
-    +"항목마다 그 자료의 눈금 위에 표시된다. 눈금이 서로 다르므로 항목끼리 견주지 않는다.";
   $("repBody").innerHTML=report(act);
  }
 
@@ -431,20 +516,80 @@
   b.setAttribute('aria-pressed',on[id]?'true':'false');
   render();
  });
- $("mRegion").addEventListener('input',refresh);
- $("mName").addEventListener('input',refresh);
- $("bPrint").addEventListener('click',function(){ show("B"); setTimeout(function(){window.print();},60); });
+ $("mRegion").addEventListener('input',function(){refresh();});
+ $("mName").addEventListener('input',function(){refresh();});
+ $("bPrint").addEventListener('click',function(){ show("R"); setTimeout(function(){window.print();},60); });
 
+ var VIEWS=["1","2","3","4","R"];
  function show(v){
-  $("viewA").style.display = v==="A"?"":"none";
-  $("viewB").style.display = v==="B"?"":"none";
-  $("tabA").setAttribute("aria-pressed", v==="A"?"true":"false");
-  $("tabB").setAttribute("aria-pressed", v==="B"?"true":"false");
+  VIEWS.forEach(function(k){ $("view"+k).style.display = k===v?"":"none"; });
+  [].forEach.call(document.querySelectorAll('.tabs button'),function(b){ b.setAttribute("aria-pressed", b.dataset.v===v?"true":"false"); });
+  if(v==="R") refresh();
   window.scrollTo({top:0,behavior:"instant"});
  }
- $("tabA").addEventListener('click',function(){ show("A"); });
- $("tabB").addEventListener('click',function(){ show("B"); });
+ [].forEach.call(document.querySelectorAll('.tabs button'),function(b){ b.addEventListener('click',function(){ show(b.dataset.v); }); });
 
+ /* ── 2 노출·취약성 ── */
+ var HAZ=["홍수","산사태","태풍","폭염"];
+ var ROWS=[["pop","인구","재해에 노출되는 인구","명"],["old1","65세 이상 1인 가구","대피나 도움을 받는 데 어려움이 있을 수 있음","가구"],
+  ["oldb","노후 건물","시설이 오래되어 재해에 취약할 수 있음","동"],["under","지하 건물","침수 피해가 발생하기 쉬움","동"],
+  ["care","어린이집·노인복지시설","대피에 도움이 필요한 사람이 이용하는 시설","개"]];
+ var EXD={pop:[32687,7426],old1:[901,64],oldb:[163,14],under:[407,59],care:[55,7]};
+ var X={haz:"",t:{},w:{},see:"",s3where:"",s3dist:"",s3why:"",s4p:"",s4e:"",s4s:"",shot:{}};
+ function fmt(n){ return Number(n).toLocaleString("ko-KR"); }
+ function pct(a,b){ a=parseFloat(a); b=parseFloat(b); if(!(a>0)||isNaN(b)) return ""; return (b/a*100).toFixed(1)+"%"; }
+ $("s2haz").innerHTML=HAZ.map(function(h){return '<button type="button" data-h="'+h+'" aria-pressed="false">'+h+'</button>';}).join("");
+ $("s2haz").addEventListener('click',function(e){ var b=e.target.closest('button'); if(!b) return; X.haz=b.dataset.h;
+  [].forEach.call(this.querySelectorAll('button'),function(x){x.setAttribute('aria-pressed',x===b?'true':'false');}); refresh(); });
+ $("s2rows").innerHTML=ROWS.map(function(r){ return '<tr><td><span class="nm">'+r[1]+'</span><span class="ds">'+r[2]+'</span></td>'
+   +'<td><input type="number" min="0" data-r="'+r[0]+'" data-c="t" placeholder="'+r[3]+'"></td>'
+   +'<td><input type="number" min="0" data-r="'+r[0]+'" data-c="w" placeholder="'+r[3]+'"></td>'
+   +'<td class="pc" id="pc_'+r[0]+'"></td></tr>'; }).join("");
+ $("s2ex").innerHTML=ROWS.map(function(r){ var d=EXD[r[0]]; return '<tr><td><span class="nm">'+r[1]+'</span></td><td>'+fmt(d[0])+r[3]+'</td><td>'+fmt(d[1])+r[3]+'</td><td class="pc">'+pct(d[0],d[1])+'</td></tr>'; }).join("");
+ [].forEach.call(document.querySelectorAll('#s2rows input'),function(el){ el.addEventListener('input',function(){
+  X[el.dataset.c][el.dataset.r]=el.value; $("pc_"+el.dataset.r).textContent=pct(X.t[el.dataset.r],X.w[el.dataset.r]); refresh(); }); });
+ [["s2see","see"],["s3where","s3where"],["s3dist","s3dist"],["s3why","s3why"],["s4p","s4p"],["s4e","s4e"],["s4s","s4s"]].forEach(function(a){
+  $(a[0]).addEventListener('input',function(){ X[a[1]]=this.value; refresh(); }); });
+ [].forEach.call(document.querySelectorAll('input[data-xshot]'),function(el){ el.addEventListener('change',function(){
+  var id=el.dataset.xshot,f=el.files&&el.files[0]; if(!f) return; var r=new FileReader();
+  r.onload=function(){ X.shot[id]={v:r.result,m:f.name}; $('sp_'+id).innerHTML='<img src="'+r.result+'" alt="">'; refresh(); }; r.readAsDataURL(f); }); });
+ [].forEach.call(document.querySelectorAll('button[data-xdel]'),function(b){ b.addEventListener('click',function(){
+  var id=b.dataset.xdel; delete X.shot[id]; $('sp_'+id).innerHTML=""; $('sh_'+id).value=""; refresh(); }); });
+
+ function rowOk(k){ return X.t[k]!==undefined&&X.t[k]!==""&&X.w[k]!==undefined&&X.w[k]!==""; }
+ function done2(){ return !!X.haz && rowOk("pop") && ROWS.slice(1).some(function(r){return rowOk(r[0]);}) && X.see.trim()!==""; }
+ function done3(){ return X.s3where.trim()!=="" && X.s3why.trim()!==""; }
+ function done4(){ return X.s4p.trim()!=="" && X.s4e.trim()!=="" && X.s4s.trim()!==""; }
+ function txt(v){ return v&&v.trim()? '<div class="rsee">'+esc(v)+'</div>' : '<div class="rsee blank"></div>'; }
+ function shotR(id,cap){ var sh=X.shot[id]; return sh? '<div class="rshot"><div class="box"><img src="'+sh.v+'" alt=""></div><div class="cap">'+cap+' — '+esc(sh.m||"")+'</div></div>' : ''; }
+ function rep2(){
+  var h='<p class="rtx"><b>조사한 재해</b>'+(X.haz? esc(X.haz) : '—')+'</p>';
+  h+='<table class="xt"><thead><tr><th>항목</th><th>행정구역 전체</th><th>영향구역 안</th><th>비율</th></tr></thead><tbody>';
+  ROWS.forEach(function(r){ if(!rowOk(r[0])&&r[0]!=="pop") return;
+   h+='<tr><td><span class="nm">'+r[1]+'</span></td><td>'+(rowOk(r[0])?fmt(X.t[r[0]])+r[3]:'')+'</td><td>'+(rowOk(r[0])?fmt(X.w[r[0]])+r[3]:'')+'</td><td class="pc">'+(rowOk(r[0])?pct(X.t[r[0]],X.w[r[0]]):'')+'</td></tr>'; });
+  return h+'</tbody></table>'+txt(X.see)+shotR("s2","확인한 화면");
+ }
+ function rep3(){
+  return '<p class="rtx"><b>대응이 부족해 보이는 곳</b>'+(X.s3where? esc(X.s3where):'—')+(X.s3dist? ' · 가장 가까운 쉼터까지 '+esc(X.s3dist)+'m':'')+'</p>'+txt(X.s3why)+shotR("s3","확인한 화면");
+ }
+ function rep4(){
+  return [["문제",X.s4p],["근거",X.s4e],["제안",X.s4s]].map(function(a){ return '<p class="rtx" style="margin-top:8px"><b>'+a[0]+'</b></p>'+txt(a[1]); }).join("");
+ }
+ var baseRefresh=refresh;
+ refresh=function(){
+  baseRefresh();
+  var act=ITEMS.filter(function(it){return on[it.id];});
+  var d1=act.length&&act.every(filled), d=[d1,done2(),done3(),done4()];
+  var n=d.filter(Boolean).length;
+  $("fill").style.width=(n/4*100)+"%"; $("pn").textContent=n+" / 4 단계";
+  [].forEach.call(document.querySelectorAll('.tabs button'),function(b,i){ var t=b.textContent.replace(/ ✓$/,""); b.textContent = (i<4&&d[i])? t+" ✓" : t; });
+  $("ck_s2").textContent=d[1]?"✓":""; $("ck_s3").textContent=d[2]?"✓":""; $("ck_s4").textContent=d[3]?"✓":"";
+  $("s4fb").style.display=d[3]?"":"none";
+  var r=$("mRegion").value, nm=$("mName").value;
+  $("repTitle").textContent = r? (r+" 자연재해 조사") : "우리 지역 자연재해 조사";
+  $("repSub").textContent = nm||"";
+  $("rep2").innerHTML=rep2(); $("rep3").innerHTML=rep3(); $("rep4").innerHTML=rep4();
+ };
  render();
 })();
 </script></body></html>
