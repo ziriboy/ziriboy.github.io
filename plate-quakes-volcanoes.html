@@ -69,6 +69,8 @@ html.emb .lab,html.emb .plate{font-family:inherit}
 html.emb h1{font-size:13px;font-weight:700}
 html.emb .wrap{gap:10px}
 html.emb .mapbox{border-radius:4px}
+html.emb .nofile{display:none}
+html.emb .src{margin:0}
 </style>
 <script>if(window.self!==window.top){document.documentElement.classList.add('emb');
 const _ph=()=>{try{var w=document.querySelector('.wrap');if(w)parent.postMessage({plateH:Math.ceil(w.getBoundingClientRect().height)+6},'*')}catch(e){}};
@@ -107,7 +109,7 @@ new MutationObserver(()=>_ph()).observe(document.documentElement,{subtree:true,c
     </div>
   </div>
 
-  <p class="src">자료: 지진 미국지질조사국(USGS) · 화산 스미소니언 세계화산프로그램(GVP) 주간 보고(2025년 11월~2026년 10월) · 판의 경계 Bird(2003)를 주요 판 중심으로 단순화 · 육지 Natural Earth<br>실시간 지진이 나오지 않으면 파일로 받아서 브라우저로 열어 보세요.</p>
+  <p class="src">자료: 지진 미국지질조사국(USGS) · 화산 스미소니언 세계화산프로그램(GVP) 주간 보고(2025년 11월~2026년 10월) · 판의 경계 Bird(2003)를 주요 판 중심으로 단순화 · 육지 Natural Earth<span class="nofile"><br>실시간 지진이 나오지 않으면 파일로 받아서 브라우저로 열어 보세요.</span></p>
 </div>
 
 <script>
