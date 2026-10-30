@@ -57,7 +57,9 @@ label.tg{display:inline-flex;align-items:center;gap:6px;font-size:.92rem;cursor:
 .note{font-size:.84rem;color:var(--muted);margin:6px 0 0}
 html.emb{font-size:14px}
 html.emb body{font-size:13px;padding:0;background:transparent;font-family:AppleSDGothicNeo,"Apple SD Gothic Neo","Noto Sans KR",sans-serif}
-html.emb .seg button,html.emb label.tg{font-size:13px}
+html.emb .seg button{font-size:12px;padding:4px 10px}
+html.emb label.tg{font-size:12px;gap:4px}
+html.emb .bar{gap:6px 18px}
 html.emb .grp>span,html.emb .status,html.emb .src,html.emb .note{font-size:12px}
 html.emb .card h2{font-size:12px}
 html.emb .big{font-size:14px}
@@ -68,7 +70,10 @@ html.emb h1{font-size:13px;font-weight:700}
 html.emb .wrap{gap:10px}
 html.emb .mapbox{border-radius:4px}
 </style>
-<script>if(window.self!==window.top)document.documentElement.classList.add('emb');</script>
+<script>if(window.self!==window.top){document.documentElement.classList.add('emb');
+const _ph=()=>{try{var w=document.querySelector('.wrap');if(w)parent.postMessage({plateH:Math.ceil(w.getBoundingClientRect().height)+6},'*')}catch(e){}};
+addEventListener('load',_ph);addEventListener('resize',_ph);setTimeout(_ph,1500);
+new MutationObserver(()=>_ph()).observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:['hidden']});}</script>
 
 <div class="wrap">
   <header>
