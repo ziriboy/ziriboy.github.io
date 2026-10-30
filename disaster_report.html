@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>우리 동네 재해 보고서</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+:root{--ink:#12222C;--soft:#4E626D;--faint:#94A2A9;--paper:#EDF0F2;--card:#fff;--line:#D7DFE4;--a:#2E86C8;--a2:#EAF3FA;--ok:#1F8A5B;
+ --lo:#9CC9A8;--mid:#F2C86B;--hi:#E8775A;
+ --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+ --sans:"Pretendard Variable",Pretendard,-apple-system,"Malgun Gothic",system-ui,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--sans);background:var(--paper);color:var(--ink);font-size:13px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1000px;margin:0 auto;padding:22px 16px 50px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--soft);margin:0 0 4px}
+h1{font-size:22px;font-weight:800;letter-spacing:-.03em;margin:0 0 10px}
+/* 미션 */
+.mis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.mis div{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.mis .k{font-size:11px;font-weight:700;color:var(--a);display:block;margin-bottom:2px}
+.mis p{margin:0;color:var(--ink)}
+.mis ol{margin:0;padding-left:16px} .mis li{margin:0}
+@media(max-width:720px){.mis{grid-template-columns:1fr}}
+/* 본문 2단 */
+.main{display:grid;grid-template-columns:1.05fr 1fr;gap:14px;align-items:start}
+@media(max-width:860px){.main{grid-template-columns:1fr}}
+.rep{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+.rhead{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.rhead h2{font-size:16px;font-weight:800;margin:0;letter-spacing:-.02em}
+.rhead input{font-family:var(--sans);font-size:15px;font-weight:800;border:0;border-bottom:1.5px dashed #B9C6CE;width:190px;padding:1px 2px;color:var(--ink);background:transparent}
+.rhead input:focus{outline:0;border-bottom-color:var(--a)}
+.cnt{margin-left:auto;font-family:var(--mono);font-size:11.5px;color:var(--soft);white-space:nowrap}
+.trk{height:5px;background:#E3E9ED;border-radius:9px;overflow:hidden;margin-bottom:14px}
+.trk i{display:block;height:100%;width:0;background:var(--a);transition:width .3s}
+.sec{font-size:11px;font-weight:700;color:var(--faint);margin:12px 0 5px;letter-spacing:.02em}
+.sec:first-of-type{margin-top:0}
+.prof{display:flex;flex-wrap:wrap;gap:5px;cursor:pointer;border-radius:8px;padding:2px}
+.prof.cur{outline:2px solid var(--a);outline-offset:2px}
+.chip{font-size:12px;padding:3px 9px;border-radius:99px;border:1px dashed #C3CED5;color:var(--faint)}
+.chip.lo{background:#E6F2E9;border:1px solid var(--lo);color:#2F6B43}
+.chip.mid{background:#FBF1D9;border:1px solid var(--mid);color:#7A5A12}
+.chip.hi{background:#FBE4DC;border:1px solid var(--hi);color:#8E3A22}
+.para{font-size:13.5px;line-height:2.05;margin:0}
+.bk{cursor:pointer;border-radius:5px;padding:1px 6px;margin:0 1px;white-space:nowrap}
+.bk.e{border:1px dashed #B9C6CE;color:var(--faint);font-size:12px}
+.bk.f{background:var(--a2);color:#1C5E8E;font-weight:600;white-space:normal}
+.bk.cur{outline:2px solid var(--a);outline-offset:1px}
+.wr{display:block;margin:2px 0 0;white-space:normal}
+.wr.e{padding:6px 8px}
+.btns{display:flex;gap:8px;margin-top:14px}
+.btn{font-family:var(--sans);font-size:12.5px;font-weight:700;border:0;background:var(--a);color:#fff;padding:7px 14px;border-radius:99px;cursor:pointer}
+.btn.gh{background:#fff;color:var(--ink);border:1px solid var(--line);font-weight:600}
+.note{font-size:11.5px;color:var(--faint);margin:8px 0 0}
+/* 할 일 */
+.task{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;position:sticky;top:12px}
+.stg{font-size:11px;font-weight:700;color:var(--a);margin:0 0 2px}
+.task h3{font-size:15px;font-weight:800;margin:0 0 6px;letter-spacing:-.02em}
+.src{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--soft);background:#F4F7F9;border-radius:8px;padding:6px 9px;margin-bottom:10px}
+.src b{color:var(--ink)} .src span{flex:1}
+.go{font-size:12px;font-weight:700;text-decoration:none;background:var(--a);color:#fff;padding:4px 11px;border-radius:99px;white-space:nowrap}
+.how{font-size:12.5px;color:var(--soft);margin:0 0 8px}
+.opts{display:flex;flex-wrap:wrap;gap:5px}
+.opts button,.lv button{font-family:var(--sans);font-size:12.5px;font-weight:600;border:1px solid var(--line);background:#fff;color:var(--soft);padding:5px 11px;border-radius:8px;cursor:pointer}
+.opts button[aria-pressed=true],.lv button[aria-pressed=true]{background:var(--a);border-color:var(--a);color:#fff}
+.mean{margin-top:10px;font-size:12.5px;background:var(--a2);border-radius:8px;padding:8px 10px;display:flex;gap:10px;align-items:center}
+.mean:empty{display:none}
+.mean svg{flex:none}
+/* 프로필 행 */
+.pr{display:grid;grid-template-columns:62px 1fr;gap:4px 10px;align-items:center;padding:7px 0;border-top:1px solid #EEF2F4}
+.pr:first-of-type{border-top:0}
+.pr .n{font-weight:700}
+.pr .s{font-size:11.5px;color:var(--faint)} .pr .s a{color:var(--a);text-decoration:none;font-weight:600}
+.lv{display:flex;gap:4px;flex-wrap:wrap}
+.lv button{padding:3px 10px;font-size:12px}
+.pr .m{grid-column:2;font-size:11.5px;color:#1C5E8E;min-height:0}
+.pr .m:empty{display:none}
+.nums{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+.nums label{font-size:12px;color:var(--soft)}
+.nums input{display:block;margin-top:3px;width:120px;padding:6px 8px;border:1px solid var(--line);border-radius:7px;font-family:var(--mono);font-size:13px}
+.txin{width:100%;padding:6px 8px;border:1px solid var(--line);border-radius:7px;font-family:var(--sans);font-size:13px}
+textarea{width:100%;min-height:70px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-family:var(--sans);font-size:13px;resize:vertical}
+input:focus,textarea:focus{outline:2px solid var(--a);outline-offset:-1px}
+.nav{display:flex;justify-content:space-between;margin-top:12px}
+.nav button{font-family:var(--sans);font-size:12.5px;font-weight:700;border:1px solid var(--line);background:#fff;color:var(--soft);padding:6px 12px;border-radius:99px;cursor:pointer}
+.nav button.nx{background:var(--ink);border-color:var(--ink);color:#fff}
+.nav button:disabled{opacity:.35;cursor:default}
+.ex{margin-top:12px;border-top:1px solid #EEF2F4;padding-top:10px}
+.ex .h{font-size:12.5px;font-weight:800;margin-bottom:6px}
+.ex p{margin:0 0 7px;font-size:12.5px} .ex p b{color:var(--a)}
+.ex ul{margin:4px 0 0;padding-left:17px;font-size:12px;color:var(--soft)}
+.tag{font-family:var(--mono);font-size:10px;padding:1px 7px;border-radius:99px;background:#EAF1F6;color:#2C6E96;margin-right:4px}
+@media print{.mis,.task,.btns,.note,.eyebrow,h1,.trk,.cnt{display:none!important} body{background:#fff} .wrap{padding:0} .main{display:block} .rep{border:0;padding:0}
+ .rhead input{border:0} .bk.e{color:#bbb} .bk.cur,.prof.cur{outline:0}}
+</style></head><body>
+<div class="wrap">
+<p class="eyebrow">한국지리 탐구 · 4.12</p>
+<h1>우리 동네 재해 보고서</h1>
+
+<div class="mis">
+ <div><span class="k">배경</span><p>홍수·산사태·폭염 같은 자연재해의 위험은 지역마다 다르다. 국가가 만든 공간정보 지도로 우리 동네의 위험을 직접 확인할 수 있다.</p></div>
+ <div><span class="k">미션</span><p>우리 동네의 자연재해 가운데 일부를 조사하여, 보고서의 빈칸을 모두 채우고 우리 동네에 필요한 재해 대응 한 가지를 제안한다.</p></div>
+ <div><span class="k">하는 방법</span><ol><li>여섯 가지 재해를 넓게 훑어본다</li><li>그 가운데 하나를 깊이 조사한다</li><li>부족한 점을 찾아 대응을 제안한다</li></ol></div>
+</div>
+
+<div class="main">
+ <div class="rep" id="rep">
+  <div class="rhead"><input id="region" placeholder="우리 동네 이름" aria-label="우리 동네 이름"><h2>재해 보고서</h2><span class="cnt" id="cnt">0 / 9 칸</span></div>
+  <div class="trk"><i id="bar"></i></div>
+  <div class="sec">1 · 우리 동네 재해 프로필</div>
+  <div class="prof" id="prof" data-b="P"></div>
+  <div class="sec">2 · 깊이 조사한 재해</div>
+  <p class="para" id="para"></p>
+  <div class="sec">3 · 부족한 점과 제안</div>
+  <div id="para2"></div>
+  <div class="btns"><button class="btn" id="print">인쇄 · PDF로 저장</button></div>
+  <p class="note">입력한 내용은 저장되지 않는다. 창을 닫기 전에 인쇄하거나 PDF로 저장한다.</p>
+ </div>
+ <div class="task" id="task"></div>
+</div>
+</div>
+
+<script>
+(function(){
+var SM='https://www.safemap.go.kr/main/smap.do', ND='https://ndsm.mods.go.kr/ndsm/srv/';
+var PROF=[
+ {id:'flood',n:'홍수',s:'생활안전지도',p:'재난 → 도시침수지도·하천범람지도',l:SM,lv:{'낮음':'우리 동네가 색칠되지 않았다','보통':'일부가 얕게(0.5m 미만) 색칠되었다','높음':'넓게 색칠되었거나 0.5m보다 깊다'}},
+ {id:'slide',n:'산사태',s:'생활안전지도',p:'재난 → 산사태위험지도',l:SM,lv:{'낮음':'가까운 산지가 없거나 4·5등급이다','보통':'가까운 산자락이 3등급이다','높음':'가까운 산자락에 1·2등급이 있다'}},
+ {id:'heat',n:'폭염',s:'자연재해통계지도',p:'폭염 → 6~8월 평균기온지도',l:ND,lv:{'낮음':'여름 평균기온이 전국에서 낮은 편이다','보통':'여름 평균기온이 전국에서 중간쯤이다','높음':'여름 평균기온이 전국에서 높은 편이다'}},
+ {id:'fire',n:'산불',s:'생활안전지도',p:'재난 → 산불발생이력',l:SM,lv:{'낮음':'산불 기록이 거의 없다','보통':'산불 기록이 주변 지역과 비슷하다','높음':'산불 기록이 주변 지역보다 많다'}},
+ {id:'quake',n:'지진',s:'생활안전지도',p:'재난 → 지진발생이력',l:SM,lv:{'낮음':'가까운 곳에 지진 기록이 거의 없다','보통':'가까운 지진이 모두 규모 3 미만이다 — 사람이 느끼기 어려운 크기','높음':'가까운 곳에 규모 3 이상이 있다 — 실내에서 흔들림을 느끼는 크기'}},
+ {id:'coast',n:'해안 침수',s:'생활안전지도',p:'재난 → 해안침수예상도',l:SM,lv:{'낮음':'해안에서 멀거나 색칠되지 않았다','보통':'일부가 얕게(1m 미만) 색칠되었다','높음':'넓게 색칠되었거나 1m보다 깊다'}}
+];
+var LV=['낮음','보통','높음'], LC={'낮음':'lo','보통':'mid','높음':'hi'};
+var DEEP={
+ flood:{risk:{q:'큰비가 오면 우리 동네는 얼마나 잠기는가?',s:'자연재해통계지도',p:'홍수 → 지역 선택 → 검색 → 홍수위험지도',l:ND,
+   o:[['0.5m 미만','무릎 아래',.4,'걸을 수는 있지만 물살에 넘어질 수 있다'],['0.5~1m','허리 높이',.8,'문을 열기 어렵고 걸어서 대피하기 힘들다'],['1~2m','키를 넘는다',1.6,'반지하와 1층 방 안이 물에 찬다'],['2~5m','1층이 잠긴다',3,'1층이 잠겨 2층 이상으로 피해야 한다'],['5m 이상','2층까지 잠긴다',5.5,'건물 밖으로 미리 대피해야 한다']],
+   sen:function(o){return '큰비가 오면 우리 동네는 '+o[1]+'('+o[0]+')까지 잠길 수 있다. '+o[3]+'.';}},
+  rec:{q:'우리 동네는 실제로 물에 잠긴 적이 있는가?',s:'생활안전지도',p:'재난 → 침수흔적도',l:SM,y:'실제로 물에 잠긴 기록이 있다',n:'물에 잠긴 기록은 찾지 못했다'},
+  fac:{nm:'대피시설',s:'생활안전지도',p:'시설 → 대피시설 → 이재민임시주거시설',l:SM}},
+ slide:{risk:{q:'가까운 산자락의 산사태 위험은 어느 정도인가?',s:'자연재해통계지도',p:'산사태 → 지역 선택 → 검색 → 산사태위험지도',l:ND,
+   o:[['1등급','가장 위험',0,'큰비가 오면 가장 먼저 대비해야 하는 곳이다'],['2등급','위험이 높음',0,'경사가 급하거나 흙이 두꺼워 위험이 높은 곳이다'],['3등급','중간',0,'중간이지만 안전하다는 뜻은 아니다'],['4·5등급','위험이 낮음',0,'위험이 낮은 편이지만 큰비에는 일어날 수 있다']],
+   sen:function(o){return '동네 가까운 산자락은 산사태위험 '+o[0]+'('+o[1]+')이다. '+o[3]+'.';}},
+  rec:{q:'우리 동네 가까이에서 실제로 산사태가 일어난 적이 있는가?',s:'생활안전지도',p:'재난 → 산사태발생이력',l:SM,y:'가까운 곳에서 산사태가 일어난 기록이 있다',n:'가까운 곳에서 산사태 기록은 찾지 못했다'},
+  fac:{nm:'대피시설',s:'생활안전지도',p:'시설 → 대피시설 → 이재민임시주거시설',l:SM}},
+ heat:{risk:{q:'지난여름 우리 지역의 폭염 영향예보는 어디까지 올라갔는가?',s:'자연재해통계지도',p:'폭염 → 과거영향예보 → 보건-취약인',l:ND,
+   o:[['관심','1단계',0,'더위가 건강에 영향을 줄 수 있어 지켜보아야 하는 단계'],['주의','2단계',0,'노인·어린이 같은 취약한 사람에게 건강 피해가 생길 수 있는 단계'],['경고','3단계',0,'건강 피해가 생길 가능성이 커 한낮 야외 활동을 피해야 하는 단계'],['위험','4단계',0,'건강 피해가 크게 생길 수 있어 적극적으로 대비해야 하는 단계']],
+   sen:function(o){return '지난여름 우리 지역의 폭염 영향예보(보건-취약인)는 '+o[0]+' 단계까지 올라갔다. '+o[3]+'이다.';}},
+  rec:{q:'지난여름 우리 지역에 폭염 특보가 내려진 적이 있는가?',s:'자연재해통계지도',p:'폭염 → 과거특보',l:ND,y:'폭염 특보가 실제로 내려졌다',n:'폭염 특보는 찾지 못했다'},
+  fac:{nm:'무더위쉼터',s:'생활안전지도',p:'시설 → 재난안전 → 무더위쉼터',l:SM}}
+};
+var VUL=[['old1','65세 이상 1인 가구','가구','혼자 사는 노인은 대피하거나 도움을 받기 어렵다'],['oldb','노후 건물','동','오래된 건물은 재해에 쉽게 손상된다'],['under','지하 건물','동','지하 공간은 물이 차기 쉽고 빠져나오기 어렵다'],['care','어린이집·노인복지시설','개','이용하는 사람이 스스로 대피하기 어렵다']];
+var DIST=[['300m 이내','걸어서 5분 안에 갈 수 있다'],['300m~1km','걸어서 5~15분 걸린다'],['1km 넘음','걸어서 15분이 넘는다 — 노인과 어린이에게는 멀다']];
+
+var S={prof:{},haz:'',risk:-1,pin:'',ptot:'',vk:'',vn:'',rec:'',recy:'',dist:-1,gap:'',sug:''};
+var ORDER=['P','H','R','E','V','D','F','G','S'];
+var cur='P';
+var $=function(i){return document.getElementById(i);};
+function esc(s){return String(s||'').replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function fmt(n){return Number(n).toLocaleString('ko-KR');}
+function pct(){var a=parseFloat(S.ptot),b=parseFloat(S.pin);return (a>0&&b>=0)?(b/a*100).toFixed(1):'';}
+function D(){return DEEP[S.haz];}
+
+function done(b){
+ switch(b){
+  case 'P':return PROF.every(function(p){return S.prof[p.id];});
+  case 'H':return !!S.haz;
+  case 'R':return S.risk>=0;
+  case 'E':return S.pin!==''&&pct()!=='';
+  case 'V':return !!S.vk&&S.vn!=='';
+  case 'D':return !!S.rec;
+  case 'F':return S.dist>=0;
+  case 'G':return S.gap.trim()!=='';
+  case 'S':return S.sug.trim()!=='';
+ }}
+function bk(b,label,html){
+ var f=done(b);
+ return '<span class="bk '+(f?'f':'e')+(cur===b?' cur':'')+'" data-b="'+b+'">'+(f?html:label)+'</span>';
+}
+function report(){
+ var ph='';
+ PROF.forEach(function(p){var v=S.prof[p.id];ph+='<span class="chip '+(v?LC[v]:'')+'">'+p.n+(v?' '+v:'')+'</span>';});
+ $('prof').innerHTML=ph; $('prof').className='prof'+(cur==='P'?' cur':'');
+ var d=D(), h='';
+ h+='우리 동네에서 깊이 조사할 재해는 '+bk('H','① 재해',d?PROF.filter(function(p){return p.id===S.haz;})[0].n:'')+'이다. ';
+ h+=bk('R','② 위험의 정도',(d&&S.risk>=0)?esc(d.risk.sen(d.risk.o[S.risk])):'')+' ';
+ h+='재해 영향 범위에는 '+bk('E','③ 영향 범위의 인구',done('E')?fmt(S.pin)+'명, 동 인구의 '+pct()+'%':'')+'가 산다. ';
+ var v=VUL.filter(function(x){return x[0]===S.vk;})[0];
+ h+='그 가운데 '+bk('V','④ 취약한 사람·시설',done('V')?v[1]+' '+fmt(S.vn)+v[2]:'')+'은(는) 피해를 키울 수 있다. ';
+ h+=bk('D','⑤ 실제 기록',done('D')&&d?(S.rec==='y'?d.rec.y:d.rec.n)+(S.recy?' ('+esc(S.recy)+')':''):'')+'. ';
+ h+='가장 가까운 '+(d?d.fac.nm:'대응 시설')+'까지는 '+bk('F','⑥ 거리',S.dist>=0?DIST[S.dist][0]+', '+DIST[S.dist][1]:'')+'.';
+ $('para').innerHTML=h;
+ $('para2').innerHTML='<p class="para" style="line-height:1.7"><b>부족한 점</b> '+bk('G','⑦ 직접 쓰기',esc(S.gap))+'</p>'
+   +'<p class="para" style="line-height:1.7;margin-top:6px"><b>제안</b> '+bk('S','⑧ 직접 쓰기',esc(S.sug))+'</p>';
+ [].forEach.call(document.querySelectorAll('#para2 .bk'),function(e){e.classList.add('wr');});
+ var n=ORDER.filter(done).length; $('cnt').textContent=n+' / 9 칸'; $('bar').style.width=(n/9*100)+'%';
+}
+function srcRow(s,p,l){return '<div class="src"><span><b>'+s+'</b> · '+p+'</span><a class="go" href="'+l+'" target="_blank" rel="noopener">자료 열기</a></div>';}
+function water(m){ // 사람 키 1.7m 기준 물 높이 그림
+ var H=64, sc=H/2.2, w=Math.min(m,2.2)*sc;
+ return '<svg width="46" height="'+H+'" viewBox="0 0 46 '+H+'" aria-hidden="true"><circle cx="17" cy="'+(H-1.7*sc+5)+'" r="5" fill="#4E626D"/><rect x="12" y="'+(H-1.7*sc+11)+'" width="10" height="'+(1.7*sc-11)+'" rx="4" fill="#4E626D"/>'
+  +'<rect x="0" y="'+(H-w)+'" width="46" height="'+w+'" fill="#2E86C8" opacity=".45"/>'+(m>2.2?'<text x="23" y="10" font-size="9" text-anchor="middle" fill="#1C5E8E">1층↑</text>':'')+'</svg>';
+}
+function nav(){var i=ORDER.indexOf(cur);return '<div class="nav"><button id="pv" '+(i===0?'disabled':'')+'>← 앞 칸</button><button class="nx" id="nx" '+(i===ORDER.length-1?'disabled':'')+'>다음 칸 →</button></div>';}
+
+function task(){
+ var t=$('task'), h='', d=D();
+ if(cur==='P'){
+  h='<p class="stg">1단계 · 넓게 훑어보기</p><h3>우리 동네의 여섯 가지 재해 위험은 어느 정도인가?</h3>'
+   +'<p class="how">지도에서 우리 동네를 찾아 보고, 기준에 맞는 정도를 고른다. 이 여섯 가지가 우리 동네의 재해 전부는 아니다.</p>';
+  PROF.forEach(function(p){var v=S.prof[p.id];
+   h+='<div class="pr"><div class="n">'+p.n+'</div><div><div class="lv" data-p="'+p.id+'">'
+    +LV.map(function(l){return '<button type="button" data-v="'+l+'" aria-pressed="'+(v===l)+'">'+l+'</button>';}).join('')
+    +'</div><div class="s">'+p.s+' · '+p.p+' <a href="'+p.l+'" target="_blank" rel="noopener">열기</a></div></div>'
+    +'<div class="m">'+(v?'→ '+p.lv[v]:'')+'</div></div>';});
+  h+='<p class="how" style="margin-top:8px">고를 때 기준: 낮음·보통·높음 버튼을 누르면 그 기준이 아래에 나온다. 기준과 다르면 다시 고른다.</p>';
+ }
+ else if(cur==='H'){
+  h='<p class="stg">2단계 · 한 가지 깊이 보기</p><h3>우리 동네에서 무엇을 깊이 조사할까?</h3>'
+   +'<p class="how">영향 범위의 사람과 건물 통계를 볼 수 있는 세 가지 가운데 고른다. 프로필에서 위험이 높게 나온 것을 고르면 좋다.</p><div class="opts" id="o">';
+  ['flood','slide','heat'].forEach(function(id){var p=PROF.filter(function(x){return x.id===id;})[0];
+   h+='<button type="button" data-v="'+id+'" aria-pressed="'+(S.haz===id)+'">'+p.n+(S.prof[id]?' · '+S.prof[id]:'')+'</button>';});
+  h+='</div>';
+ }
+ else if(!d && cur!=='G' && cur!=='S'){ h='<p class="stg">2단계 · 한 가지 깊이 보기</p><h3>먼저 ① 깊이 조사할 재해를 고른다.</h3>'; }
+ else if(cur==='R'){
+  var r=d.risk; h='<p class="stg">2단계 · 위험의 정도</p><h3>'+r.q+'</h3>'+srcRow(r.s,r.p,r.l)+'<div class="opts" id="o">';
+  r.o.forEach(function(o,i){h+='<button type="button" data-v="'+i+'" aria-pressed="'+(S.risk===i)+'">'+o[0]+'</button>';});
+  h+='</div><div class="mean">'+(S.risk>=0?(S.haz==='flood'?water(r.o[S.risk][2]):'')+'<div><b>'+r.o[S.risk][1]+'</b> — '+r.o[S.risk][3]+'.</div>':'')+'</div>';
+ }
+ else if(cur==='E'){
+  h='<p class="stg">2단계 · 노출</p><h3>재해 영향 범위에는 몇 명이 사는가?</h3>'+srcRow('자연재해통계지도',PROF.filter(function(p){return p.id===S.haz;})[0].n+' → 지역 선택 → 검색 → 데이터보드 · 인구',ND)
+   +'<div class="nums"><label>영향 범위 안 인구<input type="number" min="0" id="pin" value="'+esc(S.pin)+'" placeholder="명"></label><label>행정구역 전체 인구<input type="number" min="0" id="ptot" value="'+esc(S.ptot)+'" placeholder="명"></label></div>'
+   +'<div class="mean" id="mn"></div>';
+ }
+ else if(cur==='V'){
+  h='<p class="stg">2단계 · 취약성</p><h3>영향 범위 안에서 피해를 키울 수 있는 것은 무엇인가?</h3>'+srcRow('자연재해통계지도','같은 데이터보드 · 가구 / 건물 / 시설',ND)
+   +'<p class="how">가장 눈에 띄는 것 하나를 고르고, 영향 범위 안의 수를 적는다.</p><div class="opts" id="o">';
+  VUL.forEach(function(v){h+='<button type="button" data-v="'+v[0]+'" aria-pressed="'+(S.vk===v[0])+'">'+v[1]+'</button>';});
+  var vv=VUL.filter(function(x){return x[0]===S.vk;})[0];
+  h+='</div>'+(vv?'<div class="nums" style="margin-top:8px"><label>영향 범위 안<input type="number" min="0" id="vn" value="'+esc(S.vn)+'" placeholder="'+vv[2]+'"></label></div><div class="mean"><div>'+vv[3]+'.</div></div>':'');
+ }
+ else if(cur==='D'){
+  var c=d.rec; h='<p class="stg">2단계 · 실제 기록</p><h3>'+c.q+'</h3>'+srcRow(c.s,c.p,c.l)
+   +'<div class="opts" id="o"><button type="button" data-v="y" aria-pressed="'+(S.rec==='y')+'">있다</button><button type="button" data-v="n" aria-pressed="'+(S.rec==='n')+'">찾지 못했다</button></div>'
+   +(S.rec==='y'?'<div class="nums" style="margin-top:8px"><label>언제였나 (선택)<input id="recy" value="'+esc(S.recy)+'" placeholder="예: 2022년 8월" style="width:160px;font-family:var(--sans)"></label></div>':'')
+   +'<div class="mean">'+(S.rec?'<div>'+(S.rec==='y'?'위험지도는 일어날 수 있는 일을, 이 기록은 실제로 일어난 일을 보여 준다.':'기록이 없다고 앞으로도 일어나지 않는다는 뜻은 아니다.')+'</div>':'')+'</div>';
+ }
+ else if(cur==='F'){
+  var f=d.fac; h='<p class="stg">2단계 · 대응 시설</p><h3>우리 동네에서 가장 가까운 '+f.nm+'까지는 얼마나 되는가?</h3>'+srcRow(f.s,f.p,f.l)
+   +'<p class="how">③·④에서 위험하다고 본 곳에서부터 잰다.</p><div class="opts" id="o">';
+  DIST.forEach(function(x,i){h+='<button type="button" data-v="'+i+'" aria-pressed="'+(S.dist===i)+'">'+x[0]+'</button>';});
+  h+='</div><div class="mean">'+(S.dist>=0?'<div>'+DIST[S.dist][1]+'.</div>':'')+'</div>';
+ }
+ else if(cur==='G'){
+  h='<p class="stg">3단계 · 부족한 점</p><h3>보고서를 다시 읽고, 우리 동네에서 무엇이 부족한지 한 문장으로 쓴다.</h3>'
+   +'<textarea id="gap" placeholder="누구에게, 어디에서, 무엇이 부족한가">'+esc(S.gap)+'</textarea>';
+ }
+ else if(cur==='S'){
+  h='<p class="stg">3단계 · 제안</p><h3>그 부족한 점을 줄이기 위해 무엇을 어떻게 바꾸면 좋을까?</h3>'
+   +'<textarea id="sug" placeholder="무엇을, 어디에, 어떻게">'+esc(S.sug)+'</textarea>';
+  if(done('G')&&done('S')) h+='<div class="ex"><div class="h">다른 보고서와 견주어 보기</div>'
+   +'<p><span class="tag">예시 1</span><b>부족한 점</b> ○○동 주택가는 폭염 영향예보가 경고 단계까지 올라갔고 혼자 사는 노인이 많지만, 가장 가까운 무더위쉼터까지 1km가 넘는다. <b>제안</b> ○○동 경로당을 무더위쉼터로 지정하고, 쉼터 위치를 집집마다 안내한다.</p>'
+   +'<p><span class="tag">예시 2</span><b>부족한 점</b> 큰비가 오면 허리 높이까지 잠기는 골목에 지하 건물이 많은데, 실제로 잠긴 기록도 있다. <b>제안</b> 지하 건물 입구에 차수판 설치를 지원하고, 비가 많이 올 때 주민에게 재난 문자를 더 일찍 보낸다.</p>'
+   +'<ul><li>부족한 점이 한 장소, 한 집단으로 좁혀져 있는가?</li><li>보고서의 ①~⑥이 근거로 쓰였는가?</li><li>제안이 그 부족한 점을 직접 줄이는가?</li></ul>'
+   +'<p style="margin-top:7px;color:var(--soft)">새 시설을 만드는 것만이 대책은 아니다. 시설의 위치를 바꾸거나 안내를 고치거나 재난 정보를 더 쉽게 전하는 것도 대책이 된다.</p></div>';
+ }
+ t.innerHTML=h+nav(); bindTask();
+}
+function bindTask(){
+ var o=$('o');
+ if(o) o.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;var v=b.dataset.v;
+  if(cur==='H'){ if(S.haz!==v){S.haz=v;S.risk=-1;S.rec='';S.recy='';S.dist=-1;} }
+  else if(cur==='R') S.risk=+v; else if(cur==='V') S.vk=v; else if(cur==='D') S.rec=v; else if(cur==='F') S.dist=+v;
+  report();task();});
+ [].forEach.call(document.querySelectorAll('.lv'),function(g){g.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;S.prof[g.dataset.p]=b.dataset.v;report();task();});});
+ function inp(id,k,cb){var el=$(id);if(el)el.addEventListener('input',function(){S[k]=el.value;report();if(cb)cb();});}
+ function em(){var m=$('mn');if(!m)return;var p=pct();m.innerHTML=p?'<div>동 인구 100명 가운데 약 <b>'+Math.round(+p)+'명</b>이 영향 범위 안에 산다.</div>':'';}
+ inp('pin','pin',em);inp('ptot','ptot',em);em();inp('vn','vn');inp('recy','recy');inp('gap','gap');
+ var sg=$('sug'); if(sg) sg.addEventListener('input',function(){S.sug=sg.value;report();}); if(sg) sg.addEventListener('blur',task);
+ $('pv').onclick=function(){go(ORDER[ORDER.indexOf(cur)-1]);};
+ $('nx').onclick=function(){go(ORDER[ORDER.indexOf(cur)+1]);};
+}
+function go(b){cur=b;report();task();if(window.innerWidth<860)$('task').scrollIntoView({behavior:'smooth',block:'start'});}
+$('rep').addEventListener('click',function(e){var b=e.target.closest('[data-b]');if(b)go(b.dataset.b);});
+$('print').onclick=function(){window.print();};
+report();task();
+})();
+</script></body></html>
