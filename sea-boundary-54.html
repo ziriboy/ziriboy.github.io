@@ -152,7 +152,9 @@ html,body{background:transparent}
 .chips button svg{width:22px;height:12px;opacity:.35}
 .chips button.on{border-color:var(--ink);color:var(--ink)}
 .chips button.on svg{opacity:1}
-.dk200{fill-opacity:.16!important;stroke-width:1.8px!important}
+.dk200{fill:var(--dk)!important;fill-opacity:.14!important;stroke:var(--dk)!important;stroke-width:2px!important;stroke-dasharray:none!important}
+:root{--dk:#0b8a8f}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--dk:#4fc6cc}}
 .nt{font-size:11.5px;color:var(--muted);margin:2px 0 0;line-height:1.5}
 </style></head>
 <body><div class="wrap">
@@ -179,7 +181,7 @@ const el=(t,a,p)=>{const e=document.createElementNS(NS,t);for(const k in a)e.set
 const ORDER=['all'];
 let mode='all';let M=MODES[mode];
 const SW={ts:'<rect x="1" y="1" width="20" height="10" fill="var(--kr)" fill-opacity=".35" stroke="var(--kr)"/>',
- dk200:'<rect x="1" y="1" width="20" height="10" fill="var(--kr)" fill-opacity=".1" stroke="var(--kr)" stroke-dasharray="4 3"/>',
+ dk200:'<rect x="1" y="1" width="20" height="10" fill="var(--dk)" fill-opacity=".2" stroke="var(--dk)" stroke-width="1.5"/>',
  mul:'<line x1="1" y1="6" x2="21" y2="6" stroke="var(--ink)" stroke-width="2.2" stroke-dasharray="1 4" stroke-linecap="round"/>',
  mdk:'<line x1="1" y1="6" x2="21" y2="6" stroke="var(--kr)" stroke-width="1.8" stroke-dasharray="5 3"/>',
  kr:'<rect x="1" y="1" width="20" height="10" fill="var(--kr)" fill-opacity=".28" stroke="var(--kr)"/>',
