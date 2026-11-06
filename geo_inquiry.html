@@ -203,8 +203,6 @@ textarea,input[type=text]{width:100%;border:1px solid var(--line);border-radius:
 .drow .why{font-size:13px}
 .drow .sug{margin-top:6px;display:flex;flex-wrap:wrap;gap:5px;align-items:center}
 .okc{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--mid);margin-top:6px}
-.aibox{margin-top:10px;background:var(--wash);border-radius:4px;padding:9px 11px}
-.aibox textarea{font-size:12px;line-height:1.45;color:var(--mid)}
 @media print{.drow .why{color:var(--mid)}}
 .plan textarea{min-height:44px}
 .exm td{font-size:13.5px} .exm .src,.plan .src{font-size:12px;color:var(--soft);margin-left:8px}
@@ -575,8 +573,7 @@ function p4(){
       <div class="dr">${svcCell(r,'m:'+i,false)}
         ${r.svc?`<label class="okc noprint"><input type="checkbox" data-mo="${i}" ${r.ok?'checked':''}> 사이트에서 데이터를 확인했다</label>`:''}</div></div>`;}).join('')}
     ${!M.pk.length&&!R.some(r=>r.add)?'<p class="note">2에서 데이터를 고르면 여기에 들어온다.</p>':''}
-    <div class="acts noprint" style="margin-top:8px"><button class="chip" id="addM">+ 목록에 없는 데이터 더하기</button><button class="chip" id="aiAsk">AI에게 더 물어보기</button></div>
-    <div id="aiBox"></div></td></tr>
+    <div class="acts noprint" style="margin-top:8px"><button class="chip" id="addM">+ 목록에 없는 데이터 더하기</button></div></td></tr>
   <tr><td class="k2">예상 결론</td><td>${(()=>{const D=allData().filter(r=>r.n);
     if(!D.length) return '<p class="note">데이터를 고르면 데이터마다 예상되는 결과를 쓰는 칸이 생긴다.</p>';
     return D.map(r=>`<div class="xrow"><span class="xl">${esc(r.n)}에서는</span><input type="text" data-xe="${r.key}" value="${esc((M.xe||{})[r.key]||'')}" placeholder="어떤 결과가 나올 것으로 예상하는가"></div>`).join('')+
@@ -612,9 +609,6 @@ function sugList(n){ const raw=(n||'').replace(/[·,()/]/g,' ').split(/\s+/).fil
   return SVC.list.filter(r=>!seen.has(r.n)&&seen.add(r.n)).map(r=>{const t=r.n+' '+r.d+' '+r.q;return [r,w.reduce((a,x)=>a+(r.n.includes(x)?2:t.includes(x)?1:0),0)];})
     .filter(x=>x[1]>=2).sort((a,b)=>b[1]-a[1]).slice(0,3).map(x=>x[0]); }
 function sugHtml(n,i){ const L=sugList(n); return L.length?`<span class="note">후보</span> ${L.map(r=>`<button class="chip" data-sv="${i}" data-sn="${esc(r.n)}">${esc(r.n)}</button>`).join('')}`:''; }
-function aiPrompt(){ const M=ST.p.my, R=allData(), seen=new Set();
-  const L=SVC.list.filter(r=>!seen.has(r.n)&&seen.add(r.n)).map(r=>`- ${r.n}: ${r.d}`).join('\n');
-  return `나는 고등학생이고, 한국지리 탐구 수행과제로 지리탐구를 설계하고 있다.\n\n탐구 질문: ${M.q||'(질문)'}\n지금 고른 데이터:\n${R.map((r,i)=>`${i+1}. ${r.n}`).join('\n')||'1. (데이터)'}\n\n이 질문에 답하는 데 더 필요한 데이터가 있는지 알려 주고, 아래 공간정보웹서비스 목록 안에서만 각 데이터를 구할 수 있는 서비스를 1~2개씩 추천해 줘. 목록에 없는 사이트는 추천하지 마. 추천마다 그 서비스에서 어떤 메뉴나 자료를 보면 되는지, 그 데이터가 질문에 왜 적절한지 한 문장씩 설명해 줘. 목록 안에서 구할 수 없는 데이터는 '1차 데이터로 직접 조사'라고 하고, 어떻게 모으면 되는지 알려 줘.\n\n[공간정보웹서비스 목록]\n${L}`; }
 function b4(){
   const P=ST.p, M=P.my, qs=myQs(), MR=rowsOf('mine');
   const upd=()=>{$('#chkl').innerHTML=chkl();const ex=$('#exShow');if(ex)ex.classList.toggle('off',!cmpReady());nav();};
@@ -634,14 +628,6 @@ function b4(){
   document.querySelectorAll('[data-svc]').forEach(el=>el.onclick=e=>{e.preventDefault();openSvc(el.dataset.svc);});
   $('#addM').onclick=()=>{MR.push({n:'',add:true});save();keepScroll(render);};
   const ex=$('#exShow'); if(ex) ex.onclick=e=>{e.preventDefault();if(ex.classList.contains('off'))return;P.cmp=true;save();keepScroll(render);};
-  $('#aiAsk').onclick=()=>{const t=aiPrompt();
-    $('#aiBox').innerHTML=`<div class="aibox"><div class="note" style="margin-bottom:4px">아래 내용을 복사해 지리탐구 도우미에 붙여 넣는다. 추천받은 서비스는 위의 '공간정보웹서비스에서 찾기'로 고르고, 사이트에 들어가 데이터가 실제로 있는지 확인한다.</div>
-      <textarea id="aiT" rows="6" readonly>${esc(t)}</textarea>
-      <div class="acts"><button class="btn" id="aiCopy">복사하고 지리탐구 도우미 열기</button><span class="note" id="aiMsg"></span></div></div>`;
-    $('#aiCopy').onclick=()=>{const ta=$('#aiT');ta.select();let ok=false;try{ok=document.execCommand('copy');}catch(e){}
-      if(navigator.clipboard)navigator.clipboard.writeText(t).catch(()=>{});
-      $('#aiMsg').textContent='복사했다. 열린 창에 붙여 넣는다.';
-      window.open('https://chatgpt.com/g/g-698d49c576bc81919aa51e27e80855b8-jiritamgu-doumi','_blank','noopener');};};
   document.querySelectorAll('[data-find]').forEach(el=>el.onclick=e=>{e.preventDefault();openFinder(el.dataset.find);});
   document.querySelectorAll('[data-svc]').forEach(el=>el.onclick=e=>{e.preventDefault();openSvc(el.dataset.svc);});
   $('#pprint').onclick=()=>window.print();
