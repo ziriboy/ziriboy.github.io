@@ -531,8 +531,9 @@ function dMatch(q){ q=q||''; let x=q; Object.keys(SYN).forEach(k=>{ if(q.include
   const out=hit.slice(0,8), cats=[...new Set(hit.map(d=>d.c))];
   for(const c of [...cats,'인구']) for(const d of DCAT) { if(out.length>=10) break; if(d.c===c&&!out.includes(d)) out.push(d); }
   return out.slice(0,10).sort((a,b)=>((+a.id.slice(1))*37%68)-((+b.id.slice(1))*37%68)); }
-function srcCell(d,nn){ const x=SVC.list.find(z=>z.n===d.s);
-  return `<span class="src2">${nn?'':esc(d.s)+' · '}${esc(d.g)} 단위${x?` <a href="${x.u}" target="_blank" rel="noopener" class="exl noprint" style="margin:0 0 0 4px">사이트 열기 ↗</a>`:''}</span>`; }
+const DSG={"d0": "인구 변화", "d1": "65세 이상 고령자 인구 변화", "d2": "15세 미만 유소년 인구 변화", "d4": "1인 가구 변화", "d5": "65세 이상 1인가구 변화", "d6": "외국인 주민 현황", "d7": "다문화가구 현황", "d11": "노령화 지수", "d12": "귀농/귀촌/귀어 인구 현황", "d15": "커피전문점 변화", "d16": "치킨전문점 변화", "d17": "사업체 수 분포 현황", "d18": "종사자 수 분포 현황", "d19": "전통시장 현황", "d21": "인구 천명당 사설학원 수", "d22": "제조업 현황", "d24": "아파트 현황", "d25": "30년 이상 노후주택 분포 현황", "d32": "통근통학 인구변화", "d35": "보행자 교통사고 발생 현황", "d37": "1인당 자동차 등록대수", "d39": "전기차 충전소(급속) 현황", "d43": "무더위 쉼터 현황", "d48": "주민 1인당 생활폐기물 배출량", "d52": "응급의료시설 접근 현황", "d53": "보육시설 1개당 어린이 인구", "d54": "문화시설 1개당 인구 현황", "d55": "공공도서관 분포 현황", "d60": "교원 1인당 학생 수", "d61": "인구 천명당 범죄 발생 건수", "d63": "경찰관서 접근 현황", "d64": "20·30대 1인가구 여성인구와 치안시설 분포", "d65": "농림어가 수 변화"};
+function srcCell(d,nn){ const sg=DSG[d.id]&&SG.list.find(z=>z.t===DSG[d.id]); const x=SVC.list.find(z=>z.n===d.s); const u=sg?SG_URL(sg):x&&x.u;
+  return `<span class="src2">${nn?'':esc(d.s)+' · '}${esc(d.g)} 단위${u?` <a href="${u}" target="_blank" rel="noopener" class="exl noprint" style="margin:0 0 0 4px">사이트 열기 ↗</a>`:''}</span>`; }
 function dlistHtml(){ const M=ST.p.my, L=dMatch(M.q), byId=id=>DCAT.find(d=>d.id===id);
   const shown=[...L, ...M.pk.map(byId).filter(d=>d&&!L.includes(d))];
   return `${!(M.q||'').trim()?`<p class="note">질문을 쓰면 관련 데이터가 나온다.</p>`:shown.length?`<div class="clist">${shown.map(d=>{const on=M.pk.includes(d.id);
