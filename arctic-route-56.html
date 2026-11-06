@@ -1,15 +1,16 @@
 <!doctype html>
 <html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>북극항로 항해</title>
+<title>부산–로테르담 왕복 항해</title>
 <style>
-:root{--ink:#22262d;--mut:#6b707a;--line:#e3e6ea;--bg:#fff;--land:#e4e7ea;--sea:#edf1f5;--c:#1f4f8f;--c2:#8a919a;--warn:#9a3b2a}
+:root{--ink:#22262d;--mut:#6b707a;--line:#e3e6ea;--bg:#fff;--land:#e4e7ea;--sea:#10263a;--navy:#10263a;--amb:#f0b429;--c:#1f4f8f;--c2:#8a919a;--warn:#9a3b2a}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:13px/1.55 "Pretendard","Noto Sans KR",system-ui,sans-serif}
 .wrap{width:1000px;margin:0 auto;padding:18px 12px 30px}
-h1{font-size:18px;margin:0 0 2px}
+h1{font-size:18px;margin:0 0 2px}.kick{font-size:11px;letter-spacing:.12em;color:var(--mut);margin:0 0 4px}.kick b{color:var(--navy);background:var(--amb);padding:1px 6px;border-radius:3px;margin-right:6px;letter-spacing:.06em}
+.dash{background:var(--navy);border-color:var(--navy);color:#e8eef4}.dash .lab{color:#8fa5ba}.dash b,.dash .num{font-variant-numeric:tabular-nums}.dash .stat b{color:#fff}.dash .ice{color:#cfe3f5}
 .sub{color:var(--mut);margin:0 0 12px}
 .app{display:flex;gap:14px;align-items:flex-start}
-.mapbox{flex:0 0 640px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--sea);position:relative}
+.mapbox{flex:0 0 640px;border:1px solid var(--navy);border-radius:10px;overflow:hidden;background:var(--sea);position:relative}
 svg{display:block;width:640px;height:620px;touch-action:none;user-select:none}
 .side{flex:1;min-width:0}
 .box{border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:10px}
@@ -20,13 +21,13 @@ svg{display:block;width:640px;height:620px;touch-action:none;user-select:none}
 .btn{font:inherit;font-size:12.5px;border:1px solid #cfd4da;background:#fff;color:var(--ink);border-radius:8px;padding:6px 10px;cursor:pointer;text-align:left}
 .btn:hover{border-color:var(--ink)}
 .btn.on{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
-.btn.main{background:var(--ink);color:#fff;border-color:var(--ink);text-align:center;font-weight:700}
+.btn.main{background:var(--navy);color:#fff;border-color:var(--navy);text-align:center;font-weight:700}
 .btn:disabled{opacity:.4;cursor:default}
 .months{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin:4px 0 10px}
 .months .btn{text-align:center;padding:4px 0}
 .routes{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:4px 0 10px}
 .routes .btn b{display:block}.routes .btn span{font-size:11.5px;color:var(--mut)}
-.card{border:1px solid var(--ink);border-radius:10px;padding:12px 14px;margin-bottom:10px;background:#fff}
+.card{border:1px solid var(--navy);border-radius:10px;padding:12px 14px;margin-bottom:10px;background:#fff}
 .card .t{font-weight:800;font-size:14px;margin:0 0 4px}
 .card .k{font-size:11.5px;color:var(--mut);margin:0 0 6px}
 .card p{margin:0 0 8px}
@@ -40,7 +41,7 @@ textarea{width:100%;min-height:90px;font:inherit;border:1px solid #cfd4da;border
 .ex b{display:block;font-size:12px}
 .mission p{margin:0 0 6px}
 .qq{font-weight:700;margin:4px 0 6px!important}.ans{font-size:12px;color:var(--mut);margin:0 0 4px!important}.fb{border-left:3px solid var(--c);background:#f3f6fa;padding:7px 10px;margin:0 0 8px;font-size:12.5px}
-.cmpt{width:100%;border-collapse:collapse;font-size:12.5px;margin:4px 0 8px}.cmpt td,.cmpt th{padding:4px 2px;border-top:1px solid #e3e6ea;text-align:right;white-space:nowrap}.cmpt td:first-child,.cmpt th:first-child{text-align:left}.cmpt th{font-weight:400;color:var(--mut);font-size:11.5px}.cmpt tr.me td{font-weight:700}.save{color:var(--c);font-weight:700}
+.cmpt{width:100%;border-collapse:collapse;font-size:12.5px;margin:4px 0 8px}.cmpt td,.cmpt th{padding:4px 4px;border-top:1px solid #e3e6ea;text-align:right;white-space:nowrap}.cmpt td:first-child,.cmpt th:first-child{text-align:left}.cmpt th{font-weight:400;color:var(--mut);font-size:11.5px}.cmpt tr.me td{font-weight:700}.save{color:var(--c);font-weight:700}
 .rk{display:inline-block;font-size:11px;font-weight:700;padding:0 7px;border-radius:99px;margin-left:6px;vertical-align:2px;line-height:18px}
 .rk.h{background:#9a3b2a;color:#fff}.rk.m{background:#fbf1e3;color:#8a5a12;border:1px solid #e6c48f}.rk.l{background:#f1f3f5;color:#6b707a}
 .alert{background:#9a3b2a;color:#fff;border-radius:8px;padding:8px 10px;margin:0 0 8px;font-size:12.5px;line-height:1.5}.alert b{display:block;font-size:12px;letter-spacing:.02em}
@@ -49,8 +50,9 @@ textarea{width:100%;min-height:90px;font:inherit;border:1px solid #cfd4da;border
 @keyframes zp{0%,100%{opacity:.18}50%{opacity:.45}}.zone.on{animation:zp 1.2s ease-in-out infinite}
 @media (max-width:1010px){.wrap{width:auto}.app{flex-direction:column}.mapbox{flex:none;width:100%}svg{width:100%;height:auto}}
 </style></head><body><div class="wrap">
-<h1>선장이 되어 북극항로 건너기</h1>
-<p class="sub">부산에서 로테르담까지 짐을 싣고 갔다가 다시 부산으로 돌아오는 한 바퀴 항해</p>
+<p class="kick"><b>항해 미션</b>5.6 북극항로</p>
+<h1>부산–로테르담 왕복 항해</h1>
+<p class="sub">북극항로와 수에즈 운하 경유 항로, 어느 길로 가고 어느 길로 돌아올까?</p>
 <div class="app">
 <div class="mapbox"><svg id="map" viewBox="0 0 660 640"></svg></div>
 <div class="side" id="side"></div>
@@ -85,12 +87,12 @@ const CP=[
  {id:'vilk',rk:'m',dz:'좁고 얼음이 많은 해협',at:[104.5,77.9],r:['nsr'],ice:true,t:'빌키츠키 해협',k:'타이미르반도와 세베르나야제믈랴 제도 사이',p:'북극항로에서 가장 북쪽의 길목이다. 러시아는 이 해협을 자기 나라의 내수로 보지만, 미국 등은 모든 나라의 배가 지날 수 있는 국제 해협이라고 본다.'},
  {id:'kara',rk:'l',ph:'img/arctic-route-56/lng.jpg',pc:'얼음을 깨며 다니는 LNG 운반선',at:[75,74.5],r:['nsr'],ice:true,t:'카라해 · 야말반도 앞바다',k:'사베타항 부근',p:'얼음을 깨며 다니는 큰 LNG 운반선이 지나간다. 야말반도의 사베타항에서 실은 액화 천연가스(LNG)이다. 이 바다를 오가는 화물의 대부분은 이처럼 러시아 북극에서 나오는 LNG와 석유이며, 이 배들 가운데에는 한국 조선소가 지은 것도 있다.'},
  {id:'spill',rk:'h',dz:'기름 유출에 취약한 바다',alert:'만약의 사고 · 북극해에서 기름이 샌다면',ph:'img/arctic-route-56/spill.jpg',pc:'바다에 퍼진 기름을 막는 방제 작업',at:[60.8,70.5],r:['nsr'],t:'만약 이 바다에서 기름이 샌다면?',k:'카라 관문 부근',p:'얼음이 떠 있는 차가운 바다에서는 기름이 잘 분해되지 않고, 얼음 밑으로 퍼지면 거의 걷어낼 수 없다. 가까운 방제 기지까지는 수백 km가 넘는다. 그래서 국제해사기구(IMO)는 2024년 7월부터 북극 바다에서 무거운 연료유를 쓰거나 싣고 다니는 것을 금지하였다(일부 선박은 2029년까지 예외).'},
- {id:'barents',rk:'l',at:[40,71.2],r:['nsr'],gate:true,t:'바렌츠해 · 북극항로 구간의 서쪽 입구',k:'러시아 무르만스크와 노르웨이 앞바다'},
- {id:'scs',rk:'l',at:[113,13],r:['suez','cape'],t:'남중국해',k:'중국·베트남·필리핀 등이 둘러싼 바다',p:'여러 나라가 섬과 바다를 두고 맞서는 곳이지만, 상선은 자유롭게 지난다. 세계 해상 무역의 많은 양이 이 바다를 지난다.'},
+ {id:'barents',rk:'l',at:[40,71.2],r:['nsr'],gate:true,t:'바렌츠해 · 북극항로의 서쪽 길목',k:'러시아 무르만스크와 노르웨이 앞바다'},
+ {id:'scs',rk:'l',at:[113,13],r:['suez','cape'],t:'남중국해',k:'중국·베트남·필리핀 등이 둘러싼 바다',p:'여러 나라가 섬과 바다를 두고 맞서는 곳이다. 세계 해상 무역의 많은 양이 이 바다를 지난다.'},
  {id:'malacca',rk:'m',dz:'붐비는 좁은 해협',ph:'img/arctic-route-56/malacca.jpg',pc:'말라카 해협·싱가포르 앞바다를 지나는 배들',at:[103.8,1.2],r:['suez','cape'],t:'말라카 해협 · 싱가포르',k:'말레이반도와 수마트라섬 사이',p:'세계에서 가장 붐비는 해협 가운데 하나이다. 중동의 석유를 싣고 동아시아로 가는 유조선도 대부분 이곳을 지난다. 싱가포르에 들러 연료를 채운다.'},
  {id:'lanka',rk:'m',at:[80.5,5.6],r:['suez','cape'],split:true,t:'스리랑카 남쪽 · 길을 정할 때',k:'인도양'},
  {id:'bab',rk:'h',dz:'홍해의 상선 공격',alert:'경보 · 상선 공격이 일어난 해역',ph:'img/arctic-route-56/redsea.jpg',pc:'홍해를 지나는 상선',at:[43.4,12.6],r:['suez'],red:true,t:'바브엘만데브 해협',k:'예멘과 지부티 사이, 홍해의 입구',p:'2023년 말부터 예멘의 후티 반군이 홍해를 지나는 상선을 미사일과 무인기로 공격하였다. 2023년 11월에는 화물선이 납치되었고, 2024년 3월에는 공격받은 배가 가라앉고 선원이 목숨을 잃기도 하였다. 보험료가 크게 오르고, 승무원은 긴장 속에 해협을 지난다.',cost:'홍해 전쟁 위험 보험료'},
- {id:'suez',rk:'m',dz:'운하가 막힐 위험',ph:'img/arctic-route-56/suez.jpg',pc:'수에즈 운하를 지나는 컨테이너선',at:[32.6,29.9],r:['suez'],red:true,t:'수에즈 운하',k:'이집트',p:'이집트가 운영하는 운하로, 통행료를 낸다. 2021년에는 대형 컨테이너선이 운하에 걸려 엿새 동안 길이 막히기도 하였다.',cost:'수에즈 운하 통행료'},
+ {id:'suez',rk:'m',dz:'운하가 막힐 위험',ph:'img/arctic-route-56/suez.jpg',pc:'수에즈 운하를 지나는 컨테이너선',at:[32.6,29.9],r:['suez'],red:true,t:'수에즈 운하',k:'지중해와 홍해 사이',p:'지중해와 홍해를 잇는 운하로, 지나려면 통행료를 낸다. 2021년에는 대형 컨테이너선이 운하에 걸려 엿새 동안 길이 막히기도 하였다.',cost:'수에즈 운하 통행료'},
  {id:'cape',rk:'m',dz:'거친 바다',ph:'img/arctic-route-56/cape.jpg',pc:'희망봉 앞바다',at:[18.5,-35.2],r:['cape'],t:'희망봉',k:'아프리카 남쪽 끝',p:'홍해의 위험은 피했지만, 거친 바다를 지나며 연료가 더 들고 열흘 넘게 더 걸린다.',cost:'더 많은 연료'},
  {id:'gib',rk:'l',at:[-5.6,35.95],r:['suez'],t:'지브롤터 해협',k:'스페인과 모로코 사이',p:'지중해와 대서양을 잇는 좁은 해협이다. 여러 나라의 배가 자유롭게 지나는 국제 해협이다.'},
  {id:'iber',rk:'m',at:[-9.5,37.8],r:['suez','cape'],split:true,t:'포르투갈 앞바다 · 길을 정할 때',k:'대서양'},
@@ -110,27 +112,28 @@ const LEGS=[{from:'부산',to:'로테르담',cargo:'자동차 부품과 화학 �
 /* ---------- svg ---------- */
 const NS='http://www.w3.org/2000/svg',svg=document.getElementById('map');
 function E(t,a,p){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);(p||svg).appendChild(e);return e;}
-E('rect',{x:0,y:0,width:660,height:640,fill:'#edf1f5'});
-E('path',{d:LAND.d,fill:'#d9dde2','fill-rule':'evenodd',stroke:'#fff','stroke-width':.6});
+E('rect',{x:0,y:0,width:660,height:640,fill:'#10263a'});
+(function(){const gg=E('g',{});for(let lo=-180;lo<180;lo+=30){const pts=[];for(let la=-60;la<=90;la+=2)pts.push(P(lo,la));E('polyline',{points:pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' '),fill:'none',stroke:'#1f3d58','stroke-width':.7},gg);}
+ for(const la of [-30,0,30,60]){const pts=[];for(let lo=-180;lo<=180;lo+=2)pts.push(P(lo,la));E('polyline',{points:pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' '),fill:'none',stroke:la===0?'#2a4c6b':'#1f3d58','stroke-width':.7,'stroke-dasharray':la===0?'none':'2 3'},gg);}})();
+E('path',{d:LAND.d,fill:'#2b3e51','fill-rule':'evenodd',stroke:'#3e566d','stroke-width':.6});
 const gR=E('g',{}),gC=E('g',{}),gL=E('g',{}),gS=E('g',{});
 function pl(xy){return xy.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ');}
 const base={};
-for(const k of ['nsr','suez','cape']){base[k]=E('polyline',{points:pl(ROUTES[k].xy),fill:'none',stroke:'#b3b9c1','stroke-width':1.6,'stroke-dasharray':k=='cape'?'3 4':'none'},gR);}
+for(const k of ['nsr','suez','cape']){base[k]=E('polyline',{points:pl(ROUTES[k].xy),fill:'none',stroke:'#5f7a93','stroke-width':1.6,'stroke-dasharray':k=='cape'?'3 4':'none'},gR);}
 // Arctic segment (Bering -> Kara gate) ice overlay
 const ib=ROUTES.nsr.g.findIndex(p=>Math.abs(p[0]+169.5)<.01&&Math.abs(p[1]-66)<.01),ie=ROUTES.nsr.g.findIndex(p=>Math.abs(p[0]-40)<.01&&Math.abs(p[1]-71.2)<.01);
 const iceLine=E('polyline',{points:pl(ROUTES.nsr.xy.slice(ib,ie+1)),fill:'none',stroke:'#b3b9c1','stroke-width':5,'stroke-linecap':'round',opacity:.0},gR);
-const prev=E('polyline',{points:'',fill:'none',stroke:'#1f4f8f','stroke-width':2,'stroke-linecap':'round',opacity:.45},gR);
+const prev=E('polyline',{points:'',fill:'none',stroke:'#f0b429','stroke-width':2,'stroke-linecap':'round',opacity:.45},gR);
 const zones=[];function zone(lon,lat,r,t,col){const [x,y]=P(lon,lat);const c=E('circle',{cx:x,cy:y,r:r,fill:col,opacity:.18,class:'zone'},gR);E('circle',{cx:x,cy:y,r:r,fill:'none',stroke:col,'stroke-width':1,'stroke-dasharray':'3 3'},gR);
  const tx=E('text',{x:x+r+3,y:y+4,'font-size':11,fill:col,'font-weight':700},gR);tx.textContent=t;zones.push({x,y,r,c});}
-zone(44,13.5,16,'상선 공격 위험','#9a3b2a');
-const done=E('polyline',{points:'',fill:'none',stroke:'#1f4f8f','stroke-width':3,'stroke-linecap':'round'},gR);
+const done=E('polyline',{points:'',fill:'none',stroke:'#f0b429','stroke-width':3,'stroke-linecap':'round'},gR);
 const cpEls={};
-CP.forEach(c=>{const g=E('g',{},gC);E('circle',{cx:c.xy[0],cy:c.xy[1],r:4,fill:'#fff',stroke:c.rk==='h'?'#9a3b2a':'#6b707a','stroke-width':c.rk==='h'?2:1.4},g);cpEls[c.id]=g;});
-function lbl(lon,lat,t,o){const [x,y]=P(lon,lat);const e=E('text',Object.assign({x:x,y:y,'font-size':12,fill:'#6b707a','text-anchor':'middle'},o||{}),gL);e.textContent=t;return e;}
-[[129,35.1,'부산',{dx:14,dy:4,'text-anchor':'start','font-weight':700,fill:'#22262d'}],[4.1,52,'로테르담',{dx:-8,dy:4,'text-anchor':'end','font-weight':700,fill:'#22262d'}],
- [100,62,'러 시 아',{'font-size':15,fill:'#9aa1a9'}],[22,10,'아프리카',{'font-size':14,fill:'#9aa1a9'}],[-40,74,'그린란드',{'font-size':12,fill:'#9aa1a9'}],[0,86.5,'북극해',{'font-size':12,fill:'#9aa1a9'}],[75,-12,'인도양',{'font-size':13,fill:'#9aa1a9'}],[-30,20,'대서양',{'font-size':13,fill:'#9aa1a9'}],[165,40,'태평양',{'font-size':13,fill:'#9aa1a9'}]].forEach(a=>lbl(a[0],a[1],a[2],a[3]));
+CP.forEach(c=>{const g=E('g',{},gC);E('circle',{cx:c.xy[0],cy:c.xy[1],r:4,fill:'#10263a',stroke:c.rk==='h'?'#e0654f':'#9fb3c6','stroke-width':c.rk==='h'?2:1.4},g);cpEls[c.id]=g;});
+function lbl(lon,lat,t,o){const [x,y]=P(lon,lat);const e=E('text',Object.assign({x:x,y:y,'font-size':12,fill:'#8fa5baa','text-anchor':'middle'},o||{}),gL);e.textContent=t;return e;}
+[[129,35.1,'부산',{dx:14,dy:4,'text-anchor':'start','font-weight':700,fill:'#e8eef4'}],[4.1,52,'로테르담',{dx:-8,dy:4,'text-anchor':'end','font-weight':700,fill:'#e8eef4'}],
+ [100,62,'러 시 아',{'font-size':15,fill:'#6f8aa3'}],[22,10,'아프리카',{'font-size':14,fill:'#6f8aa3'}],[-40,74,'그린란드',{'font-size':12,fill:'#6f8aa3'}],[0,86.5,'북극해',{'font-size':12,fill:'#6f8aa3'}],[75,-12,'인도양',{'font-size':13,fill:'#6f8aa3'}],[-30,20,'대서양',{'font-size':13,fill:'#6f8aa3'}],[165,40,'태평양',{'font-size':13,fill:'#6f8aa3'}]].forEach(a=>lbl(a[0],a[1],a[2],a[3]));
 const ship=E('g',{style:'cursor:grab'},gS);
-E('circle',{r:16,fill:'#1f4f8f',opacity:.12},ship);E('circle',{r:8,fill:'#1f4f8f',stroke:'#fff','stroke-width':2},ship);
+E('circle',{r:16,fill:'#f0b429',opacity:.2},ship);E('circle',{r:8,fill:'#f0b429',stroke:'#fff','stroke-width':2},ship);
 ship.style.display='none';
 function setShip(){const p=S.path.xy[S.idx];zones.forEach(z=>z.c.classList.toggle('on',Math.hypot(p[0]-z.x,p[1]-z.y)<z.r+6));ship.setAttribute('transform',`translate(${p[0]},${p[1]})`);done.setAttribute('points',pl(S.path.xy.slice(0,S.idx+1)));}
 /* ---------- drag ---------- */
@@ -150,16 +153,15 @@ function nowDoy(){return S.legStartDoy+legDay()+S.extra;}
 /* ---------- side panel ---------- */
 const side=document.getElementById('side');
 function h(s){side.innerHTML=s;}
-function stats(){const leg=LEGS[S.leg],nd=nowDoy();return `<div class="box"><p class="lab">${S.leg+1}번째 항해 · ${leg.from} → ${leg.to} · ${S.path?S.path.name:''}</p>
+function stats(){const leg=LEGS[S.leg],nd=nowDoy();return `<div class="box dash"><p class="lab">${S.leg+1}번째 항해 · ${leg.from} → ${leg.to} · ${S.path?S.path.name:''}</p>
  <div class="stat"><div><span class="lab">오늘</span><b>${dateStr(nd)}</b></div><div><span class="lab">항해한 날</span><b>${Math.round(S.totalBefore+legDay()+S.extra)}일</b></div><div><span class="lab">이번 항해 거리</span><b>${Math.round(S.path.cum[S.idx]).toLocaleString()} km</b></div></div>
  <p class="lab" style="margin-top:8px">실은 짐</p><p style="margin:0">${leg.cargo}${S.extraCargo&&S.leg===0?', '+S.extraCargo:''}</p>
  <p class="lab" style="margin-top:8px">북극항로 얼음 상태(${dateStr(nd)})</p><p class="ice" style="margin:0">${ICE[iceState(nd)]}</p>
- <p class="lab" style="margin-top:8px">치른 대가</p><div class="chips">${S.costs.length?[...new Set(S.costs)].map(c=>'<span>'+c+'</span>').join(''):'<span>없음</span>'}</div>
- <p class="lab" style="margin-top:8px">마주친 위험</p><div class="chips d">${S.risks.length?[...new Set(S.risks)].map(c=>'<span>▲ '+c+'</span>').join(''):'<span style="color:#6b707a;border-color:#e3e6ea">아직 없음</span>'}</div></div>`;}
+ </div>`;}
 function update(){if(S.stage==='port'&&S.card){h(stats()+S.card);return;}if(S.stage!=='sail')return;paintIce();let s=stats();
  if(S.card)s+=S.card; else s+=`<div class="box"><p class="hint" style="margin:0">배를 끌어 다음 지점으로 가자.</p><button class="btn" style="margin-top:8px" onclick="auto()">다음 지점까지 가기</button></div>`;
  s+=`<div class="box"><p class="lab">항해 일지</p><ol class="log">${S.log.map(l=>'<li>'+l+'</li>').join('')}</ol></div>`;h(s);}
-function paintIce(){const st=iceState(S.path?nowDoy():doyOf(S.month));iceLine.setAttribute('opacity',st==='open'?0:st==='part'?.55:.9);iceLine.setAttribute('stroke',st==='part'?'#9fb4cc':'#7f95ad');iceLine.setAttribute('stroke-dasharray',st==='part'?'4 5':'none');}
+function paintIce(){const st=iceState(S.path?nowDoy():doyOf(S.month));iceLine.setAttribute('opacity',st==='open'?0:st==='part'?.55:.9);iceLine.setAttribute('stroke',st==='part'?'#a9c4dc':'#dbe9f5');iceLine.setAttribute('stroke-dasharray',st==='part'?'4 5':'none');}
 function auto(){let to=S.idx;for(let i=S.idx+1;i<S.path.xy.length;i++){to=i;if(hitCP(i))break;}advance(to);}
 /* ---------- two-choice questions ---------- */
 const QZ={
@@ -187,6 +189,15 @@ const QZ={
  barents:{ask:'무르만스크 앞바다는 북극권인데도 겨울에 잘 얼지 않는다. 왜일까?',opts:[
   {t:'따뜻한 북대서양 난류가 흘러들어서',fb:'맞다. 멕시코 만류에서 이어지는 북대서양 난류 덕분에 노르웨이와 무르만스크 앞바다는 겨울에도 잘 얼지 않는다.'},
   {t:'바닷물이 특히 짜서',fb:'아니다. 북대서양 난류가 따뜻한 바닷물을 실어 와서 겨울에도 잘 얼지 않는다.'}]},
+ scs:{ask:'이 바다를 지나려면 누구의 허가가 필요할까?',opts:[
+  {t:'중국의 허가를 받는다',fb:'허가는 필요 없다. 중국은 남중국해의 대부분을 자기 바다라고 주장하지만, 국제법(유엔해양법협약)에 따라 상선은 다른 나라의 바다를 허가 없이 지날 수 있다. 얼음 덮인 바다라는 이유로 미리 허가를 받게 하는 러시아의 북극항로와 다른 점이다.'},
+  {t:'허가 없이 지난다',fb:'맞다. 여러 나라가 섬과 바다를 두고 다투지만, 국제법(유엔해양법협약)에 따라 상선은 허가 없이 지날 수 있다. 얼음 덮인 바다라는 이유로 미리 허가를 받게 하는 러시아의 북극항로와 다른 점이다.'}]},
+ bab:{ask:'이 해협을 어떻게 지날까?',opts:[
+  {t:'군함이 호위하는 선단에 합류한다',fb:'2024년부터 유럽연합과 미국 등이 군함을 보내 홍해의 상선을 지켰다. 호위 선단에 맞추느라 하루를 기다렸다. 북극항로에서 얼음 때문에 쇄빙선의 호위를 받았듯, 이 바다에서는 공격 때문에 군함의 호위를 받는다.',days:1},
+  {t:'혼자 빨리 지난다',fb:'무사히 지났지만 운이 좋았다. 공격은 예고 없이 일어났고, 그래서 많은 해운사가 이 바다를 피해 희망봉으로 돌아갔다.'}]},
+ suez:{ask:'운하 통행료는 누구에게 낼까?',opts:[
+  {t:'이집트',fb:'맞다. 수에즈 운하는 이집트 정부의 수에즈운하청이 운영하고, 통행료는 이집트의 큰 수입원이다. 홍해 공격으로 지나는 배가 줄자 이집트의 운하 수입도 크게 줄었다. 북극항로의 러시아처럼, 이 길목도 한 나라가 쥐고 있다.'},
+  {t:'운하를 쓰는 나라들이 함께 만든 국제기구',fb:'아니다. 수에즈 운하는 이집트 정부의 수에즈운하청이 운영하고, 통행료는 이집트의 큰 수입원이다. 북극항로의 러시아처럼, 이 길목도 한 나라가 쥐고 있다.'}]},
  malacca:{ask:'싱가포르에 들러 연료를 채울까?',opts:[
   {t:'들러서 채운다',fb:'싱가포르는 세계에서 선박 연료를 가장 많이 파는 항구이다. 길목에 있는 항구에는 배가 들르며 일자리와 돈이 모인다. 부산이 북극항로에서 노리는 것도 이런 자리이다.'},
   {t:'그냥 지나간다',fb:'연료가 모자라 인도양의 다른 항구에 들러야 했다. 길목의 항구는 들르지 않을 수 없는 곳이다.',days:1}]},
@@ -213,7 +224,7 @@ function card(t,k,body,acts,warn,c,rk){rk=rk||(c&&c.rk)||'';const al=c&&c.alert?
  S.card=`<div class="card${warn||rk==='h'?' warn':''}">${al}<p class="t">${t}${rk?`<span class="rk ${rk}">${rk==='h'?'▲ ':''}${RKN[rk]}</span>`:''}</p><p class="k">${k}</p>${ph}${body}<div class="acts">${acts}</div></div>`;}
 function ok(lbl){return `<button class="btn main" onclick="closeCard()">${lbl||'계속 항해하기'}</button>`;}
 function closeCard(){S.card=null;update();if(S.idx>=S.path.xy.length-1)arrive();}
-function openCP(c){S.done[S.leg+c.id]=1;if(cpEls[c.id])cpEls[c.id].firstChild.setAttribute('fill','#1f4f8f');
+function openCP(c){S.done[S.leg+c.id]=1;if(cpEls[c.id])cpEls[c.id].firstChild.setAttribute('fill','#f0b429');
  if(c.red)S.redPassed=true;
  if(c.cost&&!(c.id==='bab'&&S.capeChosen))S.costs.push(c.cost);
  if(c.gate)return gate(c);
@@ -246,7 +257,7 @@ function goCape(){S.log.push('희망봉으로 돌아가기로 함');S.capeChosen
  const here=S.path.g[S.idx],done=legDay();let r=ROUTES.cape;if(S.leg===1)r=rev(r);
  const j=r.g.findIndex(p=>Math.abs(p[0]-here[0])<.01&&Math.abs(p[1]-here[1])<.01);
  S.route='cape';S.path=r;S.legDays=r.days;S.extra+=done-S.legDays*r.cum[j]/r.tot;S.idx=j;
- base.cape.setAttribute('stroke','#b3b9c1');S.card=null;setShip();update();}
+ base.cape.setAttribute('stroke','#5f7a93');S.card=null;setShip();update();}
 /* ---------- legs ---------- */
 function startLeg(route,fromTurn){S.route=route;let r=ROUTES[route];if(S.leg===1)r=rev(r);S.path=r;S.idx=0;S.legDays=r.days;S.redPassed=false;S.capeChosen=false;
  if(!fromTurn){S.extra=0;S.legStartDoy=S.leg===0?doyOf(S.month):S.legStartDoy;}
@@ -266,28 +277,21 @@ function leg2(r){prev.setAttribute('points',pl(S.path.xy));S.leg=1;S.totalBefore
 function summary(){const sz=ROUTES.suez.tot,rows=S.result.map((r,i)=>`<tr class="me"><td>${i?'올 때':'갈 때'} · ${r.route.replace(' 경유 항로','').replace(' 우회 항로','')}</td><td>${r.days}일</td><td>${fmtKm(r.km)}</td><td>${Math.round(r.km/sz*100)}</td></tr>`).join('');
  const myD=S.result.reduce((a,r)=>a+r.days,0),myK=S.result.reduce((a,r)=>a+r.km,0);
  const sd=ROUTES.suez.days*2-myD,sf=Math.round(100-myK/(2*sz)*100);
- return `<table class="cmpt"><tr><th>구간</th><th>걸린 날</th><th>거리</th><th>연료 지수</th></tr>${rows}
+ return `<table class="cmpt"><tr><th>구간</th><th>걸린 날</th><th>거리</th><th>연료<br>지수</th></tr>${rows}
  <tr><td>두 번 모두 수에즈였다면</td><td>${ROUTES.suez.days*2}일</td><td>${fmtKm(2*sz)}</td><td>100</td></tr>
  <tr><td>두 번 모두 북극항로였다면</td><td>${ROUTES.nsr.days*2}일</td><td>${fmtKm(2*ROUTES.nsr.tot)}</td><td>${Math.round(ROUTES.nsr.tot/sz*100)}</td></tr></table>
  <p style="margin:0 0 8px">${sd>0?`수에즈로만 다녀왔을 때보다 <span class="save">${sd}일 빨랐고</span>`:`수에즈로만 다녀왔을 때보다 <span class="save">${-sd}일 늦었고</span>`}, 연료와 탄소 배출은 ${sf>=0?`<span class="save">약 ${sf}% 줄었다</span>`:`<span class="save">약 ${-sf}% 늘었다</span>`}.</p>`;}
 function finish(){S.stage='end';const tot=S.totalBefore;
  h(`<div class="card"><p class="t">한 바퀴 항해를 마쳤다</p><p class="k">${dateStr(doyOf(S.month))} 부산 출항 → ${dateStr(nowDoy())} 부산 도착 · 모두 ${tot}일 (로테르담 정박 4일 포함)</p>
  ${summary()}
- <p class="lab">치른 대가</p><div class="chips">${[...new Set(S.costs)].map(c=>'<span>'+c+'</span>').join('')}</div>
- <p class="lab" style="margin-top:6px">마주친 위험</p><div class="chips d">${[...new Set(S.risks)].map(c=>'<span>▲ '+c+'</span>').join('')||'<span>없음</span>'}</div>
  <p class="hint">연료와 탄소 배출은 거리에 비례한다고 단순화하였다(얼음 구간의 감속은 고려하지 않음).</p></div>
- <div class="box"><p class="lab">선장 일지</p><p style="margin:0 0 6px">다음에 같은 짐을 싣고 다시 떠난다면, 몇 월에 어느 길로 가고 어느 길로 돌아오겠는가? 걸리는 시간, 계절, 길목을 쥔 나라 가운데 두 가지 이상을 근거로 써 보자.</p>
- <textarea id="ta" placeholder="출항할 달과 갈 때·돌아올 때의 길, 그 까닭"></textarea><div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px"><span class="hint">두세 문장을 쓰면 예시 답안과 비교할 수 있다.</span><button class="btn main" id="cmp" disabled onclick="cmp()">예시 답안과 비교하기</button></div><div id="exs"></div></div>
  <button class="btn" onclick="location.reload()">처음부터 다시 항해하기</button>`);
- const ta=document.getElementById('ta');ta.addEventListener('input',()=>{document.getElementById('cmp').disabled=ta.value.trim().length<20;});}
-function cmp(){document.getElementById('exs').innerHTML=`<p class="ex"><b>예시 답안</b>7월 말에 부산을 떠나 갈 때는 북극항로로 가겠다. 8월에 북극항로 구간에 들어가면 얼음이 가장 적어 쇄빙선 없이 지날 수 있고, 수에즈 운하로 가는 것보다 열흘 가까이 빠르다. 그러나 로테르담에서 출항하는 9월 말에는 곧 바다가 다시 얼기 시작하고, 길목을 쥔 러시아의 허가와 비용에 기대야 하므로 돌아올 때는 수에즈 운하 경유 항로를 고르겠다.</p>
- <p class="ex"><b>이런 근거도 있다</b>수에즈 운하 경유 항로도 홍해의 위험 때문에 희망봉을 돌아가면 북극항로보다 20일 넘게 더 걸린다. 위험이 없는 길은 없으므로, 계절과 나라 사이의 관계에 따라 길을 바꿀 수 있게 두 길을 모두 준비해 두는 것이 낫다.</p>
- <p class="hint">내 답에 시간, 계절, 길목을 쥔 나라 가운데 무엇이 들어 있는지 견주어 보자.</p>`;}
+}
 /* ---------- setup ---------- */
 function setup(){S.totalBefore=0;paintIce();const mo=Array.from({length:12},(_,i)=>`<button class="btn${S.month===i?' on':''}" onclick="S.month=${i};setup()">${i+1}월</button>`).join('');
  h(`<div class="box mission"><p class="lab">미션</p><p>컨테이너선의 선장이 되어 부산에서 로테르담(네덜란드)까지 짐을 싣고 갔다가, 다시 짐을 싣고 부산으로 돌아오자.</p>
  <p class="lab">하는 방법</p><p>출항할 달과 갈 길을 고른 뒤, 지도 위의 배를 끌어 항로를 따라간다. 지점마다 나오는 상황을 읽고 선장으로서 결정한다. 로테르담에서는 돌아올 길을 다시 고른다.</p>
- <p class="lab">마지막에 할 일</p><p style="margin:0">걸린 날, 연료, 치른 대가와 위험을 두 길끼리 견주어 보고, 다음 항해 계획을 선장 일지에 쓴다.</p></div>
+ <p class="lab">마지막에 할 일</p><p style="margin:0">걸린 날과 거리, 연료를 두 길끼리 견주어 본다.</p></div>
  <div class="box"><p class="lab">출항할 달 (1일 출항)</p><div class="months">${mo}</div>
  <p class="lab">그때 북극항로의 얼음 상태: <span style="color:#22262d">${ICE[iceState(doyOf(S.month))]}</span></p>
  <p class="lab" style="margin-top:8px">갈 길</p><div class="routes"><button class="btn" onclick="go('nsr')"><b>북극항로</b><span>약 ${fmtKm(ROUTES.nsr.tot)} · 약 22일(얼음이 없을 때)</span></button><button class="btn" onclick="go('suez')"><b>수에즈 운하 경유 항로</b><span>약 ${fmtKm(ROUTES.suez.tot)} · 약 32일</span></button></div>
