@@ -39,6 +39,8 @@ textarea{width:100%;min-height:90px;font:inherit;border:1px solid #cfd4da;border
 .ex{margin:8px 0 0;padding:8px 10px;border-left:3px solid #9aa3ad;background:#f6f7f8;font-size:12.5px}
 .ex b{display:block;font-size:12px}
 .mission p{margin:0 0 6px}
+.qq{font-weight:700;margin:4px 0 6px!important}.ans{font-size:12px;color:var(--mut);margin:0 0 4px!important}.fb{border-left:3px solid var(--c);background:#f3f6fa;padding:7px 10px;margin:0 0 8px;font-size:12.5px}
+.cmpt{width:100%;border-collapse:collapse;font-size:12.5px;margin:4px 0 8px}.cmpt td,.cmpt th{padding:4px 2px;border-top:1px solid #e3e6ea;text-align:right;white-space:nowrap}.cmpt td:first-child,.cmpt th:first-child{text-align:left}.cmpt th{font-weight:400;color:var(--mut);font-size:11.5px}.cmpt tr.me td{font-weight:700}.save{color:var(--c);font-weight:700}
 .rk{display:inline-block;font-size:11px;font-weight:700;padding:0 7px;border-radius:99px;margin-left:6px;vertical-align:2px;line-height:18px}
 .rk.h{background:#9a3b2a;color:#fff}.rk.m{background:#fbf1e3;color:#8a5a12;border:1px solid #e6c48f}.rk.l{background:#f1f3f5;color:#6b707a}
 .alert{background:#9a3b2a;color:#fff;border-radius:8px;padding:8px 10px;margin:0 0 8px;font-size:12.5px;line-height:1.5}.alert b{display:block;font-size:12px;letter-spacing:.02em}
@@ -72,7 +74,9 @@ function dens(w){const o=[];for(let i=0;i<w.length-1;i++){let [a,b]=w[i],[c,d]=w
  for(let t=0;t<n;t++){let lo=a+(c-a)*t/n;if(lo<-180)lo+=360;if(lo>180)lo-=360;o.push([lo,b+(d-b)*t/n]);}}o.push(w[w.length-1]);return o;}
 function build(w){const g=dens(w),xy=g.map(p=>P(p[0],p[1])),cum=[0];for(let i=1;i<g.length;i++)cum.push(cum[i-1]+hav(g[i-1],g[i]));return {g,xy,cum,tot:cum[cum.length-1]};}
 const ROUTES={nsr:Object.assign(build(W_NSR),{days:22,name:'북극항로'}),suez:Object.assign(build(W_SUE),{days:32,name:'수에즈 운하 경유 항로'}),cape:Object.assign(build(W_CAPE),{days:43,name:'희망봉 우회 항로'})};
-function rev(r){const g=r.g.slice().reverse(),xy=r.xy.slice().reverse(),cum=[0];for(let i=1;i<g.length;i++)cum.push(cum[i-1]+hav(g[i-1],g[i]));return {g,xy,cum,tot:cum[cum.length-1],days:r.days,name:r.name};}
+/* 표시 거리: 보도된 부산–로테르담 거리(수에즈 약 2만 2천 km, 북극항로 약 1만 5천 km)에 맞춰 보정 */
+(function(){const f={nsr:15000/ROUTES.nsr.tot,suez:22000/ROUTES.suez.tot};f.cape=f.nsr;for(const k in f){const r=ROUTES[k];r.cum=r.cum.map(v=>v*f[k]);r.tot*=f[k];}})();
+function rev(r){const g=r.g.slice().reverse(),xy=r.xy.slice().reverse(),cum=[0];for(let i=1;i<g.length;i++)cum.push(cum[i-1]+hav(g[i-1],g[i]));const f=r.tot/cum[cum.length-1];return {g,xy,cum:cum.map(v=>v*f),tot:r.tot,days:r.days,name:r.name};}
 /* ---------- checkpoints ---------- */
 const CP=[
  {id:'tsugaru',rk:'l',at:[140.5,41.6],r:['nsr'],t:'쓰가루 해협',k:'일본 혼슈와 홋카이도 사이',p:'일본의 두 섬 사이를 지나 태평양으로 나간다. 여러 나라의 배가 자유롭게 지나는 국제 해협이다.'},
@@ -148,15 +152,60 @@ const side=document.getElementById('side');
 function h(s){side.innerHTML=s;}
 function stats(){const leg=LEGS[S.leg],nd=nowDoy();return `<div class="box"><p class="lab">${S.leg+1}번째 항해 · ${leg.from} → ${leg.to} · ${S.path?S.path.name:''}</p>
  <div class="stat"><div><span class="lab">오늘</span><b>${dateStr(nd)}</b></div><div><span class="lab">항해한 날</span><b>${Math.round(S.totalBefore+legDay()+S.extra)}일</b></div><div><span class="lab">이번 항해 거리</span><b>${Math.round(S.path.cum[S.idx]).toLocaleString()} km</b></div></div>
- <p class="lab" style="margin-top:8px">실은 짐</p><p style="margin:0">${leg.cargo}</p>
+ <p class="lab" style="margin-top:8px">실은 짐</p><p style="margin:0">${leg.cargo}${S.extraCargo&&S.leg===0?', '+S.extraCargo:''}</p>
  <p class="lab" style="margin-top:8px">북극항로 얼음 상태(${dateStr(nd)})</p><p class="ice" style="margin:0">${ICE[iceState(nd)]}</p>
  <p class="lab" style="margin-top:8px">치른 대가</p><div class="chips">${S.costs.length?[...new Set(S.costs)].map(c=>'<span>'+c+'</span>').join(''):'<span>없음</span>'}</div>
  <p class="lab" style="margin-top:8px">마주친 위험</p><div class="chips d">${S.risks.length?[...new Set(S.risks)].map(c=>'<span>▲ '+c+'</span>').join(''):'<span style="color:#6b707a;border-color:#e3e6ea">아직 없음</span>'}</div></div>`;}
-function update(){if(S.stage!=='sail')return;paintIce();let s=stats();
+function update(){if(S.stage==='port'&&S.card){h(stats()+S.card);return;}if(S.stage!=='sail')return;paintIce();let s=stats();
  if(S.card)s+=S.card; else s+=`<div class="box"><p class="hint" style="margin:0">배를 끌어 다음 지점으로 가자.</p><button class="btn" style="margin-top:8px" onclick="auto()">다음 지점까지 가기</button></div>`;
  s+=`<div class="box"><p class="lab">항해 일지</p><ol class="log">${S.log.map(l=>'<li>'+l+'</li>').join('')}</ol></div>`;h(s);}
 function paintIce(){const st=iceState(S.path?nowDoy():doyOf(S.month));iceLine.setAttribute('opacity',st==='open'?0:st==='part'?.55:.9);iceLine.setAttribute('stroke',st==='part'?'#9fb4cc':'#7f95ad');iceLine.setAttribute('stroke-dasharray',st==='part'?'4 5':'none');}
 function auto(){let to=S.idx;for(let i=S.idx+1;i<S.path.xy.length;i++){to=i;if(hitCP(i))break;}advance(to);}
+/* ---------- two-choice questions ---------- */
+const QZ={
+ busanOut:{ask:'출항 직전, 중국 다롄에서 온 유럽행 컨테이너를 함께 실어 달라는 연락이 왔다. 어떻게 할까?',opts:[
+  {t:'부산에서 옮겨 싣고 함께 간다',fb:'다롄의 화물이 부산에서 배를 갈아탔다. 이것이 환적이다. 부산항은 처리하는 컨테이너의 절반 이상이 환적 화물인 세계 2위의 환적항이다. 북극항로가 열리면 중국 북부와 일본의 화물이 북쪽 길의 입구인 부산에서 배를 갈아탈 수 있다.',cargo:'다롄에서 온 환적 컨테이너'},
+  {t:'우리 짐만 싣고 바로 떠난다',fb:'그 화물은 다른 항구에서 배를 갈아탈 것이다. 일본 홋카이도의 도마코마이항, 중국의 다롄·상하이항도 북극항로의 환적 거점이 되려고 부산과 경쟁하고 있다.'}]},
+ tsugaru:{ask:'일본 열도를 빠져나가 태평양으로 나갈 길은?',opts:[
+  {t:'쓰가루 해협으로 바로 나간다',fb:'혼슈와 홋카이도 사이의 쓰가루 해협은 어느 나라 배든 지날 수 있는 국제 해협이다. 부산에서 북극항로로 가는 가장 짧은 길 가운데 하나이다.'},
+  {t:'대한해협으로 내려가 일본 남쪽을 돈다',fb:'지날 수는 있지만 일본 열도 남쪽을 크게 돌아 이틀쯤 더 걸린다. 길목 하나가 거리를 크게 줄여 준다.',days:2}]},
+ permit:{ask:'러시아의 북극항로 운항 허가는 언제 받아 두었나?',opts:[
+  {t:'출항 전에 미리 신청해 받아 두었다',fb:'러시아는 북극항로를 지나려는 배에 미리 허가를 받게 하고, 배가 얼음을 견딜 수 있는지도 심사한다. 서류를 갖춘 배만 이 바다에 들어간다.'},
+  {t:'입구에 도착해서 신청한다',fb:'허가가 나올 때까지 바다 위에서 사흘을 기다렸다. 이 길의 문을 여닫는 열쇠는 러시아가 쥐고 있다.',days:3}]},
+ esib:{ask:'앞으로 수천 km, 연료는 어떻게 할까?',opts:[
+  {t:'출항할 때 가득 채워 왔다',fb:'북극 해안에는 큰 항구가 거의 없어 미리 채워 와야 한다. 연료를 많이 실은 만큼 짐은 덜 실었다.'},
+  {t:'가는 길의 항구에서 채운다',fb:'러시아 북극 해안의 작은 항구 페베크에 들렀지만, 연료가 넉넉하지 않아 하루를 더 기다렸다.',days:1}]},
+ vilk:{ask:'빌키츠키 해협을 어떻게 지날까?',opts:[
+  {t:'러시아의 안내를 받아 해협을 지난다',fb:'러시아는 이 해협을 자기 나라의 내수로 보고 자기 규칙을 따르게 한다. 미국 등은 국제 해협이라고 보지만, 이 길을 쓰는 배는 대개 러시아의 규칙을 따른다.'},
+  {t:'섬들의 북쪽으로 돌아간다',fb:'북쪽 바다는 얼음이 더 많아 하루가 더 걸렸다. 돌아가도 러시아가 관리하는 북극항로 구간을 벗어나지는 못한다.',days:1}]},
+ kara:{ask:'옆을 지나가는 커다란 배는 무엇을 싣고 있을까?',opts:[
+  {t:'아시아에서 유럽으로 가는 컨테이너',fb:'아니다. 야말반도에서 실은 액화 천연가스(LNG)이다. 북극항로 화물의 대부분은 컨테이너가 아니라 러시아 북극에서 나오는 LNG와 석유이다.'},
+  {t:'야말반도에서 실은 액화 천연가스(LNG)',fb:'맞다. 북극항로 화물의 대부분은 컨테이너가 아니라 러시아 북극에서 나오는 LNG와 석유이다.'}]},
+ spill:{ask:'북극 바다에서는 어떤 연료를 쓸까?',opts:[
+  {t:'값싼 무거운 연료유',fb:'규칙 위반이다. 국제해사기구(IMO)는 2024년 7월부터 북극 바다에서 무거운 연료유를 쓰거나 싣고 다니는 것을 금지하였다. 연료를 바꿔 실어야 했다.',cost:'연료 교체 비용',days:1},
+  {t:'비싸지만 깨끗한 연료',fb:'북극에서는 이것이 규칙이다. 새어 나가도 덜 해롭고, 얼음 위에 쌓여 얼음을 빨리 녹이는 그을음도 적다.'}]},
+ barents:{ask:'무르만스크 앞바다는 북극권인데도 겨울에 잘 얼지 않는다. 왜일까?',opts:[
+  {t:'따뜻한 북대서양 난류가 흘러들어서',fb:'맞다. 멕시코 만류에서 이어지는 북대서양 난류 덕분에 노르웨이와 무르만스크 앞바다는 겨울에도 잘 얼지 않는다.'},
+  {t:'바닷물이 특히 짜서',fb:'아니다. 북대서양 난류가 따뜻한 바닷물을 실어 와서 겨울에도 잘 얼지 않는다.'}]},
+ malacca:{ask:'싱가포르에 들러 연료를 채울까?',opts:[
+  {t:'들러서 채운다',fb:'싱가포르는 세계에서 선박 연료를 가장 많이 파는 항구이다. 길목에 있는 항구에는 배가 들르며 일자리와 돈이 모인다. 부산이 북극항로에서 노리는 것도 이런 자리이다.'},
+  {t:'그냥 지나간다',fb:'연료가 모자라 인도양의 다른 항구에 들러야 했다. 길목의 항구는 들르지 않을 수 없는 곳이다.',days:1}]},
+ cape:{ask:'희망봉 앞바다는 왜 거칠까?',opts:[
+  {t:'강한 서풍과 거센 해류가 만나서',fb:'맞다. 남반구의 강한 서풍과 아굴라스 해류가 부딪혀 파도가 높다. 연료가 더 들고 속도도 느려진다.'},
+  {t:'바다가 얕아서',fb:'아니다. 남반구의 강한 서풍과 아굴라스 해류가 부딪혀 파도가 높다.'}]},
+ busanIn:{ask:'북극항로가 활발해지면 부산에는 어떤 변화가 생길까?',opts:[
+  {t:'북쪽으로 가는 배가 들러 짐을 옮겨 싣고 연료를 채우는 항구가 된다',fb:'부산이 바라는 모습이다. 해양수산부가 부산으로 옮겨 왔고, 2030년 정기 운항을 목표로 북극항로를 준비하고 있다. 그러나 일본 도마코마이, 중국 다롄·상하이도 같은 자리를 노리고, 길목을 쥔 러시아와의 관계와 짧은 운항 철이 한계이다.'},
+  {t:'배들이 부산을 거치지 않고 지나가 버린다',fb:'그럴 수도 있다. 중국과 일본의 항구에서 바로 북극항로로 가면 부산은 들르지 않는 곳이 된다. 그래서 부산은 환적과 연료 공급, 선박 수리 같은 기능을 갖추어 배가 들를 까닭을 만들려 한다.'}]}
+};
+const BUSAN_OUT={t:'부산항 · 출항 준비',k:'부산신항',p:'부산항은 처리하는 컨테이너의 절반 이상을 다른 나라 배로 옮겨 싣는 세계 2위의 환적항이다.'};
+const BUSAN_IN={t:'부산항 · 귀항',k:'부산신항',p:'한 바퀴 항해를 마치고 부산신항에 돌아왔다.'};
+function quizCard(c,q,body,rk,after,warn){S.qc={c,q,body,rk,after,warn};
+ card(c.t,c.k,body+`<p class="qq">${q.ask}</p>`,q.opts.map((o,i)=>`<button class="btn" onclick="pick(${i})">${o.t}</button>`).join(''),warn,c,rk);update();}
+function pick(i){const {c,q,body,rk,after,warn}=S.qc,o=q.opts[i];
+ if(o.days)S.extra+=o.days;if(o.cost)S.costs.push(o.cost);if(o.cargo)S.extraCargo=o.cargo;S.log.push('→ '+o.t);
+ card(c.t,c.k,body+`<p class="qq">${q.ask}</p><p class="ans">고른 것: ${o.t}${o.days?` (+${o.days}일)`:''}</p><div class="fb">${o.fb}</div>`,
+  after?`<button class="btn main" onclick="qAfter()">계속</button>`:ok(),warn,c,rk);update();}
+function qAfter(){const a=S.qc.after;S.qc=null;S.card=null;a();if(S.stage==='sail')update();}
 /* ---------- checkpoint cards ---------- */
 const RKN={h:'위험 높음',m:'주의',l:'안전'};
 function card(t,k,body,acts,warn,c,rk){rk=rk||(c&&c.rk)||'';const al=c&&c.alert?`<div class="alert"><b>▲ ${c.alert}</b></div>`:'';
@@ -164,25 +213,29 @@ function card(t,k,body,acts,warn,c,rk){rk=rk||(c&&c.rk)||'';const al=c&&c.alert?
  S.card=`<div class="card${warn||rk==='h'?' warn':''}">${al}<p class="t">${t}${rk?`<span class="rk ${rk}">${rk==='h'?'▲ ':''}${RKN[rk]}</span>`:''}</p><p class="k">${k}</p>${ph}${body}<div class="acts">${acts}</div></div>`;}
 function ok(lbl){return `<button class="btn main" onclick="closeCard()">${lbl||'계속 항해하기'}</button>`;}
 function closeCard(){S.card=null;update();if(S.idx>=S.path.xy.length-1)arrive();}
-function openCP(c){S.done[S.leg+c.id]=1;cpEls[c.id].firstChild.setAttribute('fill','#1f4f8f');
+function openCP(c){S.done[S.leg+c.id]=1;if(cpEls[c.id])cpEls[c.id].firstChild.setAttribute('fill','#1f4f8f');
  if(c.red)S.redPassed=true;
  if(c.cost&&!(c.id==='bab'&&S.capeChosen))S.costs.push(c.cost);
  if(c.gate)return gate(c);
  if(c.split)return split(c);
  let body='<p>'+c.p+'</p>';
  let rk2=null;if(c.ice){const st=iceState(nowDoy());if(st!=='open'){S.risks.push('바다 얼음');rk2=st==='frozen'?'h':'m';}if(st==='frozen'){body+='<p class="k">그사이 바다가 얼기 시작하였다. 쇄빙선이 두꺼워진 얼음을 겨우 깨며 길을 연다.</p>';S.extra+=2;}else if(st==='part'){body+='<p class="k">쇄빙선이 앞에서 얼음을 깨며 길을 연다. 속도가 느려진다.</p>';S.extra+=1;}else{body+='<p class="k">떠다니는 얼음 조각을 피해 속도를 줄인다.</p>';S.extra+=.5;}}
- if(c.dz)S.risks.push(c.dz);S.log.push(dateStr(nowDoy())+' '+c.t);card(c.t,c.k,body,ok(),false,c,rk2);}
+ if(c.dz)S.risks.push(c.dz);S.log.push(dateStr(nowDoy())+' '+c.t);
+ if(QZ[c.id])return quizCard(c,QZ[c.id],body,rk2,null,false);
+ card(c.t,c.k,body,ok(),false,c,rk2);}
 function gate(c){const st=iceState(nowDoy());S.log.push(dateStr(nowDoy())+' '+c.t);
- if(S.gateDone){card(c.t,c.k,'<p>북극항로 구간을 빠져나왔다. '+(c.id==='barents'?'노르웨이 앞바다는 북대서양 난류의 영향으로 겨울에도 잘 얼지 않는다.':'베링 해협을 지나 태평양으로 나간다.')+'</p>',ok(),false,c,'l');return;}
- S.gateDone=true;
- let body='<p>여기서부터 러시아가 관리하는 북극항로 구간이다. 미리 받아 둔 러시아의 운항 허가를 확인받는다. 허가 없이는 들어갈 수 없다.</p><p><b>지금 얼음 상태: '+ICE[st]+'</b></p>';
- S.costs.push('러시아 운항 허가');
+ if(S.gateDone){const eb='<p>북극항로 구간을 빠져나왔다. '+(c.id==='barents'?'':'베링 해협을 지나 태평양으로 나간다.')+'</p>';
+  if(c.id==='barents')return quizCard(c,QZ.barents,eb,'l',null,false);card(c.t,c.k,eb,ok(),false,c,'l');return;}
+ S.gateDone=true;S.costs.push('러시아 운항 허가');
+ quizCard(c,QZ.permit,'<p>여기서부터 러시아가 관리하는 북극항로 구간이다. 허가 없이는 들어갈 수 없다.</p>','l',()=>gateIce(c),false);}
+function gateIce(c){const st=iceState(nowDoy());
+ let body='<p><b>지금 얼음 상태: '+ICE[st]+'</b></p>';
  if(st==='open'){body+='<p>얼음이 가장 적은 때이다. 쇄빙선 없이 지날 수 있지만, 러시아에 얼음 길 안내 비용을 낸다.</p>';S.costs.push('얼음 길 안내 비용');card(c.t,c.k,body,ok('북극항로로 들어가기'),false,c,'l');}
  else if(st==='part'){body+='<p>바다 곳곳에 얼음이 남아 있거나 새로 얼기 시작하였다. 러시아 쇄빙선의 호위를 받아야 지날 수 있다.</p>';
   card(c.t,c.k,body,`<button class="btn" onclick="escort()"><b>쇄빙선 호위를 받는다</b><br><span class="hint">사흘 정도 더 걸리고 호위 비용을 낸다</span></button><button class="btn" onclick="turnBack()"><b>배를 돌린다</b><br><span class="hint">출발한 항구로 돌아가 수에즈 운하 경유 항로로 간다</span></button>`,true,c,'m');S.risks.push('바다 얼음');}
  else{body+='<p>바다가 두꺼운 얼음으로 덮여 있다. 이 컨테이너선은 얼음을 깰 수 없고, 쇄빙선이 호위해도 지나기 어렵다.</p>';card(c.t,c.k,body,`<button class="btn main" onclick="turnBack()">배를 돌린다</button>`,true,Object.assign({},c,{alert:'얼음에 막힘 · 더 나아갈 수 없다'}),'h');S.risks.push('두꺼운 바다 얼음');}}
 function escort(){S.extra+=3;S.costs.push('쇄빙선 호위 비용');S.log.push('쇄빙선 호위를 받음');closeCard();}
-function turnBack(){const back=legDay(),t0=nowDoy();S.log.push(dateStr(t0)+' 얼음 때문에 배를 돌림');S.log.push(dateStr(t0+back)+' '+LEGS[S.leg].from+'항으로 돌아옴');S.extra+=back*2;S.detour+=back*2;
+function turnBack(){const back=legDay(),t0=nowDoy();S.turnKm=(S.turnKm||0)+2*S.path.cum[S.idx];S.log.push(dateStr(t0)+' 얼음 때문에 배를 돌림');S.log.push(dateStr(t0+back)+' '+LEGS[S.leg].from+'항으로 돌아옴');S.extra+=back*2;S.detour+=back*2;
  S.card=null;S.gateDone=false;S.costs.push('되돌아간 날들의 연료');startLeg('suez',true);}
 function split(c){S.log.push(dateStr(nowDoy())+' '+(S.redPassed?c.t.split(' · ')[0]:c.t));
  if(S.redPassed){card(c.t.split(' · ')[0],c.k,'<p>'+(c.id==='iber'?'이베리아반도를 돌아 북쪽으로 간다.':'인도양을 건너 동쪽으로 간다.')+'</p>',ok(),false,null,'l');return;}
@@ -199,19 +252,30 @@ function startLeg(route,fromTurn){S.route=route;let r=ROUTES[route];if(S.leg===1
  if(!fromTurn){S.extra=0;S.legStartDoy=S.leg===0?doyOf(S.month):S.legStartDoy;}
  S.stage='sail';ship.style.display='';setShip();update();}
 function arrive(){if(S.stage!=='sail'||S.card)return;const leg=LEGS[S.leg],d=Math.round(legDay()+S.extra);S.log.push(dateStr(nowDoy())+' '+leg.to+' 도착');
- S.result.push({route:S.path.name,days:d,start:dShort(S.legStartDoy),end:dShort(nowDoy())});
+ S.result.push({key:S.route,route:S.path.name,days:d,km:Math.round(S.path.tot+(S.turnKm||0)),start:dShort(S.legStartDoy),end:dShort(nowDoy())});S.turnKm=0;
  S.totalBefore+=d;S.stage='port';
- if(S.leg===0){S.portDoy=nowDoy()+4;h(stats()+`<div class="card"><p class="t">로테르담 도착</p><p class="k">${dateStr(nowDoy())} · ${d}일 걸림</p><p>${leg.unload}</p><p>나흘 동안 짐을 내리고 새 짐을 싣는다. 돌아가는 배에는 ${LEGS[1].cargo}을 싣는다.</p>
+ if(S.leg===0){S.portDoy=nowDoy()+4;h(stats()+`<div class="card"><p class="t">로테르담 도착</p><p class="k">${dateStr(nowDoy())} · ${d}일 걸림</p><p>${leg.unload}</p>${cmpLine(S.result[0])}<p>나흘 동안 짐을 내리고 새 짐을 싣는다. 돌아가는 배에는 ${LEGS[1].cargo}을 싣는다.</p>
  <p class="lab">${dateStr(S.portDoy)} 출항 · 돌아갈 길을 고르자 (북극항로 얼음 상태: ${ICE[iceState(S.portDoy)]})</p>
  <div class="routes"><button class="btn" onclick="leg2('nsr')"><b>북극항로</b><span>러시아 북쪽 해안을 따라</span></button><button class="btn" onclick="leg2('suez')"><b>수에즈 운하 경유 항로</b><span>지중해와 인도양을 지나</span></button></div></div>`);}
- else finish();}
+ else quizCard(BUSAN_IN,QZ.busanIn,'<p>'+BUSAN_IN.p+'</p>'+cmpLine(S.result[1]),'l',finish,false);}
+const KM=k=>Math.round(ROUTES[k].tot/100)*100;
+function fmtKm(x){const t=Math.round(x/1000),m=Math.floor(t/10),r=t%10;return (m?m+'만'+(r?' ':''):'')+(r?r+'천':'')+' km';}
+function cmpLine(r){const o=r.key==='nsr'?'suez':'nsr';const od=ROUTES[o].days;
+ return `<div class="fb">이번 항해: ${r.route} ${r.days}일 · 약 ${fmtKm(r.km)}<br>같은 날 ${ROUTES[o].name}로 갔다면: 약 ${od}일 · 약 ${fmtKm(ROUTES[o].tot)}${o==='nsr'?' (얼음이 없을 때)':''}</div>`;}
 function leg2(r){prev.setAttribute('points',pl(S.path.xy));S.leg=1;S.totalBefore+=4;S.legStartDoy=S.portDoy;S.gateDone=false;S.done={...S.done};for(const k in cpEls)cpEls[k].firstChild.setAttribute('fill','#fff');S.extra=0;startLeg(r,true);}
+function summary(){const sz=ROUTES.suez.tot,rows=S.result.map((r,i)=>`<tr class="me"><td>${i?'올 때':'갈 때'} · ${r.route.replace(' 경유 항로','').replace(' 우회 항로','')}</td><td>${r.days}일</td><td>${fmtKm(r.km)}</td><td>${Math.round(r.km/sz*100)}</td></tr>`).join('');
+ const myD=S.result.reduce((a,r)=>a+r.days,0),myK=S.result.reduce((a,r)=>a+r.km,0);
+ const sd=ROUTES.suez.days*2-myD,sf=Math.round(100-myK/(2*sz)*100);
+ return `<table class="cmpt"><tr><th>구간</th><th>걸린 날</th><th>거리</th><th>연료 지수</th></tr>${rows}
+ <tr><td>두 번 모두 수에즈였다면</td><td>${ROUTES.suez.days*2}일</td><td>${fmtKm(2*sz)}</td><td>100</td></tr>
+ <tr><td>두 번 모두 북극항로였다면</td><td>${ROUTES.nsr.days*2}일</td><td>${fmtKm(2*ROUTES.nsr.tot)}</td><td>${Math.round(ROUTES.nsr.tot/sz*100)}</td></tr></table>
+ <p style="margin:0 0 8px">${sd>0?`수에즈로만 다녀왔을 때보다 <span class="save">${sd}일 빨랐고</span>`:`수에즈로만 다녀왔을 때보다 <span class="save">${-sd}일 늦었고</span>`}, 연료와 탄소 배출은 ${sf>=0?`<span class="save">약 ${sf}% 줄었다</span>`:`<span class="save">약 ${-sf}% 늘었다</span>`}.</p>`;}
 function finish(){S.stage='end';const tot=S.totalBefore;
  h(`<div class="card"><p class="t">한 바퀴 항해를 마쳤다</p><p class="k">${dateStr(doyOf(S.month))} 부산 출항 → ${dateStr(nowDoy())} 부산 도착 · 모두 ${tot}일 (로테르담 정박 4일 포함)</p>
- <table style="width:100%;border-collapse:collapse;font-size:12.5px;margin:4px 0 8px">${S.result.map((r,i)=>`<tr style="border-top:1px solid #e3e6ea"><td style="padding:4px 0">${i?'올 때':'갈 때'}</td><td>${r.route}</td><td style="white-space:nowrap">${r.start}–${r.end}</td><td style="text-align:right;white-space:nowrap">${r.days}일</td></tr>`).join('')}</table>
+ ${summary()}
  <p class="lab">치른 대가</p><div class="chips">${[...new Set(S.costs)].map(c=>'<span>'+c+'</span>').join('')}</div>
  <p class="lab" style="margin-top:6px">마주친 위험</p><div class="chips d">${[...new Set(S.risks)].map(c=>'<span>▲ '+c+'</span>').join('')||'<span>없음</span>'}</div>
- <p class="hint">비교: 두 번 모두 수에즈 운하 경유 항로로 다녀오면 약 68일, 두 번 모두 북극항로로 다녀오면 약 48일이 걸린다(얼음이 없을 때).</p></div>
+ <p class="hint">연료와 탄소 배출은 거리에 비례한다고 단순화하였다(얼음 구간의 감속은 고려하지 않음).</p></div>
  <div class="box"><p class="lab">선장 일지</p><p style="margin:0 0 6px">다음에 같은 짐을 싣고 다시 떠난다면, 몇 월에 어느 길로 가고 어느 길로 돌아오겠는가? 걸리는 시간, 계절, 길목을 쥔 나라 가운데 두 가지 이상을 근거로 써 보자.</p>
  <textarea id="ta" placeholder="출항할 달과 갈 때·돌아올 때의 길, 그 까닭"></textarea><div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px"><span class="hint">두세 문장을 쓰면 예시 답안과 비교할 수 있다.</span><button class="btn main" id="cmp" disabled onclick="cmp()">예시 답안과 비교하기</button></div><div id="exs"></div></div>
  <button class="btn" onclick="location.reload()">처음부터 다시 항해하기</button>`);
@@ -223,11 +287,11 @@ function cmp(){document.getElementById('exs').innerHTML=`<p class="ex"><b>예시
 function setup(){S.totalBefore=0;paintIce();const mo=Array.from({length:12},(_,i)=>`<button class="btn${S.month===i?' on':''}" onclick="S.month=${i};setup()">${i+1}월</button>`).join('');
  h(`<div class="box mission"><p class="lab">미션</p><p>컨테이너선의 선장이 되어 부산에서 로테르담(네덜란드)까지 짐을 싣고 갔다가, 다시 짐을 싣고 부산으로 돌아오자.</p>
  <p class="lab">하는 방법</p><p>출항할 달과 갈 길을 고른 뒤, 지도 위의 배를 끌어 항로를 따라간다. 지점마다 나오는 상황을 읽고 선장으로서 결정한다. 로테르담에서는 돌아올 길을 다시 고른다.</p>
- <p class="lab">마지막에 할 일</p><p style="margin:0">걸린 날과 치른 대가를 보고, 다음 항해 계획을 선장 일지에 쓴다.</p></div>
+ <p class="lab">마지막에 할 일</p><p style="margin:0">걸린 날, 연료, 치른 대가와 위험을 두 길끼리 견주어 보고, 다음 항해 계획을 선장 일지에 쓴다.</p></div>
  <div class="box"><p class="lab">출항할 달 (1일 출항)</p><div class="months">${mo}</div>
  <p class="lab">그때 북극항로의 얼음 상태: <span style="color:#22262d">${ICE[iceState(doyOf(S.month))]}</span></p>
- <p class="lab" style="margin-top:8px">갈 길</p><div class="routes"><button class="btn" onclick="go('nsr')"><b>북극항로</b><span>약 1만 3천 km · 약 22일(얼음이 없을 때)</span></button><button class="btn" onclick="go('suez')"><b>수에즈 운하 경유 항로</b><span>약 2만 km · 약 32일</span></button></div>
+ <p class="lab" style="margin-top:8px">갈 길</p><div class="routes"><button class="btn" onclick="go('nsr')"><b>북극항로</b><span>약 ${fmtKm(ROUTES.nsr.tot)} · 약 22일(얼음이 없을 때)</span></button><button class="btn" onclick="go('suez')"><b>수에즈 운하 경유 항로</b><span>약 ${fmtKm(ROUTES.suez.tot)} · 약 32일</span></button></div>
  <p class="lab">실을 짐: ${LEGS[0].cargo}</p></div>`);}
-function go(r){S.leg=0;S.totalBefore=0;S.costs=[];S.risks=[];S.log=[dateStr(doyOf(S.month))+' 부산 출항'];S.result=[];S.done={};S.gateDone=false;S.legStartDoy=doyOf(S.month);S.extra=0;startLeg(r);}
+function go(r){S.leg=0;S.totalBefore=0;S.costs=[];S.risks=[];S.log=[dateStr(doyOf(S.month))+' 부산 출항'];S.result=[];S.done={};S.gateDone=false;S.legStartDoy=doyOf(S.month);S.extra=0;S.extraCargo=null;startLeg(r);quizCard(BUSAN_OUT,QZ.busanOut,'<p>'+BUSAN_OUT.p+'</p>','l',null,false);}
 setup();
 </script></body></html>
