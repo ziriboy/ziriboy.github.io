@@ -574,8 +574,7 @@ function p4(){
   <tr><td class="k2">필요한 데이터</td><td>
     ${M.pk.map(byId).filter(Boolean).map(d=>`<div class="drow">
       <div class="dl"><div class="dn">${esc(d.n)}</div><input type="text" class="why" data-dw="${d.id}" value="${esc(M.dw[d.id]||'')}" placeholder="왜 적절한가: 나의 질문의 무엇을 보여 주는가"></div>
-      <div class="dr"><div class="site"><b>${esc(d.s)}</b>${srcCell(d,1)}</div>
-        <label class="okc noprint"><input type="checkbox" data-dk="${d.id}" ${M.dk[d.id]?'checked':''}> 사이트에서 데이터를 확인했다</label></div></div>`).join('')}
+      <div class="dr">${dsrcHtml(d)}</div></div>`).join('')}
     ${R.filter(r=>r.add).map(r=>{const i=R.indexOf(r);return `<div class="drow">
       <div class="dl"><input type="text" data-mn="${i}" value="${esc(r.n)}" placeholder="목록에 없는 데이터">
         <input type="text" class="why" data-mw="${i}" value="${esc(r.why||'')}" placeholder="왜 적절한가: 나의 질문의 무엇을 보여 주는가">${whereHtml(r,i)}</div>
@@ -602,7 +601,7 @@ function p4(){
 }
 function allData(){ const M=ST.p.my; M.pk=M.pk||[]; M.dw=M.dw||{}; M.dk=M.dk||{};
   const X=M.xe||{}, R=rowsOf('mine');
-  return [...M.pk.map(id=>({key:'p:'+id,n:(DCAT.find(d=>d.id===id)||{}).n,why:M.dw[id],src:true,ok:!!M.dk[id],xe:X['p:'+id]})),
+  return [...M.pk.map(id=>({key:'p:'+id,n:(DCAT.find(d=>d.id===id)||{}).n,why:M.dw[id],src:!!(M.ds||{})[id],ok:!!M.dk[id],xe:X['p:'+id]})),
           ...R.filter(r=>r.add&&(r.n||'').trim()).map(r=>({key:'m:'+R.indexOf(r),n:r.n,why:r.why,src:!!(r.svc||r.snone),ok:r.snone||(r.svc&&r.ok),none:r.snone&&!r.prim,xe:X['m:'+R.indexOf(r)]}))]; }
 function cmpReady(){ const M=ST.p.my; return !!(M.q||'').trim()&&allData().length>=3; }
 function chkl(){ const M=ST.p.my, D=allData(), has=D.length>0;
@@ -619,6 +618,27 @@ function rec2List(q){ q=q||''; if(!q.trim()) return []; let x=q; Object.keys(SYN
   let L=REC2.filter(r=>!have.has(r.n)).map(r=>[r,r.k.split(' ').reduce((a,w)=>a+(w.length>1&&x.includes(w)?1:0),0)]).filter(z=>z[1]>0).sort((a,b)=>b[1]-a[1]).slice(0,3).map(z=>z[0]);
   if(!L.length) L=REC2.filter(r=>!have.has(r.n)&&(r.n==='현장 관찰 기록'||r.n==='주민 인터뷰'));
   return L; }
+function dsrcOpts(d){ const n=d.n+' '+d.k; let x=n; Object.keys(SYN).forEach(k=>{ if(k.length>1&&n.includes(k)) x+=' '+SYN[k]; });
+  const sc=t=>t.split(' ').reduce((a,v)=>a+(v.length>1&&x.includes(v)?1:0),0);
+  const A=[d.s]; REC.map(z=>[z.s,sc(z.k)]).filter(z=>z[1]>0).sort((a,b)=>b[1]-a[1]).forEach(z=>{ if(A.length<3&&!A.includes(z[0])) A.push(z[0]); });
+  sugList(d.n).forEach(z=>{ if(A.length<3&&!A.includes(z.n)) A.push(z.n); });
+  ['SGIS 통계주제도','공공데이터포털 (지방행정 인허가데이터)','국토정보맵 접근성','생활안전지도'].forEach(z=>{ if(A.length<3&&!A.includes(z)) A.push(z); });
+  const rot=(+d.id.slice(1))%A.length, S=A.slice(rot).concat(A.slice(0,rot));
+  let B=REC2.map(z=>[z,sc(z.k)]).filter(z=>z[1]>0).sort((a,b)=>b[1]-a[1]).slice(0,1).map(z=>z[0]);
+  REC2.filter(z=>z.n==='현장 관찰 기록'||z.n==='주민 인터뷰'||z.n==='이용자 설문').forEach(z=>{ if(B.length<2&&!B.includes(z)) B.push(z); });
+  return {S,B}; }
+function dsrcHtml(d){ const M=ST.p.my, c=(M.ds=M.ds||{})[d.id];
+  if(c){ const ch=` <a href="#" class="exl noprint" data-dsx="${d.id}" style="margin:0 0 0 6px">바꾸기</a>`;
+    let h;
+    if(c.prim) h=`<div class="site"><b>서비스 밖의 데이터</b><span>${esc(c.prim)}${ch}</span></div>`;
+    else if(c.svc===d.s) h=`<div class="site"><b>${esc(d.s)}</b>${srcCell(d,1)}${ch}</div>`;
+    else { const x=SVC.list.find(z=>z.n===c.svc); h=`<div class="site"><b>${esc(c.svc)}</b><span>${x?esc(x.d)+` <a href="${x.u}" target="_blank" rel="noopener" class="exl noprint" style="margin:0 0 0 6px">사이트 열기 ↗</a>`:''}${ch}</span></div>`; }
+    return h+`<label class="okc noprint"><input type="checkbox" data-dk="${d.id}" ${M.dk[d.id]?'checked':''}> 사이트에서 데이터를 확인했다</label>`; }
+  const {S,B}=dsrcOpts(d);
+  return `<div class="recb noprint" style="margin:0"><div class="note" style="margin-bottom:2px">이 데이터는 어디에서 찾을까?</div><div class="rech">공간정보웹서비스</div>`
+   +S.map(n=>{const x=SVC.list.find(z=>z.n===n);return `<div class="recr"><div><b>${esc(n)}</b><span>${x?esc(x.d):''}</span></div><button class="chip" data-dss="${d.id}" data-v="${esc(n)}">고르기</button></div>`;}).join('')
+   +`<div class="rech">서비스에 없다면 — 직접 모으거나 다른 곳에서 찾기</div>`
+   +B.map(z=>`<div class="recr"><div><b>${esc(z.m)}</b><span>${esc(z.d)}</span></div><button class="chip" data-dsp="${d.id}" data-v="${esc(z.m+' — '+z.d)}">고르기</button></div>`).join('')+`</div>`; }
 function whereHtml(r,i){ const n=(r.n||'').trim(); if(!n||r.svc||r.prim||r.snone) return '';
   const w=n.replace(/[·,()/]/g,' ').split(/\s+/).filter(x=>x.length>1&&!STOP.has(x)); let x=n; Object.keys(SYN).forEach(k=>{ if(k.length>1&&n.includes(k)) x+=' '+SYN[k]; });
   const sc=t=>t.split(' ').reduce((a,v)=>a+(v.length>1&&x.includes(v)?1:0),0);
@@ -664,6 +684,9 @@ function b4(){
   document.querySelectorAll('[data-mo]').forEach(el=>el.onchange=()=>{MR[+el.dataset.mo].ok=el.checked;save();upd();});
   document.querySelectorAll('[data-svc]').forEach(el=>el.onclick=e=>{e.preventDefault();openSvc(el.dataset.svc);});
   $('#addM').onclick=()=>{MR.push({n:'',add:true});save();keepScroll(render);};
+  document.querySelectorAll('[data-dss]').forEach(b=>b.onclick=()=>{(M.ds=M.ds||{})[b.dataset.dss]={svc:b.dataset.v};M.dk[b.dataset.dss]=false;save();keepScroll(render);});
+  document.querySelectorAll('[data-dsp]').forEach(b=>b.onclick=()=>{(M.ds=M.ds||{})[b.dataset.dsp]={prim:b.dataset.v};M.dk[b.dataset.dsp]=false;save();keepScroll(render);});
+  document.querySelectorAll('[data-dsx]').forEach(b=>b.onclick=e=>{e.preventDefault();delete (M.ds||{})[b.dataset.dsx];M.dk[b.dataset.dsx]=false;save();keepScroll(render);});
   document.querySelectorAll('[data-wsv]').forEach(b=>b.onclick=()=>{const r=MR[+b.dataset.wsv];r.svc=b.dataset.v;delete r.snone;delete r.prim;r.ok=false;save();keepScroll(render);});
   document.querySelectorAll('[data-wpr]').forEach(b=>b.onclick=()=>{const r=MR[+b.dataset.wpr];r.prim=b.dataset.v;r.snone=true;delete r.svc;save();keepScroll(render);});
   const ex=$('#exShow'); if(ex) ex.onclick=e=>{e.preventDefault();if(ex.classList.contains('off'))return;P.cmp=true;save();keepScroll(render);};
@@ -694,7 +717,7 @@ function fullHTML(){
   const SR=(D.rows.study||[]).filter(r=>(r.n||'').trim());
   h+=`<div class="fp-sub">혼자 해 보기 — 스터디카페</div>${SR.length?`<table>${SR.map(r=>`<tr><td>${esc(r.n)}</td><td>${r.ind?esc(r.ind.t)+' ('+esc(r.ind.g)+')':(r.miss?'SGIS에 없음':'<span class="x">연결하지 않음</span>')}</td></tr>`).join('')}</table>`:'<p class="x" style="font-size:13px">데이터를 적지 않았다.</p>'}</section>`;
   /* 3 탐구 설계도 */
-  const byId=id=>DCAT.find(d=>d.id===id), rows=[...(M.pk||[]).map(byId).filter(Boolean).map(d=>({n:d.n,why:(M.dw||{})[d.id],src:d.s+' · '+d.g+' 단위',ok:(M.dk||{})[d.id]})),
+  const byId=id=>DCAT.find(d=>d.id===id), rows=[...(M.pk||[]).map(byId).filter(Boolean).map(d=>{const c=(M.ds||{})[d.id]||{};return {n:d.n,why:(M.dw||{})[d.id],src:c.prim?c.prim:c.svc===d.s?d.s+' · '+d.g+' 단위':(c.svc||''),ok:(M.dk||{})[d.id]};}),
     ...rowsOf('mine').filter(r=>r.add&&(r.n||'').trim()).map(r=>({n:r.n,why:r.why,src:r.svc||(r.snone?'찾을 수 없음(1차 데이터)':''),ok:r.snone||r.ok}))];
   h+=`<section><h3>3 나의 탐구 설계도</h3><table><tr><th>제목</th><td>${v(M.title)}</td></tr><tr><th>탐구 질문</th><td>${v(M.q)}</td></tr><tr><th>왜 중요한가</th><td>${v(M.imp)}</td></tr>
    <tr><th>탐구 지역</th><td>${v(M.area)}${M.unit?' · 비교 단위 '+esc(M.unit):''}</td></tr>
