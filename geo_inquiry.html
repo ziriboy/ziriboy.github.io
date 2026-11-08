@@ -196,6 +196,7 @@ textarea,input[type=text]{width:100%;border:1px solid var(--line);border-radius:
 .recr:first-of-type{border-top:none}
 .recr b{font-weight:600;font-size:13px;margin-right:6px}
 .recr span{font-size:12px;color:var(--mid)}
+.rech{font-size:12px;font-weight:600;color:var(--ink);margin:8px 0 2px}
 .chkl{font-size:12.5px;color:var(--mid);margin-top:10px}
 .chkl span{margin-right:14px} .chkl .o{color:var(--ok)} .chkl .x{color:var(--red)}
 @media print{.pstage{display:none!important} .stage{border:none;margin:0;padding:0} .plan input,.plan textarea{border:none!important;padding:0;outline:none} .plan .chip:not(.on){display:none} .plan .chip.on{background:none;color:var(--ink);border:none;padding:0;font-size:13.5px} .plan .chips{gap:0 14px}}
@@ -382,6 +383,7 @@ function indCell(r,key,ro){
 }
 function svcCell(o,key,ro){
   const ch=ro?'':` <a href="#" class="exl noprint" data-svc="${key}" style="margin:0 0 0 6px">바꾸기</a>`;
+  if(o.prim) return `<div class="site"><b>서비스 밖의 데이터</b><span>${esc(o.prim)}${ch}</span></div>`;
   if(o.snone) return `<div class="site"><b>찾을 수 없음</b><span>다른 데이터로 바꾸거나 직접 조사한다${ch}</span></div>`;
   if(o.svc){ const x=SVC.list.find(z=>z.n===o.svc);
     return `<div class="site"><b>${esc(o.svc)}</b><span>${x?esc(x.d)+` <a href="${x.u}" target="_blank" rel="noopener" class="exl noprint" style="margin:0 0 0 6px">사이트 열기 ↗</a>`:''}${ch}</span></div>`; }
@@ -602,7 +604,7 @@ function p4(){
 function allData(){ const M=ST.p.my; M.pk=M.pk||[]; M.dw=M.dw||{}; M.dk=M.dk||{};
   const X=M.xe||{}, R=rowsOf('mine');
   return [...M.pk.map(id=>({key:'p:'+id,n:(DCAT.find(d=>d.id===id)||{}).n,why:M.dw[id],src:true,ok:!!M.dk[id],xe:X['p:'+id]})),
-          ...R.filter(r=>r.add&&(r.n||'').trim()).map(r=>({key:'m:'+R.indexOf(r),n:r.n,why:r.why,src:!!(r.svc||r.snone),ok:r.snone||(r.svc&&r.ok),none:r.snone,xe:X['m:'+R.indexOf(r)]}))]; }
+          ...R.filter(r=>r.add&&(r.n||'').trim()).map(r=>({key:'m:'+R.indexOf(r),n:r.n,why:r.why,src:!!(r.svc||r.snone),ok:r.snone||(r.svc&&r.ok),none:r.snone&&!r.prim,xe:X['m:'+R.indexOf(r)]}))]; }
 function cmpReady(){ const M=ST.p.my; return !!(M.q||'').trim()&&allData().length>=3; }
 function chkl(){ const M=ST.p.my, D=allData(), has=D.length>0;
   const it=[['질문',!!(M.q||'').trim()],['데이터 3가지',D.length>=3],['제목',!!(M.title||'').trim()],['중요성',!!(M.imp||'').trim()],['탐구 지역',!!(M.area||'').trim()&&!!M.unit],['적절한 이유',has&&D.every(r=>(r.why||'').trim())],['출처',has&&D.every(r=>r.src)],['사이트 확인',has&&D.every(r=>r.ok)],['예상 결론',has&&D.every(r=>(r.xe||'').trim())&&!!(M.con||'').trim()]];
@@ -612,8 +614,20 @@ const REC=[{"n": "인구 피라미드(연령 구조)", "d": "나이대별 인구
 function recList(q){ q=q||''; if(!q.trim()) return []; let x=q; Object.keys(SYN).forEach(k=>{ if(q.includes(k)) x+=' '+SYN[k]; });
   const have=new Set(rowsOf('mine').filter(r=>r.add).map(r=>r.n));
   return REC.filter(r=>!have.has(r.n)).map(r=>[r,r.k.split(' ').reduce((a,w)=>a+(w.length>1&&x.includes(w)?1:0),0)]).filter(z=>z[1]>0).sort((a,b)=>b[1]-a[1]).slice(0,4).map(z=>z[0]); }
-function recHtml(){ const L=recList(ST.p.my.q); if(!L.length) return '';
-  return `<div class="recb noprint"><div class="note" style="margin-bottom:4px">질문과 관련된 다른 데이터 — 필요한 것만 더하고, 왜 필요한지 쓴다</div>${L.map(r=>{const i=REC.indexOf(r);return `<div class="recr"><div><b>${esc(r.n)}</b><span>${esc(r.d)} · ${esc(r.s)}</span></div><button class="chip" data-rec="${i}">+ 더하기</button></div>`;}).join('')}</div>`; }
+const REC2=[{"n": "지도 앱에서 찾은 업소 위치", "d": "카카오맵·네이버지도에서 업소를 검색해 위치를 지도에 옮긴다", "m": "지도 앱 검색", "k": "스터디카페 독서실 카페 가게 점포 식당 편의점 학원 빵 상권 핫플 PC방"}, {"n": "이용자 설문", "d": "언제, 왜, 어디서 오는지 이용자에게 묻는다", "m": "설문", "k": "스터디카페 카페 가게 핫플 관광 따릉이 킥보드 버스 이용 공원 도서관 학원"}, {"n": "현장 관찰 기록", "d": "간판, 영업시간, 이용자 모습을 직접 보고 기록한다", "m": "관찰·야외조사", "k": "스터디카페 카페 가게 거리 골목 핫플 상권 간판 킥보드 공원"}, {"n": "버스 노선과 시간표", "d": "시·군청 누리집이나 버스 정보 앱에서 마을별 운행 횟수를 찾는다", "m": "시·군청 누리집, 버스 정보 앱", "k": "버스 노선 대중교통 마을 무료 정류장 시골 농촌"}, {"n": "주민 인터뷰", "d": "주민에게 이동, 생활의 불편, 바라는 점을 묻는다", "m": "인터뷰", "k": "버스 노인 마을 주민 불편 폭염 더위 소멸 농촌 시골 시장 이주민"}, {"n": "정류장·대여소 이용자 수 세기", "d": "정해진 시간 동안 타고 내리는 사람을 직접 센다", "m": "관찰·야외조사", "k": "버스 정류장 따릉이 대여소 역 이용"}, {"n": "직접 잰 온도", "d": "온도계로 그늘, 아스팔트, 공원의 온도를 재어 비교한다", "m": "측정·야외조사", "k": "폭염 더위 열섬 기온 그늘 공원 쉼터"}, {"n": "전동킥보드 위치 사진", "d": "잘못 세워진 킥보드를 찍어 지도에 올린다", "m": "커뮤니티 매핑", "k": "킥보드 주차 방치 모빌리티"}, {"n": "SNS 게시물 수", "d": "장소 이름 해시태그가 붙은 게시물 수의 변화를 센다", "m": "SNS 검색", "k": "핫플 카페 관광 SNS 인스타 맛집 거리 축제"}, {"n": "옛 신문 기사", "d": "신문 기사에서 그 장소가 언제, 어떻게 다뤄졌는지 찾는다", "m": "네이버 뉴스 라이브러리, 언론 기사", "k": "변화 과거 옛날 역사 개발 폐교 공장 신도시 원도심 재개발"}, {"n": "지자체 정책 자료", "d": "시·군청의 보도자료와 계획서에서 정책의 내용과 대상을 찾는다", "m": "시·군청 누리집", "k": "정책 무료 지원 계획 조례 도입 사업 지자체 군청 시청"}, {"n": "학생 설문", "d": "우리 학교 학생의 경험과 생각을 묻는다", "m": "설문", "k": "학교 학생 통학 학원 청소년 급식 등교"}];
+function rec2List(q){ q=q||''; if(!q.trim()) return []; let x=q; Object.keys(SYN).forEach(k=>{ if(q.includes(k)) x+=' '+SYN[k]; });
+  const have=new Set(rowsOf('mine').filter(r=>r.add).map(r=>r.n));
+  let L=REC2.filter(r=>!have.has(r.n)).map(r=>[r,r.k.split(' ').reduce((a,w)=>a+(w.length>1&&x.includes(w)?1:0),0)]).filter(z=>z[1]>0).sort((a,b)=>b[1]-a[1]).slice(0,3).map(z=>z[0]);
+  if(!L.length) L=REC2.filter(r=>!have.has(r.n)&&(r.n==='현장 관찰 기록'||r.n==='주민 인터뷰'));
+  return L; }
+function recHtml(){ const L=recList(ST.p.my.q), L2=rec2List(ST.p.my.q); if(!L.length&&!L2.length) return '';
+  return `<div class="recb noprint"><div class="note" style="margin-bottom:4px">질문과 관련된 다른 데이터 — 필요한 것만 더하고, 왜 필요한지 쓴다</div>`
+   +(L.length?`<div class="rech">공간정보웹서비스에서 찾는 데이터</div>${L.map(r=>{const i=REC.indexOf(r);return `<div class="recr"><div><b>${esc(r.n)}</b><span>${esc(r.d)} · ${esc(r.s)}</span></div><button class="chip" data-rec="${i}">+ 더하기</button></div>`;}).join('')}`:'')
+   +(L2.length?`<div class="rech">서비스에 없을 때 — 직접 모으거나 다른 곳에서 찾는 데이터</div>${L2.map(r=>{const i=REC2.indexOf(r);return `<div class="recr"><div><b>${esc(r.n)}</b><span>${esc(r.d)} · ${esc(r.m)}</span></div><button class="chip" data-rec2="${i}">+ 더하기</button></div>`;}).join('')}`:'')
+   +`</div>`; }
+function bindRec(){ const MR=rowsOf('mine');
+  document.querySelectorAll('[data-rec]').forEach(b=>b.onclick=()=>{const r=REC[+b.dataset.rec];MR.push({n:r.n,add:true,svc:r.s});save();keepScroll(render);});
+  document.querySelectorAll('[data-rec2]').forEach(b=>b.onclick=()=>{const r=REC2[+b.dataset.rec2];MR.push({n:r.n,add:true,prim:r.m+' — '+r.d,snone:true});save();keepScroll(render);}); }
 /* 낱말 맞춤 추천 */
 const SYN={스터디카페:'상권 점포 업종 독서실',독서실:'인허가 독서실 상권',카페:'상권 점포 업종',가게:'상권 점포 업종',상가:'상권 점포',식당:'상권 음식점',학원:'학원 인허가',병원:'병원 의료',약국:'병원 약국',응급:'응급',기온:'기온 폭염 기후',더위:'폭염 기온 기후',폭염:'폭염 기후 기온',열섬:'기온 기후',공원:'녹지 토지피복',나무:'녹지 토지피복 산림',녹지:'녹지 토지피복',사고:'교통사고',버스:'교통 대중교통',지하철:'교통',통학:'교통 통근',집값:'가격 실거래',아파트:'아파트 실거래',땅값:'땅값 공시',학교:'학교 학생',학생:'학교 학생',홍수:'홍수 침수',침수:'홍수 침수',미세먼지:'미세먼지 대기',하천:'하천 수질',수질:'수질 하천',관광:'관광',인구:'인구',노인:'인구 고령',고령:'고령 인구',청소년:'인구 연령',대:'인구 연령',용도:'용도지역',건물:'건물 3D',쓰레기:'폐기물',자전거:'자전거 따릉이',킥보드:'교통 이동'};
 const STOP=new Set(['위치','현황','분포','변화','데이터','정도','많은','적은','지역','우리','동네','곳']);
@@ -629,7 +643,7 @@ function b4(){
   let qT=null;
   const bindDp=()=>document.querySelectorAll('[data-dp]').forEach(b=>b.onclick=()=>{const id=b.dataset.dp,k=M.pk.indexOf(id);if(k>=0)M.pk.splice(k,1);else if(M.pk.length<4)M.pk.push(id);save();keepScroll(render);});
   document.querySelectorAll('[data-mf]').forEach(el=>el.oninput=()=>{M[el.dataset.mf]=el.value;save();upd();
-    if(el.dataset.mf==='q'){$('#qcell').textContent=el.value;clearTimeout(qT);qT=setTimeout(()=>{$('#dlist').innerHTML=dlistHtml();bindDp();const rb=$('#recbox');if(rb){rb.innerHTML=recHtml();document.querySelectorAll('[data-rec]').forEach(b=>b.onclick=()=>{const r=REC[+b.dataset.rec];MR.push({n:r.n,add:true,svc:r.s});save();keepScroll(render);});}},400);}});
+    if(el.dataset.mf==='q'){$('#qcell').textContent=el.value;clearTimeout(qT);qT=setTimeout(()=>{$('#dlist').innerHTML=dlistHtml();bindDp();const rb=$('#recbox');if(rb){rb.innerHTML=recHtml();bindRec();}},400);}});
   document.querySelectorAll('[data-myq]').forEach(b=>b.onclick=()=>{M.q=qs[+b.dataset.myq];save();keepScroll(render);});
   bindDp();
   document.querySelectorAll('[data-dw]').forEach(el=>el.oninput=()=>{M.dw[el.dataset.dw]=el.value;save();upd();});
@@ -641,7 +655,6 @@ function b4(){
   document.querySelectorAll('[data-mo]').forEach(el=>el.onchange=()=>{MR[+el.dataset.mo].ok=el.checked;save();upd();});
   document.querySelectorAll('[data-svc]').forEach(el=>el.onclick=e=>{e.preventDefault();openSvc(el.dataset.svc);});
   $('#addM').onclick=()=>{MR.push({n:'',add:true});save();keepScroll(render);};
-  const bindRec=()=>document.querySelectorAll('[data-rec]').forEach(b=>b.onclick=()=>{const r=REC[+b.dataset.rec];MR.push({n:r.n,add:true,svc:r.s});save();keepScroll(render);});
   bindRec();
   const ex=$('#exShow'); if(ex) ex.onclick=e=>{e.preventDefault();if(ex.classList.contains('off'))return;P.cmp=true;save();keepScroll(render);};
   document.querySelectorAll('[data-find]').forEach(el=>el.onclick=e=>{e.preventDefault();openFinder(el.dataset.find);});
@@ -698,7 +711,7 @@ function openSvc(key){
    <div style="padding:10px 18px;border-top:1px solid var(--line)"><button class="chip" id="vnone">찾을 수 없다</button></div></div>`;
   const close=()=>{$('#drawerHost').innerHTML='';};
   $('#shade').onclick=close; $('#fx').onclick=close;
-  $('#vnone').onclick=()=>{const o=target(vKey).obj;o.snone=true;delete o.svc;save();close();keepScroll(render);};
+  $('#vnone').onclick=()=>{const o=target(vKey).obj;o.snone=true;delete o.svc;delete o.prim;save();close();keepScroll(render);};
   $('#vq').oninput=drawV; vCat=0; setVCat(); drawV();
 }
 function setVCat(){
@@ -710,7 +723,7 @@ function drawV(){
   const rows=SVC.list.filter(r=>(!vCat||r.c===vCat)&&(!q||(r.n+r.d+r.q).includes(q))&&(vCat||!seen.has(r.n)&&seen.add(r.n)));
   $('#vl').innerHTML=rows.map(r=>`<div class="r"><div><div class="n">${esc(r.n)} <a href="${r.u}" target="_blank" rel="noopener" class="exl" style="margin:0 0 0 4px">↗</a></div><div class="d">${esc(r.d)} · ${esc(SVC.cats[r.c-1])}</div><div class="q">${esc(r.q)}</div></div>
     <div><button class="chip" data-vn="${esc(r.n)}">선택</button></div></div>`).join('')||'<p class="note" style="padding:12px 0">찾는 서비스가 없다. 다른 낱말로 찾아보고, 그래도 없으면 \'찾을 수 없다\'를 누른다.</p>';
-  document.querySelectorAll('[data-vn]').forEach(b=>b.onclick=()=>{const o=target(vKey).obj;o.svc=b.dataset.vn;delete o.snone;o.ok=false;save();$('#drawerHost').innerHTML='';keepScroll(render);});
+  document.querySelectorAll('[data-vn]').forEach(b=>b.onclick=()=>{const o=target(vKey).obj;o.svc=b.dataset.vn;delete o.snone;delete o.prim;o.ok=false;save();$('#drawerHost').innerHTML='';keepScroll(render);});
 }
 
 /* SGIS 지표 찾기 패널 */
