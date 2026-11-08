@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>우리 반이 안계면이라면</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+:root{--ink:#1b1f27;--ink2:#3a3f47;--mid:#6b707a;--soft:#a2a7b0;--line:#e3e6ea;--c:#1f4f8f;--c-d:#163a6b;--c-l:#d5e1f0;--c-w:#f2f6fb;--a:#d0661f;--a-l:#f5dcc8;--a-w:#fdf4ec}
+*{box-sizing:border-box}
+body{margin:0;background:transparent;font-family:Pretendard,-apple-system,"Apple SD Gothic Neo",sans-serif;color:var(--ink2);font-size:13px;line-height:1.55;letter-spacing:-.01em;word-break:keep-all}
+.wrap{max-width:760px;margin:0 auto;padding:4px 0 8px}
+.bar{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;padding:10px 14px;background:var(--c-w);border-radius:10px}
+.bar label{font-weight:700;color:var(--c-d);font-size:12.5px}
+input[type=text],input[type=number],select{font:inherit;font-size:13px;padding:5px 9px;border:1px solid var(--c-l);border-radius:6px;background:#fff;color:var(--ink)}
+input[type=number]{width:64px}
+input[type=text]{width:110px}
+.bar .st{font-size:12px;color:var(--mid);margin-left:auto}
+.blk{margin:16px 0 0}
+.h{display:flex;align-items:baseline;gap:8px;margin:0 0 8px;font-weight:700;color:var(--ink);font-size:14px}
+.h .n{display:inline-flex;width:20px;height:20px;border-radius:50%;background:var(--c);color:#fff;font-size:11.5px;align-items:center;justify-content:center;transform:translateY(-1px)}
+.h small{font-weight:500;color:var(--mid);font-size:12px}
+.roles{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:6px}
+.role{border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:13px;display:flex;justify-content:space-between;align-items:baseline}
+.role b{font-weight:650;color:var(--ink)}
+.role span{color:var(--mid);font-size:12px}
+.role.old{background:#faf6f1}
+.note{font-size:12px;color:var(--mid);margin:6px 0 0}
+.me{display:flex;align-items:center;gap:10px;margin:10px 0 0;font-size:13px}
+.vote{display:grid;grid-template-columns:1fr 1fr;gap:6px 10px}
+.opt{display:flex;gap:8px;align-items:flex-start;padding:7px 10px;border:1px solid var(--line);border-radius:8px;cursor:pointer;background:#fff}
+.opt input{margin:3px 0 0;accent-color:var(--a)}
+.opt b{display:block;font-weight:650;color:var(--ink);font-size:13px}
+.opt span{font-size:12px;color:var(--mid)}
+.opt.on{border-color:var(--a);background:var(--a-w)}
+.opt.dis{opacity:.45;cursor:default}
+.act{display:flex;align-items:center;gap:12px;margin:10px 0 0}
+button{font:inherit;font-size:13px;font-weight:700;border:0;border-radius:99px;padding:7px 18px;background:var(--a);color:#fff;cursor:pointer}
+button:disabled{background:#d6d9de;cursor:default}
+button.ghost{background:#fff;color:var(--c);border:1px solid var(--c-l);padding:5px 12px;font-size:12px}
+.msg{font-size:12.5px;color:var(--mid)}
+.res .r{display:grid;grid-template-columns:150px 1fr 34px;gap:10px;align-items:center;padding:4px 0}
+.res .lb{font-size:12.5px;color:var(--ink)}
+.res .tr{height:14px;background:#f1f2f4;border-radius:4px;overflow:hidden;display:flex}
+.res .o{background:var(--a)}.res .y{background:var(--c)}
+.res .v{font-size:12px;color:var(--mid);text-align:right}
+.lg{display:flex;gap:14px;font-size:12px;color:var(--mid);margin:0 0 6px}
+.lg i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+@media(max-width:560px){.vote{grid-template-columns:1fr}.res .r{grid-template-columns:110px 1fr 28px}}
+</style></head><body>
+<div class="wrap">
+  <div class="bar">
+    <label for="room">반 코드</label><input id="room" type="text" placeholder="예: 2-3반" maxlength="20">
+    <label for="cnt">학급 인원</label><input id="cnt" type="number" min="5" max="40" value="28"><span>명</span>
+    <span class="st" id="st">반 코드를 넣으면 반 전체의 투표가 모입니다</span>
+  </div>
+
+  <div class="blk">
+    <div class="h"><span class="n">1</span>우리 반 안계면 주민<small id="sum"></small></div>
+    <div class="roles" id="roles"></div>
+    <p class="note">안계면의 실제 성별·연령별 인구 구성(2026년 3월)에 맞춰 학급 인원을 나누었다. 색이 있는 칸은 60세 이상이다.</p>
+    <div class="me"><b>내가 맡은 주민</b><select id="me"></select></div>
+  </div>
+
+  <div class="blk">
+    <div class="h"><span class="n">2</span>주민 투표<small>내가 맡은 주민에게 가장 필요한 사업 3개</small></div>
+    <div class="vote" id="vote"></div>
+    <div class="act"><button id="go" disabled>투표하기</button><span class="msg" id="msg"></span></div>
+  </div>
+
+  <div class="blk res">
+    <div class="h"><span class="n">3</span>우리 반 투표 결과<small id="nv"></small><button class="ghost" id="rf" style="margin-left:auto">새로고침</button></div>
+    <div class="lg"><span><i style="background:var(--a)"></i>60세 이상 주민의 표</span><span><i style="background:var(--c)"></i>60세 미만 주민의 표</span></div>
+    <div id="res"></div>
+  </div>
+</div>
+<script>
+const DB='https://geo-inquiry-default-rtdb.asia-southeast1.firebasedatabase.app';
+// 안계면 5세 단위 인구(2026.03): 0-4 ... 100+
+const AM=[42,50,57,47,49,63,96,96,102,129,138,190,235,218,202,143,100,66,14,0,0];
+const AF=[45,46,58,55,44,60,63,74,83,104,127,164,212,241,212,191,187,139,56,15,2];
+const BANDS=[[0,'10세 미만'],[1,'10대'],[2,'20대'],[3,'30대'],[4,'40대'],[5,'50대'],[6,'60대'],[7,'70대'],[8,'80세 이상']];
+const groups=[];
+BANDS.forEach(([d,nm])=>{const idx=d<8?[2*d,2*d+1]:[16,17,18,19,20];
+  [['m','남성',AM],['f','여성',AF]].forEach(([s,sn,A])=>groups.push({id:d+s,nm:nm+' '+sn,d,pop:idx.reduce((a,i)=>a+A[i],0)}));});
+const OLD=g=>g.d>=6;
+const VOTE=[['이동 진료 버스','의사가 주 2회 마을을 직접 방문해 진료'],['병원 동행 서비스','거동이 불편한 노인의 병원 이동·접수 도움'],
+ ['농어촌 버스 증편','하루 3회인 마을버스를 6회 이상으로'],['노인 교통카드 지원','65세 이상 대중교통 무료 또는 정액 지원'],
+ ['노인 돌봄·말벗 서비스','재가 방문 돌봄, 독거노인 안부 확인'],['빈집·폐교 재활용','폐교를 문화공간·돌봄센터·체험농장으로'],
+ ['지역 일자리 창출','귀농·귀촌 지원, 창업 공간, 원격근무 시설'],['야간·주말 돌봄 서비스','밤 10시까지 어린이집, 주말 긴급 돌봄'],
+ ['청년 주거비 지원','공공임대 주택 또는 월세 보조금'],['1인 가구 커뮤니티 공간','공유 주방·소모임 공간을 갖춘 센터']];
+const $=id=>document.getElementById(id);
+let SID='';try{SID=localStorage.getItem('geoq_sid')||'';if(!SID){SID='s'+Math.random().toString(36).slice(2,10)+Date.now().toString(36);localStorage.setItem('geoq_sid',SID);}}catch(e){SID='s'+Math.random().toString(36).slice(2,12);}
+let picks=[],alloc={},votes={},mine=null;
+function allocate(n){const T=groups.reduce((a,g)=>a+g.pop,0);
+  const q=groups.map(g=>({g,x:g.pop/T*n}));q.forEach(o=>o.k=Math.floor(o.x));
+  let left=n-q.reduce((a,o)=>a+o.k,0);q.slice().sort((a,b)=>(b.x-b.k)-(a.x-a.k)).slice(0,left).forEach(o=>o.k++);
+  const r={};q.forEach(o=>r[o.g.id]=o.k);return r;}
+function drawRoles(){let n=Math.max(5,Math.min(40,parseInt($('cnt').value)||28));alloc=allocate(n);
+  const sh=groups.filter(g=>alloc[g.id]>0);
+  $('roles').innerHTML=sh.map(g=>`<div class="role${OLD(g)?' old':''}"><b>${g.nm}</b><span>${alloc[g.id]}명</span></div>`).join('');
+  const o=sh.filter(OLD).reduce((a,g)=>a+alloc[g.id],0);
+  $('sum').textContent=`${n}명 가운데 60세 이상 ${o}명`;
+  const cur=$('me').value;
+  $('me').innerHTML='<option value="">고르기</option>'+sh.map(g=>`<option value="${g.id}">${g.nm}</option>`).join('');
+  if(sh.some(g=>g.id===cur))$('me').value=cur; ping();}
+function drawVote(){$('vote').innerHTML=VOTE.map((v,i)=>{const on=picks.includes(i),dis=!on&&picks.length>=3;
+  return `<label class="opt${on?' on':''}${dis?' dis':''}"><input type="checkbox" data-i="${i}" ${on?'checked':''} ${dis?'disabled':''}><div><b>${'①②③④⑤⑥⑦⑧⑨⑩'[i]} ${v[0]}</b><span>${v[1]}</span></div></label>`}).join('');
+  $('go').disabled=!(picks.length===3&&$('me').value); ping();}
+$('vote').addEventListener('change',e=>{const i=+e.target.dataset.i;if(e.target.checked){if(picks.length<3)picks.push(i)}else picks=picks.filter(x=>x!==i);drawVote();});
+$('me').addEventListener('change',drawVote);
+$('cnt').addEventListener('input',drawRoles);
+function room(){return $('room').value.trim();}
+const url=r=>`${DB}/picks/${encodeURIComponent(r)}/anggye`;
+$('go').onclick=()=>{mine={p:$('me').value+';'+picks.join(','),t:Date.now()};const r=room();
+  if(!r){votes={me:mine};drawRes();$('msg').textContent='반 코드가 없어 내 투표만 결과에 나타납니다.';return;}
+  $('msg').textContent='보내는 중…';
+  fetch(`${url(r)}/${SID}.json`,{method:'PUT',body:JSON.stringify(mine)}).then(x=>{if(!x.ok)throw 0;$('msg').textContent='투표했습니다. 다시 고르면 바꿀 수 있습니다.';load();})
+   .catch(()=>{$('msg').textContent='전송에 실패했습니다. 잠시 뒤 다시 눌러 보세요.';});};
+function load(){const r=room();if(!r){drawRes();return;}
+  fetch(`${url(r)}.json`).then(x=>x.ok?x.json():Promise.reject()).then(j=>{if(room()!==r)return;votes=j||{};$('st').textContent=`반 코드 ${r} · 연결됨`;drawRes();})
+   .catch(()=>{$('st').textContent='연결하지 못했습니다';});}
+function drawRes(){const vs=Object.values(votes||{}).filter(v=>v&&typeof v.p==='string');
+  const c=VOTE.map(()=>({o:0,y:0}));
+  vs.forEach(v=>{const [rid,ps]=v.p.split(';');const g=groups.find(x=>x.id===rid);if(!g||!ps)return;
+    ps.split(',').map(Number).filter(i=>i>=0&&i<10).forEach(i=>c[i][OLD(g)?'o':'y']++);});
+  const mx=Math.max(1,...c.map(x=>x.o+x.y));
+  $('nv').textContent=vs.length?`${vs.length}명 투표`:'아직 투표가 없습니다';
+  $('res').innerHTML=VOTE.map((v,i)=>`<div class="r"><span class="lb">${'①②③④⑤⑥⑦⑧⑨⑩'[i]} ${v[0]}</span><div class="tr"><div class="o" style="width:${c[i].o/mx*100}%"></div><div class="y" style="width:${c[i].y/mx*100}%"></div></div><span class="v">${c[i].o+c[i].y}</span></div>`).join('');ping();}
+let tmr=null;$('room').addEventListener('change',()=>{clearInterval(tmr);load();if(room())tmr=setInterval(load,6000);});
+$('rf').onclick=load;
+function ping(){try{parent.postMessage({anggyeH:Math.ceil(document.querySelector('.wrap').getBoundingClientRect().height)+8},'*')}catch(e){}}
+addEventListener('resize',ping);
+drawRoles();drawVote();drawRes();
+</script></body></html>
