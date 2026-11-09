@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>지리교과교육론 · 지리교수</title>
+<style>
+/* ═══ 수업자료 공통 스타일 v2 — 매주 이 블록을 그대로 재사용 ═══
+   폭: --w 하나로 정한다. 980px = 본문 920px + 좌우 여백 30px씩.
+       아이패드 가로(1,024px 이상)에 맞춘 최대 폭이며, 더 좁은 화면에서는 화면에 맞춰 줄어든다.
+       본문 블록에는 따로 max-width를 주지 않는다 — 머리글과 본문의 양 끝이 같은 선에 온다.
+   좁은 화면: 640px 이하(휴대폰)에서만 세로로 쌓는다. 아이패드는 세로로 들어도 같은 배치. */
+html{overflow-y:scroll}
+:root{
+  --ink:#111517; --mid:#525C60; --soft:#8A9296;
+  --line:#E2E5E2; --line2:#EFF1EE; --wash:#F5F7F5;
+  --acc:#0E5A50; --acc-w:#E2EFEA; --red:#A03A26;
+  --mark:#F6E7B8;
+  --warn-l:#E7D8B6; --warn-b:#FCF7EB; --warn-t:#6D5421;
+  --f:Pretendard,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --w:980px; --hh:56px;
+}
+*{box-sizing:border-box} html,body{margin:0}
+body{background:#fff;color:var(--ink);font-family:var(--f);font-size:16px;
+  line-height:1.75;-webkit-font-smoothing:antialiased;letter-spacing:-.005em}
+button,input,textarea{font-family:inherit;font-size:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+
+header{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.96);
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.hin{max-width:var(--w);margin:0 auto;padding:9px 30px;display:flex;align-items:center;gap:18px}
+.brand{background:none;border:none;cursor:pointer;padding:0;text-align:left;line-height:1.3}
+.brand .c{display:block;font-size:11.5px;color:var(--soft)}
+.brand .n{display:block;font-size:14.5px;font-weight:600}
+.switch{margin-left:auto;display:flex;gap:3px;overflow:auto}
+.switch button{background:none;border:1px solid transparent;border-radius:6px;cursor:pointer;
+  padding:5px 10px;font-size:13px;color:var(--mid);white-space:nowrap}
+.switch button:hover{border-color:var(--line);color:var(--ink)}
+.switch button[aria-current="true"]{background:var(--acc-w);color:var(--acc);font-weight:600}
+.switch b{color:var(--soft);font-weight:600;margin-right:5px}
+.switch button[aria-current="true"] b{color:var(--acc)}
+
+main{max-width:var(--w);margin:0 auto;padding:44px 30px 110px}
+.stage{font-size:13px;color:var(--acc);font-weight:600;letter-spacing:.06em;margin:0 0 6px}
+h1{font-size:33px;font-weight:700;letter-spacing:-.03em;line-height:1.25;margin:0 0 14px}
+.lead{color:var(--mid);font-size:16.5px;margin:0 0 32px;max-width:70ch}
+.lead b{color:var(--ink)}
+
+.menu{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:28px}
+.mcard{text-align:left;background:none;border:1px solid var(--line);border-radius:12px;
+  padding:24px;cursor:pointer;transition:border-color .12s}
+.mcard:hover{border-color:var(--acc)}
+.mcard .k{font-size:12.5px;color:var(--acc);font-weight:600;letter-spacing:.06em}
+.mcard h3{margin:6px 0 8px;font-size:19px;font-weight:700;letter-spacing:-.02em;line-height:1.35}
+.mcard p{margin:0;color:var(--mid);font-size:14.5px;line-height:1.65}
+.mcard .m{margin-top:14px;font-size:13px;color:var(--soft)}
+.arc{margin:34px 0 0;padding-top:20px;border-top:1px solid var(--line2);
+  font-size:14.5px;color:var(--mid);display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.arc span{background:var(--wash);border-radius:6px;padding:4px 10px;color:var(--ink)}
+.arc i{font-style:normal;color:var(--soft)}
+
+.concept{background:var(--wash);border-radius:10px;padding:20px 24px;margin:6px 0 26px}
+.concept h3{margin:0 0 10px;font-size:13px;color:var(--acc);font-weight:600;letter-spacing:.04em}
+.concept dl{display:grid;grid-template-columns:170px minmax(0,1fr);gap:7px 16px;margin:0;font-size:15px}
+.concept dt{font-weight:600}
+.concept dd{margin:0;color:var(--mid)}
+.concept p{margin:12px 0 0;font-size:14.5px;color:var(--mid)}
+.concept p b{color:var(--ink)}
+
+.step{margin-bottom:46px}
+.step>h3{margin:0 0 3px;font-size:17px;font-weight:700;letter-spacing:-.02em}
+.step>h3 b{color:var(--acc);margin-right:9px}
+.step>.d{margin:0 0 16px;color:var(--mid);font-size:14.5px;max-width:74ch}
+
+.opt,.tag{background:none;border:1px solid var(--line);border-radius:6px;cursor:pointer;
+  padding:6px 12px;font-size:14px;color:var(--mid)}
+.opt:hover,.tag:hover{border-color:var(--acc);color:var(--ink)}
+.opt[aria-pressed="true"],.tag[aria-pressed="true"]{background:var(--acc);border-color:var(--acc);color:#fff}
+.opt:disabled{opacity:.4;cursor:not-allowed}
+.opt:disabled:hover{border-color:var(--line);color:var(--mid)}
+textarea,.inp{width:100%;min-height:96px;border:1px solid var(--line);border-radius:7px;
+  padding:11px 13px;resize:vertical;background:none;line-height:1.7}
+.inp{min-height:0;padding:7px 11px}
+textarea:focus,.inp:focus{border-color:var(--acc);outline:none}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.notice{border:1px solid var(--warn-l);background:var(--warn-b);border-radius:9px;
+  padding:14px 18px;color:var(--warn-t);font-size:14.5px;margin:14px 0}
+.count{font-size:14px;color:var(--mid)}
+.count b{color:var(--acc);font-weight:700}
+
+.foot{margin-top:54px;padding-top:16px;border-top:1px solid var(--line);
+  display:flex;align-items:center;gap:18px;font-size:14px;color:var(--mid);flex-wrap:wrap}
+.foot button{background:none;border:none;cursor:pointer;color:var(--mid);padding:0}
+.foot button:hover{color:var(--ink)}
+.foot .msg{color:var(--acc)}
+@media(max-width:640px){
+  .hin,main{padding-left:16px;padding-right:16px}
+  .brand .c{display:none} h1{font-size:26px} .switch .lb{display:none}
+  .concept dl{grid-template-columns:1fr}
+  .menu{grid-template-columns:1fr}
+}
+/* ═══ 공통 스타일 v2 끝 ═══ */
+
+
+
+/* 판단 버튼 (내 판단 = 채움, 참고 판단 = 테두리) */
+.seg{display:flex;gap:5px;flex-wrap:wrap}
+.seg button{background:none;border:1px solid var(--line);border-radius:14px;cursor:pointer;
+  padding:0 12px;font-size:13.5px;color:var(--mid);line-height:1.9}
+.seg button:hover{border-color:var(--acc);color:var(--ink)}
+.seg button[aria-pressed="true"]{background:var(--acc);border-color:var(--acc);color:#fff}
+.seg button.ref{box-shadow:0 0 0 2px #fff,0 0 0 3.5px var(--ink)}
+.legend{display:flex;gap:22px;flex-wrap:wrap;font-size:13.5px;color:var(--mid);align-items:center;margin:0 0 12px}
+.legend i{display:inline-block;width:22px;height:14px;border-radius:8px;vertical-align:-2px;margin-right:7px;box-sizing:border-box}
+.legend .a{background:var(--acc)}
+.legend .r{border:1px solid var(--line);box-shadow:0 0 0 2px #fff,0 0 0 3.5px var(--ink)}
+
+.grp{border:1px solid var(--line);border-radius:12px;padding:24px 28px 20px;margin:0 0 24px}
+.plain{margin:0 0 28px}
+.plain>p{margin:0 0 16px;font-size:15.5px;line-height:1.85}
+.plain>p b{font-weight:700}
+.grp .gt{margin:0 0 12px;font-size:20px;font-weight:700;letter-spacing:-.02em}
+.grp>p{margin:0 0 16px;font-size:15.5px;line-height:1.85}
+.grp>p b{font-weight:700}
+.grp .flow{margin-bottom:2px}
+.grp .items{border-top:1px solid var(--line)}
+.gt2{margin-top:30px!important}
+.model{margin:34px 0 0;padding-top:22px;border-top:2px solid var(--ink)}
+.model>h2{margin:0 0 10px;font-size:22px;font-weight:700;letter-spacing:-.02em}
+.model>p{margin:0 0 16px;font-size:15.5px;line-height:1.85}
+.model>p b{font-weight:700}
+.ah{margin:44px 0 0;font-size:22px;font-weight:700;letter-spacing:-.02em}
+.st{padding:16px 0 4px;border-top:1px solid var(--line2)}
+.grp .st:first-of-type{border-top:none;padding-top:0}
+.st:last-of-type{padding-bottom:0}
+.st>h2{margin:0 0 10px;font-size:18px;font-weight:700;letter-spacing:-.02em}
+.st .def{margin-bottom:6px}
+.st .proto{margin-bottom:6px}
+.st .items{border-top:none}
+.band{display:flex;align-items:stretch;gap:0;margin:4px 0 14px;font-size:14px}
+.band .bc{flex:1;padding:8px 10px;border-top:3px solid var(--acc)}
+.band .bc:nth-of-type(2){border-top-color:#5E8F86}
+.band .bc:nth-of-type(3){border-top-color:#A9C3BD}
+.band .bc.out{border-top-color:var(--line)}
+.band .bc span{display:block;font-size:12px;color:var(--soft)}
+.band .bc b{font-weight:600;line-height:1.5}
+.band i{width:8px}
+.band i.edge{width:2px;background:var(--ink);margin:0 10px}
+.sum{font-size:15.5px;line-height:1.85;margin:0 0 8px}
+.sum b{font-weight:700}
+.wait{font-size:14px;color:var(--soft);margin:0 0 8px}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:0 0 16px}
+.pc{border-top:1px solid var(--line);padding:12px 0 0}
+.pc>b{display:block;font-size:16px;font-weight:700;margin-bottom:2px}
+.pc>p{margin:0 0 10px;font-size:14.5px;line-height:1.7;color:var(--mid)}
+.pc .rv{margin-top:10px}
+.gs2{margin:24px 0 8px;font-size:16px;font-weight:700}
+.std{margin-top:30px}
+.pr2{margin:0 0 12px;font-size:15px;line-height:1.75;color:var(--mid)}
+.pr2 b{color:var(--ink)}
+.cmp2 thead td{font-size:13px;color:var(--acc);font-weight:700}
+.cmp2{width:100%;border-collapse:collapse;margin:6px 0 4px;font-size:15px}
+.cmp2 th,.cmp2 td{text-align:left;vertical-align:top;padding:9px 12px 9px 0;border-bottom:1px solid var(--line2);line-height:1.65}
+.cmp2 tbody th{font-weight:600;color:var(--ink)}
+.cmp2 th{width:90px}
+.cmp2 td{width:42%}
+.std>h2{margin:0 0 10px;font-size:19px;font-weight:700}
+.sq{border-left:3px solid var(--acc);padding:4px 0 4px 16px;font-size:16px!important}
+.it .t u{text-decoration:none;background:var(--mark);padding:0 2px;border-radius:2px}
+.ph{display:flex;gap:12px;margin:0 0 14px}
+.ph figure{margin:0;min-width:0}
+.ph img{display:block;width:100%;height:auto;border-radius:6px}
+.ph figcaption{font-size:12.5px;color:var(--soft);margin-top:5px}
+.qt th{width:90px}
+.tint{background:var(--wash);border-radius:12px;padding:22px 28px 16px;margin:0 0 24px}
+.tint>p{margin:0 0 14px;font-size:15.5px;line-height:1.85}
+.tint .pr2{margin:10px 0 0}
+.tint .ex{margin-bottom:6px}
+.tint .cmp3 th,.tint .cmp3 td{border-bottom-color:var(--line)}
+.items.tight .it .t{font-size:15px}
+.score{margin:12px 0 0;font-size:15px;color:var(--mid)}
+.score b{font-size:20px;color:var(--acc);margin:0 2px}
+.kt{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.kc{border:1px solid var(--line2);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column}
+.kc.on{border-color:var(--acc);box-shadow:0 0 0 1px var(--acc)}
+.kc .kh{font-size:13px;font-weight:700;color:var(--acc);margin:0 0 6px}
+.kc .kh span{color:var(--ink);margin-left:6px}
+.kc p{margin:0;font-size:15px;line-height:1.7}
+.kc .kx{margin-top:10px;padding-top:10px;border-top:1px solid var(--line2);font-size:14px;color:var(--mid)}
+.kb{margin-top:12px;align-self:flex-start;background:none;border:1px solid var(--line);border-radius:14px;padding:0 12px;line-height:1.9;font-size:13.5px;color:var(--mid);cursor:pointer}
+.kb:hover{border-color:var(--acc);color:var(--ink)}
+.rp{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 6px}
+.rp button{background:none;border:1px solid var(--line);border-radius:16px;padding:0 14px;line-height:2.1;font-size:14.5px;color:var(--mid);cursor:pointer}
+.rp button:hover{border-color:var(--acc);color:var(--ink)}
+.rp button[aria-pressed="true"]{background:var(--acc);border-color:var(--acc);color:#fff}
+.rc{margin-top:10px}
+.ex dl.nl{grid-template-columns:28px minmax(0,1fr)}
+.ex dl.nl dt{color:var(--acc)}
+.mm{padding:14px 0;border-top:1px solid var(--line2)}
+.mm:first-of-type{border-top:none;padding-top:4px}
+.ms{margin:0 0 10px;font-size:15.5px;font-weight:600;line-height:1.6}
+.mo{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mb{text-align:left;background:none;border:1px solid var(--line);border-radius:8px;padding:10px 14px;font-size:14.5px;line-height:1.65;color:var(--ink);cursor:pointer}
+.mb:hover{border-color:var(--acc)}
+.mb:disabled{cursor:default;color:var(--mid)}
+.mb.on{border-color:var(--acc);box-shadow:0 0 0 1px var(--acc);color:var(--ink);background:var(--acc-w)}
+.mb .mt{display:block;font-size:12.5px;font-weight:700;color:var(--acc);margin-bottom:3px}
+.cmpk{display:flex;flex-wrap:wrap;gap:8px 28px;margin:16px 0 0;padding:14px 0 0;border-top:2px solid var(--acc)}
+.cmpk span{display:block;font-size:12.5px;color:var(--soft)}
+.cmpk b{font-size:15px}
+main h1+section.grp,main h1+section.plain{margin-top:40px}
+.ah2.gap{margin-top:30px}
+.mt3 th{width:110px}
+.say{margin:0 0 6px;font-size:15px;line-height:1.7;color:var(--ink)}
+.say:last-child{margin:0}
+.ex dl{grid-template-columns:150px minmax(0,1fr)}
+.cp{margin:0;font-size:15px;line-height:1.75}
+.ah2{margin:8px 0 10px;font-size:19px;font-weight:700;letter-spacing:-.02em}
+.cmp3{width:100%;border-collapse:collapse;margin:6px 0 4px;font-size:15px;table-layout:fixed}
+.cmp3 th,.cmp3 td{text-align:left;vertical-align:top;padding:9px 12px 9px 0;border-bottom:1px solid var(--line2);line-height:1.65}
+.cmp3 thead td{font-size:13px;color:var(--acc);font-weight:700}
+.cmp3 th{width:80px;font-weight:600}
+.pr{font-size:15px!important;line-height:1.75!important;background:var(--wash);border-radius:8px;padding:10px 14px;margin:0 0 14px!important}
+.pr b{margin-right:8px;color:var(--acc)}
+.th{margin:0 0 34px}
+.th>h2,.ap>h2{font-size:21px;font-weight:700;letter-spacing:-.02em;margin:0 0 10px}
+.th>p{margin:0 0 16px;font-size:15.5px;line-height:1.85}
+.th>p b{font-weight:700}
+.ex{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:14px 0 10px;margin:0 0 18px}
+.ex+.ex{border-top:none;margin-top:-18px}
+.ex h3{margin:0 0 8px;font-size:13px;color:var(--acc);font-weight:600;letter-spacing:.04em}
+.ex dl{display:grid;grid-template-columns:120px minmax(0,1fr);gap:6px 16px;margin:0;font-size:15px;line-height:1.7}
+.ex dt{font-weight:600}
+.ex dd{margin:0;color:var(--mid)}
+.sh{margin:0 0 6px;font-size:13px;color:var(--soft);font-weight:600;letter-spacing:.04em}
+.flow{margin:0 0 18px;display:flex;flex-wrap:wrap;gap:6px 0;font-size:14.5px}
+.flow span{display:flex;align-items:center}
+.flow span+span::before{content:"→";margin:0 10px;color:var(--soft)}
+.flow b{font-weight:700;margin-right:5px;color:var(--acc)}
+.stl{font-size:12.5px;color:var(--acc);font-weight:700;letter-spacing:.04em;margin:0 0 4px}
+.done .stl{margin-bottom:6px}
+.items.tight .it{padding:8px 0;align-items:center}
+.items.tight .rv{padding:7px 12px}
+.th .flow{color:var(--ink)}
+.ap{border-top:2px solid var(--ink);padding-top:20px}
+.blk{margin:0 0 30px}
+.pq{font-size:18px;font-weight:600;letter-spacing:-.015em;line-height:1.55;margin:0 0 16px}
+.blk>h2{font-size:19px;font-weight:700;letter-spacing:-.02em;margin:0 0 10px}
+.def{border-left:3px solid var(--acc);padding:4px 0 4px 16px;margin:0 0 22px;font-size:16.5px;line-height:1.75}
+.def b{font-weight:700}
+.items{border-top:1px solid var(--line)}
+.it{padding:15px 0;border-bottom:1px solid var(--line2);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 20px;align-items:start}
+.it .t{font-size:16px;line-height:1.65}
+.it .t b{font-weight:700;margin-right:8px}
+.it .t small{display:block;font-size:14.5px;color:var(--mid);margin-top:2px;line-height:1.7}
+.it .seg{justify-content:flex-end;padding-top:1px}
+.rv{grid-column:1/-1;padding:10px 14px;background:var(--wash);border-radius:8px;font-size:14.5px;line-height:1.75;color:var(--mid)}
+.rv b{color:var(--ink);font-weight:700;margin-right:6px}
+.proto{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 28px;background:var(--wash);border-radius:10px;padding:18px 22px;margin:0 0 22px}
+.proto h3{grid-column:1/-1;margin:0 0 6px;font-size:13px;color:var(--acc);font-weight:600;letter-spacing:.04em}
+.proto p{margin:0;font-size:15px;line-height:1.8}
+.proto ul{margin:0;padding-left:18px;font-size:15px;line-height:1.8}
+.done{border-top:2px solid var(--acc);padding-top:14px;margin-top:22px}
+.done h4{margin:0 0 6px;font-size:13px;color:var(--acc);font-weight:600;letter-spacing:.04em}
+.done p{margin:0 0 8px;font-size:15px;line-height:1.8;color:var(--mid)}
+.done p b{color:var(--ink)}
+.grp .sh{margin:0 0 4px}
+.case{display:grid;grid-template-columns:150px minmax(0,1fr);margin:6px 0 0;font-size:15px;line-height:1.75;border-top:1px solid var(--line)}
+.case dt,.case dd{padding:10px 0;border-bottom:1px solid var(--line2)}
+.case dt{font-weight:600;color:var(--acc)}
+.case dd{margin:0;padding-left:16px}
+.case dd:last-of-type,.case dt:last-of-type{border-bottom:none}
+.grp .sq{margin:0 0 12px;line-height:1.75}
+.grp .sum{margin:14px 0 0}
+
+@media(max-width:640px){
+  .it{grid-template-columns:1fr}
+  .it .seg{justify-content:flex-start}
+  .proto{grid-template-columns:1fr;gap:10px}
+  .ex dl{grid-template-columns:1fr;gap:2px}
+  .pair{grid-template-columns:1fr}
+    .case{grid-template-columns:1fr}
+  .kt{grid-template-columns:1fr}
+  .mo{grid-template-columns:1fr}
+    .ex dl.nl{grid-template-columns:28px minmax(0,1fr)}
+  .tint{padding:18px 16px 12px}
+  .ph{flex-direction:column}
+  .cmp3 thead{display:none}
+  .cmp3,.cmp3 tbody,.cmp3 tr,.cmp3 th,.cmp3 td{display:block;width:auto}
+  .cmp3 tr{border-bottom:1px solid var(--line);padding:8px 0}
+  .cmp3 th,.cmp3 td{border:none;padding:3px 0}
+  .cmp3 td::before{content:attr(data-l);display:inline-block;width:76px;font-size:13px;color:var(--acc);font-weight:600}
+  .case dt{border-bottom:none;padding-bottom:0}
+  .case dd{padding:2px 0 10px}
+    .band{flex-direction:column}
+  .band i{height:4px;width:auto}
+  .band i.edge{height:2px;margin:8px 0}
+  .grp{padding:18px 16px}
+}
+@media print{
+  header,.foot{display:none!important}
+  main{padding:0}
+  .seg button{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .it{break-inside:avoid}
+}
+
+
+main h1+section.tint{margin-top:40px}
+
+/* 사진 */
+.gph{margin:0 0 18px;max-width:640px}
+.gph img{display:block;width:100%;height:auto;border-radius:6px}
+.gph figcaption{font-size:12.5px;color:var(--soft);margin-top:5px}
+
+/* 선호 분포 */
+.kt.k5 .kc:last-child{grid-column:1/-1}
+.mine{margin:16px 0 0}
+.mine p{margin:0 0 8px;font-size:15.5px;line-height:1.85;background:var(--acc-w);border-radius:8px;padding:12px 16px}
+.mine p b{color:var(--acc);font-weight:700;margin-right:10px}
+.score{margin:12px 0 0;font-size:15px;color:var(--mid)}
+.pf{margin:20px 0 0;padding-top:16px;border-top:2px solid var(--acc)}
+.pf .pfr{display:grid;grid-template-columns:96px minmax(0,1fr) 28px;align-items:center;gap:12px;padding:5px 0;font-size:15px}
+.pf .pfr span{font-weight:600;color:var(--mid)}
+.pf .pfr i{display:block;height:12px;background:var(--line2);border-radius:6px;overflow:hidden}
+.pf .pfr em{display:block;height:100%;background:#A9C3BD;border-radius:6px}
+.pf .pfr b{font-weight:700;color:var(--mid);text-align:right}
+.pf .pfr.top span,.pf .pfr.top b{color:var(--acc)}
+.pf .pfr.top em{background:var(--acc)}
+.pfx{display:flex;justify-content:space-between;font-size:12.5px;color:var(--soft);margin:6px 40px 0 108px}
+
+/* 가치연속체 */
+.vc{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:8px 18px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line2);font-size:15.5px;line-height:1.55}
+.vc:first-child{padding-top:4px}
+.vc .l{text-align:right}
+.vc .dots{display:flex;align-items:center;gap:0;position:relative}
+.vc .dots::before{content:"";position:absolute;left:14px;right:14px;top:50%;height:1px;background:var(--line)}
+.vc .dots button{position:relative;width:28px;height:28px;margin:0 7px;border-radius:50%;border:1px solid var(--line);background:#fff;cursor:pointer;padding:0}
+.vc .dots button:hover{border-color:var(--acc)}
+.vc .dots button[aria-pressed="true"]{background:var(--acc);border-color:var(--acc)}
+.vc.on .l,.vc.on .r{color:var(--mid)}
+.vc .l b,.vc .r b{color:var(--ink);font-weight:700}
+
+/* 접근의 계열 (그림 7-9) */
+.seq{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));margin:4px 0 6px;font-size:14.5px;font-weight:600;text-align:center}
+.seq span{padding:8px 4px 0;border-top:3px solid var(--acc)}
+.seq span:nth-child(1){border-top-color:#C9D9D4}
+.seq span:nth-child(2){border-top-color:#A9C3BD}
+.seq span:nth-child(3){border-top-color:#7FA79F}
+.seq span:nth-child(4){border-top-color:#4F8479}
+.seqx{display:flex;justify-content:space-between;font-size:12.5px;color:var(--soft);margin:0 0 18px}
+.ap5 th{width:96px}
+
+/* 다섯 개 선택지 → 아래 줄 */
+.items.col .it{grid-template-columns:1fr}
+.items.col .it .seg{justify-content:flex-start}
+.tag{display:inline-block;font-size:12px;font-weight:700;color:var(--acc);border:1px solid var(--acc);border-radius:10px;padding:0 8px;line-height:1.7;margin-right:8px;vertical-align:1px}
+.tag.no{color:var(--red);border-color:var(--red)}
+.kl th{width:96px}
+
+/* 교사의 질문 */
+.tq{padding:16px 0;border-top:1px solid var(--line2)}
+.tq:first-of-type{border-top:none;padding-top:4px}
+.tq .ms{margin-bottom:10px}
+.tq .mo{grid-template-columns:1fr 1fr 1fr}
+.mb.ref{box-shadow:0 0 0 2px #fff,0 0 0 3.5px var(--ink)}
+.mb.on.ref{box-shadow:0 0 0 1px var(--acc),0 0 0 3px #fff,0 0 0 4.5px var(--ink)}
+.tq .rv{margin-top:10px}
+
+
+@media(max-width:640px){
+  .vc{grid-template-columns:minmax(0,1fr) minmax(0,1fr);padding:12px 0}
+  .vc .l{text-align:left;grid-row:1;grid-column:1}
+  .vc .r{text-align:right;grid-row:1;grid-column:2}
+  .vc .dots{grid-row:2;grid-column:1/-1;justify-content:center}
+  .seq{font-size:12.5px}
+  .pf .pfr{grid-template-columns:84px minmax(0,1fr) 24px;gap:8px}
+  .pfx{margin:6px 32px 0 92px}
+  .tq .mo{grid-template-columns:1fr}
+}
+
+/* PCK 예시 표 */
+.core th{width:150px}
+.tint .sh{margin:0 0 4px}
+.tint>.pr2{margin:0 0 10px}
+.core td{font-size:14.5px}
+.items.col .it .seg button{font-size:13.5px}
+
+/* 주장 */
+.who{display:block;font-size:12.5px;font-weight:700;color:var(--acc);margin-bottom:2px}
+.done p{font-size:15px}
+/* 세 사람의 질문 */
+.kd{margin:6px 0 20px}
+.bars{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:0;font-size:12.5px;font-weight:700;color:var(--mid);margin-bottom:10px}
+.bars span{padding:0 0 4px;border-bottom:2px solid var(--mid);text-align:center}
+.bars .b1{grid-column:1/5;grid-row:1}
+.bars .b2{grid-column:3/7;grid-row:2;margin-top:6px}
+.cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0}
+.col{padding:4px 14px 0}
+.col h3{margin:0 0 2px;font-size:16px;font-weight:700}
+.col h3 em{font-style:normal;font-size:12.5px;color:var(--acc);margin-left:6px}
+.col .aim{margin:0 0 8px;font-size:14px;color:var(--mid)}
+.col ul{margin:0;padding-left:18px;font-size:14.5px;line-height:1.7}
+.col li{margin-bottom:4px}
+.col.mid{background:var(--acc-w);border-radius:10px;padding:12px 16px 8px}
+.col.mid h3{color:var(--acc)}
+/* 변환 흐름 */
+.tint .ex dl{grid-template-columns:170px minmax(0,1fr)}
+.tf{display:flex;align-items:stretch;gap:6px;margin:6px 0 18px}
+.tf .st1{flex:1;border-top:2px solid var(--line);padding:8px 2px 0}
+.tf .st1 span{display:block;font-size:15px;font-weight:700}
+.tf .st1 small{display:block;font-size:12.5px;color:var(--mid);line-height:1.5}
+.tf .st1.on{border-top-color:var(--acc)}
+.tf .st1.on span{color:var(--acc)}
+.tf .ar{font-size:18px;color:var(--soft);text-align:center;padding-top:4px;min-width:70px}
+.tf .ar small{display:block;font-size:11.5px;line-height:1.4;color:var(--soft)}
+/* 변환 도식 */
+.tfig{margin:4px 0 18px}
+.tfig svg{display:block;width:100%;max-width:760px;height:auto;margin:0 auto}
+.tfig .nd{font-size:17px;font-weight:700;fill:var(--ink)}
+.tfig .nd.hi{fill:var(--acc)}
+.tfig .hb{fill:var(--acc-w);stroke:var(--acc);stroke-width:1.2}
+.tfig .sm{font-size:13px;fill:var(--mid)}
+.tfig .lb{font-size:14px;fill:var(--mid)}
+.tfig .zn{font-size:13px;fill:var(--soft)}
+.tfig .ar{fill:none;stroke:var(--mid);stroke-width:1.4}
+.tfig .ahd{fill:var(--mid)}
+.tfig .dv{stroke:var(--line);stroke-width:1.2;stroke-dasharray:4 4}
+.tfig figcaption{font-size:12.5px;color:var(--soft);margin-top:8px;text-align:center}
+.tfm{display:none}
+
+/* 극단적 교수현상 */
+.xp{padding:14px 0;border-top:1px solid var(--line)}
+.xp h3{margin:0 0 2px;font-size:16.5px;font-weight:700}
+.xp .og{margin:0 0 6px;font-size:12.5px;color:var(--soft)}
+.xp .df{margin:0 0 8px;font-size:15px;line-height:1.75}
+.xp .eg{margin:0;font-size:14.5px;line-height:1.75;color:var(--mid);background:#fff;border-radius:8px;padding:10px 14px}
+.xp .eg b{color:var(--acc);margin-right:10px}
+@media(max-width:640px){
+  .bars{display:none}
+  .tint .ex dl{grid-template-columns:1fr}
+  .tfig svg{display:none}
+  .tfm{display:block;margin:0;padding-left:20px;font-size:14.5px;line-height:1.6}
+  .tfm li{margin-bottom:8px}
+  .tfm b{display:block}
+  .tfm b.hi{color:var(--acc)}
+  .tfm span{display:block;font-size:13px;color:var(--mid)}
+  .tfm span::before{content:'↓ '}
+  .tfig figcaption{text-align:left}
+  .cols{grid-template-columns:1fr;gap:10px}
+  .col{padding:4px 0}
+  .col.mid{padding:12px 14px 8px}
+  .tf{flex-direction:column}
+  .tf .ar{text-align:left;min-width:0;display:flex;gap:8px;align-items:center;font-size:15px}
+  .tf .ar small{display:inline}
+  .tf .ar small br{display:none}
+}
+
+.acad{margin:0 0 14px;padding:12px 16px;background:var(--wash);border-radius:8px;font-size:14.5px;line-height:1.8;color:var(--ink)}
+.acad span{display:block;margin-top:6px;font-size:12.5px;color:var(--soft)}
+/* 전문가를 교사로 */
+.done .who4{margin:12px 0 10px}.done .who4 dl{grid-template-columns:64px minmax(0,1fr);font-size:14.5px}.done .who4 dd{color:var(--mid)}
+.claim{margin:0 0 14px;padding:14px 18px;background:#EEF2EF;border-radius:10px}
+.claim p{margin:0;font-size:15px;line-height:1.8}
+.claim span{display:block;margin-top:8px;font-size:12.5px;color:var(--soft)}
+.hdec{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.hdec .inp{flex:1;min-width:200px;width:auto}
+/* 교육과정 — 끌어 놓기 */
+.cpool{display:flex;flex-wrap:wrap;gap:6px;min-height:44px;padding:12px;margin:0 0 14px;background:var(--wash);border-radius:10px}
+.cempty{font-size:13.5px;color:var(--soft);line-height:2}
+.cbins{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.cbin{border:1px solid var(--line);border-radius:10px;padding:10px 12px 12px;min-height:180px;transition:border-color .1s,background .1s}
+.cbin.over{border-color:var(--acc);background:var(--acc-w)}
+.cbh{font-size:13px;color:var(--mid);margin:0 0 8px;display:flex;align-items:baseline;gap:6px}
+.cbh b{color:var(--acc);font-size:15px}
+.cbh span{margin-left:auto;color:var(--soft)}
+.cbc{display:flex;flex-wrap:wrap;gap:6px}
+.cchip{background:#fff;border:1px solid var(--line);border-radius:14px;cursor:grab;padding:0 12px;font-size:13.5px;line-height:2;color:var(--ink);touch-action:none;user-select:none;-webkit-user-select:none}
+.cchip:hover{border-color:var(--acc)}
+.cchip.sel{border-color:var(--acc);box-shadow:0 0 0 1px var(--acc)}
+.cchip.wrong{border-color:var(--red);color:var(--red)}
+.cchip em{font-style:normal;font-size:11.5px;font-weight:700;margin-left:6px}
+.cchip.ghost{position:fixed;z-index:100;pointer-events:none;box-shadow:0 4px 14px rgba(0,0,0,.15);cursor:grabbing}
+.ccount{margin-left:12px;font-size:13.5px;color:var(--soft)}
+.say b{margin-right:10px;color:var(--acc)}
+@media(max-width:640px){.cbins{grid-template-columns:1fr}.cbin{min-height:90px}}
+/* 수업 장면 — 슬라이드 */
+.dtop{display:flex;justify-content:flex-end;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 12px}
+.dtop .legend{margin:0}
+.dnav{display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+.dnav button{min-width:30px;height:30px;border:1px solid var(--line);border-radius:15px;background:none;cursor:pointer;font-size:13px;color:var(--mid);padding:0 9px}
+.dnav button:hover{border-color:var(--acc);color:var(--ink)}
+.dnav button.dn{background:var(--wash)}
+.dnav button[aria-current="true"]{background:var(--acc);border-color:var(--acc);color:#fff}
+.dnav .ar{border:none;font-size:20px;line-height:1;padding:0 6px}
+.dnav .ar:disabled{opacity:.3;cursor:default}
+.slide{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:0 40px;background:#EEF2EF;border-radius:12px;padding:26px 30px;min-height:440px}
+.slide .rv,.slide .inp,.slide textarea,.slide .opt,.slide .seg button{background:#fff}
+.slide .seg button[aria-pressed="true"]{background:var(--acc)}
+.slide .ex{border-color:#D9E0DB}.slide .ex dd{color:var(--mid)}
+.sch{font-size:12.5px;color:var(--soft);margin:0 0 12px}
+.sch b{color:var(--acc);font-size:20px;margin-right:10px}
+.sit{margin:0 0 12px;font-size:14.5px;line-height:1.7;color:var(--mid)}
+.dlg{display:grid;grid-template-columns:44px minmax(0,1fr);gap:5px 12px;margin:0;font-size:16px;line-height:1.7}
+.dlg dt{font-weight:600;color:var(--mid);font-size:14px;padding-top:2px}
+.dlg dd{margin:0}
+.dlg dd.dir{color:var(--soft);font-size:14.5px}
+.sl-r .seg{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.sl-r .seg button{font-size:13.5px;line-height:2.1}
+.sl-r .seg.rwk{display:flex;margin:0 0 10px}
+.sl-r .seg.rwk button{line-height:1.9}
+.sl-r .rv{margin-top:14px}
+.slide.end .ex dl{grid-template-columns:110px minmax(0,1fr)}
+.slide.end .ah2{margin-top:0}
+.og2{font-size:12.5px;color:var(--soft);margin-left:4px}
+.rwb{margin:10px 0 0}
+.grp .rv{margin-top:10px}
+@media(max-width:640px){.slide{grid-template-columns:1fr;gap:18px;min-height:0;padding:18px 16px}.slide.end .ex dl{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<header><div class="hin">
+  <button class="brand" id="brand"><span class="c">지리교과교육론 · 6장</span><span class="n">지리교수</span></button>
+  <div class="switch" id="sw"></div>
+</div></header>
+<main id="main"></main>
+
+<script>
+/* ═════ 1. 교사는 전문가인가 ═════ */
+var AG=[['a','동의한다'],['m','글쎄'],['d','동의하지 않는다']];
+var CL=[
+ {id:'q1',w:'지리학자의 주장',t:'많이 알아야 잘 가르칠 수 있다. 잘 가르치려면 먼저 내용을 깊이 이해한 전문가가 되어야 한다.'},
+ {id:'q2',w:'교육학자의 주장',t:'가르치는 방법을 아는 것이 중요하다. 과목과 상관없이 잘 가르치는 방법은 존재한다.'}
+];
+var KO=[['ck','내용지식(CK)'],['pck','교수내용지식(PCK)'],['pk','교수지식(PK)']];
+var KN={ck:'내용지식(CK)',pck:'교수내용지식(PCK)',pk:'교수지식(PK)'};
+var K1=[
+ {id:'c1',r:'ck',t:'인구 피라미드는 세로축이 연령, 가로축이 인구수이고, 왼쪽과 오른쪽은 남녀를 나타낸다.',x:'그래프를 읽는 데 필요한 지리 지식 자체다. 누구에게 어떻게 가르칠지는 들어 있지 않다.'},
+ {id:'c2',r:'pck',t:'학생들은 인구 피라미드를 보고 ‘위로 갈수록 인구가 늘어난다’고 착각하곤 한다. 이 오개념을 수업 초반에 어떻게 드러내고 바로잡을까?',x:'이 내용을 배울 때 학생들이 흔히 보이는 오개념에 대한 지식이다. 인구 피라미드라는 내용과 학생의 사고를 함께 알아야 나온다.'},
+ {id:'c3',r:'pk',t:'도입에 간단한 퀴즈를 넣을까, 영상으로 시작할까?',x:'어떤 내용의 수업에도 쓸 수 있는 일반적인 수업 운영 판단이다.'},
+ {id:'c4',r:'ck',t:'확장형, 종형, 방추형 피라미드의 특징과 대표 국가를 정확히 알아야 한다.',x:'교사가 갖추어야 할 내용지식이다. 가르치는 방법과는 아직 연결되어 있지 않다.'},
+ {id:'c5',r:'pck',t:'세종시와 전남 고흥군의 인구 피라미드를 나란히 보여 주면 두 유형의 차이가 한눈에 드러날 것이다.',x:'이 개념을 가장 잘 보여 주는 사례와 재현 방식을 고르는 일이다. 슐만이 말한 ‘가장 유용한 재현의 형식’에 해당한다.'},
+ {id:'c6',r:'pk',t:'모둠 활동을 하면 소음이 커질 텐데, 규칙을 어떻게 세울까?',x:'학급 경영과 활동 운영에 관한 일반 교수지식이다.'},
+ {id:'c7',r:'pck',t:'유형을 외우게 하기보다, 우리 지역의 인구 피라미드를 먼저 보여 주고 학생들이 패턴을 스스로 찾게 하면 어떨까?',x:'이 내용을 이 학생들이 이해하도록 순서와 자료를 다시 짜는 판단이다.'},
+ {id:'c8',r:'pk',t:'수업 끝에 쪽지 시험으로 이해 정도를 점검해야겠다.',x:'어떤 교과에도 쓸 수 있는 형성평가 방법이다. 무엇을 어떻게 물을지까지 정하면 PCK에 가까워진다.'},
+ {id:'c9',r:'pck',t:'이 수업의 핵심은 ‘인구 구조에서 지역 문제로’ 이어지는 연결이다. 그러니 주거, 교육, 일자리, 복지 같은 생활 문제로 질문을 던지자.',x:'내용의 핵심을 짚고, 학생들이 그 연결을 느낄 수 있는 질문으로 바꾸는 일이다.'}
+];
+
+/* ═════ 2. 교수학적 변환 ═════ */
+/* ═════ 3. 극단적 교수현상 ═════ */
+var XP=[
+ {k:'tp',n:'토파즈 효과',o:'파뇰의 희곡 『토파즈』',d:'교사가 답을 암시하거나 유도 질문을 이어 가며 해답을 대신 만들어 주는 상황'},
+ {k:'jd',n:'죠르단 효과',o:'몰리에르의 희곡 『서민 귀족』의 주르댕',d:'학생의 평범한 대답을 교사가 깊은 이해로 해석해 버리는 상황'},
+ {k:'mc',n:'메타인지적 이동',o:'',d:'이해를 돕기 위한 활동이나 도구 자체가 학습의 목적이 되어 버리는 상황'},
+ {k:'fa',n:'형식적 고착',o:'',d:'맥락이 걷힌 형식적 지식을 해설하고 반복 연습하게 하는 상황'},
+ {k:'dg',n:'도그마화',o:'김민정(2002)',d:'검토하고 적용 범위를 따져 봐야 할 지식을 절대적인 것처럼 제시하는 상황'},
+ {k:'os',n:'지나친 단순화',o:'김민정(2002)',d:'단순화하면서 현상을 이해하는 데 필요한 관계와 조건까지 잃는 상황'}
+];
+var XO=XP.map(function(x){return [x.k,x.n];}).concat([['ok','문제없음']]);
+var XN={ok:'문제없음'};XP.forEach(function(x){XN[x.k]=x.n;});
+var SC=[
+ {id:'x1',c:'고등학교 한국지리 · 기온',r:'tp',L:[
+   ['교사','대관령은 한여름에도 서늘해요. 왜 그럴까요?'],
+   ['','(교실이 조용하다)'],
+   ['교사','대관령은 높은 곳일까요, 낮은 곳일까요?'],
+   ['학생','높은 곳이요.'],
+   ['교사','그렇지. 높이 올라가면 기온은 어떻게 되지?'],
+   ['학생','낮아져요.'],
+   ['교사','100m 올라갈 때마다 몇 도씩 내려간다고 했지? 0.5…'],
+   ['학생','0.5도요.'],
+   ['교사','대관령이 해발 800m쯤이니까, 아래보다 몇 도 낮을까?'],
+   ['학생','4도요.'],
+   ['교사','맞아요! 그래서 대관령은 여름에도 서늘한 거예요. 다음으로 넘어갈까요?']],
+  x:'높이, 기온 감소율, 계산으로 이어지는 생각의 길을 교사가 모두 깔아 주었다. 학생은 단계마다 빈칸을 채웠을 뿐이고, 높이와 기온을 이어 대관령의 여름을 설명한 사람은 교사다. “0.5…”처럼 답의 앞부분까지 말해 주는 것이 전형적인 모습이다.',
+  m:'(조용해지자) 같은 날 강릉과 대관령의 기온을 나란히 보여 줄게요. 두 곳은 무엇이 다를까요? (학생이 높이 차이와 기온 차이를 스스로 찾을 때까지 기다린다)'},
+ {id:'x2',c:'중학교 사회 · 열대 기후 지역의 생활',r:'jd',L:[
+   ['','(교사가 동남아시아 열대 우림 지역의 고상 가옥 사진을 띄운다)'],
+   ['교사','이 지역 사람들은 왜 집을 땅에서 띄워 지을까요?'],
+   ['학생','비가 많이 와서요.'],
+   ['교사','좋아요! 자연환경에 적응하며 살아가는 모습, 바로 인간과 자연환경의 상호 작용을 정확히 이해했네요. 그럼 건조 기후로 넘어가 볼까요?']],
+  x:'학생은 사진과 ‘열대’라는 말에서 떠오르는 것을 말했다. 비가 많이 오는 것과 집을 띄우는 것이 어떻게 이어지는지(습기, 침수, 해충, 통풍)는 말하지 않았다. 교사는 이 대답을 인간과 자연환경의 상호 작용이라는 개념을 이해한 것으로 인정하고 다음으로 넘어갔다.',
+  m:'비가 많이 오는 것과 집을 띄우는 것은 어떻게 이어질까요? 땅에 바로 지은 집이라면 어떤 일이 생길까요?'},
+ {id:'x3',c:'중학교 사회 · 지역 조사',r:'mc',s:'교사는 학교 주변의 교통사고 위험 지점이 어디에 모여 있고 왜 그곳에 모이는지 알게 하려고, 모둠별로 통학로 안전 지도를 만들게 했다.',L:[
+   ['','(모둠 발표가 끝난다)'],
+   ['교사','와, 3모둠 지도 정말 예쁘다. 그림이랑 스티커까지! 오늘 최고 디자인상은 3모둠이에요.'],
+   ['학생','선생님, 위험한 곳이 왜 다 학교 앞 사거리에 몰려 있는지는 안 써도 돼요?'],
+   ['교사','오늘은 시간이 없으니까 그건 다음에 하자. 다들 열심히 참여해서 정말 좋았어요.']],
+  x:'지도 만들기는 위험 지점의 분포와 그 까닭을 이해하기 위한 수단이었다. 칭찬과 평가는 지도의 꾸밈과 참여에 쏠렸고, 정작 목표였던 분포의 까닭은 다음으로 밀렸다. 활동의 성공을 학습의 성공으로 여긴 것이다.',
+  m:'지도를 모아 보니 위험 지점이 사거리에 몰려 있네요. 왜 하필 이곳일까요? 모둠마다 까닭을 하나씩 찾아 지도 아래에 적어 봅시다.'},
+ {id:'x4',c:'고등학교 한국지리 · 강수',r:'ok',L:[
+   ['교사','울릉도는 겨울에 우리나라에서 눈이 가장 많이 오는 곳 가운데 하나예요. 왜 그럴까요?'],
+   ['','(교실이 조용하다)'],
+   ['','(교사가 겨울철 바람 방향 지도를 띄운다)'],
+   ['교사','겨울에 바람은 어느 쪽에서 불어오나요? 이 바람은 무엇을 지나 울릉도에 닿을까요?'],
+   ['','(교사가 기다린다)'],
+   ['학생','동해를 건너와요.'],
+   ['교사','바다를 건너는 동안 바람에는 어떤 변화가 생길까요?'],
+   ['학생','수증기를 머금어요? 그래서 섬에 부딪히면 눈이 되나?'],
+   ['교사','그렇게 생각한 까닭이 있나요? 다른 친구들은 어떻게 생각해요?']],
+  x:'교사도 힌트를 주었지만 답이 아니라 판단의 재료(바람 방향 지도)를 주고 기다렸다. 바다와 눈을 잇는 생각은 학생이 했고, 교사는 그 대답을 곧바로 정답으로 확정하지 않고 근거를 묻고 다른 학생에게 넘겼다. 1번 장면과 견주어 볼 수 있다.'},
+ {id:'x5',c:'중학교 사회 · 지도 읽기',r:'fa',L:[
+   ['교사','등고선 간격이 좁으면?'],
+   ['학생들','경사가 급하다!'],
+   ['교사','넓으면?'],
+   ['학생들','완만하다!'],
+   ['교사','좋아요. 학습지 10문제도 다 맞았네요. 마지막으로 학교 뒷산 지도예요. 정상까지 가장 덜 힘들게 오를 수 있는 길은 A, B, C 가운데 어느 것일까요?'],
+   ['','(학생들이 지도를 한참 들여다본다)'],
+   ['학생','…모르겠어요. 이런 건 안 배웠어요.']],
+  x:'규칙을 말하고 문제를 푸는 형식은 익혔지만, 그 규칙이 실제 땅의 모양과 어떻게 이어지는지는 모른다. 반복 연습이 규칙의 재생에 머물러, 처음 보는 지도에서 쓰지 못한다.',
+  m:'등고선 간격이 좁은 곳과 넓은 곳을 실제로 걸어 오른다면 어디가 더 힘들까요? 학교 뒷산 지도에서 먼저 찾아보고, 그다음에 규칙으로 정리해 봅시다.'},
+ {id:'x6',c:'고등학교 통합사회 · 도시',r:'dg',L:[
+   ['교사','도시 내부는 도심, 중간 지역, 주변 지역 순으로 나뉘어요. 도심에는 상업·업무 기능이, 주변 지역에는 주거 기능이 모여요. 이 순서는 꼭 외워 두세요.'],
+   ['학생','선생님, 저희 동네는 신도시인데 역 앞에 큰 업무 지구가 따로 있어요. 그럼 거기도 도심이에요?'],
+   ['교사','그건 예외예요. 시험에는 교과서대로 쓰면 돼요.']],
+  x:'도시 내부 구조는 접근성과 지대의 차이로 기능이 나뉜다는 것을 설명하는 일반화다. 학생이 모형에 맞지 않는 사례를 가져왔을 때가 모형의 조건을 다시 따져 볼 기회였는데, 교사는 ‘예외’로 덮고 모형을 외워야 할 사실로 만들었다.',
+  m:'좋은 질문이에요. 도심에 업무 기능이 모이는 까닭이 무엇이었지요? 그 까닭이 신도시 역 앞에도 해당될까요?'},
+ {id:'x7',c:'고등학교 통합사회 · 자연재해',r:'os',L:[
+   ['교사','지진은 대부분 판과 판이 만나는 경계에서 일어나요. 우리나라는 판의 경계에서 멀리 떨어져 있지요. 그래서 우리나라는 지진에서 안전한 나라라고 할 수 있어요.'],
+   ['','(수업 끝 형성평가 문항: “우리나라는 판의 경계에서 멀어 지진이 일어나지 않는다. O/X” 정답 O)']],
+  x:'판의 경계와 지진의 관계는 핵심이지만, ‘대부분’이 ‘안전하다’, ‘일어나지 않는다’로 바뀌는 사이에 판 내부에서도 지진이 일어난다는 조건이 사라졌다. 이렇게 배우면 2016년 경주 지진과 2017년 포항 지진을 설명할 수 없다.',
+  m:'우리나라는 판의 경계에서 떨어져 있어 일본보다 지진이 훨씬 적어요. 그렇다고 지진이 없는 것은 아니에요. 2016년 경주 지진은 판의 경계가 아닌 곳에서 어떻게 일어났을까요?'},
+ {id:'x8',c:'중학교 사회 · 지도 읽기 (다른 학급)',r:'ok',L:[
+   ['교사','이 지도에서 경사가 가장 급한 곳은 어디일까요?'],
+   ['','(학생들이 서로 얼굴만 본다)'],
+   ['','(교사가 잠시 멈춘다)'],
+   ['교사','다들 주먹을 쥐어 보세요. 손등에서 높이가 같은 곳을 따라 펜으로 선을 몇 개 그려 볼까요?'],
+   ['교사','이제 손을 위에서 내려다보세요. 선이 촘촘한 곳은 어디예요?'],
+   ['학생','손가락 마디 옆이요. 거기가 가팔라요.'],
+   ['교사','그럼 다시 지도를 볼까요?']],
+  x:'예상과 달리 학생들이 지도를 읽지 못하자, 교사는 같은 설명을 되풀이하지 않고 그 자리에서 방법을 바꾸었다. 쇤의 행위 중 반성이다. 5번 장면과 같은 내용이지만, 학생은 규칙이 아니라 땅의 모양에서 출발한다.'}
+];
+
+/* ═════ 1-2. 교원양성 교육과정 (2027학년도 교과과정안내) ═════ */
+var CU=[
+ {g:'전공기초(교직)',c:[['교육학개론','pk'],['교육과정','pk'],['교육방법및교육공학','pk'],['교육사회','pk'],['교육심리','pk'],['교육철학및교육사','pk'],['교육평가','pk'],['교육행정및교육경영','pk'],['생활지도및상담','pk']]},
+ {g:'전공필수',c:[['지리교과교육론','pck'],['지리교과교재연구및지도법','pck'],['지리교과논리및논술','pck']]},
+ {g:'전공선택 · 기본이수',c:[['GIS기초','ck'],['도시지리학','ck'],['문화역사지리학','ck'],['경제지리학','ck'],['기후환경','ck'],['지형환경','ck'],['국토의이해','ck']]},
+ {g:'전공선택',c:[['생활과지리:현대사회의인문지리학','ck'],['자연지리학개론','ck'],['공간정보시각화','ck'],['공간통계','ck'],['세계지리와세계여행2:아시아와아프리카','ck'],['자원과인구교육','ck'],['자연지리조사및실습','ck'],['환경과자연재해','ck'],['농촌촌락지리학','ck'],['생물지리학','ck'],['지리교육평가','pck'],['관광과여가의지리학','ck'],['사회·정치지리학','ck'],['서울지역연구','ck'],['지리사상사세미나','ck']]}
+];
+CU.forEach(function(g,i){g.c.forEach(function(c,j){c.push('c'+i+'_'+j);});});
+function cuAll(){var a=[];CU.forEach(function(g){a=a.concat(g.c);});return a;}
+
+var MENU=[
+ {k:'s1',lb:'교사는 전문가인가'},
+ {k:'cu',lb:'교원양성 교육과정'},
+ {k:'s2',lb:'교수학적 변환'},
+ {k:'s3',lb:'극단적 교수현상'}
+];
+
+function blank(){return {scr:'s1',a:{},rw:{k:'',t:'',show:false},tw:{t:'',show:false},sl:0,kw:{},kr:{},cu:{bin:{},key:false,sel:''},hire:{c:'',t:'',show:false},pr:{t:'',show:false}};}
+var S=blank(),dirty=false;
+function $(s){return document.querySelector(s);}
+function item(id,body,opts,ref,rv){
+  var mine=S.a[id];
+  var refs=[].concat(ref);
+  return '<div class="it"><div class="t">'+body+'</div><div class="seg">'+opts.map(function(o){
+    var cls=(mine&&refs.indexOf(o[0])>=0)?' class="ref"':'';
+    return '<button'+cls+' aria-pressed="'+(mine===o[0])+'" data-a="'+id+'" data-v="'+o[0]+'">'+o[1]+'</button>';}).join('')+'</div>'+
+    (mine?'<div class="rv">'+rv+'</div>':'')+'</div>';
+}
+function pick(id,body,opts){
+  var mine=S.a[id];
+  return '<div class="it"><div class="t">'+body+'</div><div class="seg">'+opts.map(function(o){
+    return '<button aria-pressed="'+(mine===o[0])+'" data-a="'+id+'" data-v="'+o[0]+'">'+o[1]+'</button>';}).join('')+'</div></div>';
+}
+function done(list){return list.every(function(x){return S.a[x.id];});}
+var LEG='<div class="legend"><span><i class="a"></i>내 판단</span><span><i class="r"></i>참고 판단</span></div>';
+function src(s){return '<div class="sh">'+s+'</div>';}
+
+/* ═════ 1 ═════ */
+function qs(a){return '<ul>'+a.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul>';}
+function s1(){
+  var h='<h1>교사는 전문가인가?</h1>'+
+  '<section class="grp"><h2 class="gt">전문가를 교사로</h2>'+
+   '<div class="claim"><p>교사 자격증이 없어도 분야 전문가를 교사로 임용하자. 학교에서 가르쳐야 할 내용은 빠르게 늘고 다양해지는데, 교원 양성 과정은 이를 따라가지 못한다. 해당 분야의 학위와 실무 경력을 갖춘 사람이라면 교사로 임용할 수 있어야 한다. 20년 경력의 기상 예보관이 기후를, 펀드매니저가 경제를 가르치는 학교를 생각해 보라.</p>'+
+   '<span>2001년 「교직발전방안」, 2021년 초·중등교육법 개정안 발의 때마다 되풀이된 주장을 요약함</span></div>'+
+   '<div class="hdec"><div class="seg">'+[['yes','찬성'],['no','반대']].map(function(o){
+      return '<button aria-pressed="'+(S.hire.c===o[0])+'" data-hire="'+o[0]+'">'+o[1]+'</button>';}).join('')+'</div>'+
+    '<input class="inp" id="hrt" value="'+esc(S.hire.t)+'" placeholder="까닭 (키워드)" autocomplete="off">'+
+    '<button class="opt" id="hrs"'+(S.hire.c&&S.hire.t.trim()?'':' disabled')+'>'+(S.hire.show?'닫기':'해설 보기')+'</button></div>'+
+   (S.hire.show&&S.hire.c&&S.hire.t.trim()?'<div class="done">'+
+     '<p>“농사짓는 데 씨앗이 중요하듯이 교육하는 데 교과목의 지식이 필수적이다. 그러나 씨앗만 좋은 것을 가지고 있다고 하여 농사가 절로 되는 것은 아니다. … 벼를 기르는 것과 배추를 기르는 것은 다르다. 이와 마찬가지로 국어, 영어, 수학, 지리 … 등을 가르치는 방식이 같을 수가 없다.” (류재명, 1999)</p>'+
+     '<p>그로스만(Grossman, 1989)은 대학에서 영어를 전공한 신임 교사 6명을 비교했다. 교사교육을 받지 않은 3명은 텍스트를 이해시키는 데 그쳤다. 교사교육을 받은 3명은 텍스트를 학생의 삶과 연결했고, 자기 수업이 교육 전체에서 어떤 의미를 갖는지 되돌아보았다. 많이 아는 것도, 과목과 상관없는 방법도 그 자체로는 충분하지 않다.</p>'+
+     '<div class="ex who4"><dl>'+
+      '<dt>슐만</dt><dd>슐만(Shulman, 1986, 1987)은 교직의 전문직화와 교사 자격 기준을 논하는 자리에서 ‘교사는 무엇을 알아야 하는가’를 물었다. 교과 지식과 일반 교수 기술을 따로 다루던 교사 연구와 평가를 비판하고, 내용을 학생이 이해할 수 있는 형태로 바꾸는 교수내용지식(PCK)을 교사만의 전문 지식으로 제시했다.</dd>'+
+      '<dt>쇤</dt><dd>쇤(Schön, 1983)의 『반성적 실천가』도 원래 전문가란 무엇인가를 묻는다. 쇤은 전문가를 과학 이론을 현장에 그대로 적용하는 사람으로 보는 기술적 합리성을 비판하고, 정답이 정해지지 않은 상황에서 행위하며 반성하는 능력을 전문성의 핵심으로 보았다.</dd>'+
+      '<dt>로스</dt><dd>로스(Ross, 2000)는 ‘교사는 교육과정과 어떤 관계를 맺는가’를 물었다. 정해진 교육과정을 그대로 전하는 전달자, 학생과 학교에 맞게 해석하고 재구성하는 조정자, 교육과정 자체를 비판하고 만드는 이론가로 나누고, 뒤로 갈수록 교사의 전문적 자율성이 커진다고 보았다.</dd>'+
+      '<dt>쉐바야르</dt><dd>쉐바야르(Chevallard, 1985)는 ‘학교에서 가르치는 지식은 어디에서 오는가’를 물었다. 학자의 지식은 그대로 교실에 들어오지 않고 교육과정, 교과서, 교사를 거치며 가르칠 지식으로 바뀐다고 보았으며, 이 변환을 의식하지 못하면 지식이 왜곡될 수 있다고 경계했다.</dd>'+
+     '</dl></div>'+
+     '<p>이들은 모두 교사가 무엇을 갖춘 전문가인가에 대한 답이고, 교원 자격은 이 전문성을 요건으로 삼는다.</p>'+
+    '</div>':'')+
+  '</section>';
+  h+='<section class="tint"><h2 class="ah2">지리학자, 교육학자, 지리교사는 무엇을 묻는가</h2>'+
+   '<div class="kd">'+
+    '<div class="bars"><span class="b1">내용지식(CK)</span><span class="b2">교수지식(PK)</span></div>'+
+    '<div class="cols">'+
+     '<div class="col"><h3>지리학자</h3><p class="aim">새로운 지식을 만들고 발견한다</p>'+qs(['이 현상은 왜, 어떻게 일어나는가?','기존의 설명은 이 지역에서도 맞는가?','아직 밝혀지지 않은 것은 무엇인가?'])+'</div>'+
+     '<div class="col mid"><h3>지리교사 <em>교수내용지식(PCK)</em></h3><p class="aim">학생이 지리를 새롭게 이해하게 한다</p>'+qs(['학생들은 이 개념을 어떻게 이해하고, 어디에서 오해하는가?','어떤 사례, 지도, 비유가 이 개념을 가장 잘 보여 줄까?','이것을 왜 배워야 하는가? 학생의 삶과 어떻게 이어지는가?'])+'</div>'+
+     '<div class="col"><h3>교육학자</h3><p class="aim">가르침과 배움의 일반 원리를 찾는다</p>'+qs(['학생은 어떻게 배우는가?','수업과 학급을 어떻게 조직할까?','학습을 어떻게 평가할까?'])+'</div>'+
+    '</div>'+
+   '</div>'+
+   '<p>슐만(Shulman, 1986)은 교사에게 필요한 지식을 교과내용지식, 교육과정지식, 교수내용지식으로 나누었다. 내용을 아는 것만으로는 교육적으로 충분하지 않고, 그 내용이 학생에게 가르치기 위한 지식으로 바뀌어 제시될 때 의미를 갖는다고 보았다. <b>교수내용지식(PCK)</b>은 교과와 학생에 대한 이해, 교수 매체, 교수 과정이 밀접하게 통합된 상태로, 내용을 이해시키기 위해 동원하는 유추, 예시, 설명, 도해, 지도화 같은 재현 방식을 포함한다. 가장 좋은 재현 방식은 상황에 따라 바뀌므로 교사는 여러 방식을 알고 있어야 한다. PCK는 지리교사를 지리학자나 일반 교육학자와 구별해 주는 지식이다.</p>'+
+   '<p class="pr2">“지리학자는 새로운 지식의 창조나 발견을 목적으로 하는 반면, 지리교사는 새로운 지식을 발견하기보다는 학습자의 입장에서 새로운 이해를 개발해야 한다. … 지리교사가 지리학자와 초심자들을 연결시켜 주는 역할을 하는 반면, 지리학자는 자신이 연구하는 특정 분야에 대한 지식만을 요구한다.” (이종원, 2000)</p>'+
+  '</section>';
+  h+='<section class="grp"><h2 class="gt">인구 피라미드 수업을 준비하는 교사의 생각 — 어느 영역인가</h2>'+LEG+
+   '<div class="items tight">'+K1.map(function(q,i){
+     return item(q.id,'<b>'+(i+1)+'</b>'+q.t,KO,q.r,'<b>'+KN[q.r]+'</b>'+q.x);}).join('')+'</div>'+
+  '</section>';
+  return h;
+}
+
+
+/* ═════ 1-2 ═════ */
+var CUL=(function(){var a=cuAll().slice(),r=7;for(var i=a.length-1;i>0;i--){r=(r*9301+49297)%233280;var j=Math.floor(r/233280*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;})();
+var BINS=[['ck','CK','교과내용지식'],['pk','PK','교수지식'],['pck','PCK','교수내용지식']];
+var KN2={ck:'CK',pk:'PK',pck:'PCK'};
+function chip(c){
+  var bin=S.cu.bin[c[2]],wrong=S.cu.key&&bin&&bin!==c[1];
+  return '<button class="cchip'+(S.cu.sel===c[2]?' sel':'')+(wrong?' wrong':'')+'" data-cid="'+c[2]+'">'+c[0]+(wrong?'<em>'+KN2[c[1]]+'</em>':'')+'</button>';
+}
+function cu(){
+  var B=S.cu.bin,key=S.cu.key;
+  var pool=CUL.filter(function(c){return !B[c[2]];});
+  var n=CUL.length-pool.length;
+  var h='<h1>교원양성 교육과정</h1>'+
+  '<section class="grp"><p>이화여대 지리교육 전공의 2027학년도 교육과정 과목이다. 과목을 끌어다 CK, PK, PCK로 나눈다.</p>'+
+   '<div class="cpool" data-bin="">'+(pool.length?pool.map(chip).join(''):'<span class="cempty">모두 나누었다</span>')+'</div>'+
+   '<div class="cbins">'+BINS.map(function(x){
+     var list=CUL.filter(function(c){return B[c[2]]===x[0];});
+     return '<div class="cbin" data-bin="'+x[0]+'"><div class="cbh"><b>'+x[1]+'</b>'+x[2]+'<span>'+list.length+'</span></div><div class="cbc">'+list.map(chip).join('')+'</div></div>';}).join('')+'</div>'+
+   '<div class="rwb"><button class="opt" id="cuk"'+(n||key?'':' disabled')+'>'+(key?'참고 분류 닫기':'참고 분류 보기')+'</button>'+
+    '<span class="ccount">'+CUL.length+'과목 중 '+n+'과목</span></div>'+
+  '</section>';
+  if(!key)return h;
+  var all=cuAll(),cnt={ck:0,pk:0,pck:0};all.forEach(function(c){cnt[c[1]]++;});
+  var pr=S.pr,ready=!!pr.t.trim(),open=ready&&pr.show;
+  h+='<section class="tint"><div class="ex"><dl>'+
+    '<dt>PCK '+cnt.pck+'과목</dt><dd>'+all.filter(function(c){return c[1]==='pck';}).map(function(c){return c[0];}).join(', ')+'</dd>'+
+    '<dt>CK '+cnt.ck+'과목</dt><dd>전공필수를 뺀 지리 전공 과목 전부</dd>'+
+    '<dt>PK '+cnt.pk+'과목</dt><dd>교직 과목 전부</dd>'+
+   '</dl></div></section>'+
+   '<section class="grp"><h2 class="gt">PCK 과목 제안하기</h2>'+
+    '<p>이 교육과정에 더 필요한 PCK 과목을 하나 제안한다. 과목명과 무엇을 배우는지 한 줄로 쓴다.</p>'+
+    '<textarea id="prt" rows="2" placeholder="과목명 — 무엇을 배우는가">'+esc(pr.t)+'</textarea>'+
+    '<div class="rwb"><button class="opt" id="prs"'+(ready?'':' disabled')+'>'+(open?'닫기':'예시 보기')+'</button></div>'+
+    (open?'<div class="rv"><p class="say"><b>지리 야외조사 지도법</b>학생과 함께하는 야외조사를 설계하고, 안전과 평가까지 포함해 직접 운영해 본다.</p><p class="say"><b>지리 오개념과 수업 설계</b>기후·지형·인구 단원에서 학생들이 흔히 갖는 오개념을 조사하고, 그것을 드러내고 바로잡는 수업을 만든다.</p></div>':'')+
+   '</section>';
+  return h;
+}
+/* 끌어 놓기 — 마우스·터치 공통, 누르고 상자 누르기도 됨 */
+(function(){
+  var dr=null;
+  function binAt(x,y){var e=document.elementFromPoint(x,y);return e&&e.closest?e.closest('[data-bin]'):null;}
+  function place(id,bin){if(bin)S.cu.bin[id]=bin;else delete S.cu.bin[id];S.cu.sel='';dirty=true;keep(paint);}
+  document.addEventListener('pointerdown',function(e){
+    var c=e.target.closest&&e.target.closest('[data-cid]');
+    if(!c){var bx=e.target.closest&&e.target.closest('[data-bin]');
+      if(bx&&S.cu.sel){e.preventDefault();place(S.cu.sel,bx.dataset.bin);}return;}
+    dr={id:c.dataset.cid,el:c,x:e.clientX,y:e.clientY,g:null,ov:null};
+  });
+  document.addEventListener('pointermove',function(e){
+    if(!dr)return;
+    if(!dr.g){if(Math.abs(e.clientX-dr.x)+Math.abs(e.clientY-dr.y)<6)return;
+      dr.g=dr.el.cloneNode(true);dr.g.className='cchip ghost';document.body.appendChild(dr.g);dr.el.style.opacity='.3';}
+    dr.g.style.left=(e.clientX-dr.g.offsetWidth/2)+'px';dr.g.style.top=(e.clientY-dr.g.offsetHeight/2)+'px';
+    var b=binAt(e.clientX,e.clientY);
+    if(dr.ov&&dr.ov!==b)dr.ov.classList.remove('over');
+    if(b){b.classList.add('over');}dr.ov=b;
+  });
+  function end(e){
+    if(!dr)return;var d=dr;dr=null;
+    if(d.g){d.g.remove();var b=binAt(e.clientX,e.clientY);
+      if(b)place(d.id,b.dataset.bin);else{d.el.style.opacity='';if(d.ov)d.ov.classList.remove('over');}}
+    else{S.cu.sel=S.cu.sel===d.id?'':d.id;keep(paint);}
+  }
+  document.addEventListener('pointerup',end);
+  document.addEventListener('pointercancel',function(){if(dr){if(dr.g)dr.g.remove();dr.el.style.opacity='';dr=null;}});
+})();
+
+/* ═════ 2 ═════ */
+function s2(){
+  var ready=!!S.tw.t.trim(),open=ready&&S.tw.show;
+  var h='<h1>교수학적 변환</h1>'+
+  '<section class="grp"><p>내일 중학생에게 ‘한라산은 왜 이런 모양일까’ 수업을 한다. 학술 논문의 이 문단을 그대로 읽어 줄 수 있을까? 아니라면 무엇부터 바꿀까?</p>'+
+   '<blockquote class="acad">제주도는 플라이스토세 이후 여러 차례의 화산 활동으로 형성된 화산섬으로, 한라산은 주로 SiO₂ 함량이 낮은 현무암질 용암류가 반복적으로 유출·누적되어 형성된 순상 화산체이다. 저점성의 현무암질 용암은 유동성이 커서 넓은 범위로 퍼져 나가며 완경사의 산록부를 이루었다. 반면 정상부 서벽에는 SiO₂ 함량이 높은 조면암질 용암이 높은 점성으로 인해 멀리 흐르지 못하고 화구 주변에 정체·고결된 용암 돔이 발달하여 급경사를 이룬다. 산록부에 분포하는 360여 개의 단성 화산체(오름)는 대부분 스트롬볼리식 분화로 형성된 분석구이다.</blockquote>'+
+   '<textarea id="twt" rows="2" placeholder="먼저 바꿀 것">'+esc(S.tw.t)+'</textarea>'+
+   '<div class="rwb"><button class="opt" id="tws"'+(ready?'':' disabled')+'>'+(open?'닫기':'다른 교사들의 생각 보기')+'</button></div>'+
+   (open?'<div class="rv"><p class="say">“한라산을 옆에서 찍은 사진부터 보여 주고, 정상은 가파르고 아래는 완만한 까닭을 묻자.”</p><p class="say">“‘점성’이라는 말보다 묽은 반죽과 된 반죽을 떨어뜨렸을 때 퍼지는 모양으로 먼저 보여 줘야겠다.”</p><p class="say">“SiO₂, 스트롬볼리식 분화, 분석구는 이번 수업에서는 빼자.”</p></div>':'')+
+  '</section>';
+  if(!open)return h;
+  h+='<section class="tint"><h2 class="ah2">학문적 지식에서 가르칠 지식으로</h2>'+
+   '<p>쉐바야르(Chevallard)는 교육적 의도를 가지고 학문적 지식을 가르칠 지식으로 바꾸는 일을 <b>교수학적 변환</b>이라 했다. 지리교사는 지리학자의 사고를 주어진 수업 시간 안에 학생의 사고에 맞게 바꿀 책임이 있다. 이것은 어려운 내용을 쉽게 만드는 일보다 넓다. 어떤 개념을 남길지, 어떤 순서로 조직할지, 어떤 용어와 사례를 쓸지, 어느 부분을 단순화할지를 정하는 일이다.</p>'+
+   '<figure class="tfig"><svg viewBox="0 0 760 360" role="img" aria-label="교수학적 변환의 도식">'+
+     '<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ahd"/></marker></defs>'+
+     '<line x1="380" y1="72" x2="380" y2="270" class="dv"/>'+
+     '<text x="364" y="176" class="zn" text-anchor="end">일상 세계</text>'+
+     '<text x="396" y="176" class="zn">교실 수업</text>'+
+     '<text x="380" y="40" class="nd" text-anchor="middle">학생의 지식</text><text x="380" y="60" class="sm" text-anchor="middle">일상 세계</text>'+
+     '<text x="130" y="182" class="nd" text-anchor="middle">지리적 학문적 지식</text>'+
+     '<text x="630" y="182" class="nd" text-anchor="middle">교수학적 변환의 결과 제시</text>'+
+     '<rect x="246" y="282" width="268" height="40" rx="8" class="hb"/>'+
+     '<text x="380" y="308" class="nd hi" text-anchor="middle">교사에 의한 교수학적 변환 과정</text>'+
+     '<polyline points="328,34 130,34 130,158" class="ar" marker-end="url(#ah)"/>'+
+     '<text x="229" y="24" class="lb" text-anchor="middle">탈개인화·탈배경화</text>'+
+     '<polyline points="130,194 130,302 240,302" class="ar" marker-end="url(#ah)"/>'+
+     '<text x="140" y="334" class="lb">개인화·배경화</text>'+
+     '<polyline points="520,302 630,302 630,196" class="ar" marker-end="url(#ah)"/>'+
+     '<text x="620" y="334" class="lb" text-anchor="end">탈개인화·탈배경화</text><text x="620" y="352" class="lb" text-anchor="end">가개인화·가배경화</text>'+
+     '<polyline points="630,160 630,34 434,34" class="ar" marker-end="url(#ah)"/>'+
+     '<text x="532" y="24" class="lb" text-anchor="middle">개인화·배경화</text>'+
+    '</svg>'+
+    '<ol class="tfm"><li><b>지리적 학문적 지식</b><span>개인화·배경화</span></li><li><b class="hi">교사에 의한 교수학적 변환 과정</b><span>탈개인화·탈배경화, 가개인화·가배경화</span></li><li><b>교수학적 변환의 결과 제시</b><span>개인화·배경화</span></li><li><b>학생의 지식(일상 세계)</b><span>탈개인화·탈배경화 → 다시 지리적 지식으로</span></li></ol>'+
+    '</figure>'+
+   '<div class="ex"><dl>'+
+    '<dt>개인화·배경화</dt><dd>지식을 자기 경험과 구체적인 맥락에 연결해 내 것으로 만든다. 예: 도시화 → 서울의 성장, 우리 지역의 인구 변화</dd>'+
+    '<dt>탈개인화·탈배경화</dt><dd>구체적인 경험과 사례를 걷어 내고 일반적인 개념과 관계를 뽑는다. 예: 여러 도시의 연구 → ‘도시화’ 개념</dd>'+
+    '<dt>가개인화·가배경화</dt><dd>학생이 다시 개인화·배경화할 수 있도록, 교사가 학생에게 맞는 상황과 맥락을 마련해 지식을 제시한다.</dd>'+
+   '</dl></div>'+
+   '<p class="pr2">교사는 학문적 지식을 먼저 자기 것으로 만든 뒤, 학생에게 가르칠 수 있는 일반화되고 조직된 형태로 바꾼다. 학생은 그것을 자기 경험과 연결하고, 다시 지리적으로 일반화한다. 두 과정이 균형을 이루지 못하면 학생은 의미를 놓치거나 구조가 덜 된 지식을 갖게 된다. 교수학적 변환이 지식이 바뀌어 이동하는 과정을 설명한다면, PCK는 그 변환을 해내는 교사의 지식이다.</p>'+
+  '</section>';
+  return h;
+}
+
+/* ═════ 그리기 ═════ */
+
+/* ═════ 3 ═════ */
+function slideScene(x,i){
+  var kw=S.kw[x.id]||'',open=!!S.kr[x.id];
+  return '<div class="slide"><div class="sl-l"><div class="sch"><b>'+(i+1)+'</b>'+x.c+'</div>'+
+   (x.s?'<p class="sit">'+x.s+'</p>':'')+
+   '<dl class="dlg">'+x.L.map(function(l){
+     return l[0]?'<dt>'+l[0]+'</dt><dd>'+l[1]+'</dd>':'<dt></dt><dd class="dir">'+l[1]+'</dd>';}).join('')+'</dl></div>'+
+   '<div class="sl-r"><input class="inp" id="kw" data-id="'+x.id+'" value="'+esc(kw)+'" placeholder="이상한 부분 (없으면 ‘없음’)" autocomplete="off">'+
+   (open?'':'<div class="rwb"><button class="opt" id="kwb"'+(kw.trim()?'':' disabled')+'>해설 보기</button></div>')+
+   (open?'<div class="rv"><b>'+XN[x.r]+'</b>'+x.x+'</div>':'')+'</div></div>';
+}
+function sdone(){return SC.every(function(x){return S.kr[x.id];});}
+function slideEnd(){
+  var pr=SC.filter(function(x){return x.r!=='ok';});
+  var cur=null;pr.forEach(function(x){if(x.id===S.rw.k)cur=x;});
+  var ready=!!(cur&&S.rw.t.trim());
+  return '<div class="slide end"><div class="sl-l"><h2 class="ah2">정리</h2>'+
+     '<p class="pr2">브루소(Brousseau, 1997)는 학습자의 지식 구성을 방해하는 극단적 교수현상을 네 가지로 정리했고, 김민정(2002)은 지리 수업 관찰을 통해 두 가지를 더했다. 대부분 잘 가르치려는 의도가 지나치게 작동하면서 생긴다.</p>'+
+     '<div class="ex"><dl>'+XP.map(function(x){
+       return '<dt>'+x.n+'</dt><dd>'+x.d+(x.o?' <span class="og2">'+x.o+'</span>':'')+'</dd>';}).join('')+'</dl></div></div>'+
+    '<div class="sl-r"><h2 class="ah2">교사의 말 고쳐 쓰기</h2>'+
+     '<p class="pr2">장면 하나를 골라, 문제가 시작되는 교사의 말을 고쳐 쓴다.</p>'+
+     '<div class="seg rwk">'+pr.map(function(x){
+       return '<button aria-pressed="'+(S.rw.k===x.id)+'" data-rk="'+x.id+'">'+(SC.indexOf(x)+1)+'번</button>';}).join('')+'</div>'+
+     '<textarea id="rwt" rows="4" placeholder="교사: ">'+esc(S.rw.t)+'</textarea>'+
+     '<div class="rwb"><button class="opt" id="rws"'+(ready?'':' disabled')+'>'+(S.rw.show&&ready?'예시 닫기':'고쳐 쓴 예시 보기')+'</button></div>'+
+     (S.rw.show&&ready?'<div class="rv"><b>예시</b>'+cur.m+'</div>':'')+
+    '</div></div>';
+}
+function lastSl(){return sdone()?SC.length:SC.length-1;}
+function s3(){
+  var n=Math.min(S.sl||0,lastSl());S.sl=n;
+  var dots='<button class="ar" data-step="-1" aria-label="이전"'+(n?'':' disabled')+'>‹</button>'+
+   SC.map(function(x,i){
+     return '<button class="'+(S.kr[x.id]?'dn':'')+'" aria-current="'+(n===i)+'" data-sl="'+i+'">'+(i+1)+'</button>';}).join('')+
+   (sdone()?'<button aria-current="'+(n===SC.length)+'" data-sl="'+SC.length+'">정리</button>':'')+
+   '<button class="ar" data-step="1" aria-label="다음"'+(n<lastSl()?'':' disabled')+'>›</button>';
+  return '<h1>극단적 교수현상</h1>'+
+  '<section class="plain"><p>여덟 개의 지리 수업 장면이다. 장면마다 교사의 수업에서 이상한 부분을 찾아 키워드로 적는다.</p></section>'+
+  '<div class="dtop"><div class="dnav">'+dots+'</div></div>'+
+  (n<SC.length?slideScene(SC[n],n):slideEnd());
+}
+function esc(t){return String(t||'').replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+var V={s1:s1,cu:cu,s2:s2,s3:s3};
+function foot(){
+  return '<div class="foot"><button id="print">인쇄 · PDF</button>'+
+   '<button id="save">작업 저장</button><button id="load">불러오기</button>'+
+   '<span class="msg" id="msg"></span><input type="file" id="file" accept=".json" hidden></div>';
+}
+function switcher(){
+  $('#sw').innerHTML=MENU.map(function(m,i){
+    return '<button aria-current="'+(S.scr===m.k)+'" data-go="'+m.k+'"><b>'+(i+1)+'</b><span class="lb">'+m.lb+'</span></button>';}).join('');
+}
+function go(k){S.scr=k;paint();window.scrollTo(0,0);}
+function paint(){
+  switcher();
+  $('#main').innerHTML=V[S.scr]()+foot();
+  if($('#print')){$('#print').onclick=function(){window.print();};
+    $('#save').onclick=save;$('#load').onclick=function(){$('#file').click();};
+    $('#file').onchange=load;}
+  var ht=$('#hrt');if(ht){ht.oninput=function(){S.hire.t=ht.value;dirty=true;
+    var b=$('#hrs');if(b)b.disabled=!(S.hire.c&&S.hire.t.trim());};
+    ht.onkeydown=function(e){if(e.key==='Enter'&&S.hire.c&&ht.value.trim()){S.hire.show=true;keep(paint);}};}
+  var pt=$('#prt');if(pt)pt.oninput=function(){S.pr.t=pt.value;dirty=true;
+    var b=$('#prs');if(b)b.disabled=!S.pr.t.trim();};
+  var kw=$('#kw');if(kw){kw.oninput=function(){S.kw[kw.dataset.id]=kw.value;dirty=true;
+    var b=$('#kwb');if(b)b.disabled=!kw.value.trim();};
+    kw.onkeydown=function(e){if(e.key==='Enter'&&kw.value.trim()){S.kr[kw.dataset.id]=true;keep(paint);}};}
+  var tw=$('#twt');if(tw)tw.oninput=function(){S.tw.t=tw.value;dirty=true;
+    var b=$('#tws');if(b)b.disabled=!S.tw.t.trim();};
+  var tx=$('#rwt');if(tx)tx.oninput=function(){S.rw.t=tx.value;dirty=true;
+    var b=$('#rws');if(b)b.disabled=!(S.rw.k&&S.rw.t.trim());};
+}
+function keep(fn){var y=window.scrollY;fn();window.scrollTo(0,y);}
+document.addEventListener('click',function(e){
+  var b=e.target.closest('button');if(!b)return;
+  var d=b.dataset;
+  if(d.go){go(d.go);return;}
+  if(b.id==='brand'){go('s1');return;}
+  if(d.a){S.a[d.a]=d.v;dirty=true;keep(paint);return;}
+  if(d.cid)return;
+  if(d.hire){S.hire.c=d.hire;dirty=true;keep(paint);return;}
+  if(b.id==='hrs'){S.hire.show=!S.hire.show;keep(paint);return;}
+  if(b.id==='cuk'){S.cu.key=!S.cu.key;keep(paint);return;}
+  if(b.id==='prs'){S.pr.show=!S.pr.show;keep(paint);return;}
+  if(d.sl!==undefined){S.sl=+d.sl;keep(paint);return;}
+  if(d.step){S.sl=Math.max(0,Math.min(lastSl(),(S.sl||0)+(+d.step)));keep(paint);return;}
+  if(d.rk){S.rw.k=d.rk;S.rw.show=false;dirty=true;keep(paint);return;}
+  if(b.id==='kwb'){var id=$('#kw').dataset.id;S.kr[id]=true;keep(paint);return;}
+  if(b.id==='tws'){S.tw.show=!S.tw.show;keep(paint);return;}
+  if(b.id==='rws'){S.rw.show=!S.rw.show;keep(paint);return;}
+});
+function flash(t){var e=$('#msg');if(e){e.textContent=t;setTimeout(function(){e.textContent='';},2400);}}
+function stamp(){var d=new Date();return ''+d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');}
+function save(){var b=new Blob([JSON.stringify(S,null,2)],{type:'application/json'}),a=document.createElement('a');
+  a.href=URL.createObjectURL(b);a.download='지리교수_'+stamp()+'.json';a.click();
+  URL.revokeObjectURL(a.href);dirty=false;flash('저장했습니다');}
+function load(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();
+  r.onload=function(){try{var d=JSON.parse(r.result),b=blank();
+    S=Object.assign(b,d);S.a=S.a||{};S.rw=Object.assign(blank().rw,d.rw||{});S.tw=Object.assign(blank().tw,d.tw||{});S.kw=S.kw||{};S.kr=S.kr||{};S.cu=Object.assign(blank().cu,d.cu||{});S.cu.bin=S.cu.bin||{};S.hire=Object.assign(blank().hire,d.hire||{});S.pr=Object.assign(blank().pr,d.pr||{});if(!V[S.scr])S.scr='s1';
+    dirty=false;paint();flash('불러왔습니다');
+  }catch(x){flash('이 화면에서 저장한 파일인지 확인하십시오');}e.target.value='';};
+  r.readAsText(f);}
+document.addEventListener('keydown',function(e){
+  if(S.scr!=='s3'||/TEXTAREA|INPUT/.test((e.target||{}).tagName||''))return;
+  var k=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0;if(!k)return;
+  var m=Math.max(0,Math.min(lastSl(),(S.sl||0)+k));if(m!==S.sl){S.sl=m;keep(paint);}
+});
+window.addEventListener('beforeunload',function(e){if(dirty){e.preventDefault();e.returnValue='';}});
+function setHH(){document.documentElement.style.setProperty('--hh',document.querySelector('header').offsetHeight+'px');}
+window.addEventListener('resize',setHH);
+paint();setHH();
+</script>
+</body>
+</html>
