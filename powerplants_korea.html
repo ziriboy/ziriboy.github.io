@@ -8,6 +8,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css"/>
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script src="https://unpkg.com/@maplibre/maplibre-gl-leaflet@0.0.22/leaflet-maplibre-gl.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
@@ -144,7 +147,6 @@ body{background:var(--bg);display:flex;flex-direction:column;}
   word-break:keep-all;
 }
 .leaflet-container{background:#E8EFF8;}
-.leaflet-tile-pane{filter:grayscale(1) brightness(1.12) contrast(.8);}
 .leaflet-control-zoom{border:1px solid var(--border)!important;border-radius:8px!important;overflow:hidden;}
 .leaflet-tooltip{border-radius:9px!important;border:none!important;
   box-shadow:0 4px 16px rgba(0,0,0,.18)!important;
@@ -278,7 +280,7 @@ body{background:var(--bg);display:flex;flex-direction:column;}
       </div>
     </div>
     
-    <div id="msrc">자료: 제공 데이터셋(좌표·설비용량) · 베이스맵 © OpenStreetMap</div>
+    <div id="msrc">자료: 제공 데이터셋(좌표·설비용량) · 베이스맵 © OpenFreeMap · OpenMapTiles · OpenStreetMap</div>
   </div>
 </div>
 
@@ -361,9 +363,22 @@ const map = L.map('map', {
   maxZoom: 11
 });
 
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  maxZoom: 19
-}).addTo(map);
+/* 배경지도: OpenFreeMap(키 필요 없음). 지명은 한글로. 불러오지 못하면 OpenStreetMap */
+const BASE_STYLE = 'https://tiles.openfreemap.org/styles/liberty';
+(function(){
+  function osm(){ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(map); }
+  if(!(window.maplibregl && L.maplibreGL)){ osm(); return; }
+  const lay = L.maplibreGL({style: BASE_STYLE}).addTo(map);
+  const gl = lay.getMaplibreMap(); let ok=false;
+  gl.on('style.load', ()=>{ ok=true;
+    (gl.getStyle().layers||[]).forEach(l=>{
+      if(l.type==='symbol' && gl.getLayoutProperty(l.id,'text-field')!==undefined){
+        try{ gl.setLayoutProperty(l.id,'text-field',['coalesce',['get','name:ko'],['get','name']]); }catch(e){}
+      }
+    });
+  });
+  setTimeout(()=>{ if(!ok){ map.removeLayer(lay); osm(); } }, 6000);
+})();
 
 // 마커 그룹
 const markerLayers = {
