@@ -8,6 +8,29 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css"/>
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script src="https://unpkg.com/@maplibre/maplibre-gl-leaflet@0.0.22/leaflet-maplibre-gl.js"></script>
+<script>
+/* 배경지도: OpenFreeMap Liberty(키 필요 없음), 지명은 한글. 6초 안에 못 불러오면 OpenStreetMap */
+function ziriBaseLayer(){
+  var OSM='https://tile.openstreetmap.org/{z}/{x}/{y}.png', ATT='&copy; OpenStreetMap';
+  if(!(window.maplibregl && L.maplibreGL)) return L.tileLayer(OSM,{maxZoom:19,attribution:ATT});
+  var lay=L.maplibreGL({style:'https://tiles.openfreemap.org/styles/liberty',attribution:'&copy; OpenFreeMap &copy; OpenMapTiles &copy; OpenStreetMap'});
+  lay.on('add',function(){
+    var gl=lay.getMaplibreMap(), ok=false;
+    gl.on('style.load',function(){ ok=true;
+      (gl.getStyle().layers||[]).forEach(function(l){
+        if(l.type==='symbol' && gl.getLayoutProperty(l.id,'text-field')!==undefined){
+          try{ gl.setLayoutProperty(l.id,'text-field',['coalesce',['get','name:ko'],['get','name']]); }catch(e){}
+        }
+      });
+    });
+    setTimeout(function(){ if(!ok && lay._map){ var m=lay._map; m.removeLayer(lay); L.tileLayer(OSM,{maxZoom:19,attribution:ATT}).addTo(m); } },6000);
+  });
+  return lay;
+}
+</script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
@@ -122,7 +145,6 @@ body{background:var(--bg);display:flex;flex-direction:column;}
 .tt-name{font-weight:700;font-size:13px;}
 .tt-meta{color:#666;font-size:11px;margin-top:3px;}
 .tt-cap{color:#1255A0;font-weight:700;margin-top:3px;}
-.osm-gray{filter:grayscale(1) brightness(1.12) contrast(.8);}
 </style>
 </head>
 <body>
@@ -302,10 +324,7 @@ const map = L.map('map', {
   maxZoom: 11
 });
 
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {className:'osm-gray',
-  subdomains: 'abcd',
-  maxZoom: 19
-}).addTo(map);
+ziriBaseLayer().addTo(map);
 
 // 마커 그룹
 const markerLayers = {

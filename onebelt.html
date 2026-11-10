@@ -7,6 +7,29 @@
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css"/>
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script src="https://unpkg.com/@maplibre/maplibre-gl-leaflet@0.0.22/leaflet-maplibre-gl.js"></script>
+<script>
+/* 배경지도: OpenFreeMap Liberty(키 필요 없음), 지명은 한글. 6초 안에 못 불러오면 OpenStreetMap */
+function ziriBaseLayer(){
+  var OSM='https://tile.openstreetmap.org/{z}/{x}/{y}.png', ATT='&copy; OpenStreetMap';
+  if(!(window.maplibregl && L.maplibreGL)) return L.tileLayer(OSM,{maxZoom:19,attribution:ATT});
+  var lay=L.maplibreGL({style:'https://tiles.openfreemap.org/styles/liberty',attribution:'&copy; OpenFreeMap &copy; OpenMapTiles &copy; OpenStreetMap'});
+  lay.on('add',function(){
+    var gl=lay.getMaplibreMap(), ok=false;
+    gl.on('style.load',function(){ ok=true;
+      (gl.getStyle().layers||[]).forEach(function(l){
+        if(l.type==='symbol' && gl.getLayoutProperty(l.id,'text-field')!==undefined){
+          try{ gl.setLayoutProperty(l.id,'text-field',['coalesce',['get','name:ko'],['get','name']]); }catch(e){}
+        }
+      });
+    });
+    setTimeout(function(){ if(!ok && lay._map){ var m=lay._map; m.removeLayer(lay); L.tileLayer(OSM,{maxZoom:19,attribution:ATT}).addTo(m); } },6000);
+  });
+  return lay;
+}
+</script>
 <script src="https://unpkg.com/leaflet-polylinedecorator@1.6.0/dist/leaflet.polylineDecorator.js"></script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1279,7 +1302,6 @@ body {
   color: var(--text);
 }
 
-.osm-gray{filter:grayscale(1) brightness(1.12) contrast(.8);}
 </style>
 </head>
 <body>
@@ -1993,9 +2015,7 @@ map.createPane('corridorBands'); map.getPane('corridorBands').style.zIndex = 420
 map.createPane('additions');     map.getPane('additions').style.zIndex = 440;
 map.createPane('buildOverlay');  map.getPane('buildOverlay').style.zIndex = 460;
 
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {className:'osm-gray',
-  attribution:'© OpenStreetMap', subdomains:'abcd',
-}).addTo(map);
+ziriBaseLayer().addTo(map);
 
 state.buildOverlay = L.layerGroup().addTo(map);
 

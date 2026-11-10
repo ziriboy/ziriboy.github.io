@@ -59,7 +59,6 @@ select { font-size:12px; padding:4px 8px; border:1px solid #d3d1c7; border-radiu
 .sz-item { display:flex; flex-direction:column; align-items:center; gap:4px; }
 .sz-circle { border-radius:50%; background:rgba(100,100,180,0.18); border:1.5px solid rgba(100,100,180,0.45); flex-shrink:0; }
 .sz-label { font-size:10px; color:#888; text-align:center; }
-.osm-gray{filter:grayscale(1) brightness(1.12) contrast(.8);}
 </style>
 </head>
 <body>
@@ -123,6 +122,29 @@ select { font-size:12px; padding:4px 8px; border:1px solid #d3d1c7; border-radiu
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css"/>
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script src="https://unpkg.com/@maplibre/maplibre-gl-leaflet@0.0.22/leaflet-maplibre-gl.js"></script>
+<script>
+/* 배경지도: OpenFreeMap Liberty(키 필요 없음), 지명은 한글. 6초 안에 못 불러오면 OpenStreetMap */
+function ziriBaseLayer(){
+  var OSM='https://tile.openstreetmap.org/{z}/{x}/{y}.png', ATT='&copy; OpenStreetMap';
+  if(!(window.maplibregl && L.maplibreGL)) return L.tileLayer(OSM,{maxZoom:19,attribution:ATT});
+  var lay=L.maplibreGL({style:'https://tiles.openfreemap.org/styles/liberty',attribution:'&copy; OpenFreeMap &copy; OpenMapTiles &copy; OpenStreetMap'});
+  lay.on('add',function(){
+    var gl=lay.getMaplibreMap(), ok=false;
+    gl.on('style.load',function(){ ok=true;
+      (gl.getStyle().layers||[]).forEach(function(l){
+        if(l.type==='symbol' && gl.getLayoutProperty(l.id,'text-field')!==undefined){
+          try{ gl.setLayoutProperty(l.id,'text-field',['coalesce',['get','name:ko'],['get','name']]); }catch(e){}
+        }
+      });
+    });
+    setTimeout(function(){ if(!ok && lay._map){ var m=lay._map; m.removeLayer(lay); L.tileLayer(OSM,{maxZoom:19,attribution:ATT}).addTo(m); } },6000);
+  });
+  return lay;
+}
+</script>
 <script>
 const DATA = [
   {"n":"서울특별시","t":367291,"m":165130,"f":202161,"mr":0.4496,"fr":0.5504,"lat":37.5665,"lng":126.978},
@@ -145,11 +167,7 @@ const DATA = [
 ];
 
 const map = L.map('map', { center:[36.5, 127.8], zoom:7 });
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {className:'osm-gray',
-  attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
-  subdomains:'abcd',
-  maxZoom:19
-}).addTo(map);
+ziriBaseLayer().addTo(map);
 
 
 const MIN_R = 10, MAX_R = 38;

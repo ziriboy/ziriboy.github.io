@@ -8,6 +8,29 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css"/>
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script src="https://unpkg.com/@maplibre/maplibre-gl-leaflet@0.0.22/leaflet-maplibre-gl.js"></script>
+<script>
+/* 배경지도: OpenFreeMap Liberty(키 필요 없음), 지명은 한글. 6초 안에 못 불러오면 OpenStreetMap */
+function ziriBaseLayer(){
+  var OSM='https://tile.openstreetmap.org/{z}/{x}/{y}.png', ATT='&copy; OpenStreetMap';
+  if(!(window.maplibregl && L.maplibreGL)) return L.tileLayer(OSM,{maxZoom:19,attribution:ATT});
+  var lay=L.maplibreGL({style:'https://tiles.openfreemap.org/styles/liberty',attribution:'&copy; OpenFreeMap &copy; OpenMapTiles &copy; OpenStreetMap'});
+  lay.on('add',function(){
+    var gl=lay.getMaplibreMap(), ok=false;
+    gl.on('style.load',function(){ ok=true;
+      (gl.getStyle().layers||[]).forEach(function(l){
+        if(l.type==='symbol' && gl.getLayoutProperty(l.id,'text-field')!==undefined){
+          try{ gl.setLayoutProperty(l.id,'text-field',['coalesce',['get','name:ko'],['get','name']]); }catch(e){}
+        }
+      });
+    });
+    setTimeout(function(){ if(!ok && lay._map){ var m=lay._map; m.removeLayer(lay); L.tileLayer(OSM,{maxZoom:19,attribution:ATT}).addTo(m); } },6000);
+  });
+  return lay;
+}
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -276,7 +299,6 @@ body{background:var(--bg);display:flex;flex-direction:column;}
 #ws-save-btn:hover{opacity:.88;}
 #ws-save-btn:disabled{opacity:.5;cursor:not-allowed;}
 #ws-save-msg{font-size:11px;color:var(--grow);font-weight:600;display:none;}
-.osm-gray{filter:grayscale(1) brightness(1.12) contrast(.8);}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -694,8 +716,7 @@ const IND=[
    ============================================================ */
 const map=L.map('map',{center:[36.3,127.9],zoom:7,
   zoomControl:true,attributionControl:false});
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-  {className:'osm-gray',subdomains:'abcd',maxZoom:18}).addTo(map);
+ziriBaseLayer().addTo(map);
 
 let regionLayers=[],pinLayers=[],chartBar=null,chartSpark=null;
 let curInd=null, allMode=false;
