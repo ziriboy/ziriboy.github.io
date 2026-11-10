@@ -36,6 +36,7 @@ body { font-family: 'Noto Sans KR', sans-serif; }
 .legend-mid { text-align:center; font-size:9px; color:#888; margin-top:2px; }
 .legend-size { display:flex; align-items:center; gap:8px; font-size:9px; color:#888; margin-top:8px; border-top:1px solid #EEE; padding-top:7px; }
 .legend-note { font-size:9px; color:#BBB; margin-top:6px; }
+.osm-gray{filter:grayscale(1) brightness(1.12) contrast(.8);}
 </style>
 </head>
 <body>
@@ -335,8 +336,8 @@ function radius(total) { return 2 + Math.sqrt(total/maxTotal)*10; }
 
 // 지도
 const map = L.map('map',{center:[36.5,127.8],zoom:7});
-L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
-  attribution:'© OpenStreetMap © CARTO',
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{className:'osm-gray',
+  attribution:'© OpenStreetMap',
   subdomains:'abcd', maxZoom:19
 }).addTo(map);
 

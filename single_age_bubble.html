@@ -37,6 +37,7 @@ body { font-family: "Noto Sans KR", sans-serif; }
                font-size: 9px; color: #888; margin-top: 6px; }
 .legend-note { font-size: 9px; color: #CCC; margin-top: 8px;
                border-top: 1px solid #EEE; padding-top: 6px; line-height: 1.6; }
+.osm-gray{filter:grayscale(1) brightness(1.12) contrast(.8);}
 </style>
 </head>
 <body>
@@ -328,8 +329,8 @@ const maxTotal = Math.max(...DATA.map(d => d[5]));
 function radius(total) { return Math.sqrt(total / maxTotal) * 17; }
 
 const map = L.map('map', {center:[36.5,127.8], zoom:7});
-L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-  attribution: '© OpenStreetMap © CARTO', subdomains:'abcd', maxZoom:19
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {className:'osm-gray',
+  attribution: '© OpenStreetMap', subdomains:'abcd', maxZoom:19
 }).addTo(map);
 
 DATA.forEach(([name, lat, lon, young, old, total]) => {

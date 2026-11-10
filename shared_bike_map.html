@@ -94,6 +94,7 @@ body { font-family:'Apple SD Gothic Neo','Noto Sans KR',sans-serif; background:#
 #tooltip .tt-name { font-weight:700; color:#1e3a5f; margin-bottom:6px; font-size:14px; }
 #tooltip .tt-row { display:flex; justify-content:space-between; gap:16px; margin:3px 0; color:#556677; font-size:12px; }
 #tooltip .tt-val { color:#1a2a3a; font-weight:600; }
+.osm-gray{filter:grayscale(1) brightness(1.12) contrast(.8);}
 </style>
 </head>
 <body>
@@ -170,7 +171,7 @@ const REGIONS = {
 };
 
 const map = L.map('map', {zoomControl:true}).setView([35.157, 126.855], 15);
-L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {className:'osm-gray',
   attribution:'© CartoDB © OpenStreetMap', maxZoom:18
 }).addTo(map);
 

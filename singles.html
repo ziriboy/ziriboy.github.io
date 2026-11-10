@@ -41,6 +41,7 @@ body { font-family: 'Noto Sans KR', sans-serif; }
 .legend-labels span:first-child { color: #B84040; font-weight: 600; }
 .legend-labels span:last-child  { color: #2E5FA8; font-weight: 600; }
 .legend-note { font-size: 10px; color: #BBB; margin-top: 8px; border-top: 1px solid #EEE; padding-top: 6px; }
+.osm-gray{filter:grayscale(1) brightness(1.12) contrast(.8);}
 </style>
 </head>
 <body>
@@ -169,8 +170,8 @@ function lerpHex(a, b, t) {
 }
 
 const map = L.map('map', {center:[36.5,127.8], zoom:7});
-L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
-  attribution:'© OpenStreetMap © CARTO', subdomains:'abcd', maxZoom:19
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {className:'osm-gray',
+  attribution:'© OpenStreetMap', subdomains:'abcd', maxZoom:19
 }).addTo(map);
 
 const GEOJSON_URL = 'https://cdn.jsdelivr.net/gh/southkorea/southkorea-maps@master/kostat/2018/json/skorea-municipalities-2018-geo.json';

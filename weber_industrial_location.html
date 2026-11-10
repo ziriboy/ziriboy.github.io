@@ -180,6 +180,7 @@
     .card-cols { grid-template-columns: 1fr; }
     .card-col:first-child { border-right: none; border-bottom: 0.5px solid rgba(0,0,0,0.1); }
   }
+.osm-gray{filter:grayscale(1) brightness(1.12) contrast(.8);}
 </style>
 </head>
 <body>
@@ -415,8 +416,8 @@ function initMap(preset) {
   const info = industryData[preset];
   if (leafletMap) { leafletMap.remove(); leafletMap = null; }
   leafletMap = L.map('leafletMap', { scrollWheelZoom: false }).setView(info.center, info.zoom);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-    attribution: '© OpenStreetMap © CARTO', maxZoom:15
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {className:'osm-gray',
+    attribution: '© OpenStreetMap', maxZoom:15
   }).addTo(leafletMap);
   info.markers.forEach(m => {
     L.marker([m.lat, m.lng], {icon: makeSvgIcon(m.color)}).addTo(leafletMap)

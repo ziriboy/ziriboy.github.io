@@ -665,6 +665,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
 		print-color-adjust: exact;
 		}
 	}
+.osm-gray{filter:grayscale(1) brightness(1.12) contrast(.8);}
 </style>
 <style>
   @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css");
@@ -874,9 +875,9 @@ const map = L.map('map', { center:[36.35,127.9], zoom:7, minZoom:6, maxZoom:13,
   zoomControl:true, scrollWheelZoom:true, worldCopyJump:false });
 
 const cartoLight = L.tileLayer(
-  'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
-  { subdomains:'abcd', maxZoom:19,
-    attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>' });
+  'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+  {className:'osm-gray', subdomains:'abcd', maxZoom:19,
+    attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' });
 const osmStd = L.tileLayer(
   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
   { maxZoom:19, attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' });

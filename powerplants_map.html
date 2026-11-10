@@ -152,6 +152,7 @@ body{background:var(--bg);display:flex;flex-direction:column;}
 .tt-name{font-weight:700;font-size:13px;}
 .tt-meta{color:#666;font-size:11px;margin-top:3px;}
 .tt-cap{color:#1255A0;font-weight:700;margin-top:3px;}
+.osm-gray{filter:grayscale(1) brightness(1.12) contrast(.8);}
 </style>
 </head>
 <body>
@@ -344,7 +345,7 @@ const map = L.map('map', {
   maxZoom: 11
 });
 
-L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {className:'osm-gray',
   subdomains: 'abcd',
   maxZoom: 19
 }).addTo(map);

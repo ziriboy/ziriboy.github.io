@@ -1279,6 +1279,7 @@ body {
   color: var(--text);
 }
 
+.osm-gray{filter:grayscale(1) brightness(1.12) contrast(.8);}
 </style>
 </head>
 <body>
@@ -1992,11 +1993,8 @@ map.createPane('corridorBands'); map.getPane('corridorBands').style.zIndex = 420
 map.createPane('additions');     map.getPane('additions').style.zIndex = 440;
 map.createPane('buildOverlay');  map.getPane('buildOverlay').style.zIndex = 460;
 
-L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
-  attribution:'© OpenStreetMap, © CARTO', subdomains:'abcd',
-}).addTo(map);
-L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png', {
-  attribution:'', subdomains:'abcd', opacity:0.45, pane:'shadowPane',
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {className:'osm-gray',
+  attribution:'© OpenStreetMap', subdomains:'abcd',
 }).addTo(map);
 
 state.buildOverlay = L.layerGroup().addTo(map);

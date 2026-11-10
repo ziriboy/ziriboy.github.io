@@ -276,6 +276,7 @@ body{background:var(--bg);display:flex;flex-direction:column;}
 #ws-save-btn:hover{opacity:.88;}
 #ws-save-btn:disabled{opacity:.5;cursor:not-allowed;}
 #ws-save-msg{font-size:11px;color:var(--grow);font-weight:600;display:none;}
+.osm-gray{filter:grayscale(1) brightness(1.12) contrast(.8);}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -693,8 +694,8 @@ const IND=[
    ============================================================ */
 const map=L.map('map',{center:[36.3,127.9],zoom:7,
   zoomControl:true,attributionControl:false});
-L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
-  {subdomains:'abcd',maxZoom:18}).addTo(map);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+  {className:'osm-gray',subdomains:'abcd',maxZoom:18}).addTo(map);
 
 let regionLayers=[],pinLayers=[],chartBar=null,chartSpark=null;
 let curInd=null, allMode=false;

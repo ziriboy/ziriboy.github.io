@@ -134,6 +134,7 @@ input[type=range]::-webkit-slider-thumb:hover{background:var(--metro);}
   padding:7px 10px;font-size:11px;font-family:'Noto Sans KR',sans-serif;
   color:var(--text);background:#FAFBFE;resize:none;height:72px;line-height:1.6;}
 .ws-a:focus{outline:none;border-color:#1255A0;}
+.osm-gray{filter:grayscale(1) brightness(1.12) contrast(.8);}
 </style>
 </head>
 <body>
@@ -270,7 +271,7 @@ function dotR(p){return Math.min(Math.max(Math.sqrt(p)/145,1.5),22);}
 
 // LEAFLET
 const lmap=L.map('map',{zoomControl:true,preferCanvas:true}).setView([36.0,128.0],7);
-L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{className:'osm-gray',
   attribution:'© OpenStreetMap · CartoDB',subdomains:'abcd',maxZoom:18
 }).addTo(lmap);
 
