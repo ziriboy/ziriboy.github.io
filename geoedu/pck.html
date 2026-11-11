@@ -297,6 +297,7 @@ main h1+section.grp,main h1+section.plain{margin-top:40px}
   .band i.edge{height:2px;margin:8px 0}
   .grp{padding:18px 16px}
 }
+.tri{display:grid;grid-template-columns:minmax(0,1fr) 18px minmax(0,1fr) 18px minmax(0,1fr);gap:10px;align-items:stretch;margin:14px 0 6px}.tri>div{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}.tri b{font-size:16px;font-weight:600}.tri .tt{font-size:13px;color:var(--acc)}.tri p{margin:0;font-size:14px;line-height:1.65}.tri p.te{margin-top:auto;padding-top:8px;border-top:1px dashed var(--line);color:var(--mid);font-size:13.5px}.tri>i{font-style:normal;color:var(--soft);align-self:center;text-align:center}@media(max-width:760px){.tri{grid-template-columns:1fr}.tri>i{transform:rotate(90deg)}}
 @media print{
   header,.foot{display:none!important}
   main{padding:0}
@@ -790,33 +791,14 @@ function s2(){
   if(!open)return h;
   h+='<section class="tint"><h2 class="ah2">학문적 지식에서 가르칠 지식으로</h2>'+
    '<p>쉐바야르(Chevallard)는 교육적 의도를 가지고 학문적 지식을 가르칠 지식으로 바꾸는 일을 <b>교수학적 변환</b>이라 했다. 지리교사는 지리학자의 사고를 주어진 수업 시간 안에 학생의 사고에 맞게 바꿀 책임이 있다. 이것은 어려운 내용을 쉽게 만드는 일보다 넓다. 어떤 개념을 남길지, 어떤 순서로 조직할지, 어떤 용어와 사례를 쓸지, 어느 부분을 단순화할지를 정하는 일이다.</p>'+
-   '<figure class="tfig"><svg viewBox="0 0 760 360" role="img" aria-label="교수학적 변환의 도식">'+
-     '<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ahd"/></marker></defs>'+
-     '<line x1="380" y1="72" x2="380" y2="270" class="dv"/>'+
-     '<text x="364" y="176" class="zn" text-anchor="end">일상 세계</text>'+
-     '<text x="396" y="176" class="zn">교실 수업</text>'+
-     '<text x="380" y="40" class="nd" text-anchor="middle">학생의 지식</text><text x="380" y="60" class="sm" text-anchor="middle">일상 세계</text>'+
-     '<text x="130" y="182" class="nd" text-anchor="middle">지리적 학문적 지식</text>'+
-     '<text x="630" y="182" class="nd" text-anchor="middle">교수학적 변환의 결과 제시</text>'+
-     '<rect x="246" y="282" width="268" height="40" rx="8" class="hb"/>'+
-     '<text x="380" y="308" class="nd hi" text-anchor="middle">교사에 의한 교수학적 변환 과정</text>'+
-     '<polyline points="328,34 130,34 130,158" class="ar" marker-end="url(#ah)"/>'+
-     '<text x="229" y="24" class="lb" text-anchor="middle">탈개인화·탈배경화</text>'+
-     '<polyline points="130,194 130,302 240,302" class="ar" marker-end="url(#ah)"/>'+
-     '<text x="140" y="334" class="lb">개인화·배경화</text>'+
-     '<polyline points="520,302 630,302 630,196" class="ar" marker-end="url(#ah)"/>'+
-     '<text x="620" y="334" class="lb" text-anchor="end">탈개인화·탈배경화</text><text x="620" y="352" class="lb" text-anchor="end">가개인화·가배경화</text>'+
-     '<polyline points="630,160 630,34 434,34" class="ar" marker-end="url(#ah)"/>'+
-     '<text x="532" y="24" class="lb" text-anchor="middle">개인화·배경화</text>'+
-    '</svg>'+
-    '<ol class="tfm"><li><b>지리적 학문적 지식</b><span>개인화·배경화</span></li><li><b class="hi">교사에 의한 교수학적 변환 과정</b><span>탈개인화·탈배경화, 가개인화·가배경화</span></li><li><b>교수학적 변환의 결과 제시</b><span>개인화·배경화</span></li><li><b>학생의 지식(일상 세계)</b><span>탈개인화·탈배경화 → 다시 지리적 지식으로</span></li></ol>'+
-    '</figure>'+
-   '<div class="ex"><dl>'+
-    '<dt>개인화·배경화</dt><dd>지식을 자기 경험과 구체적인 맥락에 연결해 내 것으로 만든다. 예: 도시화 → 서울의 성장, 우리 지역의 인구 변화</dd>'+
-    '<dt>탈개인화·탈배경화</dt><dd>구체적인 경험과 사례를 걷어 내고 일반적인 개념과 관계를 뽑는다. 예: 여러 도시의 연구 → ‘도시화’ 개념</dd>'+
-    '<dt>가개인화·가배경화</dt><dd>학생이 다시 개인화·배경화할 수 있도록, 교사가 학생에게 맞는 상황과 맥락을 마련해 지식을 제시한다.</dd>'+
-   '</dl></div>'+
-   '<p class="pr2">교사는 학문적 지식을 먼저 자기 것으로 만든 뒤, 학생에게 가르칠 수 있는 일반화되고 조직된 형태로 바꾼다. 학생은 그것을 자기 경험과 연결하고, 다시 지리적으로 일반화한다. 두 과정이 균형을 이루지 못하면 학생은 의미를 놓치거나 구조가 덜 된 지식을 갖게 된다. 교수학적 변환이 지식이 바뀌어 이동하는 과정을 설명한다면, PCK는 그 변환을 해내는 교사의 지식이다.</p>'+
+   '<p>이 변환이 교실에서 어떻게 일어나는지를 브루소(Brousseau)는 지식이 학자, 교사, 학생을 거치며 바뀌는 과정으로 설명했다.</p>'+
+   '<div class="tri">'+
+    '<div><b>학자</b><span class="tt">개인화·배경화 → 탈개인화·탈배경화</span><p>문제와 씨름하며 지식을 만들 때 지식은 개인적이고 맥락에 묶여 있다. 발표할 때는 시행착오와 맥락을 걷어 내고 일반적인 형태로 정리한다.</p><p class="te">여러 화산을 조사하며 용암의 성질과 산의 모양을 견주다가, ‘점성이 낮은 용암은 완만한 화산을 만든다’로 정리해 논문으로 낸다.</p></div>'+
+    '<i>→</i>'+
+    '<div><b>교사</b><span class="tt">가개인화·가배경화</span><p>반대 방향의 작업을 한다. 학생이 지식의 의미를 다시 만날 수 있는 상황을 새로 꾸민다. 학자가 실제로 지식을 만든 상황이 아니라 교실에 맞게 꾸민 상황이어서 ‘가(假)’라고 옮긴다(재개인화·재배경화라고도 한다).</p><p class="te">묽은 반죽과 된 반죽을 떨어뜨려 퍼지는 모양을 보게 하고, 한라산을 옆에서 찍은 사진을 함께 놓는다.</p></div>'+
+    '<i>→</i>'+
+    '<div><b>학생</b><span class="tt">개인화·배경화 → 탈개인화·탈배경화</span><p>그 상황에서 지식을 자기 것으로 만들고, 교사의 도움으로 일반적인 지식으로 인정하고 정리한다. 브루소는 이 마지막 단계를 제도화라고 불렀다.</p><p class="te">반죽과 사진에서 산의 모양 차이를 스스로 찾고, ‘점성이 낮은 용암은 완만한 화산을 만든다’로 정리해 다른 화산에도 써 본다.</p></div>'+
+   '</div>'+
   '</section>';
   return h;
 }
