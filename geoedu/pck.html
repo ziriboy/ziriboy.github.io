@@ -298,6 +298,7 @@ main h1+section.grp,main h1+section.plain{margin-top:40px}
   .grp{padding:18px 16px}
 }
 .tri{display:grid;grid-template-columns:minmax(0,1fr) 18px minmax(0,1fr) 18px minmax(0,1fr);gap:10px;align-items:stretch;margin:14px 0 6px}.tri>div{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}.tri b{font-size:16px;font-weight:600}.tri .tt{font-size:13px;color:var(--acc)}.tri p{margin:0;font-size:14px;line-height:1.65}.tri p.te{margin-top:auto;padding-top:8px;border-top:1px dashed var(--line);color:var(--mid);font-size:13.5px}.tri>i{font-style:normal;color:var(--soft);align-self:center;text-align:center}@media(max-width:760px){.tri{grid-template-columns:1fr}.tri>i{transform:rotate(90deg)}}
+.rv .term{margin:8px 0 0;padding-top:6px;border-top:1px dashed var(--line);font-size:14px}.rv .term b{display:inline;margin:0}
 @media print{
   header,.foot{display:none!important}
   main{padding:0}
@@ -511,7 +512,7 @@ main h1+section.tint{margin-top:40px}
 .sl-r .seg.rwk button{line-height:1.9}
 .sl-r .rv{margin-top:14px}
 .slide.end .ex dl{grid-template-columns:110px minmax(0,1fr)}
-.slide.end .ah2{margin-top:0}
+.slide.end .ah2{margin-top:0}.slide.end{grid-template-columns:minmax(0,1fr)}.slide.end .sl-l{max-width:760px}
 .og2{font-size:12.5px;color:var(--soft);margin-left:4px}
 .rwb{margin:10px 0 0}
 .grp .rv{margin-top:10px}
@@ -550,12 +551,12 @@ var K1=[
 /* ═════ 2. 교수학적 변환 ═════ */
 /* ═════ 3. 극단적 교수현상 ═════ */
 var XP=[
- {k:'tp',n:'토파즈 효과',o:'파뇰의 희곡 『토파즈』',d:'교사가 답을 암시하거나 유도 질문을 이어 가며 해답을 대신 만들어 주는 상황'},
- {k:'jd',n:'죠르단 효과',o:'몰리에르의 희곡 『서민 귀족』의 주르댕',d:'학생의 평범한 대답을 교사가 깊은 이해로 해석해 버리는 상황'},
- {k:'mc',n:'메타인지적 이동',o:'',d:'이해를 돕기 위한 활동이나 도구 자체가 학습의 목적이 되어 버리는 상황'},
- {k:'fa',n:'형식적 고착',o:'',d:'맥락이 걷힌 형식적 지식을 해설하고 반복 연습하게 하는 상황'},
- {k:'dg',n:'도그마화',o:'김민정(2002)',d:'검토하고 적용 범위를 따져 봐야 할 지식을 절대적인 것처럼 제시하는 상황'},
- {k:'os',n:'지나친 단순화',o:'김민정(2002)',d:'단순화하면서 현상을 이해하는 데 필요한 관계와 조건까지 잃는 상황'}
+ {k:'tp',b:1,n:'토파즈 효과',o:'파뇰의 희곡 『토파즈』',d:'교사가 답을 암시하거나 유도 질문을 이어 가며 해답을 대신 만들어 주는 상황'},
+ {k:'jd',b:1,n:'죠르단 효과',o:'몰리에르의 희곡 『서민 귀족』의 주르댕',d:'학생의 평범한 대답을 교사가 깊은 이해로 해석해 버리는 상황'},
+ {k:'mc',b:1,n:'메타인지적 이동',o:'',d:'이해를 돕기 위한 활동이나 도구 자체가 학습의 목적이 되어 버리는 상황'},
+ {k:'fa',b:1,n:'형식적 고착',o:'',d:'맥락이 걷힌 형식적 지식을 해설하고 반복 연습하게 하는 상황'},
+ {k:'dg',n:'도그마화',o:'',d:'검토하고 적용 범위를 따져 봐야 할 지식을 절대적인 것처럼 제시하는 상황'},
+ {k:'os',n:'지나친 단순화',o:'',d:'단순화하면서 현상을 이해하는 데 필요한 관계와 조건까지 잃는 상황'}
 ];
 var XO=XP.map(function(x){return [x.k,x.n];}).concat([['ok','문제없음']]);
 var XN={ok:'문제없음'};XP.forEach(function(x){XN[x.k]=x.n;});
@@ -588,17 +589,6 @@ var SC=[
    ['교사','오늘은 시간이 없으니까 그건 다음에 하자. 다들 열심히 참여해서 정말 좋았어요.']],
   x:'지도 만들기는 위험 지점의 분포와 그 까닭을 이해하기 위한 수단이었다. 칭찬과 평가는 지도의 꾸밈과 참여에 쏠렸고, 정작 목표였던 분포의 까닭은 다음으로 밀렸다. 활동의 성공을 학습의 성공으로 여긴 것이다.',
   m:'지도를 모아 보니 위험 지점이 사거리에 몰려 있네요. 왜 하필 이곳일까요? 모둠마다 까닭을 하나씩 찾아 지도 아래에 적어 봅시다.'},
- {id:'x4',c:'고등학교 한국지리 · 강수',r:'ok',L:[
-   ['교사','울릉도는 겨울에 우리나라에서 눈이 가장 많이 오는 곳 가운데 하나예요. 왜 그럴까요?'],
-   ['','(교실이 조용하다)'],
-   ['','(교사가 겨울철 바람 방향 지도를 띄운다)'],
-   ['교사','겨울에 바람은 어느 쪽에서 불어오나요? 이 바람은 무엇을 지나 울릉도에 닿을까요?'],
-   ['','(교사가 기다린다)'],
-   ['학생','동해를 건너와요.'],
-   ['교사','바다를 건너는 동안 바람에는 어떤 변화가 생길까요?'],
-   ['학생','수증기를 머금어요? 그래서 섬에 부딪히면 눈이 되나?'],
-   ['교사','그렇게 생각한 까닭이 있나요? 다른 친구들은 어떻게 생각해요?']],
-  x:'교사도 힌트를 주었지만 답이 아니라 판단의 재료(바람 방향 지도)를 주고 기다렸다. 바다와 눈을 잇는 생각은 학생이 했고, 교사는 그 대답을 곧바로 정답으로 확정하지 않고 근거를 묻고 다른 학생에게 넘겼다. 1번 장면과 견주어 볼 수 있다.'},
  {id:'x5',c:'중학교 사회 · 지도 읽기',r:'fa',L:[
    ['교사','등고선 간격이 좁으면?'],
    ['학생들','경사가 급하다!'],
@@ -628,7 +618,7 @@ var SC=[
    ['교사','이제 손을 위에서 내려다보세요. 선이 촘촘한 곳은 어디예요?'],
    ['학생','손가락 마디 옆이요. 거기가 가팔라요.'],
    ['교사','그럼 다시 지도를 볼까요?']],
-  x:'예상과 달리 학생들이 지도를 읽지 못하자, 교사는 같은 설명을 되풀이하지 않고 그 자리에서 방법을 바꾸었다. 쇤의 행위 중 반성이다. 5번 장면과 같은 내용이지만, 학생은 규칙이 아니라 땅의 모양에서 출발한다.'}
+  x:'예상과 달리 학생들이 지도를 읽지 못하자, 교사는 같은 설명을 되풀이하지 않고 그 자리에서 방법을 바꾸었다. 쇤의 행위 중 반성이다. 4번 장면과 같은 내용이지만, 학생은 규칙이 아니라 땅의 모양에서 출발한다.'}
 ];
 
 /* ═════ 1-2. 교원양성 교육과정 (2027학년도 교과과정안내) ═════ */
@@ -814,25 +804,21 @@ function slideScene(x,i){
      return l[0]?'<dt>'+l[0]+'</dt><dd>'+l[1]+'</dd>':'<dt></dt><dd class="dir">'+l[1]+'</dd>';}).join('')+'</dl></div>'+
    '<div class="sl-r"><input class="inp" id="kw" data-id="'+x.id+'" value="'+esc(kw)+'" placeholder="이상한 부분 (없으면 ‘없음’)" autocomplete="off">'+
    (open?'':'<div class="rwb"><button class="opt" id="kwb"'+(kw.trim()?'':' disabled')+'>해설 보기</button></div>')+
-   (open?'<div class="rv"><b>'+XN[x.r]+'</b>'+x.x+'</div>':'')+'</div></div>';
+   (open?'<div class="rv">'+rvBody(x)+'</div>':'')+'</div></div>';
+}
+function rvBody(x){
+  if(x.r==='ok')return '<b>문제없음</b>'+x.x;
+  var t=null;XP.forEach(function(p){if(p.k===x.r&&p.b)t=p;});
+  return x.x+(t?'<p class="term">이런 상황을 가리키는 용어: <b>'+t.n+'</b>'+(t.o?' <span class="og2">'+t.o+'에서 따온 이름</span>':'')+'</p>':'');
 }
 function sdone(){return SC.every(function(x){return S.kr[x.id];});}
 function slideEnd(){
-  var pr=SC.filter(function(x){return x.r!=='ok';});
-  var cur=null;pr.forEach(function(x){if(x.id===S.rw.k)cur=x;});
-  var ready=!!(cur&&S.rw.t.trim());
   return '<div class="slide end"><div class="sl-l"><h2 class="ah2">정리</h2>'+
-     '<p class="pr2">브루소(Brousseau, 1997)는 학습자의 지식 구성을 방해하는 극단적 교수현상을 네 가지로 정리했고, 김민정(2002)은 지리 수업 관찰을 통해 두 가지를 더했다. 대부분 잘 가르치려는 의도가 지나치게 작동하면서 생긴다.</p>'+
-     '<div class="ex"><dl>'+XP.map(function(x){
-       return '<dt>'+x.n+'</dt><dd>'+x.d+(x.o?' <span class="og2">'+x.o+'</span>':'')+'</dd>';}).join('')+'</dl></div></div>'+
-    '<div class="sl-r"><h2 class="ah2">교사의 말 고쳐 쓰기</h2>'+
-     '<p class="pr2">장면 하나를 골라, 문제가 시작되는 교사의 말을 고쳐 쓴다.</p>'+
-     '<div class="seg rwk">'+pr.map(function(x){
-       return '<button aria-pressed="'+(S.rw.k===x.id)+'" data-rk="'+x.id+'">'+(SC.indexOf(x)+1)+'번</button>';}).join('')+'</div>'+
-     '<textarea id="rwt" rows="4" placeholder="교사: ">'+esc(S.rw.t)+'</textarea>'+
-     '<div class="rwb"><button class="opt" id="rws"'+(ready?'':' disabled')+'>'+(S.rw.show&&ready?'예시 닫기':'고쳐 쓴 예시 보기')+'</button></div>'+
-     (S.rw.show&&ready?'<div class="rv"><b>예시</b>'+cur.m+'</div>':'')+
-    '</div></div>';
+     '<p class="pr2">브루소(Brousseau, 1997)는 잘 가르치려는 의도가 지나치게 작동해 학습자의 지식 구성을 방해하는 상황을 극단적 교수현상이라 하고, 다음처럼 이름 붙여 정리했다.</p>'+
+     '<div class="ex"><dl>'+XP.filter(function(x){return x.b;}).map(function(x){
+       return '<dt>'+x.n+'</dt><dd>'+x.d+(x.o?' <span class="og2">'+x.o+'</span>':'')+'</dd>';}).join('')+'</dl></div>'+
+     '<p class="pr2">5번과 6번 장면처럼 일반화된 모형을 외워야 할 사실로 만들거나, 단순화하면서 현상을 이해하는 데 필요한 조건까지 지우는 것도 지리 수업에서 흔히 보이는 문제다.</p></div>'+
+    '</div>';
 }
 function lastSl(){return sdone()?SC.length:SC.length-1;}
 function s3(){
@@ -843,7 +829,7 @@ function s3(){
    (sdone()?'<button aria-current="'+(n===SC.length)+'" data-sl="'+SC.length+'">정리</button>':'')+
    '<button class="ar" data-step="1" aria-label="다음"'+(n<lastSl()?'':' disabled')+'>›</button>';
   return '<h1>극단적 교수현상</h1>'+
-  '<section class="plain"><p>여덟 개의 지리 수업 장면이다. 장면마다 교사의 수업에서 이상한 부분을 찾아 키워드로 적는다.</p></section>'+
+  '<section class="plain"><p>일곱 개의 지리 수업 장면이다. 장면마다 교사의 수업에서 이상한 부분을 찾아 키워드로 적는다.</p></section>'+
   '<div class="dtop"><div class="dnav">'+dots+'</div></div>'+
   (n<SC.length?slideScene(SC[n],n):slideEnd());
 }
