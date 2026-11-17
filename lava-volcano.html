@@ -193,6 +193,6 @@ document.getElementById('bh').onclick=()=>{hallaOn=!hallaOn;const b=document.get
 document.getElementById('b0').onclick=()=>{if(busy)return;h=new Float32Array(N);count=0;document.getElementById('layers').innerHTML='';readout();};
 readout();
 </script>
-<script>(function(){function s(){try{parent.postMessage({lavaH:Math.ceil(document.documentElement.scrollHeight)},'*')}catch(e){}}addEventListener('load',s);addEventListener('resize',s);if(window.ResizeObserver)new ResizeObserver(s).observe(document.body);})();</script>
+<script>(function(){function s(){try{var w=document.querySelector('.wrap');if(w)parent.postMessage({lavaH:Math.ceil(w.getBoundingClientRect().height)+4},'*')}catch(e){}}addEventListener('load',s);addEventListener('resize',s);if(window.ResizeObserver)new ResizeObserver(s).observe(document.body);})();</script>
 </body>
 </html>
