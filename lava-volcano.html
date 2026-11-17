@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
+<head><script>try{if(window.self!==window.top)document.documentElement.classList.add('emb')}catch(e){document.documentElement.classList.add('emb')}</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>용암의 점성과 화산</title>
@@ -36,6 +36,7 @@ input[type=range]{width:100%;accent-color:var(--ink);margin:6px 0 0}
 .tg[aria-pressed="true"]{border-style:solid;font-weight:700}
 button:focus-visible,input:focus-visible{outline:2px solid var(--act);outline-offset:2px}
 .note{color:var(--sub);font-size:.8rem;margin-top:14px;border-top:1px solid var(--line);padding-top:8px}
+html.emb{font-size:13px}html.emb body{line-height:1.6}html.emb .wrap{padding:2px 1px}html.emb h1{font-size:1.15rem;margin:0 0 8px}html.emb .readout b{font-size:1rem}html.emb .qs li{margin:0 0 4px}
 </style>
 </head>
 <body>
@@ -192,5 +193,6 @@ document.getElementById('bh').onclick=()=>{hallaOn=!hallaOn;const b=document.get
 document.getElementById('b0').onclick=()=>{if(busy)return;h=new Float32Array(N);count=0;document.getElementById('layers').innerHTML='';readout();};
 readout();
 </script>
+<script>(function(){function s(){try{parent.postMessage({lavaH:Math.ceil(document.documentElement.scrollHeight)},'*')}catch(e){}}addEventListener('load',s);addEventListener('resize',s);if(window.ResizeObserver)new ResizeObserver(s).observe(document.body);})();</script>
 </body>
 </html>
