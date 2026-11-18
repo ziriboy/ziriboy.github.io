@@ -94,92 +94,38 @@ svg text{font-family:inherit}
 .bi{display:inline-block;border:1px solid var(--line);padding:0 6px;margin:0 4px 0 2px;cursor:pointer;color:var(--sub)}
 .bi.cur{border-color:#222;color:#222}
 .bi i{font-style:normal;color:#b0452f;margin-left:3px;cursor:pointer}
-#scov .h{cursor:ew-resize}#scov .v{cursor:ns-resize}#scov .x{cursor:pointer}
+.scov .h{cursor:ew-resize}.scov .v{cursor:ns-resize}.scov .x{cursor:pointer}
+.mapbox canvas,.mapbox .ov{position:absolute;left:0;top:0;width:960px;height:384px}
+.scbox{position:relative;width:526px;height:340px}
+.scbox canvas,.scbox svg{position:absolute;left:0;top:0;width:526px;height:340px}
+.scov{touch-action:none}
+.ph{font-size:16px;font-weight:600;color:var(--ac);margin:26px 0 6px;padding-top:16px;border-top:1px solid var(--line)}
+h1+.ph{border-top:0;margin-top:6px;padding-top:0}
+#mine2{font-size:12px;color:#8a6d3b;margin-top:8px}
+#start2{margin-bottom:6px}
+#stepnav{gap:2px;font-size:11.5px;white-space:nowrap}
+#stepnav .sn{padding:3px 6px}
+#p2 .sbar .sl input{max-width:120px}
+#vseg2 button{padding:4px 7px}
 </style>
 </head>
 <body>
 <div class="wrap">
 <h1>쾨펜 다시 만들기 — 무엇을 기준으로 기후를 나눌까?</h1>
-<div class="tabs">
-  <div class="tab on" data-t="1">1 기후 구분하기</div>
-  <div class="tab" data-t="2">2 쾨펜 따라하기</div>
-  <div class="tab" data-t="3">3 내 기준 고치기</div>
-</div>
 
-<p class="task" id="task1">연평균 기온과 연강수량에 경계를 그어 기후가 비슷한 곳끼리 묶어 보자. 경계는 모두 합쳐 네 개까지 그을 수 있다.</p>
-<p class="task hide" id="task3">쾨펜의 기준을 참고해 1에서 세운 내 기준을 고쳐 보자. 경계는 모두 합쳐 여섯 개까지 그을 수 있다.</p>
-<p class="task hide" id="task2">쾨펜은 식물이 자랄 수 있는 조건으로 기후를 나누었다. 내가 나눈 지도 위에서 쾨펜의 기준을 하나씩 따라 해 보자.</p>
-
-<div class="mapbox"><canvas id="map" width="1440" height="576"></canvas><svg id="ov" viewBox="0 0 960 384"></svg></div>
-<div class="legend" id="legend"></div>
-
+<!-- PART 1 -->
+<h2 class="ph">1 기후 구분하기</h2>
+<p class="task">연평균 기온과 연강수량에 경계를 그어 기후가 비슷한 곳끼리 묶어 보자. 경계는 모두 합쳐 네 개까지 그을 수 있다.</p>
+<div class="mapbox"><canvas id="map1" width="1440" height="576"></canvas><svg id="ov1" class="ov" viewBox="0 0 960 384"></svg></div>
+<div class="legend" id="legend1"></div>
 <div class="row" style="margin-top:8px">
-  <!-- tab 1 -->
-  <div id="left1" class="card" style="width:548px;flex:none;padding:6px 10px 8px">
+  <div class="card" style="width:548px;flex:none;padding:6px 10px 8px">
     <div class="sbar">
-      <button class="bt sm" id="addT">+ 기온 경계</button><button class="bt sm" id="addP">+ 강수량 경계</button>
-      <span class="agree" id="zc"></span>
-      <span class="seg" id="dseg" style="margin-left:auto"><button data-d="zone" class="on">내 구분</button><button data-d="t">기온</button><button data-d="p">강수량</button></span>
-      <span class="seg hide" id="xseg" style="margin-left:auto"><button data-x="mat" class="on">연평균 기온</button><button data-x="tc">가장 추운 달</button><button data-x="th">가장 더운 달</button></span>
+      <button class="bt sm" id="addT1">+ 기온 경계</button><button class="bt sm" id="addP1">+ 강수량 경계</button>
+      <span class="agree" id="zc1"></span>
+      <span class="seg" id="dseg1" style="margin-left:auto"><button data-d="zone" class="on">내 구분</button><button data-d="t">기온</button><button data-d="p">강수량</button></span>
     </div>
-    <div class="sbar hide" id="sbar2">
-      <div class="sl" style="flex:1;margin:0"><label>건조 경계 기울기: 1°C마다</label><input type="range" id="slope3" min="0" max="40" step="1" value="0"><span class="v" id="slope3v"></span></div>
-      <span class="seg" id="vseg"><button data-v="mine" class="on">고친 지도</button><button data-v="first">처음 지도</button><button data-v="kp">쾨펜 지도</button></span>
-    </div>
-    <div style="position:relative;width:526px;height:340px">
-      <canvas id="sc" width="1052" height="680" style="position:absolute;left:0;top:0;width:526px;height:340px"></canvas>
-      <svg id="scov" viewBox="0 0 526 340" style="position:absolute;left:0;top:0;width:526px;height:340px;touch-action:none"></svg>
-    </div>
-    <div class="blist hide" id="blist"></div>
-  </div>
-  <!-- tab 2 -->
-  <div id="left2" class="hide" style="flex:1;min-width:0">
-    <div class="stepnav" id="stepnav" style="margin-top:0"></div>
-    <div class="card stepc" data-s="0">
-      <div class="kst">쾨펜은 <b>가장 추운 달 평균 기온이 18°C 이상</b>인 곳을 열대 기후(A)로 나누었다.</div>
-      <div class="why">가장 추운 달도 18°C 이상이면 열대 식물이 서리 피해 없이 일 년 내내 자랄 수 있다. 연평균 기온이 높아도 겨울이 추우면 열대 식물은 살 수 없다.</div>
-      <div class="mine" data-m="t"></div>
-      <div class="do">가장 추운 달 기준을 18°C로 맞춰 보자.</div>
-      <div class="sl"><label>가장 추운 달</label><input type="range" id="s_trop" min="5" max="25" step="1" value="23"><span class="v" id="s_tropv"></span></div>
-    </div>
-    <div class="card stepc" data-s="1">
-      <div class="kst">쾨펜은 <b>연강수량이 건조 한계보다 적은 곳</b>을 건조 기후(B)로 나누었다. 건조 한계는 20 × 연평균 기온 + 140mm이다.</div>
-      <div class="why">기온이 높을수록 증발이 많아, 같은 양의 비가 내려도 더 건조하다. 그래서 건조 한계는 정해진 숫자가 아니라 기온이 1°C 오를 때마다 20mm씩 높아진다. 비가 증발이 많은 여름에 몰리면 140mm를 더하고, 겨울에 몰리면 140mm를 뺀다. 건조 한계의 절반보다 적으면 사막 기후(BW), 나머지는 스텝 기후(BS)이다.</div>
-      <div class="mine" data-m="p"></div>
-      <div class="do">기본값 140mm, 1°C마다 20mm로 맞추고 계절 반영을 켜 보자.</div>
-      <div style="display:flex;gap:14px">
-        <div class="sl" style="flex:1"><label>기본값</label><input type="range" id="s_base" min="0" max="800" step="10" value="300"><span class="v" id="s_basev"></span></div>
-        <div class="sl" style="flex:1"><label>1°C마다</label><input type="range" id="s_slope" min="0" max="40" step="1" value="0"><span class="v" id="s_slopev"></span></div>
-      </div>
-      <label class="chk"><input type="checkbox" id="s_season">계절 반영 (여름에 비가 몰리면 +140mm, 겨울에 몰리면 −140mm)</label>
-    </div>
-    <div class="card stepc" data-s="2">
-      <div class="kst">쾨펜은 <b>가장 추운 달 평균 기온이 −3°C 이하</b>인 곳을 냉대 기후(D), 그보다 따뜻한 곳을 온대 기후(C)로 나누었다.</div>
-      <div class="why">가장 추운 달이 −3°C보다 낮으면 땅이 얼고 눈이 오래 쌓인다. 이런 겨울을 견디는 침엽수림이 넓게 나타난다.</div>
-      <div class="mine" data-m="t"></div>
-      <div class="do">가장 추운 달 기준을 −3°C로 맞춰 보자.</div>
-      <div class="sl"><label>가장 추운 달</label><input type="range" id="s_cd" min="-15" max="10" step="1" value="5"><span class="v" id="s_cdv"></span></div>
-    </div>
-    <div class="card stepc" data-s="3">
-      <div class="kst">쾨펜은 <b>가장 더운 달 평균 기온이 10°C 미만</b>인 곳을 한대 기후(E)로 나누었다.</div>
-      <div class="why">여름에도 10°C에 못 미치면 나무가 자라지 못한다. 이 선은 나무가 자라는 북쪽 한계와 거의 일치한다. 가장 더운 달도 0°C 미만이면 빙설 기후(EF), 그 밖은 툰드라 기후(ET)이다.</div>
-      <div class="mine" data-m="t"></div>
-      <div class="do">가장 더운 달 기준을 10°C로 맞춰 보자.</div>
-      <div class="sl"><label>가장 더운 달</label><input type="range" id="s_tree" min="0" max="20" step="1" value="4"><span class="v" id="s_treev"></span></div>
-    </div>
-    <div class="card stepc" data-s="4">
-      <div class="kst">쾨펜은 <b>비가 언제 오는가</b>로 기후를 한 번 더 나누었다.</div>
-      <div class="why">식물은 자라는 시기에 물이 있어야 한다. 열대에서 가장 건조한 달이 60mm 미만이면 건기가 있다. 온대·냉대는 여름이 건조한지(s), 겨울이 건조한지(w), 일 년 내내 고른지(f)를 본다.</div>
-      <div class="mine" data-m="s"></div>
-      <div class="do">열대의 건기 기준을 60mm로 맞추고, 온대·냉대의 계절 구분을 켜 보자.</div>
-      <div class="sl"><label>열대 건기</label><input type="range" id="s_dryA" min="0" max="150" step="5" value="0"><span class="v" id="s_dryAv"></span></div>
-      <label class="chk"><input type="checkbox" id="s_sw">온대·냉대의 여름 건조(s)·겨울 건조(w) 구분</label>
-    </div>
-    <div class="cmpbar">
-      <span class="seg" id="viewseg"><button data-v="now" class="on">지금 지도</button><button data-v="mine">내가 나눈 지도</button></span>
-      <span class="agree" id="okmsg"></span>
-      <button class="bt fill" id="next" style="margin-left:auto" disabled>다음 단계로</button>
-    </div>
+    <div class="scbox"><canvas id="sc1" width="1052" height="680"></canvas><svg id="scov1" class="scov" viewBox="0 0 526 340"></svg></div>
   </div>
   <div class="clim card">
     <div class="ttl" id="cttl"></div>
@@ -188,23 +134,70 @@ svg text{font-family:inherit}
   </div>
 </div>
 
-<div id="w2" class="write hide">
-  <div>쾨펜은 왜 연평균 기온과 연강수량 대신 가장 추운 달·가장 더운 달의 기온, 기온에 따라 달라지는 건조 한계, 비가 오는 계절을 기준으로 삼았을까? 내가 나눈 지도와 비교해 써 보자.</div>
-  <textarea id="t2"></textarea>
-  <button class="bt" id="b2">확인</button> <button class="bt fill" id="go3" style="float:right">3 내 기준 고치기 →</button>
-  <div class="models" id="m2">
-    <div><div class="lb">예시 1</div>쾨펜은 식물이 자랄 수 있는 조건으로 기후를 나누었다. 식물에게는 일 년 평균보다 가장 추운 달과 가장 더운 달의 기온, 증발을 빼고 남는 물의 양, 그리고 자라는 시기에 비가 오는지가 중요하다.</div>
-    <div><div class="lb">예시 2</div>내 지도에서는 연강수량 250mm로 건조 지역을 나누어 시베리아의 숲과 몽골의 초원이 같은 지역이 되었다. 쾨펜은 기온이 높을수록 건조 한계를 높여, 증발이 적은 추운 곳은 비가 적어도 습윤한 기후로 나누었다.</div>
+<!-- PART 2 -->
+<h2 class="ph">2 쾨펜 따라 고치기</h2>
+<p class="task">쾨펜은 식물이 자랄 수 있는 조건으로 기후를 나누었다. 1에서 그은 내 경계를 쾨펜의 기준에 맞춰 하나씩 고쳐 보자.</p>
+<button class="bt fill" id="start2">1의 경계 가져오기</button>
+<div id="p2" class="hide">
+  <div class="mapbox"><canvas id="map2" width="1440" height="576"></canvas><svg id="ov2" class="ov" viewBox="0 0 960 384"></svg></div>
+  <div class="legend" id="legend2"></div>
+  <div class="row" style="margin-top:8px">
+    <div class="card" style="width:548px;flex:none;padding:6px 10px 8px">
+      <div class="sbar">
+        <button class="bt sm" id="addT2">+ 기온 경계</button><button class="bt sm" id="addP2">+ 강수량 경계</button>
+        <span class="agree" id="zc2"></span>
+        <span class="seg" id="xseg2" style="margin-left:auto"><button data-x="mat" class="on">연평균 기온</button><button data-x="tc">가장 추운 달</button><button data-x="th">가장 더운 달</button></span>
+      </div>
+      <div class="sbar">
+        <div class="sl" style="flex:1;margin:0"><label>강수량 경계 기울기(1°C마다)</label><input type="range" id="slope2" min="0" max="40" step="1" value="0"><span class="v" id="slope2v"></span></div>
+        <span class="seg" id="vseg2"><button data-v="mine" class="on">고친 지도</button><button data-v="first">처음 지도</button><button data-v="kp">쾨펜 지도</button></span>
+      </div>
+      <div class="scbox"><canvas id="sc2" width="1052" height="680"></canvas><svg id="scov2" class="scov" viewBox="0 0 526 340"></svg></div>
+      <div class="blist" id="blist2"></div>
+    </div>
+    <div style="flex:1;min-width:0">
+      <div class="stepnav" id="stepnav"></div>
+      <div class="card stepc" data-s="0">
+        <div class="kst">쾨펜은 <b>가장 추운 달 평균 기온 18°C</b>를 경계로 열대 기후(A)를 나누었다.</div>
+        <div class="why">가장 추운 달도 18°C 이상이면 열대 식물이 서리 피해 없이 일 년 내내 자랄 수 있다. 연평균 기온이 높아도 겨울이 추우면 열대 식물은 살 수 없다.</div>
+        <div class="do">그래프의 가로축을 ‘가장 추운 달’로 바꾸고, 기온 경계 하나를 18°C에 맞춰 보자.</div>
+      </div>
+      <div class="card stepc" data-s="1">
+        <div class="kst">쾨펜은 연강수량이 <b>건조 한계(140mm + 연평균 기온 1°C마다 20mm)</b>보다 적은 곳을 건조 기후(B)로 나누었다.</div>
+        <div class="why">기온이 높을수록 증발이 많아, 같은 양의 비가 내려도 더 건조하다. 그래서 건조 한계는 정해진 숫자가 아니라 기온이 오를수록 높아진다. 쾨펜은 비가 여름에 몰리는지, 겨울에 몰리는지에 따라 이 값을 조금 더 조정했다.</div>
+        <div class="do">가로축을 ‘연평균 기온’으로 두고, 강수량 경계 하나를 140mm에 맞춘 뒤 기울기를 20mm로 해 보자.</div>
+      </div>
+      <div class="card stepc" data-s="2">
+        <div class="kst">쾨펜은 <b>가장 추운 달 평균 기온 −3°C</b>를 경계로 온대 기후(C)와 냉대 기후(D)를 나누었다.</div>
+        <div class="why">가장 추운 달이 −3°C보다 낮으면 땅이 얼고 눈이 오래 쌓인다. 이런 겨울을 견디는 침엽수림이 넓게 나타난다.</div>
+        <div class="do">가로축을 ‘가장 추운 달’로 바꾸고, 기온 경계 하나를 −3°C에 맞춰 보자.</div>
+      </div>
+      <div class="card stepc" data-s="3">
+        <div class="kst">쾨펜은 <b>가장 더운 달 평균 기온 10°C</b>를 경계로 한대 기후(E)를 나누었다.</div>
+        <div class="why">여름에도 10°C에 못 미치면 나무가 자라지 못한다. 이 선은 나무가 자라는 북쪽 한계와 거의 일치한다.</div>
+        <div class="do">가로축을 ‘가장 더운 달’로 바꾸고, 기온 경계 하나를 10°C에 맞춰 보자.</div>
+      </div>
+      <div class="card stepc" data-s="4">
+        <div class="kst">쾨펜은 마지막으로 <b>비가 언제 오는가</b>를 보았다.</div>
+        <div class="why">식물은 자라는 시기에 물이 있어야 한다. 쾨펜은 건기가 있는지, 여름이 건조한지, 겨울이 건조한지에 따라 열대·온대·냉대 기후를 한 번 더 나누었다(열대 우림·사바나, 지중해성 기후 등).</div>
+        <div class="do">‘쾨펜 지도’를 켜서 내가 고친 지도와 비교해 보자.</div>
+      </div>
+      <div class="mine" id="mine2"></div>
+      <div class="cmpbar">
+        <span class="agree" id="okmsg"></span>
+        <button class="bt fill" id="next" style="margin-left:auto" disabled>다음 단계로</button>
+      </div>
+      <div class="note" style="margin-top:10px"><a href="#" id="refetch">1의 경계 다시 가져오기</a></div>
+    </div>
   </div>
-</div>
-
-<div id="w3" class="write hide">
-  <div>처음 기준과 고친 기준은 무엇이 달라졌는가? 왜 그렇게 고쳤는지 써 보자.</div>
-  <textarea id="t3"></textarea>
-  <button class="bt" id="b3">확인</button>
-  <div class="models" id="m3">
-    <div><div class="lb">예시 1</div>처음에는 연평균 기온 0°C와 20°C로 나누었지만, 고친 기준에서는 가장 추운 달 18°C와 −3°C, 가장 더운 달 10°C를 썼다. 식물이 자랄 수 있는지는 일 년 평균보다 가장 춥고 가장 더운 때가 정하기 때문이다.</div>
-    <div><div class="lb">예시 2</div>연강수량 250mm 경계를 기온 1°C마다 20mm씩 높아지도록 기울였다. 그러자 몽골 초원은 건조 지역에 남고, 증발이 적은 시베리아 숲은 습윤 지역으로 옮겨 갔다.</div>
+  <div class="write">
+    <div>처음 기준과 고친 기준은 무엇이 달라졌는가? 왜 그렇게 고쳤는지 써 보자.</div>
+    <textarea id="t3"></textarea>
+    <button class="bt" id="b3">확인</button>
+    <div class="models" id="m3">
+      <div><div class="lb">예시 1</div>처음에는 연평균 기온 0°C와 20°C로 나누었지만, 고친 기준에서는 가장 추운 달 18°C와 −3°C, 가장 더운 달 10°C를 썼다. 식물이 자랄 수 있는지는 일 년 평균보다 가장 춥고 가장 더운 때가 정하기 때문이다.</div>
+      <div><div class="lb">예시 2</div>연강수량 250mm 경계를 140mm로 낮추고 기온 1°C마다 20mm씩 높아지도록 기울였다. 그러자 몽골 초원은 건조 지역에 남고, 증발이 적은 시베리아 숲은 습윤 지역으로 옮겨 갔다.</div>
+    </div>
   </div>
 </div>
 </div>
@@ -257,168 +250,140 @@ function clsSt(i,S,u){
 }
 
 const $=id=>document.getElementById(id);
-let tab=1,dview='zone',view='now',started2=false,v3='mine',xv='mat';
-const VARS={mat:{a:MAT,n:'연평균 기온',s:'연평균'},tc:{a:TC,n:'가장 추운 달 기온',s:'가장 추운 달'},th:{a:TH,n:'가장 더운 달 기온',s:'가장 더운 달'}};
-const ST={1:{T:[],P:[],slope:0},3:null};
-let B=ST[1];
 const SEL0=(()=>{const r=Math.floor((LAT0+3.1)/RES),c=Math.floor((-60+180)/RES);return gidx[r*W+c]>=0?gidx[r*W+c]:0})();
 let sel=SEL0,selLL=[-3.1,-60.0];
-function S2(){return{tree:+$('s_tree').value,base:+$('s_base').value,slope:+$('s_slope').value,season:$('s_season').checked,trop:+$('s_trop').value,cd:+$('s_cd').value,dryA:+$('s_dryA').value,sw:$('s_sw').checked}}
+const VARS={mat:{a:MAT,n:'연평균 기온',s:'연평균'},tc:{a:TC,n:'가장 추운 달 기온',s:'가장 추운 달'},th:{a:TH,n:'가장 더운 달 기온',s:'가장 더운 달'}};
+const WS={1:{n:1,st:{T:[],P:[],slope:0},xv:'mat',view:'zone',maxB:4},2:{n:2,st:null,xv:'mat',view:'mine',maxB:6}};
+let started=false,step=0,maxStep=0;
 
-/* zones (tab 1 and 3) */
+/* zones */
 function zT(i,s){let k=0;for(const b of s.T)if(VARS[b.v].a[i]>=b.x)k++;return k}
 function zP(i,s){let k=0;for(const b of s.P)if(MAP[i]>=b+s.slope*MAT[i])k++;return k}
 function hsl(h,s,l){s/=100;l/=100;const k=n=>(n+h/30)%12,a=s*Math.min(l,1-l),f=n=>l-a*Math.max(-1,Math.min(k(n)-3,Math.min(9-k(n),1)));return[Math.round(f(0)*255),Math.round(f(8)*255),Math.round(f(4)*255)]}
 function zoneRGB(ti,pi,s){const nT=s.T.length+1,nP=s.P.length+1;
   if(nT===1&&nP===1)return[196,201,205];
   const h=nT>1?230-215*ti/(nT-1):200,l=nP>1?84-46*pi/(nP-1):60,sa=nT>1?60:45;return hsl(h,sa,l)}
-function zoneOfCell(i,s){s=s||B;return zoneRGB(zT(i,s),zP(i,s),s)}
+const zoneOf=(i,s)=>zoneRGB(zT(i,s),zP(i,s),s);
 function ramp(stops,v){if(v<=stops[0][0])return stops[0][1];for(let k=1;k<stops.length;k++){if(v<=stops[k][0]){const [a,ca]=stops[k-1],[b,cb]=stops[k],f=(v-a)/(b-a);return ca.map((x,j)=>Math.round(x+(cb[j]-x)*f))}}return stops[stops.length-1][1]}
 const TR=[[-30,[49,54,149]],[-15,[69,117,180]],[0,[171,217,233]],[10,[255,255,191]],[20,[253,174,97]],[30,[215,48,39]]];
 const PR=[[0,[247,244,233]],[250,[227,217,168]],[500,[185,215,154]],[1000,[111,179,141]],[2000,[47,129,153]],[4000,[29,63,122]]];
 function hex(h){return[parseInt(h.substr(1,2),16),parseInt(h.substr(3,2),16),parseInt(h.substr(5,2),16)]}
 const HEXC={};function rgbh(h){return HEXC[h]||(HEXC[h]=hex(h))}
-const fade=c=>c.map(x=>Math.round(x*0.45+255*0.55));
 const K5={A:'#4a78e0',B:'#e8833a',C:'#86c860',D:'#9a72d0',E:'#b6b6b6'},K5N={A:'열대',B:'건조',C:'온대',D:'냉대',E:'한대'};
-function rgb1(i){
-  if(tab===1){if(dview==='t')return ramp(TR,MAT[i]);if(dview==='p')return ramp(PR,MAP[i]);return zoneOfCell(i)}
-  if(v3==='first')return zoneOfCell(i,ST[1]);if(v3==='kp')return rgbh(K5[KPC[i][0]]);return zoneOfCell(i)}
+function color(w,i){const v=w.view;
+  if(v==='t')return ramp(TR,MAT[i]);if(v==='p')return ramp(PR,MAP[i]);
+  if(v==='first')return zoneOf(i,WS[1].st);if(v==='kp')return rgbh(K5[KPC[i][0]]);return zoneOf(i,w.st)}
 
-/* scatter geometry */
+/* geometry */
 const SW=526,SH=340,X0=48,X1=512,Y0=10,Y1=306,TMIN=-45,TMAX=35,PMAXS=Math.sqrt(4500);
 const sx=v=>X0+(Math.max(TMIN,Math.min(TMAX,v))-TMIN)/(TMAX-TMIN)*(X1-X0);
 const sy=v=>Y1-Math.sqrt(Math.max(0,Math.min(4500,v)))/PMAXS*(Y1-Y0);
 const ix=x=>TMIN+(x-X0)/(X1-X0)*(TMAX-TMIN);
 const iy=y=>{const r=(Y1-y)/(Y1-Y0)*PMAXS;return r*r};
-const sctx=$('sc').getContext('2d');const simg=sctx.createImageData(SW*2,SH*2);
+for(const n of [1,2]){const w=WS[n];w.mctx=$('map'+n).getContext('2d');w.sctx=$('sc'+n).getContext('2d');w.simg=w.sctx.createImageData(SW*2,SH*2);
+  w.small=document.createElement('canvas');w.small.width=W;w.small.height=H;w.smctx=w.small.getContext('2d');w.img=w.smctx.createImageData(W,H)}
 
-/* render */
-const small=document.createElement('canvas');small.width=W;small.height=H;const smctx=small.getContext('2d');const img=smctx.createImageData(W,H);
-const mctx=$('map').getContext('2d');
-let cur=null;
-function render(){
-  const d=img.data;d.fill(0);const sd=simg.data;const sc=tab!==2;if(sc)sd.fill(0);
-  const XA=VARS[tab===3?xv:'mat'].a;
-  let S;if(tab===2){S=S2();cur=new Array(N)}
-  for(let i=0;i<N;i++){
-    let c3;
-    if(sc){c3=rgb1(i);
-      const px=Math.round(sx(XA[i])*2),py=Math.round(sy(MAP[i])*2);
-      for(let a=0;a<2;a++)for(let bb=0;bb<2;bb++){const q=((py+bb)*SW*2+px+a)*4;sd[q]=c3[0];sd[q+1]=c3[1];sd[q+2]=c3[2];sd[q+3]=255}}
-    else{const c=clsSt(i,S,st);cur[i]=c;
-      if(view==='mine')c3=zoneOfCell(i,ST[1]);else c3=c==='-'?fade(zoneOfCell(i,ST[1])):rgbh(COL[c])}
+function render(w){
+  const d=w.img.data,sd=w.simg.data;d.fill(0);sd.fill(0);const XA=VARS[w.xv].a;
+  for(let i=0;i<N;i++){const c3=color(w,i);
     const k=cellK[i]*4;d[k]=c3[0];d[k+1]=c3[1];d[k+2]=c3[2];d[k+3]=255;
-  }
-  smctx.putImageData(img,0,0);
-  mctx.fillStyle='#eef1f4';mctx.fillRect(0,0,1440,576);mctx.imageSmoothingEnabled=false;mctx.drawImage(small,0,0,1440,576);
-  if(sc){sctx.putImageData(simg,0,0);scatterOverlay();t1panel()}else step2();
-  legend();overlay();climo();
+    const px=Math.round(sx(XA[i])*2),py=Math.round(sy(MAP[i])*2);
+    for(let a=0;a<2;a++)for(let b=0;b<2;b++){const q=((py+b)*SW*2+px+a)*4;sd[q]=c3[0];sd[q+1]=c3[1];sd[q+2]=c3[2];sd[q+3]=255}}
+  w.smctx.putImageData(w.img,0,0);
+  w.mctx.fillStyle='#eef1f4';w.mctx.fillRect(0,0,1440,576);w.mctx.imageSmoothingEnabled=false;w.mctx.drawImage(w.small,0,0,1440,576);
+  w.sctx.putImageData(w.simg,0,0);
+  scatterOverlay(w);panel(w);legend(w);mapOverlay(w);
+  if(w.n===2)steps();
 }
-function legend(){
-  const L=$('legend');
-  if(tab===1){
-    if(dview==='t')L.innerHTML=`<span>연평균 기온 −30°C<i class="gl" style="background:linear-gradient(90deg,rgb(49,54,149),rgb(69,117,180),rgb(171,217,233),rgb(255,255,191),rgb(253,174,97),rgb(215,48,39))"></i>30°C</span>`;
-    else if(dview==='p')L.innerHTML=`<span>연강수량 0mm<i class="gl" style="background:linear-gradient(90deg,rgb(247,244,233),rgb(227,217,168),rgb(185,215,154),rgb(111,179,141),rgb(47,129,153),rgb(29,63,122))"></i>4000mm</span>`;
-    else L.innerHTML='<span>지역의 색은 아래 그래프의 칸 색과 같다.</span>';return}
-  if(tab===3){
-    if(v3==='kp')L.innerHTML=Object.keys(K5).map(k=>`<span><i class="sw" style="background:${K5[k]}"></i>${k} ${K5N[k]}</span>`).join('');
-    else L.innerHTML=`<span>${v3==='first'?'1에서 처음 나눈 지도':'고친 기준으로 나눈 지도'} · 지역의 색은 아래 그래프의 칸 색과 같다.</span>`;return}
-  if(view==='mine'){L.innerHTML='<span>1에서 내가 나눈 지도</span>';return}
-  const set=new Set(cur);
-  L.innerHTML=ORDER.filter(c=>c!=='-'&&set.has(c)).map(c=>`<span><i class="sw" style="background:${COL[c]}"></i>${c} ${NAME[c]}</span>`).join('')+(set.has('-')?'<span><i class="sw" style="background:#e4e6e8"></i>흐린 색: 아직 쾨펜 기준으로 나누지 않은 곳(내가 나눈 지역)</span>':'');
+function renderAll(){render(WS[1]);if(started)render(WS[2]);climo()}
+const pend=new Set();let raf=0;
+function sched(w){pend.add(w||0);if(raf)return;raf=requestAnimationFrame(()=>{raf=0;const s=[...pend];pend.clear();if(s.includes(0))renderAll();else s.forEach(render)})}
+
+function legend(w){const L=$('legend'+w.n),v=w.view;
+  if(v==='t')L.innerHTML=`<span>연평균 기온 −30°C<i class="gl" style="background:linear-gradient(90deg,rgb(49,54,149),rgb(69,117,180),rgb(171,217,233),rgb(255,255,191),rgb(253,174,97),rgb(215,48,39))"></i>30°C</span>`;
+  else if(v==='p')L.innerHTML=`<span>연강수량 0mm<i class="gl" style="background:linear-gradient(90deg,rgb(247,244,233),rgb(227,217,168),rgb(185,215,154),rgb(111,179,141),rgb(47,129,153),rgb(29,63,122))"></i>4000mm</span>`;
+  else if(v==='kp')L.innerHTML=Object.keys(K5).map(k=>`<span><i class="sw" style="background:${K5[k]}"></i>${k} ${K5N[k]}</span>`).join('');
+  else if(v==='first')L.innerHTML='<span>1에서 처음 나눈 지도</span>';
+  else L.innerHTML='<span>지역의 색은 아래 그래프의 칸 색과 같다.</span>';
 }
-function overlay(){
-  let s='';
+function mapOverlay(w){let s='';
   [[0,'적도'],[23.44,'북회귀선'],[-23.44,'남회귀선'],[66.56,'북극권']].forEach(([la,n])=>{const y=(LAT0-la)/144*MH;s+=`<line x1="0" x2="${MW}" y1="${y}" y2="${y}" stroke="#8a969e" stroke-width="0.6" ${la?'stroke-dasharray="3 3"':''} opacity=".7"/><text x="4" y="${y-3}" font-size="9.5" fill="#6d7a82">${n}</text>`});
   const [sla,slo]=selLL;s+=`<circle cx="${(slo+180)/360*MW}" cy="${(LAT0-sla)/144*MH}" r="9" fill="none" stroke="#b0452f" stroke-width="1.6"/>`;
-  $('ov').innerHTML=s;
-}
+  $('ov'+w.n).innerHTML=s}
 
 /* scatter overlay & boundaries */
-const pLabel=b=>B.slope?`${b}mm+${B.slope}/°C`:`${b}mm`;
-function scatterOverlay(){
-  const XA=VARS[tab===3?xv:'mat'];let s='';
+const pLabel=(w,b)=>w.st.slope?`${b}mm+${w.st.slope}/°C`:`${b}mm`;
+function scatterOverlay(w){
+  const st=w.st,XA=VARS[w.xv];let s='';
   for(let v=-40;v<=30;v+=10){const x=sx(v);s+=`<line x1="${x}" x2="${x}" y1="${Y0}" y2="${Y1}" stroke="#e3e6e8" stroke-width="0.6"/><text x="${x}" y="${Y1+13}" font-size="9.5" text-anchor="middle" fill="#888">${v}</text>`}
   [0,100,250,500,1000,2000,4000].forEach(v=>{const y=sy(v);s+=`<line x1="${X0}" x2="${X1}" y1="${y}" y2="${y}" stroke="#e3e6e8" stroke-width="0.6"/><text x="${X0-4}" y="${y+3}" font-size="9.5" text-anchor="end" fill="#888">${v}</text>`});
   s+=`<text x="${(X0+X1)/2}" y="${SH-6}" font-size="10" text-anchor="middle" fill="#666">${XA.n}(°C)</text><text transform="translate(11 ${(Y0+Y1)/2}) rotate(-90)" font-size="10" text-anchor="middle" fill="#666">연강수량(mm)</text>`;
   s+=`<rect x="${X0}" y="${Y0}" width="${X1-X0}" height="${Y1-Y0}" fill="none" stroke="#c9ced2" stroke-width="0.8"/>`;
   s+=`<circle cx="${sx(XA.a[sel])}" cy="${sy(MAP[sel])}" r="6" fill="none" stroke="#b0452f" stroke-width="1.6"/>`;
-  const vx=tab===3?xv:'mat';
-  B.T.forEach((b,k)=>{if(b.v!==vx)return;const x=sx(b.x);
+  st.T.forEach((b,k)=>{if(b.v!==w.xv)return;const x=sx(b.x);
     s+=`<line x1="${x}" x2="${x}" y1="${Y0}" y2="${Y1}" stroke="#222" stroke-width="1.3"/><line class="h" data-bt="t" data-k="${k}" x1="${x}" x2="${x}" y1="${Y0}" y2="${Y1}" stroke="transparent" stroke-width="16"/>`;
     s+=`<g class="x" data-xt="t" data-k="${k}"><rect x="${x-26}" y="${Y0+2}" width="52" height="15" fill="#fff" stroke="#222" stroke-width="0.8"/><text x="${x-4}" y="${Y0+13}" font-size="10" text-anchor="middle" fill="#222">${b.x}°C</text><text x="${x+18}" y="${Y0+13}" font-size="10" text-anchor="middle" fill="#b0452f">×</text></g>`});
-  const drawP=!B.slope||vx==='mat';
-  if(drawP)B.P.forEach((b,k)=>{
-    let pts=[];for(let t=TMIN;t<=TMAX;t+=1)pts.push(`${sx(t)},${sy(Math.max(0,b+B.slope*t))}`);
-    const lx=X1-(B.slope?100:70),ly=sy(Math.max(0,b+B.slope*ix(lx+45)));
+  const drawP=!st.slope||w.xv==='mat';
+  if(drawP)st.P.forEach((b,k)=>{
+    let pts=[];for(let t=TMIN;t<=TMAX;t+=1)pts.push(`${sx(t)},${sy(Math.max(0,b+st.slope*t))}`);
+    const lx=X1-(st.slope?100:70),ly=sy(Math.max(0,b+st.slope*ix(lx+45)));
     s+=`<polyline points="${pts.join(' ')}" fill="none" stroke="#222" stroke-width="1.3"/><polyline class="v" data-bt="p" data-k="${k}" points="${pts.join(' ')}" fill="none" stroke="transparent" stroke-width="16"/>`;
-    s+=`<g class="x" data-xt="p" data-k="${k}"><rect x="${lx-2}" y="${ly-8}" width="${B.slope?94:66}" height="15" fill="#fff" stroke="#222" stroke-width="0.8"/><text x="${lx+4}" y="${ly+3}" font-size="10" fill="#222">${pLabel(b)}</text><text x="${lx+(B.slope?84:56)}" y="${ly+3}" font-size="10" text-anchor="middle" fill="#b0452f">×</text></g>`});
-  const ov=$('scov');ov.innerHTML=s;
-  ov.querySelectorAll('[data-xt]').forEach(el=>el.addEventListener('pointerdown',e=>{e.stopPropagation();e.preventDefault();(el.dataset.xt==='t'?B.T:B.P).splice(+el.dataset.k,1);render()}));
-  ov.querySelectorAll('[data-bt]').forEach(el=>el.addEventListener('pointerdown',startDrag));
-  if(tab===3){ // list of all boundaries (incl. those on other axes)
-    const items=B.T.map((b,k)=>`<span class="bi${b.v===vx?' cur':''}" data-ax="${b.v}">${VARS[b.v].s} ${b.x}°C <i data-del="t${k}">×</i></span>`).concat(B.P.map((b,k)=>`<span class="bi${drawP?' cur':''}">연강수량 ${pLabel(b)} <i data-del="p${k}">×</i></span>`));
-    $('blist').innerHTML=items.length?'내 경계: '+items.join(''):'내 경계: 없음';
-    $('blist').querySelectorAll('[data-del]').forEach(el=>el.onclick=e=>{e.stopPropagation();const t=el.dataset.del;(t[0]==='t'?B.T:B.P).splice(+t.slice(1),1);render()});
-    $('blist').querySelectorAll('[data-ax]').forEach(el=>el.onclick=()=>{xv=el.dataset.ax;syncSeg();render()});
+    s+=`<g class="x" data-xt="p" data-k="${k}"><rect x="${lx-2}" y="${ly-8}" width="${st.slope?94:66}" height="15" fill="#fff" stroke="#222" stroke-width="0.8"/><text x="${lx+4}" y="${ly+3}" font-size="10" fill="#222">${pLabel(w,b)}</text><text x="${lx+(st.slope?84:56)}" y="${ly+3}" font-size="10" text-anchor="middle" fill="#b0452f">×</text></g>`});
+  const ov=$('scov'+w.n);ov.innerHTML=s;
+  ov.querySelectorAll('[data-xt]').forEach(el=>el.addEventListener('pointerdown',e=>{e.stopPropagation();e.preventDefault();(el.dataset.xt==='t'?st.T:st.P).splice(+el.dataset.k,1);sched(0)}));
+  ov.querySelectorAll('[data-bt]').forEach(el=>el.addEventListener('pointerdown',e=>{e.preventDefault();drag={w,t:el.dataset.bt,k:+el.dataset.k};ov.setPointerCapture(e.pointerId)}));
+  if(w.n===2){
+    const items=st.T.map((b,k)=>`<span class="bi${b.v===w.xv?' cur':''}" data-ax="${b.v}">${VARS[b.v].s} ${b.x}°C <i data-del="t${k}">×</i></span>`).concat(st.P.map((b,k)=>`<span class="bi${drawP?' cur':''}">연강수량 ${pLabel(w,b)} <i data-del="p${k}">×</i></span>`));
+    $('blist2').innerHTML='내 경계: '+(items.length?items.join(''):'없음');
+    $('blist2').querySelectorAll('[data-del]').forEach(el=>el.onclick=e=>{e.stopPropagation();const t=el.dataset.del;(t[0]==='t'?st.T:st.P).splice(+t.slice(1),1);sched(w)});
+    $('blist2').querySelectorAll('[data-ax]').forEach(el=>el.onclick=()=>{w.xv=el.dataset.ax;syncSeg();sched(w)});
   }
 }
 let drag=null;
-function svgPt(e){const r=$('scov').getBoundingClientRect();return[(e.clientX-r.left)/r.width*SW,(e.clientY-r.top)/r.height*SH]}
-function startDrag(e){e.preventDefault();drag={t:e.target.dataset.bt,k:+e.target.dataset.k};$('scov').setPointerCapture(e.pointerId)}
-$('scov').addEventListener('pointermove',e=>{if(!drag)return;const [x,y]=svgPt(e);
-  if(drag.t==='t')B.T[drag.k].x=Math.max(TMIN,Math.min(TMAX,Math.round(ix(x))));
-  else{let v=iy(y)-B.slope*ix(x);v=Math.abs(v)<500?Math.round(v/10)*10:Math.round(v/50)*50;B.P[drag.k]=Math.max(B.slope?-800:0,Math.min(4500,v))}
-  sched()});
-function endDrag(){if(!drag)return;drag=null;
-  const seen=new Set();B.T=B.T.filter(b=>{const key=b.v+b.x;if(seen.has(key))return false;seen.add(key);return true}).sort((a,b)=>a.x-b.x);
-  B.P=[...new Set(B.P)].sort((a,b)=>a-b);if(tab===1)ST[1]=B;else ST[3]=B;render()}
-$('scov').addEventListener('pointerup',endDrag);$('scov').addEventListener('pointercancel',endDrag);
-const maxB=()=>tab===3?6:4;
-function addT(){const vx=tab===3?xv:'mat';const xs=B.T.filter(b=>b.v===vx).map(b=>b.x);if(B.T.length+B.P.length>=maxB())return;
-  const c=[0,20,10,-10,-20,30,5,15,25,-5].find(c=>xs.every(a=>Math.abs(a-c)>=5))??0;B.T.push({v:vx,x:c});B.T.sort((a,b)=>a.x-b.x);render()}
-function addP(){if(B.T.length+B.P.length>=maxB())return;const c=[1000,250,2000,500,100,1500,750].find(c=>B.P.every(a=>Math.max(a,c)/Math.max(1,Math.min(a,c))>=1.6))??500;B.P.push(c);B.P.sort((a,b)=>a-b);render()}
-$('addT').onclick=addT;$('addP').onclick=addP;
-function t1panel(){
-  const nb=B.T.length+B.P.length,mx=maxB();$('addT').disabled=nb>=mx;$('addP').disabled=nb>=mx;
-  const used=new Set();for(let i=0;i<N;i++)used.add(zT(i,B)*10+zP(i,B));
-  $('zc').textContent=`경계 ${nb}/${mx} · 지역 ${used.size}`;
-  $('slope3v').textContent=B.slope+'mm';
-}
-document.querySelectorAll('#dseg button').forEach(b=>b.onclick=()=>{dview=b.dataset.d;document.querySelectorAll('#dseg button').forEach(x=>x.classList.toggle('on',x===b));render()});
-function syncSeg(){document.querySelectorAll('#xseg button').forEach(x=>x.classList.toggle('on',x.dataset.x===xv));document.querySelectorAll('#vseg button').forEach(x=>x.classList.toggle('on',x.dataset.v===v3))}
-document.querySelectorAll('#xseg button').forEach(b=>b.onclick=()=>{xv=b.dataset.x;syncSeg();render()});
-document.querySelectorAll('#vseg button').forEach(b=>b.onclick=()=>{v3=b.dataset.v;syncSeg();render()});
-$('slope3').addEventListener('input',()=>{B.slope=+$('slope3').value;sched()});
+for(const n of [1,2]){const ov=$('scov'+n);
+  ov.addEventListener('pointermove',e=>{if(!drag||drag.w.n!==n)return;const r=ov.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*SW,y=(e.clientY-r.top)/r.height*SH,st=drag.w.st;
+    if(drag.t==='t')st.T[drag.k].x=Math.max(TMIN,Math.min(TMAX,Math.round(ix(x))));
+    else{let v=iy(y)-st.slope*(drag.w.xv==='mat'?ix(x):0);v=Math.abs(v)<500?Math.round(v/10)*10:Math.round(v/50)*50;st.P[drag.k]=Math.max(st.slope?-800:0,Math.min(4500,v))}
+    sched(n===1?0:drag.w)});
+  const end=()=>{if(!drag)return;const st=drag.w.st;const seen=new Set();
+    st.T=st.T.filter(b=>{const key=b.v+b.x;if(seen.has(key))return false;seen.add(key);return true}).sort((a,b)=>a.x-b.x);
+    st.P=[...new Set(st.P)].sort((a,b)=>a-b);const w=drag.w;drag=null;sched(w.n===1?0:w)};
+  ov.addEventListener('pointerup',end);ov.addEventListener('pointercancel',end)}
+function addT(w){const st=w.st;if(st.T.length+st.P.length>=w.maxB)return;const xs=st.T.filter(b=>b.v===w.xv).map(b=>b.x);
+  const c=[0,20,10,-10,-20,30,5,15,25,-5].find(c=>xs.every(a=>Math.abs(a-c)>=5))??0;st.T.push({v:w.xv,x:c});st.T.sort((a,b)=>a.x-b.x);sched(w.n===1?0:w)}
+function addP(w){const st=w.st;if(st.T.length+st.P.length>=w.maxB)return;const c=[1000,250,2000,500,100,1500,750].find(c=>st.P.every(a=>Math.max(a,c)/Math.max(1,Math.min(a,c))>=1.6))??500;st.P.push(c);st.P.sort((a,b)=>a-b);sched(w.n===1?0:w)}
+for(const n of [1,2]){$('addT'+n).onclick=()=>addT(WS[n]);$('addP'+n).onclick=()=>addP(WS[n])}
+function panel(w){const st=w.st,nb=st.T.length+st.P.length;$('addT'+w.n).disabled=nb>=w.maxB;$('addP'+w.n).disabled=nb>=w.maxB;
+  const used=new Set();for(let i=0;i<N;i++)used.add(zT(i,st)*10+zP(i,st));
+  $('zc'+w.n).textContent=`경계 ${nb}/${w.maxB} · 지역 ${used.size}`;
+  if(w.n===2)$('slope2v').textContent=st.slope+'mm'}
+document.querySelectorAll('#dseg1 button').forEach(b=>b.onclick=()=>{WS[1].view=b.dataset.d;document.querySelectorAll('#dseg1 button').forEach(x=>x.classList.toggle('on',x===b));sched(WS[1])});
+function syncSeg(){const w=WS[2];document.querySelectorAll('#xseg2 button').forEach(x=>x.classList.toggle('on',x.dataset.x===w.xv));document.querySelectorAll('#vseg2 button').forEach(x=>x.classList.toggle('on',x.dataset.v===w.view))}
+document.querySelectorAll('#xseg2 button').forEach(b=>b.onclick=()=>{WS[2].xv=b.dataset.x;syncSeg();sched(WS[2])});
+document.querySelectorAll('#vseg2 button').forEach(b=>b.onclick=()=>{WS[2].view=b.dataset.v;syncSeg();sched(WS[2])});
+$('slope2').addEventListener('input',()=>{WS[2].st.slope=+$('slope2').value;sched(WS[2])});
 
-/* tab 2: steps */
-const MATCH=[S=>S.trop===18,S=>S.base===140&&S.slope===20&&S.season,S=>S.cd===-3,S=>S.tree===10,S=>S.dryA===60&&S.sw];
-function mineText(m){
-  const T1=ST[1].T.map(b=>b.x),P1=ST[1].P;if(m==='t')return T1.length?`내가 그은 기온 경계: 연평균 기온 ${T1.map(v=>v+'°C').join(' · ')}`:'내가 그은 기온 경계: 없음';
-  if(m==='p')return P1.length?`내가 그은 강수량 경계: 연강수량 ${P1.map(v=>v+'mm').join(' · ')} (기온과 관계없이 같은 값)`:'내가 그은 강수량 경계: 없음';
-  return '내가 그은 경계에는 비가 오는 계절이 없다.';
+/* part 2: steps */
+const has=(st,v,x)=>st.T.some(b=>b.v===v&&b.x===x);
+const STEPS2=['A 열대','B 건조','C·D 온대·냉대','E 한대','계절'];
+const MATCH=[st=>has(st,'tc',18),st=>st.P.includes(140)&&st.slope===20,st=>has(st,'tc',-3),st=>has(st,'th',10),()=>true];
+function steps(){
+  const st=WS[2].st,ok=MATCH[step](st);
+  $('stepnav').innerHTML=STEPS2.map((t,k)=>`<span class="sn${k===step?' on':''}${k<=maxStep?' ok':''}" data-s="${k}">${STEPS2[k]}</span>`).join('<span class="sa">›</span>');
+  $('stepnav').querySelectorAll('.sn.ok').forEach(el=>el.onclick=()=>{step=+el.dataset.s;steps()});
+  document.querySelectorAll('.stepc').forEach(c=>c.classList.toggle('hide',+c.dataset.s!==step));
+  const T=st.T.map(b=>`${VARS[b.v].s} ${b.x}°C`),P=st.P.map(b=>pLabel(WS[2],b));
+  $('mine2').textContent='지금 내 경계: '+([...T,...P.map(p=>'연강수량 '+p)].join(' · ')||'없음');
+  $('okmsg').textContent=step<4&&ok?'○ 쾨펜과 같은 경계가 있다.':'';
+  $('next').classList.toggle('hide',step===4);$('next').disabled=!ok;
 }
-function step2(){
-  const S=S2(),ok=MATCH[st](S);
-  $('stepnav').innerHTML=STEPS.map((t,k)=>`<span class="sn${k===st?' on':''}${k<=maxSt?' ok':''}" data-s="${k}">${k+1} ${t}</span>`).join('<span class="sa">›</span>');
-  $('stepnav').querySelectorAll('.sn.ok').forEach(el=>el.onclick=()=>{st=+el.dataset.s;render()});
-  document.querySelectorAll('.stepc').forEach(c=>c.classList.toggle('hide',+c.dataset.s!==st));
-  document.querySelectorAll('.mine').forEach(el=>el.textContent=mineText(el.dataset.m));
-  $('okmsg').textContent=ok?'○ 쾨펜과 같게 맞췄다.':'';
-  $('next').disabled=!ok;$('next').textContent=st<4?'다음 단계로':'지도 완성';
-  document.querySelectorAll('#viewseg button').forEach(x=>x.classList.toggle('on',x.dataset.v===view));
-  $('w2').classList.toggle('hide',!(tab===2&&done));
-}
-$('next').onclick=()=>{if(st<4){st++;maxSt=Math.max(maxSt,st)}else done=true;view='now';render()};
-document.querySelectorAll('#viewseg button').forEach(b=>b.onclick=()=>{view=b.dataset.v;render()});
-function initSliders(){ // start from the student's own boundaries
-  const cl=(v,a,b)=>Math.max(a,Math.min(b,v));
-  const T1=ST[1].T.map(b=>b.x),P1=ST[1].P;if(T1.length){$('s_trop').value=cl(T1[T1.length-1],5,25);$('s_cd').value=cl(T1[0],-15,10)}
-  if(P1.length)$('s_base').value=cl(P1[0],0,800);
-  vals();
-}
+$('next').onclick=()=>{if(step<4){step++;maxStep=Math.max(maxStep,step)}steps()};
+function fetch1(){const s=WS[1].st;WS[2].st={T:s.T.map(b=>({...b})),P:[...s.P],slope:0};$('slope2').value=0;WS[2].xv='mat';WS[2].view='mine';syncSeg()}
+$('start2').onclick=()=>{fetch1();started=true;$('start2').classList.add('hide');$('p2').classList.remove('hide');render(WS[2])};
+$('refetch').onclick=e=>{e.preventDefault();fetch1();render(WS[2])};
+$('b3').onclick=()=>$('m3').classList.add('on');
 
-/* climograph (shared) */
+/* climograph */
 function climo(){
   const i=sel,svg=$('cg');const w=308,h=158,l=26,r=30,t=16,b=18,pw=w-l-r,ph=h-t-b;
   const ty=v=>t+ph*(1-(v+40)/80),py=v=>t+ph*(1-Math.min(v,500)/500);
@@ -431,38 +396,11 @@ function climo(){
   svg.innerHTML=s;
   const [la,lo]=selLL;$('cttl').textContent=`${Math.abs(la).toFixed(1)}°${la>=0?'N':'S'} ${Math.abs(lo).toFixed(1)}°${lo>=0?'E':'W'}`;
   const f=v=>v.toFixed(1);
-  let ln=[`<div>연평균 ${f(MAT[i])}°C · 연강수량 ${Math.round(MAP[i])}mm · 가장 추운 달 ${f(TC[i])}°C · 가장 더운 달 ${f(TH[i])}°C</div>`];
-  if(tab===2){const S=S2(),c=cur[i],th=pth(i,S);
-    ln.push(`<div>A: 가장 추운 달 ${f(TC[i])}°C ${TC[i]>=S.trop?'≥':'<'} ${S.trop}°C</div>`);
-    if(st>=1)ln.push(`<div>B: 연강수량 ${Math.round(MAP[i])}mm ${MAP[i]<th?'<':'≥'} 건조 한계 ${Math.round(th)}mm</div>`);
-    if(st>=2)ln.push(`<div>C·D: 가장 추운 달 ${f(TC[i])}°C ${TC[i]>S.cd?'>':'≤'} ${S.cd}°C</div>`);
-    if(st>=3)ln.push(`<div>E: 가장 더운 달 ${f(TH[i])}°C ${TH[i]>=S.tree?'≥':'<'} ${S.tree}°C</div>`);
-    if(st>=4)ln.push(`<div>계절: 가장 건조한 달 ${Math.round(PMIN[i])}mm · 여름 최소 ${Math.round(PSMIN[i])}mm · 겨울 최소 ${Math.round(PWMIN[i])}mm</div>`);
-    ln.push(`<div class="end">→ ${c==='-'?'아직 나누지 않음':c+' '+NAME[c]}</div>`)}
-  $('cpath').innerHTML=ln.join('');
+  $('cpath').innerHTML=`<div>연평균 ${f(MAT[i])}°C · 연강수량 ${Math.round(MAP[i])}mm</div><div>가장 추운 달 ${f(TC[i])}°C · 가장 더운 달 ${f(TH[i])}°C</div>`;
 }
-$('ov').addEventListener('click',e=>{const r=$('ov').getBoundingClientRect();const x=(e.clientX-r.left)/r.width*MW,y=(e.clientY-r.top)/r.height*MH;
-  const c=Math.floor(x/MW*W),rr=Math.floor(y/MH*H);const g=gidx[rr*W+c];if(g<0)return;sel=g;selLL=[LAT0-(rr+0.5)*RES,(c+0.5)*RES-180];render()});
-function vals(){
-  $('s_treev').textContent=$('s_tree').value+'°C';$('s_basev').textContent=$('s_base').value+'mm';$('s_slopev').textContent=$('s_slope').value+'mm';
-  $('s_tropv').textContent=$('s_trop').value+'°C';$('s_cdv').textContent=$('s_cd').value+'°C';$('s_dryAv').textContent=+$('s_dryA').value?$('s_dryA').value+'mm':'구분 안 함';
-}
-let raf=0;function sched(){if(raf)return;raf=requestAnimationFrame(()=>{raf=0;render()})}
-document.querySelectorAll('#left2 input').forEach(el=>el.addEventListener('input',()=>{vals();sched()}));
-function goTab(t){const prev=tab;tab=t;document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',+x.dataset.t===t));
-  if(t===2&&!started2){started2=true;initSliders()}
-  if(t===3&&!ST[3]){ST[3]={T:ST[1].T.map(b=>({...b})),P:[...ST[1].P],slope:0};$('slope3').value=0}
-  B=t===3?ST[3]:ST[1];
-  $('task1').classList.toggle('hide',t!==1);$('task2').classList.toggle('hide',t!==2);$('task3').classList.toggle('hide',t!==3);
-  $('left1').classList.toggle('hide',t===2);$('left2').classList.toggle('hide',t!==2);
-  $('dseg').classList.toggle('hide',t!==1);$('xseg').classList.toggle('hide',t!==3);$('sbar2').classList.toggle('hide',t!==3);$('blist').classList.toggle('hide',t!==3);
-  $('w2').classList.toggle('hide',!(t===2&&done));$('w3').classList.toggle('hide',t!==3);
-  syncSeg();render()}
-document.querySelectorAll('.tab').forEach(el=>el.onclick=()=>goTab(+el.dataset.t));
-$('go3').onclick=()=>goTab(3);
-$('b3').onclick=()=>$('m3').classList.add('on');
-$('b2').onclick=()=>$('m2').classList.add('on');
-vals();render();
+for(const n of [1,2])$('ov'+n).addEventListener('click',e=>{const ov=$('ov'+n),r=ov.getBoundingClientRect();const x=(e.clientX-r.left)/r.width*MW,y=(e.clientY-r.top)/r.height*MH;
+  const c=Math.floor(x/MW*W),rr=Math.floor(y/MH*H);const g=gidx[rr*W+c];if(g<0)return;sel=g;selLL=[LAT0-(rr+0.5)*RES,(c+0.5)*RES-180];sched(0)});
+renderAll();
 </script>
 </body>
 </html>
