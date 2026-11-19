@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>기후난민 인터뷰</title>
+<style>
+  /* Apps Script 웹 앱 URL을 아래 SCRIPT_URL에 넣으면 실제로 작동합니다. 비워 두면 미리보기(데모) 모드. */
+  :root{
+    --ink:#222; --sub:#666; --line:#ddd; --bg:#fff; --soft:#f4f5f6;
+    --accent:#1d5f7a; --accent-soft:#e6f0f4;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:#fafafa;color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Noto Sans KR","Malgun Gothic",sans-serif;
+    font-size:14px;line-height:1.6;-webkit-text-size-adjust:100%}
+  .wrap{width:760px;max-width:100%;margin:0 auto;padding:20px 16px 40px;background:var(--bg);min-height:100vh}
+  header{border-bottom:2px solid var(--accent);padding-bottom:10px;margin-bottom:14px}
+  h1{font-size:19px;margin:0 0 4px;font-weight:700}
+  .task{margin:0;color:var(--sub)}
+  .demo{display:none;margin-top:8px;font-size:12px;color:#8a5a00;background:#fff6e0;padding:4px 8px;border-radius:4px}
+  .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  label{font-size:13px;color:var(--sub)}
+  input[type=text]{font:inherit;padding:7px 9px;border:1px solid var(--line);border-radius:6px;background:#fff}
+  .w-s{width:64px}.w-m{width:110px}
+  button{font:inherit;padding:7px 14px;border-radius:6px;border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer}
+  button.ghost{background:#fff;color:var(--accent)}
+  button:disabled{opacity:.4;cursor:default}
+  #start{padding:6px 0 4px}
+  #chatBox{display:none}
+  .meta{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--sub);margin-bottom:8px}
+  .dots{display:inline-flex;gap:4px;vertical-align:middle;margin-left:6px}
+  .dots i{width:8px;height:8px;border-radius:50%;border:1px solid var(--accent);display:inline-block}
+  .dots i.on{background:var(--accent)}
+  #log{border:1px solid var(--line);border-radius:8px;padding:12px;height:52vh;min-height:300px;overflow-y:auto;background:#fff}
+  .msg{display:flex;margin:0 0 10px}
+  .msg .b{max-width:78%;padding:8px 11px;border-radius:10px;white-space:pre-wrap;word-break:keep-all;overflow-wrap:anywhere}
+  .msg.bot .b{background:var(--soft)}
+  .msg.student{justify-content:flex-end}
+  .msg.student .b{background:var(--accent-soft)}
+  .msg .who{font-size:11px;color:var(--sub);margin:0 0 2px}
+  .typing .b{color:var(--sub)}
+  .compose{display:flex;gap:8px;margin-top:10px}
+  .compose textarea{flex:1;font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:6px;resize:none;height:60px}
+  .compose .btns{display:flex;flex-direction:column;gap:6px}
+  .err{color:#b42318;font-size:13px;margin-top:6px;min-height:1em}
+  #result{display:none}
+  h2{font-size:15px;margin:18px 0 8px;font-weight:700}
+  .qs{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+  .qs li{display:flex;gap:10px;padding:7px 2px;border-bottom:1px solid var(--line)}
+  .qs .n{color:var(--sub);width:16px;flex:none}
+  .qs .t{flex:1}
+  .tag{flex:none;font-size:12px;color:var(--accent);border:1px solid var(--accent);border-radius:10px;padding:0 8px;height:20px;line-height:18px;align-self:center}
+  .tag.none{color:var(--sub);border-color:var(--line)}
+  .types{display:flex;flex-wrap:wrap;gap:6px}
+  .types span{font-size:12px;padding:2px 9px;border-radius:10px;border:1px solid var(--line);color:var(--sub)}
+  .types span.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .ex{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px}
+  .ex div{border-left:2px solid var(--line);padding-left:10px}
+  .ex b{font-weight:600;font-size:13px}
+  .ex p{margin:2px 0 0;color:var(--sub);font-size:13px}
+  .comment{background:var(--soft);padding:10px 12px;border-radius:8px;margin:0}
+  .scores{font-size:13px;color:var(--sub)}
+  .foot{margin-top:18px;font-size:12px;color:var(--sub)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>기후난민 인터뷰</h1>
+    <p class="task">투발루에서 온 기후난민을 인터뷰합니다. 3~5개의 질문으로 기후변화가 이 사람의 삶을 어떻게 바꾸었는지 알아봅니다.</p>
+    <div class="demo" id="demoNote">미리보기 모드: 서버가 연결되지 않아 정해진 답만 나옵니다.</div>
+  </header>
+
+  <section id="start">
+    <div class="row">
+      <label>반 <input type="text" id="cls" class="w-s" inputmode="numeric"></label>
+      <label>번호 <input type="text" id="num" class="w-s" inputmode="numeric"></label>
+      <label>이름 <input type="text" id="name" class="w-m"></label>
+      <button id="startBtn">인터뷰 시작</button>
+    </div>
+    <div class="err" id="startErr"></div>
+  </section>
+
+  <section id="chatBox">
+    <div class="meta">
+      <span id="who"></span>
+      <span>질문 <span id="count">0</span>/<span id="max">5</span><span class="dots" id="dots"></span></span>
+    </div>
+    <div id="log"></div>
+    <div class="compose">
+      <textarea id="input" placeholder="질문을 입력하세요"></textarea>
+      <div class="btns">
+        <button id="sendBtn">보내기</button>
+        <button id="endBtn" class="ghost" disabled>인터뷰 마치기</button>
+      </div>
+    </div>
+    <div class="err" id="chatErr"></div>
+  </section>
+
+  <section id="result">
+    <h2>내 질문</h2>
+    <ul class="qs" id="rQs"></ul>
+    <h2>다룬 질문 유형</h2>
+    <div class="types" id="rTypes"></div>
+    <div id="rExWrap">
+      <h2>다루지 않은 유형의 예시 질문</h2>
+      <div class="ex" id="rEx"></div>
+    </div>
+    <div id="rCommentWrap">
+      <h2>인터뷰 평가</h2>
+      <p class="comment" id="rComment"></p>
+      <p class="scores" id="rScores"></p>
+    </div>
+    <p class="foot">제출되었습니다. 이 화면은 닫아도 됩니다.</p>
+  </section>
+</div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwx8Ssjv2hFPr6bGqxNjfHJGLgA4QsCFH8w5ouBSRvfJkf1FZFc0y3n3ku4LQwblOyBxA/exec';
+
+const DEMO = !SCRIPT_URL;
+let cfg = { minQuestions: 3, maxQuestions: 5, maxChars: 400 };
+let S = { cls:'', num:'', name:'', messages:[], phase:'idle' }; // phase: idle | asking | reflecting | done
+const KEY = 'climate_interview_v1';
+const $ = id => document.getElementById(id);
+
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+function clearSaved(){ try{ localStorage.removeItem(KEY); }catch(e){} }
+function load(){ try{ return JSON.parse(localStorage.getItem(KEY) || 'null'); }catch(e){ return null; } }
+
+async function api(payload){
+  if (DEMO) return demoApi(payload);
+  const r = await fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify(payload) });
+  const d = await r.json();
+  if (!d.ok) throw new Error(d.error || '오류가 생겼습니다.');
+  return d;
+}
+
+/* ---------- 화면 ---------- */
+function renderMeta(){
+  const n = Math.min(S.messages.filter(m => m.role === 'student').length, cfg.maxQuestions);
+  $('count').textContent = n;
+  $('max').textContent = cfg.maxQuestions;
+  $('dots').innerHTML = Array.from({length: cfg.maxQuestions}, (_, i) => `<i class="${i < n ? 'on' : ''}"></i>`).join('');
+  $('endBtn').disabled = !(S.phase === 'asking' && n >= cfg.minQuestions);
+  $('input').placeholder = S.phase === 'reflecting' ? '인터뷰에서 느낀 점을 적어 주세요' : '질문을 입력하세요';
+  $('sendBtn').textContent = S.phase === 'reflecting' ? '제출' : '보내기';
+}
+
+function addBubble(role, text){
+  const div = document.createElement('div');
+  div.className = 'msg ' + role;
+  div.innerHTML = `<div><div class="who">${role === 'bot' ? '기후난민' : '나'}</div><div class="b"></div></div>`;
+  div.querySelector('.b').textContent = text;
+  $('log').appendChild(div);
+  $('log').scrollTop = $('log').scrollHeight;
+  return div;
+}
+function typing(on){
+  let t = document.querySelector('.typing');
+  if (on && !t){ t = addBubble('bot', '…'); t.classList.add('typing'); }
+  if (!on && t) t.remove();
+}
+function busy(on){
+  $('sendBtn').disabled = on; $('input').disabled = on;
+  if (on) $('endBtn').disabled = true; else renderMeta();
+  typing(on);
+}
+
+/* ---------- 흐름 ---------- */
+async function start(){
+  const cls = $('cls').value.trim(), num = $('num').value.trim(), name = $('name').value.trim();
+  if (!cls || !num || !name){ $('startErr').textContent = '반, 번호, 이름을 모두 적어 주세요.'; return; }
+  S = { cls, num, name, messages:[], phase:'asking' };
+  showChat();
+  busy(true);
+  try{
+    const d = await api({ action:'chat', messages:[] });
+    S.messages.push({ role:'bot', text:d.reply }); addBubble('bot', d.reply); save();
+  }catch(e){ $('chatErr').textContent = e.message; S.phase = 'idle'; }
+  busy(false);
+  $('input').focus();
+}
+
+function showChat(){
+  $('start').style.display = 'none';
+  $('chatBox').style.display = 'block';
+  $('who').textContent = `${S.cls}반 ${S.num}번 ${S.name}`;
+  renderMeta();
+}
+
+async function send(){
+  const text = $('input').value.trim();
+  if (!text) return;
+  if (text.length > cfg.maxChars){ $('chatErr').textContent = `${cfg.maxChars}자 이내로 적어 주세요.`; return; }
+  $('chatErr').textContent = '';
+  $('input').value = '';
+  S.messages.push({ role:'student', text }); addBubble('student', text); save();
+
+  if (S.phase === 'reflecting'){ return finish(); }
+
+  busy(true);
+  try{
+    const d = await api({ action:'chat', messages:S.messages });
+    S.messages.push({ role:'bot', text:d.reply }); addBubble('bot', d.reply); save();
+  }catch(e){
+    // 실패한 질문은 되돌려 다시 보낼 수 있게
+    typing(false); S.messages.pop(); $('log').lastChild.remove(); $('input').value = text;
+    $('chatErr').textContent = e.message; busy(false); return;
+  }
+  busy(false);
+  if (S.messages.filter(m => m.role === 'student').length >= cfg.maxQuestions) closeInterview();
+}
+
+async function closeInterview(){
+  if (S.phase !== 'asking') return;
+  busy(true);
+  try{
+    const d = await api({ action:'chat', messages:S.messages, closing:true });
+    S.messages.push({ role:'bot', text:d.reply }); addBubble('bot', d.reply);
+    S.phase = 'reflecting'; save();
+  }catch(e){ $('chatErr').textContent = e.message; }
+  busy(false);
+  $('input').focus();
+}
+
+async function finish(){
+  busy(true);
+  $('chatErr').textContent = '';
+  try{
+    const d = await api({ action:'finish', cls:S.cls, num:S.num, name:S.name, messages:S.messages });
+    S.phase = 'done'; clearSaved();
+    typing(false);
+    showResult(d.result);
+  }catch(e){
+    $('chatErr').textContent = e.message + ' 제출 버튼을 다시 눌러 주세요.';
+    // 느낀 점을 입력창으로 되돌림
+    typing(false); const last = S.messages.pop(); $('log').lastChild.remove(); $('input').value = last.text; save();
+    busy(false);
+  }
+}
+
+function showResult(r){
+  $('chatBox').style.display = 'none';
+  $('result').style.display = 'block';
+  $('rQs').innerHTML = r.questions.map((q, i) =>
+    `<li><span class="n">${i+1}</span><span class="t"></span>${r.evaluated ? `<span class="tag ${q.type ? '' : 'none'}">${q.typeName}</span>` : ''}</li>`).join('');
+  [...$('rQs').querySelectorAll('.t')].forEach((el, i) => el.textContent = r.questions[i].text);
+  $('rTypes').innerHTML = r.types.map(t => `<span class="${r.covered.indexOf(t.id) >= 0 ? 'on' : ''}">${t.name}</span>`).join('');
+  if (r.examples.length){
+    $('rEx').innerHTML = r.examples.map(t => `<div><b>${t.name}</b>${t.examples.map(x => `<p>${x}</p>`).join('')}</div>`).join('');
+  } else $('rExWrap').style.display = 'none';
+  if (r.comment){ $('rComment').textContent = r.comment; } else $('rCommentWrap').style.display = 'none';
+  if (r.scores){ $('rScores').textContent = r.scores.map(s => `${s.name} ${s.score}`).join(' · ') + ` / 총점 ${r.total}`; }
+}
+
+/* ---------- 시작 ---------- */
+$('startBtn').onclick = start;
+$('sendBtn').onclick = send;
+$('endBtn').onclick = closeInterview;
+$('input').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey && !e.isComposing){ e.preventDefault(); send(); }
+});
+
+(async function init(){
+  if (DEMO) $('demoNote').style.display = 'block';
+  try{ const d = await api({ action:'config' }); if (d.config) cfg = d.config; }catch(e){}
+  const saved = load();
+  if (saved && saved.phase && saved.phase !== 'idle' && saved.phase !== 'done' && saved.messages.length){
+    S = saved; showChat();
+    S.messages.forEach(m => addBubble(m.role, m.text));
+    // 느낀 점 제출 중에 끊긴 경우: 마지막이 학생 발화면 다시 제출
+    if (S.phase === 'reflecting' && S.messages[S.messages.length-1].role === 'student'){
+      const last = S.messages.pop(); $('log').lastChild.remove(); $('input').value = last.text;
+    }
+    renderMeta();
+  }
+})();
+
+/* ---------- 미리보기(데모) ---------- */
+function demoApi(p){
+  const wait = ms => new Promise(r => setTimeout(r, ms));
+  const replies = [
+    '안녕하세요. 저는 남태평양의 작은 섬나라 투발루에서 왔어요. 지금은 도시 외곽의 임시 정착촌에서 가족과 함께 지내고 있어요. 제 이야기가 궁금하다니 반가워요.',
+    '바닷물이 해마다 조금씩 더 높이 들어왔어요. 만조 때면 마당과 밭이 물에 잠겼고, 땅속으로 짠물이 스며들어 타로 농사를 더는 지을 수 없었어요. 결국 아이들의 미래를 생각해 떠나기로 했어요.',
+    '배에 오를 때 뒤를 돌아보지 못했어요. 할머니 무덤도, 제가 자란 집도 그대로 두고 왔으니까요. 지금도 밤이 되면 파도 소리가 그리워요.',
+    '남은 이웃들은 해안에 둑을 쌓고 땅을 높이려고 애쓰고 있어요. 하지만 작은 나라 혼자 힘으로는 한계가 있어요. 가끔 전화로 소식을 들으면 마음이 무거워요.',
+    '고향에서는 이웃이 모두 가족 같았는데, 여기서는 옆집 사람 이름도 잘 몰라요. 일자리도 구하기 어렵고요. 그래도 아이들은 조금씩 적응하고 있어요.'
+  ];
+  if (p.action === 'config') return Promise.resolve({ ok:true, config: cfg });
+  if (p.action === 'chat'){
+    const n = p.messages.filter(m => m.role === 'student').length;
+    const text = p.closing
+      ? '제 이야기를 끝까지 들어 줘서 고마워요. 이 인터뷰를 하면서 어떤 생각이 들었는지 들려줄래요?'
+      : replies[Math.min(n, replies.length - 1)];
+    return wait(700).then(() => ({ ok:true, reply:text }));
+  }
+  if (p.action === 'finish'){
+    const qs = p.messages.filter(m => m.role === 'student').slice(0, -1);
+    const names = ['이주 과정과 배경','당시의 느낌과 현재의 정서','다른 선택지와 사회의 대응','공간적·시간적 변화','삶의 의미, 정체성, 인권'];
+    const types = qs.map((q, i) => (i % 4) + 1);
+    const covered = [...new Set(types)].sort();
+    const ex = {
+      1:['어떻게 해서 고향을 떠나게 되었나요?','기후 변화로 어떤 피해를 직접 겪으셨나요?'],
+      2:['떠날 때 어떤 기분이셨나요?','지금 생활에 만족하시나요?'],
+      3:['그때 다른 선택지는 없었나요?','남아 있는 이웃들은 어떻게 하고 있나요?'],
+      4:['10년 전과 지금 고향은 어떻게 달라졌나요?','현재 사는 도시와 고향의 가장 큰 차이는 무엇인가요?'],
+      5:['당신에게 ‘집’은 어떤 의미인가요?','기후난민이라는 말을 어떻게 느끼시나요?']
+    };
+    return wait(900).then(() => ({ ok:true, result:{
+      questions: qs.map((q, i) => ({ text:q.text, type:types[i], typeName:names[types[i]-1] })),
+      covered,
+      types: names.map((n, i) => ({ id:i+1, name:n })),
+      examples: [1,2,3,4,5].filter(id => covered.indexOf(id) < 0).map(id => ({ id, name:names[id-1], examples:ex[id] })),
+      comment: '(미리보기) 실제 서버에 연결하면 이 자리에 AI가 쓴 한두 문장의 평가가 나옵니다.',
+      evaluated: true
+    }}));
+  }
+}
+</script>
+</body>
+</html>
